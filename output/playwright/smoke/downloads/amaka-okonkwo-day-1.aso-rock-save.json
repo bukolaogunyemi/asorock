@@ -1,0 +1,1486 @@
+{
+  "version": 1,
+  "exportedAt": "2026-03-13T06:17:36.295Z",
+  "state": {
+    "day": 1,
+    "date": "29 May 2023",
+    "phase": "playing",
+    "approval": 48,
+    "treasury": 1.2,
+    "politicalCapital": 65,
+    "stability": 47,
+    "presidentName": "Amaka Okonkwo",
+    "presidentOrigin": "Lagos",
+    "presidentTraits": [
+      "charismatic",
+      "calculating"
+    ],
+    "stress": 25,
+    "presidentAge": 47,
+    "presidentGender": "Female",
+    "presidentState": "Lagos",
+    "presidentEducation": "Master's Degree",
+    "presidentParty": "LP",
+    "presidentEra": "2023",
+    "vicePresident": {
+      "name": "Sen. Abubakar Atiku Jr.",
+      "loyalty": 60,
+      "ambition": 75,
+      "relationship": "Neutral",
+      "mood": "Steady"
+    },
+    "personalAssistant": "Amara Obi",
+    "campaignPromises": [
+      {
+        "id": "promise-1",
+        "title": "p1",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-2",
+        "title": "p2",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-3",
+        "title": "p3",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-4",
+        "title": "p4",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-5",
+        "title": "p5",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-6",
+        "title": "p6",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-7",
+        "title": "p7",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-8",
+        "title": "p8",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-9",
+        "title": "p9",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      },
+      {
+        "id": "promise-10",
+        "title": "p10",
+        "category": "governance",
+        "targetDay": 210,
+        "progress": 0,
+        "status": "active"
+      }
+    ],
+    "appointments": [
+      {
+        "office": "Chief of Staff",
+        "appointee": "Alh. Bashir Tofa",
+        "confirmed": true
+      },
+      {
+        "office": "Secretary to the Government",
+        "appointee": "Sen. Bukola Adewale",
+        "confirmed": true
+      },
+      {
+        "office": "National Security Adviser",
+        "appointee": "Gen. Tukur Yusuf (Rtd.)",
+        "confirmed": true
+      },
+      {
+        "office": "Chief Economic Adviser",
+        "appointee": "Prof. Kingsley Moghalu",
+        "confirmed": true
+      },
+      {
+        "office": "Political Adviser",
+        "appointee": "Chief Bode George",
+        "confirmed": true
+      },
+      {
+        "office": "Media Adviser",
+        "appointee": "Femi Adesina",
+        "confirmed": true
+      }
+    ],
+    "term": {
+      "current": 1,
+      "daysInOffice": 1,
+      "daysUntilElection": 1180,
+      "daysUntilMediaChat": 30,
+      "daysUntilFactionReport": 30,
+      "daysUntilEconomicSnapshot": 30,
+      "reelectionsWon": 0,
+      "overstayDays": 0,
+      "governingPhase": "honeymoon",
+      "electionMomentum": 48
+    },
+    "health": 85,
+    "healthCrisis": {
+      "consecutiveHighStressDays": 0,
+      "rumorsActive": false,
+      "announced": false,
+      "concealmentActive": false,
+      "recoveryTurnsRemaining": 0
+    },
+    "macroEconomy": {
+      "inflation": 28.1,
+      "fxRate": 1690,
+      "reserves": 33.5,
+      "debtToGdp": 42.3,
+      "oilOutput": 1.36,
+      "subsidyPressure": 72
+    },
+    "macroHistory": [
+      {
+        "day": 1,
+        "inflation": 28.1,
+        "fxRate": 1690,
+        "reserves": 33.5,
+        "debtToGdp": 42.3,
+        "oilOutput": 1.36,
+        "subsidyPressure": 72
+      }
+    ],
+    "cabalMeeting": {
+      "day": 1,
+      "focus": "economy",
+      "adviser": "Alhaji Bello Kazeem",
+      "role": "Finance Minister",
+      "title": "Morning Cabal: Stabilise The Economy",
+      "brief": "Inflation is 28.1% and FX is 1,690 NGN/USD. The cabal wants a line before importers, labour, and the governors create their own.",
+      "recommendedChoiceId": "cabal-economy-discipline",
+      "resolved": false,
+      "choices": [
+        {
+          "id": "cabal-economy-discipline",
+          "label": "Back painful reform discipline",
+          "summary": "Signal orthodoxy, accept immediate anger, and buy macro credibility.",
+          "consequences": [
+            {
+              "id": "cabal-economy-discipline-1",
+              "sourceEvent": "cabal-economy",
+              "description": "The villa backs a disciplined reform line",
+              "effects": [
+                {
+                  "target": "trust",
+                  "delta": 3,
+                  "description": "Markets and institutions buy the signal"
+                },
+                {
+                  "target": "approval",
+                  "delta": -2,
+                  "description": "Households hear more pain coming"
+                },
+                {
+                  "target": "politicalCapital",
+                  "delta": -2,
+                  "description": "The coalition hates the austerity message"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "inflation",
+                  "delta": -1.2,
+                  "description": "Tighter policy cools inflation expectations"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "fxRate",
+                  "delta": -60,
+                  "description": "The naira finds a firmer floor"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "subsidyPressure",
+                  "delta": -5,
+                  "description": "Price support obligations ease"
+                }
+              ],
+              "delayDays": 0
+            },
+            {
+              "id": "cabal-economy-discipline-later-1",
+              "sourceEvent": "cabal-economy",
+              "description": "External buffers respond to the reform line",
+              "effects": [
+                {
+                  "target": "macro",
+                  "macroKey": "reserves",
+                  "delta": 0.8,
+                  "description": "Confidence rebuilds external buffers"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "debtToGdp",
+                  "delta": -0.4,
+                  "description": "Borrowing needs moderate"
+                }
+              ],
+              "delayDays": 2
+            }
+          ]
+        },
+        {
+          "id": "cabal-economy-relief",
+          "label": "Spend to buy social calm",
+          "summary": "Keep the street onside first and accept that the macro picture may sag later.",
+          "consequences": [
+            {
+              "id": "cabal-economy-relief-1",
+              "sourceEvent": "cabal-economy",
+              "description": "The villa chooses relief over orthodoxy",
+              "effects": [
+                {
+                  "target": "approval",
+                  "delta": 3,
+                  "description": "The public feels immediate relief"
+                },
+                {
+                  "target": "stability",
+                  "delta": 2,
+                  "description": "Tension eases for now"
+                },
+                {
+                  "target": "treasury",
+                  "delta": -0.08,
+                  "description": "Relief spending narrows fiscal room"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "inflation",
+                  "delta": 0.9,
+                  "description": "Fresh spending adds price pressure"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "debtToGdp",
+                  "delta": 0.7,
+                  "description": "Borrowing climbs"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "subsidyPressure",
+                  "delta": 7,
+                  "description": "More constituencies now expect compensation"
+                }
+              ],
+              "delayDays": 0
+            }
+          ]
+        },
+        {
+          "id": "cabal-economy-cover",
+          "label": "Lean on insiders for temporary FX cover",
+          "summary": "Use private networks and off-book bargaining to stop the worst headlines today.",
+          "consequences": [
+            {
+              "id": "cabal-economy-cover-1",
+              "sourceEvent": "cabal-economy",
+              "description": "The presidency leans on elite channels to steady the tape",
+              "effects": [
+                {
+                  "target": "trust",
+                  "delta": -2,
+                  "description": "The market senses improvised management"
+                },
+                {
+                  "target": "politicalCapital",
+                  "delta": 1,
+                  "description": "Insider channels now owe the villa"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "fxRate",
+                  "delta": -35,
+                  "description": "FX pressure eases for a moment"
+                },
+                {
+                  "target": "macro",
+                  "macroKey": "reserves",
+                  "delta": -1.5,
+                  "description": "Temporary cover burns scarce buffers"
+                }
+              ],
+              "delayDays": 0
+            }
+          ]
+        }
+      ]
+    },
+    "characters": {
+      "Alhaji Bello Kazeem": {
+        "name": "Alhaji Bello Kazeem",
+        "portfolio": "Finance",
+        "loyalty": 78,
+        "competence": 85,
+        "ambition": 62,
+        "faction": "Northern Caucus",
+        "relationship": "Friendly",
+        "avatar": "BK",
+        "traits": [
+          "loyal",
+          "hawkish"
+        ],
+        "betrayalThreshold": 31.400000000000002,
+        "hooks": [
+          {
+            "id": "hook-alhaji-bello-kazeem",
+            "target": "Alhaji Bello Kazeem",
+            "type": "financial",
+            "severity": "minor",
+            "description": "Payment trails and procurement anomalies point to a vulnerable money channel.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 34,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Chief Adaeze Okonkwo": {
+        "name": "Chief Adaeze Okonkwo",
+        "portfolio": "Petroleum",
+        "loyalty": 65,
+        "competence": 72,
+        "ambition": 88,
+        "faction": "South-East Bloc",
+        "relationship": "Wary",
+        "avatar": "AO",
+        "traits": [
+          "ambitious",
+          "dovish"
+        ],
+        "betrayalThreshold": 23.6,
+        "hooks": [
+          {
+            "id": "hook-chief-adaeze-okonkwo",
+            "target": "Chief Adaeze Okonkwo",
+            "type": "financial",
+            "severity": "devastating",
+            "description": "Payment trails and procurement anomalies point to a vulnerable money channel.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 47,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Barr. Funke Adeyemi": {
+        "name": "Barr. Funke Adeyemi",
+        "portfolio": "Justice",
+        "loyalty": 91,
+        "competence": 80,
+        "ambition": 45,
+        "faction": "Presidential Guard",
+        "relationship": "Friendly",
+        "avatar": "FA",
+        "traits": [
+          "loyal",
+          "zealous"
+        ],
+        "betrayalThreshold": 36.5,
+        "hooks": []
+      },
+      "Gen. Yakubu Musa (Rtd)": {
+        "name": "Gen. Yakubu Musa (Rtd)",
+        "portfolio": "Defence",
+        "loyalty": 82,
+        "competence": 78,
+        "ambition": 55,
+        "faction": "Military Circle",
+        "relationship": "Friendly",
+        "avatar": "YM",
+        "traits": [
+          "loyal",
+          "zealous"
+        ],
+        "betrayalThreshold": 33.5,
+        "hooks": []
+      },
+      "Dr. Amina Ibrahim": {
+        "name": "Dr. Amina Ibrahim",
+        "portfolio": "Health",
+        "loyalty": 70,
+        "competence": 90,
+        "ambition": 50,
+        "faction": "Technocrats",
+        "relationship": "Neutral",
+        "avatar": "AI",
+        "traits": [
+          "competent",
+          "dovish"
+        ],
+        "betrayalThreshold": 35,
+        "hooks": []
+      },
+      "Engr. Chidi Nwosu": {
+        "name": "Engr. Chidi Nwosu",
+        "portfolio": "Works & Housing",
+        "loyalty": 60,
+        "competence": 68,
+        "ambition": 75,
+        "faction": "South-East Bloc",
+        "relationship": "Wary",
+        "avatar": "CN",
+        "traits": [
+          "competent"
+        ],
+        "betrayalThreshold": 27.5,
+        "hooks": [
+          {
+            "id": "hook-engr-chidi-nwosu",
+            "target": "Engr. Chidi Nwosu",
+            "type": "personal",
+            "severity": "major",
+            "description": "Personal indiscretions and private dependence have created quiet leverage.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 37,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Hon. Sani Danjuma": {
+        "name": "Hon. Sani Danjuma",
+        "portfolio": "Education",
+        "loyalty": 85,
+        "competence": 62,
+        "ambition": 70,
+        "faction": "Northern Caucus",
+        "relationship": "Friendly",
+        "avatar": "SD",
+        "traits": [
+          "loyal",
+          "pragmatic"
+        ],
+        "betrayalThreshold": 29,
+        "hooks": [
+          {
+            "id": "hook-hon-sani-danjuma",
+            "target": "Hon. Sani Danjuma",
+            "type": "personal",
+            "severity": "minor",
+            "description": "Personal indiscretions and private dependence have created quiet leverage.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 40,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Sen. Bola Martins": {
+        "name": "Sen. Bola Martins",
+        "portfolio": "Senate President",
+        "loyalty": 62,
+        "competence": 74,
+        "ambition": 90,
+        "faction": "South-West Alliance",
+        "relationship": "Wary",
+        "avatar": "BM",
+        "traits": [
+          "ambitious",
+          "corrupt"
+        ],
+        "betrayalThreshold": 23,
+        "hooks": [
+          {
+            "id": "hook-sen-bola-martins",
+            "target": "Sen. Bola Martins",
+            "type": "financial",
+            "severity": "devastating",
+            "description": "Payment trails and procurement anomalies point to a vulnerable money channel.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 30,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Gov. Abdullahi Sule": {
+        "name": "Gov. Abdullahi Sule",
+        "portfolio": "Governors Forum Chair",
+        "loyalty": 50,
+        "competence": 70,
+        "ambition": 82,
+        "faction": "Northern Caucus",
+        "relationship": "Neutral",
+        "avatar": "AS",
+        "traits": [
+          "ambitious",
+          "competent"
+        ],
+        "betrayalThreshold": 25.400000000000002,
+        "hooks": [
+          {
+            "id": "hook-gov-abdullahi-sule",
+            "target": "Gov. Abdullahi Sule",
+            "type": "political",
+            "severity": "major",
+            "description": "Private commitments and factional promises could become leverage.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 35,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Brig. Tukur Hassan (Rtd)": {
+        "name": "Brig. Tukur Hassan (Rtd)",
+        "portfolio": "NSA",
+        "loyalty": 88,
+        "competence": 76,
+        "ambition": 60,
+        "faction": "Military Circle",
+        "relationship": "Friendly",
+        "avatar": "TH",
+        "traits": [
+          "loyal",
+          "hawkish"
+        ],
+        "betrayalThreshold": 32,
+        "hooks": []
+      },
+      "Hajia Zainab Kano": {
+        "name": "Hajia Zainab Kano",
+        "portfolio": "CBN Governor",
+        "loyalty": 55,
+        "competence": 92,
+        "ambition": 40,
+        "faction": "Technocrats",
+        "relationship": "Neutral",
+        "avatar": "ZK",
+        "traits": [
+          "competent",
+          "corrupt"
+        ],
+        "betrayalThreshold": 38,
+        "hooks": [
+          {
+            "id": "hook-hajia-zainab-kano",
+            "target": "Hajia Zainab Kano",
+            "type": "financial",
+            "severity": "major",
+            "description": "Payment trails and procurement anomalies point to a vulnerable money channel.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 41,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Chief Emeka Obiora": {
+        "name": "Chief Emeka Obiora",
+        "portfolio": "Party Chairman",
+        "loyalty": 42,
+        "competence": 65,
+        "ambition": 95,
+        "faction": "South-East Bloc",
+        "relationship": "Hostile",
+        "avatar": "EO",
+        "traits": [
+          "ambitious",
+          "corrupt"
+        ],
+        "betrayalThreshold": 21.5,
+        "hooks": [
+          {
+            "id": "hook-chief-emeka-obiora",
+            "target": "Chief Emeka Obiora",
+            "type": "financial",
+            "severity": "devastating",
+            "description": "Payment trails and procurement anomalies point to a vulnerable money channel.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 28,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Comrade Aisha Yusuf": {
+        "name": "Comrade Aisha Yusuf",
+        "portfolio": "Labour Leader",
+        "loyalty": 20,
+        "competence": 80,
+        "ambition": 72,
+        "faction": "Youth Movement",
+        "relationship": "Hostile",
+        "avatar": "AY",
+        "traits": [
+          "loyal"
+        ],
+        "betrayalThreshold": 28.400000000000002,
+        "hooks": [
+          {
+            "id": "hook-comrade-aisha-yusuf",
+            "target": "Comrade Aisha Yusuf",
+            "type": "personal",
+            "severity": "major",
+            "description": "Personal indiscretions and private dependence have created quiet leverage.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 47,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      },
+      "Sen. Abubakar Atiku Jr.": {
+        "name": "Sen. Abubakar Atiku Jr.",
+        "portfolio": "Vice President",
+        "loyalty": 60,
+        "competence": 74,
+        "ambition": 75,
+        "faction": "Presidential Ticket",
+        "relationship": "Neutral",
+        "avatar": "SA",
+        "traits": [
+          "loyal",
+          "pragmatic"
+        ],
+        "betrayalThreshold": 36.25,
+        "hooks": [
+          {
+            "id": "hook-sen-abubakar-atiku-jr-",
+            "target": "Sen. Abubakar Atiku Jr.",
+            "type": "personal",
+            "severity": "major",
+            "description": "Personal indiscretions and private dependence have created quiet leverage.",
+            "discovered": true,
+            "usable": false,
+            "evidence": 35,
+            "underInvestigation": false,
+            "used": false
+          }
+        ]
+      }
+    },
+    "factions": {
+      "Northern Caucus": {
+        "name": "Northern Caucus",
+        "influence": 28,
+        "loyalty": 50,
+        "stance": "Neutral"
+      },
+      "South-West Alliance": {
+        "name": "South-West Alliance",
+        "influence": 22,
+        "loyalty": 50,
+        "stance": "Neutral"
+      },
+      "South-East Bloc": {
+        "name": "South-East Bloc",
+        "influence": 14,
+        "loyalty": 50,
+        "stance": "Neutral"
+      },
+      "Presidential Guard": {
+        "name": "Presidential Guard",
+        "influence": 18,
+        "loyalty": 50,
+        "stance": "Neutral"
+      },
+      "Military Circle": {
+        "name": "Military Circle",
+        "influence": 8,
+        "loyalty": 50,
+        "stance": "Neutral"
+      },
+      "Technocrats": {
+        "name": "Technocrats",
+        "influence": 6,
+        "loyalty": 50,
+        "stance": "Neutral"
+      },
+      "Youth Movement": {
+        "name": "Youth Movement",
+        "influence": 4,
+        "loyalty": 50,
+        "stance": "Neutral"
+      }
+    },
+    "activeChains": [],
+    "activeEvents": [
+      {
+        "id": "ae-pipeline-crisis",
+        "title": "Niger Delta Pipeline Crisis",
+        "severity": "critical",
+        "description": "Militants have sabotaged the Trans-Forcados pipeline, cutting oil output by 180,000 bpd. Revenue is falling fast and local communities demand a renewed amnesty package.",
+        "category": "security",
+        "source": "opening",
+        "choices": [
+          {
+            "id": "pipeline-military",
+            "label": "Military Response",
+            "context": "Deploy the JTF and air cover to retake the corridor.",
+            "consequences": [
+              {
+                "id": "pipeline-military-now",
+                "sourceEvent": "ae-pipeline-crisis",
+                "description": "The military response restores partial control",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": -0.08,
+                    "description": "Emergency deployment burns cash"
+                  },
+                  {
+                    "target": "stability",
+                    "delta": 4,
+                    "description": "Sabotage slows after force projection"
+                  },
+                  {
+                    "target": "outrage",
+                    "delta": 5,
+                    "description": "Civilian casualties dominate the story"
+                  },
+                  {
+                    "target": "trust",
+                    "delta": -2,
+                    "description": "Rights groups question the crackdown"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "pipeline-military-aftershock",
+                "sourceEvent": "ae-pipeline-crisis",
+                "description": "The corridor reopens under heavy guard",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": 0.14,
+                    "description": "Oil exports partially recover"
+                  },
+                  {
+                    "target": "approval",
+                    "delta": 1,
+                    "description": "Some voters reward a show of strength"
+                  }
+                ],
+                "delayDays": 2
+              }
+            ]
+          },
+          {
+            "id": "pipeline-amnesty",
+            "label": "Negotiate Amnesty",
+            "context": "Reopen amnesty talks and buy time with a settlement package.",
+            "consequences": [
+              {
+                "id": "pipeline-amnesty-now",
+                "sourceEvent": "ae-pipeline-crisis",
+                "description": "Talks reopen with militant intermediaries",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": -0.05,
+                    "description": "The settlement package is expensive"
+                  },
+                  {
+                    "target": "stability",
+                    "delta": 2,
+                    "description": "Violence cools as talks begin"
+                  },
+                  {
+                    "target": "outrage",
+                    "delta": -3,
+                    "description": "Communities welcome de-escalation"
+                  },
+                  {
+                    "target": "politicalCapital",
+                    "delta": -2,
+                    "description": "Hawks call it appeasement"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "pipeline-amnesty-later",
+                "sourceEvent": "ae-pipeline-crisis",
+                "description": "A fragile deal restores production",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": 0.11,
+                    "description": "Output slowly recovers"
+                  },
+                  {
+                    "target": "trust",
+                    "delta": 1,
+                    "description": "Local elites appreciate pragmatism"
+                  }
+                ],
+                "delayDays": 3
+              }
+            ]
+          },
+          {
+            "id": "pipeline-investment",
+            "label": "Community Investment",
+            "context": "Launch a Delta development package tied to local monitoring.",
+            "consequences": [
+              {
+                "id": "pipeline-investment-now",
+                "sourceEvent": "ae-pipeline-crisis",
+                "description": "A development package reframes the fight",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": -0.12,
+                    "description": "The investment package is substantial"
+                  },
+                  {
+                    "target": "trust",
+                    "delta": 4,
+                    "description": "Communities see a long-term offer"
+                  },
+                  {
+                    "target": "outrage",
+                    "delta": -2,
+                    "description": "The public prefers infrastructure over force"
+                  },
+                  {
+                    "target": "politicalCapital",
+                    "delta": -3,
+                    "description": "Fiscal conservatives grumble"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "pipeline-investment-later",
+                "sourceEvent": "ae-pipeline-crisis",
+                "description": "Community patrols improve security",
+                "effects": [
+                  {
+                    "target": "stability",
+                    "delta": 5,
+                    "description": "Sabotage becomes harder to sustain"
+                  },
+                  {
+                    "target": "approval",
+                    "delta": 2,
+                    "description": "The move looks statesmanlike"
+                  }
+                ],
+                "delayDays": 4
+              }
+            ]
+          }
+        ],
+        "createdDay": 1
+      },
+      {
+        "id": "ae-imf-loan",
+        "title": "IMF Loan Proposal",
+        "severity": "info",
+        "description": "The IMF offers a standby facility tied to FX reform, subsidy discipline, and tax changes. Markets expect an answer soon.",
+        "category": "economy",
+        "source": "opening",
+        "choices": [
+          {
+            "id": "imf-accept",
+            "label": "Accept Terms",
+            "context": "Take the money and absorb the reform backlash.",
+            "consequences": [
+              {
+                "id": "imf-accept-now",
+                "sourceEvent": "ae-imf-loan",
+                "description": "Markets welcome the IMF package",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": 0.22,
+                    "description": "The facility improves liquidity"
+                  },
+                  {
+                    "target": "trust",
+                    "delta": 5,
+                    "description": "Investors reward policy credibility"
+                  },
+                  {
+                    "target": "approval",
+                    "delta": -6,
+                    "description": "Voters fear more pain"
+                  },
+                  {
+                    "target": "outrage",
+                    "delta": 6,
+                    "description": "Street anger grows over conditionality"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "imf-accept-later",
+                "sourceEvent": "ae-imf-loan",
+                "description": "Implementation pain follows the agreement",
+                "effects": [
+                  {
+                    "target": "stability",
+                    "delta": 2,
+                    "description": "Macro credibility improves"
+                  },
+                  {
+                    "target": "approval",
+                    "delta": -2,
+                    "description": "Reform fatigue sets in"
+                  }
+                ],
+                "delayDays": 3
+              }
+            ]
+          },
+          {
+            "id": "imf-counter",
+            "label": "Counter-Propose",
+            "context": "Seek a phased package that spreads the pain across more time.",
+            "consequences": [
+              {
+                "id": "imf-counter-now",
+                "sourceEvent": "ae-imf-loan",
+                "description": "A phased reform pitch buys room",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": 0.11,
+                    "description": "Partial support is unlocked"
+                  },
+                  {
+                    "target": "trust",
+                    "delta": 2,
+                    "description": "Negotiators respect a serious counter"
+                  },
+                  {
+                    "target": "approval",
+                    "delta": -2,
+                    "description": "Some backlash still lands"
+                  },
+                  {
+                    "target": "politicalCapital",
+                    "delta": 1,
+                    "description": "The coalition likes the compromise"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "imf-counter-later",
+                "sourceEvent": "ae-imf-loan",
+                "description": "Markets wait for proof",
+                "effects": [
+                  {
+                    "target": "stability",
+                    "delta": 1,
+                    "description": "The compromise steadies expectations"
+                  }
+                ],
+                "delayDays": 2
+              }
+            ]
+          },
+          {
+            "id": "imf-reject",
+            "label": "Reject Publicly",
+            "context": "Frame the offer as an unacceptable intrusion on sovereignty.",
+            "consequences": [
+              {
+                "id": "imf-reject-now",
+                "sourceEvent": "ae-imf-loan",
+                "description": "The rejection thrills nationalists and alarms markets",
+                "effects": [
+                  {
+                    "target": "approval",
+                    "delta": 4,
+                    "description": "Nationalist sentiment rallies briefly"
+                  },
+                  {
+                    "target": "politicalCapital",
+                    "delta": 2,
+                    "description": "Party hardliners applaud"
+                  },
+                  {
+                    "target": "trust",
+                    "delta": -5,
+                    "description": "Investors and donors recoil"
+                  },
+                  {
+                    "target": "stability",
+                    "delta": -3,
+                    "description": "Markets price in turbulence"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "imf-reject-later",
+                "sourceEvent": "ae-imf-loan",
+                "description": "Pressure returns without external support",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": -0.09,
+                    "description": "Financing conditions worsen"
+                  },
+                  {
+                    "target": "outrage",
+                    "delta": 3,
+                    "description": "Inflation bites harder"
+                  }
+                ],
+                "delayDays": 3
+              }
+            ]
+          }
+        ],
+        "createdDay": 1
+      },
+      {
+        "id": "ae-governorship-elections",
+        "title": "Governorship Elections",
+        "severity": "warning",
+        "description": "Off-cycle governorship elections in three swing states are tilting away from the ruling party as cost-of-living anger rises.",
+        "category": "politics",
+        "source": "opening",
+        "choices": [
+          {
+            "id": "elections-deploy-resources",
+            "label": "Deploy Resources",
+            "context": "Use the party machine and targeted spending to claw back the map.",
+            "consequences": [
+              {
+                "id": "elections-deploy-now",
+                "sourceEvent": "ae-governorship-elections",
+                "description": "The party machine roars to life",
+                "effects": [
+                  {
+                    "target": "treasury",
+                    "delta": -0.04,
+                    "description": "Campaign resources are diverted"
+                  },
+                  {
+                    "target": "politicalCapital",
+                    "delta": -5,
+                    "description": "Favours are called in aggressively"
+                  },
+                  {
+                    "target": "approval",
+                    "delta": -2,
+                    "description": "Rumours of interference spread"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "elections-deploy-later",
+                "sourceEvent": "ae-governorship-elections",
+                "description": "A vote-buying scandal leaks",
+                "effects": [
+                  {
+                    "target": "trust",
+                    "delta": -4,
+                    "description": "Democratic credibility takes a hit"
+                  },
+                  {
+                    "target": "outrage",
+                    "delta": 4,
+                    "description": "Civil society mobilizes"
+                  }
+                ],
+                "delayDays": 2
+              }
+            ]
+          },
+          {
+            "id": "elections-free-fair",
+            "label": "Free & Fair",
+            "context": "Let the vote stand and try to win moral authority instead.",
+            "consequences": [
+              {
+                "id": "elections-fair-now",
+                "sourceEvent": "ae-governorship-elections",
+                "description": "The presidency publicly protects the vote",
+                "effects": [
+                  {
+                    "target": "trust",
+                    "delta": 5,
+                    "description": "Institutions gain legitimacy"
+                  },
+                  {
+                    "target": "approval",
+                    "delta": 1,
+                    "description": "Moderates respect the restraint"
+                  },
+                  {
+                    "target": "politicalCapital",
+                    "delta": -2,
+                    "description": "Party bosses hate the gamble"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "elections-fair-later",
+                "sourceEvent": "ae-governorship-elections",
+                "description": "Opposition wins but tension cools",
+                "effects": [
+                  {
+                    "target": "stability",
+                    "delta": 2,
+                    "description": "The peaceful outcome lowers temperature"
+                  }
+                ],
+                "delayDays": 2
+              }
+            ]
+          },
+          {
+            "id": "elections-delay",
+            "label": "Delay Elections",
+            "context": "Push INEC toward a security-based postponement.",
+            "consequences": [
+              {
+                "id": "elections-delay-now",
+                "sourceEvent": "ae-governorship-elections",
+                "description": "INEC delays the vote under pressure",
+                "effects": [
+                  {
+                    "target": "stability",
+                    "delta": -3,
+                    "description": "The opposition cries foul"
+                  },
+                  {
+                    "target": "trust",
+                    "delta": -6,
+                    "description": "Democratic norms weaken"
+                  },
+                  {
+                    "target": "politicalCapital",
+                    "delta": 2,
+                    "description": "The party buys time"
+                  }
+                ],
+                "delayDays": 0
+              },
+              {
+                "id": "elections-delay-later",
+                "sourceEvent": "ae-governorship-elections",
+                "description": "International criticism intensifies",
+                "effects": [
+                  {
+                    "target": "approval",
+                    "delta": -2,
+                    "description": "Urban voters turn away"
+                  },
+                  {
+                    "target": "outrage",
+                    "delta": 3,
+                    "description": "Student groups join the backlash"
+                  }
+                ],
+                "delayDays": 3
+              }
+            ]
+          }
+        ],
+        "createdDay": 1
+      }
+    ],
+    "pendingConsequences": [],
+    "victoryProgress": {
+      "economic-miracle": 46,
+      "security-champion": 49,
+      "democratic-legacy": 45,
+      "regional-hegemon": 48,
+      "party-machine": 44
+    },
+    "failureRisks": {
+      "economic-collapse": 17,
+      "military-coup": 49,
+      "popular-revolution": 51,
+      "party-removal": 49,
+      "international-pariah": 53,
+      "health-crisis": 16,
+      "electoral-defeat": 0,
+      "constitutional-crisis": 12,
+      "succession-crisis": 16
+    },
+    "outrage": 42,
+    "trust": 38,
+    "activeCases": [
+      {
+        "id": "case-1",
+        "title": "Election Petition Tribunal",
+        "court": "Supreme Court",
+        "status": "Hearing",
+        "plaintiff": "Opposition Coalition",
+        "defendant": "INEC",
+        "stakes": "Constitutional",
+        "description": "Opposition challenges 3 gubernatorial results claiming electoral fraud.",
+        "daysToDecision": 30
+      },
+      {
+        "id": "case-2",
+        "title": "Fuel Subsidy Legality",
+        "court": "Federal High Court",
+        "status": "Filed",
+        "plaintiff": "NLC/TUC",
+        "defendant": "Federal Government",
+        "stakes": "High",
+        "description": "Labour unions challenge subsidy policy without legislative cover.",
+        "daysToDecision": 45
+      },
+      {
+        "id": "case-3",
+        "title": "EFCC Overreach Suit",
+        "court": "Appeal Court",
+        "status": "Deliberation",
+        "plaintiff": "Chief Adaeze Okonkwo",
+        "defendant": "EFCC",
+        "stakes": "Medium",
+        "description": "Petroleum Ministry allies claim selective prosecution.",
+        "daysToDecision": 20
+      },
+      {
+        "id": "case-4",
+        "title": "Niger Intervention Legality",
+        "court": "ECOWAS Court",
+        "status": "Filed",
+        "plaintiff": "Civil Society Coalition",
+        "defendant": "ECOWAS/Nigeria",
+        "stakes": "High",
+        "description": "Civil society challenges regional intervention planning.",
+        "daysToDecision": 60
+      },
+      {
+        "id": "case-5",
+        "title": "Digital Tax Constitutional Challenge",
+        "court": "Federal High Court",
+        "status": "Hearing",
+        "plaintiff": "Tech Companies Association",
+        "defendant": "FIRS",
+        "stakes": "Medium",
+        "description": "Tech companies challenge a new digital levy as double taxation.",
+        "daysToDecision": 35
+      }
+    ],
+    "judicialIndependence": 65,
+    "governors": [
+      {
+        "name": "Gov. Abdullahi Sule",
+        "zone": "North-West",
+        "party": "Ruling",
+        "loyalty": 50,
+        "competence": 70,
+        "approval": 39,
+        "relationship": "Wary",
+        "avatar": "AS",
+        "demands": "Fiscal autonomy and security support"
+      },
+      {
+        "name": "Gov. Babagana Zulum",
+        "zone": "North-East",
+        "party": "Ruling",
+        "loyalty": 70,
+        "competence": 82,
+        "approval": 41,
+        "relationship": "Friendly",
+        "avatar": "BZ",
+        "demands": "Counter-insurgency resources"
+      },
+      {
+        "name": "Gov. Caleb Mutfwang",
+        "zone": "North-Central",
+        "party": "Opposition",
+        "loyalty": 40,
+        "competence": 65,
+        "approval": 44,
+        "relationship": "Wary",
+        "avatar": "CM",
+        "demands": "Farmer-herder mediation"
+      },
+      {
+        "name": "Gov. Babajide Sanwo-Olu",
+        "zone": "South-West",
+        "party": "Ruling",
+        "loyalty": 72,
+        "competence": 78,
+        "approval": 52,
+        "relationship": "Friendly",
+        "avatar": "BS",
+        "demands": "Lagos special economic status"
+      },
+      {
+        "name": "Gov. Charles Soludo",
+        "zone": "South-East",
+        "party": "Opposition",
+        "loyalty": 25,
+        "competence": 88,
+        "approval": 33,
+        "relationship": "Distrustful",
+        "avatar": "CS",
+        "demands": "South-East representation in cabinet"
+      },
+      {
+        "name": "Gov. Udom Emmanuel",
+        "zone": "South-South",
+        "party": "Ruling",
+        "loyalty": 55,
+        "competence": 72,
+        "approval": 45,
+        "relationship": "Neutral",
+        "avatar": "UE",
+        "demands": "Niger Delta oil revenue sharing"
+      }
+    ],
+    "turnLog": [],
+    "inboxMessages": [
+      {
+        "id": "msg-finance-imf",
+        "sender": "Alhaji Bello Kazeem",
+        "role": "Finance Minister",
+        "initials": "BK",
+        "subject": "IMF Delegation Prep",
+        "preview": "The IMF team arrives in three days and wants a coherent fiscal line from the Presidency.",
+        "fullText": "Sir, the IMF team arrives in three days. I need your approval on the fiscal report before we can present our consolidated position. The current draft shows a deficit well above our public commitment. Without your sign-off by tomorrow, we risk looking unprepared and divided.",
+        "day": 1,
+        "priority": "Urgent",
+        "read": false,
+        "source": "seed",
+        "relatedEventId": "ae-imf-loan"
+      },
+      {
+        "id": "msg-security-nw",
+        "sender": "Brig. Tukur Hassan (Rtd)",
+        "role": "National Security Adviser",
+        "initials": "TH",
+        "subject": "North-West Threat Window",
+        "preview": "Intelligence suggests coordinated attacks are being prepared across multiple northern states.",
+        "fullText": "Mr. President, our sources indicate a coordinated attack is being prepared across Zamfara, Katsina, and Sokoto. We have 48 to 72 hours before the threat matures. I need a political decision on whether to move early and accept the optics of a heavy deployment.",
+        "day": 1,
+        "priority": "Critical",
+        "read": false,
+        "source": "seed",
+        "relatedEventId": "ae-pipeline-crisis"
+      },
+      {
+        "id": "msg-party-unity",
+        "sender": "Chief Emeka Obiora",
+        "role": "Party Chairman",
+        "initials": "EO",
+        "subject": "Party Unity Warning",
+        "preview": "The South-East caucus is threatening to break ranks over appointments and patronage.",
+        "fullText": "Your Excellency, I write to express concern about the growing division within our party. The South-East caucus believes your coalition is taking them for granted. If we do not move symbolically and quickly, I cannot guarantee discipline at the next NEC meeting.",
+        "day": 1,
+        "priority": "Normal",
+        "read": false,
+        "source": "seed"
+      },
+      {
+        "id": "msg-labour-pressure",
+        "sender": "Comrade Aisha Yusuf",
+        "role": "Labour Leader",
+        "initials": "AY",
+        "subject": "Strike Notice",
+        "preview": "Labour is preparing a coordinated shutdown unless the Presidency moves on wages and transport relief.",
+        "fullText": "Mr. President, the NLC has formally resolved to commence a nationwide strike if our demands are ignored. The minimum wage review is stalled and subsidy pain is unbearable. We await a serious offer, not another speech.",
+        "day": 1,
+        "priority": "Urgent",
+        "read": false,
+        "source": "seed"
+      },
+      {
+        "id": "msg-governors-fiscal",
+        "sender": "Gov. Abdullahi Sule",
+        "role": "Governors Forum",
+        "initials": "AS",
+        "subject": "Fiscal Autonomy Request",
+        "preview": "Governors want an emergency discussion on revenue sharing and emergency support.",
+        "fullText": "On behalf of the Governors Forum, I request an emergency discussion on fiscal autonomy reforms. Several states are approaching salary defaults and will blame the Presidency if no bridge support emerges.",
+        "day": 1,
+        "priority": "Normal",
+        "read": false,
+        "source": "seed"
+      }
+    ],
+    "headlines": [
+      "BREAKING: Senate debates Petroleum Industry Amendment after tense coalition lobbying",
+      "CBN holds interest rate despite presidential pressure and market anxiety",
+      "North-West governors demand emergency security summit with the Presidency",
+      "Labour unions threaten coordinated strike over inflation and fuel prices",
+      "Foreign reserves under pressure as import cover slips below five months",
+      "ECOWAS capitals split over Nigeria's preferred Niger strategy"
+    ],
+    "dailySummary": {
+      "day": 1,
+      "date": "29 May 2023",
+      "headline": "The presidency opens under immediate pressure from security, markets, and party management.",
+      "items": [
+        "Three cabinet-level decisions are already waiting in the Office tab.",
+        "Your coalition starts in the honeymoon phase with 1180 days to the next election."
+      ],
+      "pendingCritical": 1
+    },
+    "approvalHistory": [
+      {
+        "day": 1,
+        "approval": 48
+      }
+    ],
+    "legacyMilestones": [],
+    "difficulty": {
+      "id": "standard",
+      "approvalMult": 1,
+      "crisisFreqMult": 1
+    },
+    "lastActionAtDay": {}
+  }
+}

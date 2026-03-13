@@ -1,0 +1,161 @@
+Original prompt: Okay, giving you free rein to do what's needed to turn this into a game. show me your plan before you proceed. Proceed and continue until product is ready.
+
+2026-03-13
+- Assumption: the active product target is the extracted Aso Rock handover app at `output/aso-rock-handover/nigeria-sim`, not the unrelated The Fulcrum app in the workspace root.
+- Starting with setup/build validation, then core gameplay wiring, then reactive content, persistence, balancing, and test coverage.
+- Immediate priorities:
+  - verify install/build status in this extracted project
+  - refactor event data so choices have authoritative gameplay effects
+  - wire Office actions into the reducer and turn engine
+2026-03-13
+- Installed dependencies inside `output/aso-rock-handover/nigeria-sim`.
+- Baseline verified: `npm run check` and `npm run build` both pass in the extracted Aso Rock app.
+- Added shared gameplay state and content modules:
+  - `client/src/lib/gameTypes.ts`
+  - `client/src/lib/gameContent.ts`
+  - `client/src/lib/gamePersistence.ts`
+- Rebuilt the game loop around authoritative state transitions:
+  - active events now live in state and resolve through the reducer
+  - event-chain choices now apply consequences and advance/resolve chains
+  - quick actions now mutate state with cooldown tracking
+  - inbox actions now apply gameplay effects instead of only toasts
+  - turn processing now handles delayed consequences, trait drift, faction/governor mood, court outcomes, betrayal pressure, dynamic event spawning, summaries, and live headlines
+- Updated the shell/UI to consume the live state:
+  - `TopBar` now supports export/import saves and dynamic stat cards
+  - `Home` now shows live headlines, daily briefings, and inbox state
+  - `InboxPanel` now dispatches real reply/forward/ignore actions
+  - `DecisionsTab` is now the primary actionable office with real choice resolution and quick directives
+  - `DashboardTab` now uses live events and quick actions for the key interactive cards
+  - `LegacyTab` now reads dynamic milestone and approval-history data
+- Remaining priorities from here:
+  - browser smoke test the onboarding -> dashboard -> event resolution flow
+  - patch any visual/runtime issues found in-browser
+  - add automated tests for the engine/reducer layer
+  - improve reactive dashboard/event-feed surfaces and code splitting
+2026-03-13
+- Added an end-to-end browser smoke harness at `output/playwright/aso-rock-smoke.mjs`.
+- Verified the shipped build in Chromium end to end:
+  - onboarding through press conference
+  - entry into Day 1 presidency
+  - export save
+  - Office resolution loop
+  - proceed to Day 2
+  - import save restoration back to Day 1
+- Smoke artifacts refreshed under `output/playwright/smoke/` including screenshots and `smoke-report.json`.
+- Reworked `DashboardTab` to be meaningfully state-driven instead of mostly prototype data:
+  - live regional approval from governors
+  - computed presidential competencies/trends from current metrics
+  - reactive indicator, budget, and risk charts
+  - live event feed from headlines + turn log
+  - chart animations disabled for stable rendering in production/screenshots
+  - `Take a Break` and emergency action cards now hit the real quick-action system
+- Added engine regression tests with Vitest in `client/src/lib/gameEngine.test.ts`.
+- Added `npm test` script and installed `vitest`.
+- Verified current status:
+  - `npm run check` passes
+  - `npm test` passes
+  - `npm run build` passes
+  - smoke browser run passes with no console or page errors
+- Remaining product risks / next passes:
+  - JS bundle is still large (~1.2 MB minified); code splitting is the next technical hygiene task
+  - several non-Office tabs still lean on static/prototype content and should be progressively wired into live state
+  - save/load is file-based only; cloud persistence and telemetry are still future work
+2026-03-13
+- Added lazy loading for the main tab surfaces in `client/src/pages/Home.tsx` with a lightweight suspense fallback.
+- Rebuilt the production bundle after code splitting:
+  - main JS chunk dropped from roughly 1.21 MB to about 610 kB minified
+  - charting and major tabs now emit their own chunks
+- Re-ran browser smoke after code splitting; onboarding, gameplay, export/import, and day advance still pass with zero runtime errors.
+2026-03-13
+- Rewrote the prototype-heavy tabs to consume live game state instead of static `gameData` dashboards:
+  - `client/src/components/EconomyTab.tsx`
+  - `client/src/components/SecurityTab.tsx`
+  - `client/src/components/PoliticsTab.tsx`
+  - `client/src/components/MediaTab.tsx`
+- New tab behaviors now include:
+  - live event resolution directly from category tabs
+  - live directives with cooldown-aware buttons
+  - derived market/security/political/media analytics from current state, approval history, factions, governors, turn log, and inbox data
+  - removal of most toast-only dead interactions in those surfaces
+- Tightened Vite chunking in `vite.config.ts`:
+  - split `recharts`, `@radix-ui`, and `lucide-react` into separate chunks
+  - resulting production build now lands around `192 kB` for the main app chunk, `298 kB` for charts, `490 kB` for the remaining vendor bundle, and `60 kB` for radix
+  - removed the previous build warning about oversized chunks in the main app bundle path
+- Expanded the smoke harness to visit and render the new tab surfaces:
+  - Day 1 Home
+  - Economy
+  - Security
+  - Politics
+  - Media
+  - Office resolution
+  - Day 2
+  - import restore
+- Fresh verification after the tab rewrite + chunking pass:
+  - `npm run check` passes
+  - `npm test` passes
+  - `npm run build` passes
+  - Chromium smoke passes with zero console errors and zero page errors
+  - screenshots visually checked for Economy, Security, Politics, and Media
+- Remaining non-code product gaps are now mostly outside the prototype-to-product conversion work completed here:
+  - no cloud save/account system
+  - no telemetry/crash reporting backend
+  - some secondary tabs still remain more informational than strategic, though the core high-traffic surfaces are now reactive and playable
+2026-03-13
+- Implemented the first long-horizon runtime pass to align the build more closely with the design bible.
+- Expanded `client/src/lib/gameTypes.ts` and `client/src/lib/GameContext.tsx` with persistent campaign continuity and strategic state:
+  - vice president runtime state (loyalty, ambition, mood)
+  - persisted campaign promises and appointments from onboarding
+  - term/election clock data and overstay tracking scaffolding
+  - health-crisis continuity scaffolding
+- Extended `client/src/lib/gameEngine.ts` to make the new state matter in gameplay:
+  - monthly scheduled contextual files now spawn into the Office loop (media chat, faction report, economic snapshot)
+  - campaign promises now gain progress and can become fulfilled or broken
+  - VP succession pressure now drifts over time, especially after re-election
+  - election countdown now resolves into either a new term or defeat states
+  - headlines now surface term phase, election countdown, and VP mood
+- Updated shell UI in `client/src/components/TopBar.tsx` and `client/src/pages/Home.tsx` so the player can actually see the long-horizon state during play.
+- Expanded engine regression coverage in `client/src/lib/gameEngine.test.ts` to cover:
+  - onboarding continuity surviving into runtime state
+  - election win -> new term
+  - election loss -> defeat
+- Fresh verification after the long-horizon pass:
+  - `npm run check` passes
+  - `npm test` passes (9 tests)
+  - `npm run build` passes
+  - browser smoke passes against the fresh preview build on `http://127.0.0.1:4175/` with zero console errors and zero page errors
+  - latest screenshots visually checked: `02-dashboard-day1.png` and `08-dashboard-day2.png`
+- Remaining follow-on gaps from the design bible after this pass:
+  - the Cabal Meeting layer is still not implemented as its own structured advisory phase
+  - the macro-economy remains more heuristic than authoritative
+  - hooks/blackmail are still scaffolded more than fully playable
+  - recurring health/media systems now exist in state and scheduling, but still need deeper authored content
+2026-03-13
+- Implemented the next design-bible alignment pass around the three biggest remaining systemic gaps:
+  - structured Morning Cabal layer
+  - authoritative macro-economy state
+  - playable hooks / dossier leverage loop
+- Expanded the runtime engine and state usage so the game now supports:
+  - a mandatory daily cabal meeting before `Proceed`
+  - focus-specific cabal choices (economy / security / politics) with real consequences
+  - engine-owned macro variables (`inflation`, `fxRate`, `reserves`, `debtToGdp`, `oilOutput`, `subsidyPressure`)
+  - daily macro drift, macro spillover, and macro history snapshots
+  - seeded hook dossiers, manual investigations, automatic investigation progress, and hook usage
+- Updated the shell and tabs to surface the new systems:
+  - `Home` now shows the Morning Cabal card and blocks day advance until it is resolved
+  - `EconomyTab` now reads macro KPIs and charts from authoritative engine state instead of heuristic UI derivation
+  - `PoliticsTab` now exposes investigation / apply-pressure actions for hooks and live intrigue status
+- Updated `victorySystem.ts` so economic victory/failure logic now reads the macro model.
+- Expanded regression coverage in `client/src/lib/gameEngine.test.ts` to cover cabal resolution, macro history, hook investigation, and hook deployment.
+- Updated the Playwright smoke harness to resolve the cabal phase before the office loop and captured a new cabal screenshot (`02b-cabal-day1.png`).
+- Fresh verification after this pass:
+  - `npm run check` passes
+  - `npm test` passes (12 tests)
+  - `npm run build` passes
+  - browser smoke passes against `http://127.0.0.1:4175/` with zero console errors and zero page errors
+  - visually checked `02b-cabal-day1.png`, `03-economy-day1.png`, `05-politics-day1.png`, and `08-dashboard-day2.png`
+- Remaining gaps after this pass are now narrower and mostly about depth rather than missing system scaffolding:
+  - scheduled media / health content could still use more authored variety
+  - some quick actions and older event templates still influence macro state indirectly rather than through richer authored macro payloads
+  - there is still no backend layer for accounts / cloud saves / telemetry / crash reporting
+- Extended the smoke harness one more time to exercise the new intrigue flow by opening the Politics -> Intrigue view and starting a live hook probe before day advance.
+- Fresh smoke still passes with zero console errors and zero page errors; additionally visually checked `05b-politics-intrigue-day1.png`.

@@ -28,6 +28,7 @@ const testConfig: CampaignConfig = {
   party: "NDM",
   era: "2023",
   vpName: "Chief Ada Okafor",
+  vpState: "Kano",
   personalAssistant: "Amara Obi",
   promises: [
     "Reduce fuel prices within 90 days",

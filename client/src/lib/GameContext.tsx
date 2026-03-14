@@ -49,6 +49,11 @@ import type {
   PolicyLeverState,
 } from "./gameTypes";
 import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidates } from "./gameData";
+import { selectConstitutionalOfficers } from "./constitutionalOfficers";
+import { registerConstitutionalPools } from "./constitutionalPools";
+
+// Register constitutional officer pools at module load time
+registerConstitutionalPools();
 
 export type {
   ActiveEvent,
@@ -73,6 +78,7 @@ export interface CampaignConfig {
   party: string;
   era: "1999" | "2007" | "2015" | "2023";
   vpName: string;
+  vpState: string; // VP's state of origin — used for zonal balancing
   personalAssistant: string;
   promises: string[];
   appointments: Record<string, string>;
@@ -442,6 +448,7 @@ const defaultGameState: GameState = {
   politicalState: { partyLoyalty: 70 },
   presidentEra: "",
   vicePresident: createVicePresidentState("Vice President"),
+  constitutionalOfficers: [],
   personalAssistant: "",
   campaignPromises: [],
   appointments: [],
@@ -568,6 +575,16 @@ export function initializeGameState(config: CampaignConfig): GameState {
   const origin = originModifiers[config.origin] ?? originModifiers["Lagos Politician"];
   const eraStart = eraStartDates[config.era] ?? eraStartDates["2023"];
   const vicePresident = createVicePresidentState(config.vpName);
+  // Compute seed for constitutional officer selection
+  let officerSeed = 0;
+  for (const ch of config.party + config.stateOfOrigin + (config.vpState || "Lagos")) {
+    officerSeed = ((officerSeed << 5) - officerSeed + ch.charCodeAt(0)) | 0;
+  }
+  const constitutionalOfficers = selectConstitutionalOfficers(
+    config.stateOfOrigin,
+    config.vpState || "Lagos",
+    Math.abs(officerSeed) || 1,
+  );
   const baseApproval = Math.round(43 + origin.approval);
   const macroEconomy = createMacroEconomyState(config.era, config.origin);
   let state: GameState = {
@@ -595,6 +612,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
     politicalState: { partyLoyalty: 70 },
     presidentEra: config.era,
     vicePresident,
+    constitutionalOfficers,
     personalAssistant: config.personalAssistant,
     campaignPromises: createCampaignPromises(config.promises),
     appointments: createAppointments(config.appointments),

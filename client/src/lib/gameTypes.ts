@@ -1,4 +1,5 @@
 import type { IdeologyProfile } from "./parties";
+import type { ConstitutionalCandidate } from "./constitutionalOfficers";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -377,6 +378,7 @@ export interface GameState {
   politicalState: PoliticalState;
   presidentEra: string;
   vicePresident: VicePresidentState;
+  constitutionalOfficers: ConstitutionalCandidate[];
   personalAssistant: string;
   campaignPromises: CampaignPromiseState[];
   appointments: AppointmentState[];

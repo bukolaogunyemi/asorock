@@ -551,6 +551,7 @@ export default function OnboardingFlow() {
       party,
       era: era as "1999" | "2007" | "2015" | "2023",
       vpName,
+      vpState: VP_CANDIDATES.find((v) => v.name === vpName)?.state || "Lagos",
       personalAssistant,
       promises: selectedPromises,
       appointments,

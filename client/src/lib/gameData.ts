@@ -1,5 +1,10 @@
 // Aso Rock — Game State Data
 import type { AnyPolicyPosition, PolicyLeverKey } from "./gameTypes";
+import {
+  cabinetRoster as hcCabinetRoster,
+  cabinetCandidates as hcCabinetCandidates,
+  keyCharacters as hcKeyCharacters,
+} from "./handcraftedCharacters";
 
 // ── Approval ──────────────────────────────────────────────
 export const approval = { approve: 43, disapprove: 49, undecided: 8 } as const;
@@ -65,17 +70,26 @@ export interface Minister {
   scandalRisk: "Low" | "Medium" | "High";
   relationship: "Loyal" | "Friendly" | "Neutral" | "Wary" | "Distrustful" | "Hostile";
   avatar: string;
+  age?: number;
+  state?: string;
+  gender?: string;
 }
 
-export const cabinetRoster: Minister[] = [
-  { name: "Alhaji Bello Kazeem", portfolio: "Finance", loyalty: 78, competence: 85, ambition: 62, faction: "Northern Caucus", scandalRisk: "Low", relationship: "Friendly", avatar: "BK" },
-  { name: "Chief Adaeze Okonkwo", portfolio: "Petroleum", loyalty: 65, competence: 72, ambition: 88, faction: "South-East Bloc", scandalRisk: "High", relationship: "Wary", avatar: "AO" },
-  { name: "Barr. Funke Adeyemi", portfolio: "Justice", loyalty: 91, competence: 80, ambition: 45, faction: "Presidential Guard", scandalRisk: "Low", relationship: "Friendly", avatar: "FA" },
-  { name: "Gen. Yakubu Musa (Rtd)", portfolio: "Defence", loyalty: 82, competence: 78, ambition: 55, faction: "Military Circle", scandalRisk: "Medium", relationship: "Friendly", avatar: "YM" },
-  { name: "Dr. Amina Ibrahim", portfolio: "Health", loyalty: 70, competence: 90, ambition: 50, faction: "Technocrats", scandalRisk: "Low", relationship: "Neutral", avatar: "AI" },
-  { name: "Engr. Chidi Nwosu", portfolio: "Works & Housing", loyalty: 60, competence: 68, ambition: 75, faction: "South-East Bloc", scandalRisk: "Medium", relationship: "Wary", avatar: "CN" },
-  { name: "Hon. Sani Danjuma", portfolio: "Education", loyalty: 85, competence: 62, ambition: 70, faction: "Northern Caucus", scandalRisk: "Medium", relationship: "Friendly", avatar: "SD" },
-];
+export const cabinetRoster: Minister[] = hcCabinetRoster;
+
+// ── Ministry Positions & Candidates ─────────────────────
+export const ministryPositions = [
+  "Finance", "Petroleum", "Justice", "Defence", "Health", "Works & Housing", "Education",
+] as const;
+
+export type MinistryPosition = (typeof ministryPositions)[number];
+
+export interface CabinetCandidate extends Minister {
+  tradeOff: string;
+}
+
+/** Each portfolio has 2-3 candidates. The first matches the original cabinetRoster entry. */
+export const cabinetCandidates: Record<MinistryPosition, CabinetCandidate[]> = hcCabinetCandidates;
 
 // ── Factions ─────────────────────────────────────────────
 export const factions: { name: string; influence: number }[] = [
@@ -100,16 +114,12 @@ export interface Character {
   faction: string;
   relationship: "Loyal" | "Friendly" | "Neutral" | "Wary" | "Distrustful" | "Hostile";
   avatar: string;
+  age?: number;
+  state?: string;
+  gender?: string;
 }
 
-export const characters: Character[] = [
-  { name: "Sen. Bola Martins", portfolio: "Senate President", agenda: "Push constitutional reform to strengthen Senate powers over budget.", opinion: "Cautiously supportive — expects patronage.", loyalty: 62, competence: 74, ambition: 90, faction: "South-West Alliance", relationship: "Wary", avatar: "BM" },
-  { name: "Gov. Abdullahi Sule", portfolio: "Governors Forum Chair", agenda: "Leverage state allocations to build independent power base.", opinion: "Transactional — will cooperate for fiscal concessions.", loyalty: 50, competence: 70, ambition: 82, faction: "Northern Caucus", relationship: "Neutral", avatar: "AS" },
-  { name: "Brig. Tukur Hassan (Rtd)", portfolio: "NSA", agenda: "Expand security apparatus under presidential mandate.", opinion: "Loyal but hawkish — pushing for emergency powers.", loyalty: 88, competence: 76, ambition: 60, faction: "Military Circle", relationship: "Friendly", avatar: "TH" },
-  { name: "Hajia Zainab Kano", portfolio: "CBN Governor", agenda: "Maintain tight monetary policy despite political pressure.", opinion: "Technocratic independence — resists intervention.", loyalty: 55, competence: 92, ambition: 40, faction: "Technocrats", relationship: "Neutral", avatar: "ZK" },
-  { name: "Chief Emeka Obiora", portfolio: "Party Chairman", agenda: "Control candidate selection for 2027 cycle.", opinion: "Publicly loyal; privately building alternative.", loyalty: 42, competence: 65, ambition: 95, faction: "South-East Bloc", relationship: "Hostile", avatar: "EO" },
-  { name: "Comrade Aisha Yusuf", portfolio: "Labour Leader", agenda: "Block fuel subsidy removal; mobilize street protests.", opinion: "Adversarial — will escalate without concessions.", loyalty: 20, competence: 80, ambition: 72, faction: "Youth Movement", relationship: "Hostile", avatar: "AY" },
-];
+export const characters: Character[] = hcKeyCharacters;
 
 // ── Intrigue Plots ───────────────────────────────────────
 export interface IntriguePlot {
@@ -121,10 +131,10 @@ export interface IntriguePlot {
 }
 
 export const intriguePlots: IntriguePlot[] = [
-  { name: "Senate Budget Rider", mastermind: "Sen. Bola Martins", heat: 65, evidence: 40, potentialDamage: "High" },
-  { name: "Governors' Fiscal Revolt", mastermind: "Gov. Abdullahi Sule", heat: 50, evidence: 30, potentialDamage: "Critical" },
-  { name: "Party Leadership Challenge", mastermind: "Chief Emeka Obiora", heat: 72, evidence: 55, potentialDamage: "High" },
-  { name: "Labour Strike Threat", mastermind: "Comrade Aisha Yusuf", heat: 80, evidence: 70, potentialDamage: "Medium" },
+  { name: "Senate Budget Rider", mastermind: "Sen. Rotimi Balogun", heat: 65, evidence: 40, potentialDamage: "High" },
+  { name: "Governors' Fiscal Revolt", mastermind: "Gov. Sani Lapai", heat: 50, evidence: 30, potentialDamage: "Critical" },
+  { name: "Party Leadership Challenge", mastermind: "Chief Ugochukwu Mbah", heat: 72, evidence: 55, potentialDamage: "High" },
+  { name: "Labour Strike Threat", mastermind: "Comrade Mwuese Tarka", heat: 80, evidence: 70, potentialDamage: "Medium" },
 ];
 
 // ── Economy Macro Table ──────────────────────────────────
@@ -445,13 +455,16 @@ export interface DiplomacyPersonnel {
   note: string;
   relationship: "Loyal" | "Friendly" | "Neutral" | "Wary" | "Distrustful" | "Hostile";
   avatar: string;
+  age?: number;
+  state?: string;
+  gender?: string;
 }
 
 export const diplomacyPersonnel: DiplomacyPersonnel[] = [
-  { name: "Amb. Yusuf Tuggar", title: "Minister of Foreign Affairs", shortTitle: "Foreign", loyalty: 72, competence: 78, tenure: "Since Aug 2023", note: "Career diplomat. Managing ECOWAS crisis and US relations reset.", relationship: "Friendly", avatar: "YT" },
-  { name: "Amb. Adejoke Orelope-Adefulire", title: "Perm Rep to UN", shortTitle: "UN Rep", loyalty: 68, competence: 82, tenure: "Since Sep 2023", note: "Strong multilateral credentials. Key to IMF/World Bank engagement.", relationship: "Neutral", avatar: "AO" },
-  { name: "Alhaji Zubairu Dada", title: "MoS Foreign Affairs (Diaspora)", shortTitle: "Diaspora", loyalty: 80, competence: 65, tenure: "Since May 2023", note: "Northern Caucus link. Manages diaspora remittance policy.", relationship: "Friendly", avatar: "ZD" },
-  { name: "Amb. Bianca Odumegwu-Ojukwu", title: "Ambassador to Spain & EU Trade Lead", shortTitle: "EU Envoy", loyalty: 55, competence: 75, tenure: "Since Oct 2023", note: "High-profile appointment. EU trade negotiations lead.", relationship: "Neutral", avatar: "BO" },
+  { name: "Amb. Yusuf Tuggar", title: "Minister of Foreign Affairs", shortTitle: "Foreign", loyalty: 72, competence: 78, tenure: "Since Aug 2023", note: "Career diplomat. Managing ECOWAS crisis and US relations reset.", relationship: "Friendly", avatar: "YT", age: 59, state: "Bauchi", gender: "Male" },
+  { name: "Amb. Adejoke Orelope-Adefulire", title: "Perm Rep to UN", shortTitle: "UN Rep", loyalty: 68, competence: 82, tenure: "Since Sep 2023", note: "Strong multilateral credentials. Key to IMF/World Bank engagement.", relationship: "Neutral", avatar: "AO", age: 55, state: "Lagos", gender: "Female" },
+  { name: "Alhaji Zubairu Dada", title: "MoS Foreign Affairs (Diaspora)", shortTitle: "Diaspora", loyalty: 80, competence: 65, tenure: "Since May 2023", note: "Northern Caucus link. Manages diaspora remittance policy.", relationship: "Friendly", avatar: "ZD", age: 63, state: "Niger", gender: "Male" },
+  { name: "Amb. Bianca Odumegwu-Ojukwu", title: "Ambassador to Spain & EU Trade Lead", shortTitle: "EU Envoy", loyalty: 55, competence: 75, tenure: "Since Oct 2023", note: "High-profile appointment. EU trade negotiations lead.", relationship: "Neutral", avatar: "BO", age: 52, state: "Anambra", gender: "Female" },
 ];
 
 // ── Media & Sentiment ────────────────────────────────────
@@ -480,7 +493,7 @@ export const narratives: { narrative: string; source: string; reach: string; sen
 
 export const headlines: { title: string; source: string; body: string }[] = [
   { title: "Senate Moves to Block Emergency Powers Extension", source: "Vanguard", body: "The Nigerian Senate has signaled resistance to the President's request for extended emergency powers in the North-West. Senior opposition senators argue the current deployment has yielded insufficient results and demand a comprehensive security review before any extension. The ruling party whip is scrambling to secure enough votes." },
-  { title: "CBN Holds Rate at 27.5% Despite Political Pressure", source: "BusinessDay", body: "The Central Bank of Nigeria maintained its benchmark rate at 27.5%, defying pressure from the Presidency and business groups to cut rates. Governor Zainab Kano cited persistent inflationary pressures and the need to attract foreign portfolio investment. The decision has widened the rift between Aso Rock and the CBN." },
+  { title: "CBN Holds Rate at 27.5% Despite Political Pressure", source: "BusinessDay", body: "The Central Bank of Nigeria maintained its benchmark rate at 27.5%, defying pressure from the Presidency and business groups to cut rates. Governor Hadiza Bichi cited persistent inflationary pressures and the need to attract foreign portfolio investment. The decision has widened the rift between Aso Rock and the CBN." },
   { title: "ECOWAS Summit: Nigeria Faces Isolation Over Niger Stance", source: "The Guardian", body: "Nigeria's hardline position on the Niger military government has left it increasingly isolated within ECOWAS. Several member states have quietly resumed trade with Niamey, undermining Lagos-led sanctions. Diplomatic sources suggest a face-saving compromise is being brokered, but hardliners in the security establishment oppose any concession." },
   { title: "Fuel Queues Return to Lagos as Depots Run Dry", source: "Punch", body: "Long queues resurfaced across Lagos filling stations as several depots reported zero stock. NNPCL blamed logistics bottlenecks and pipeline vandalism in the Delta region. The Presidency urged calm, promising resolution within 48 hours, but marketers say the subsidy arrears crisis is the real cause." },
   { title: "Protests Erupt in Kano Over Rising Food Prices", source: "Daily Trust", body: "Hundreds of youth took to the streets of Kano's Sabon Gari market demanding government action on soaring food prices. A bag of rice now costs ₦92,000, up 40% in three months. Security forces used tear gas to disperse the crowds. Northern governors have called an emergency meeting." },
@@ -535,7 +548,7 @@ export const eventFeed: GameEvent[] = [
     title: "Labour Union Ultimatum",
     week: "Day 42",
     severity: "warning",
-    description: "The NLC has issued a 14-day ultimatum for fuel price rollback or face a nationwide strike. Previous strikes cost ₦200B/day in economic output. Labour leader Aisha Yusuf is rallying coalition support.",
+    description: "The NLC has issued a 14-day ultimatum for fuel price rollback or face a nationwide strike. Previous strikes cost ₦200B/day in economic output. Labour leader Mwuese Tarka is rallying coalition support.",
     actions: [
       { label: "Offer Wage Increase", context: "Propose 15% minimum wage increase as compromise. Cost: ₦180B/year." },
       { label: "Stand Firm", context: "Maintain current policy; prepare security contingency for strike." },
@@ -724,7 +737,7 @@ export interface SecurityPersonnel {
 }
 
 export const securityPersonnel: SecurityPersonnel[] = [
-  { name: "Brig. Tukur Hassan (Rtd)", title: "National Security Adviser", shortTitle: "NSA", loyalty: 88, competence: 76, tenure: "Since May 2023", note: "Hawkish — advocates for expanded emergency powers in NW.", relationship: "Friendly", avatar: "TH" },
+  { name: "Brig. Kashim Konduga (Rtd)", title: "National Security Adviser", shortTitle: "NSA", loyalty: 88, competence: 76, tenure: "Since May 2023", note: "Hawkish — advocates for expanded emergency powers in NW.", relationship: "Friendly", avatar: "KK" },
   { name: "Gen. Ibrahim Attahiru II", title: "Chief of Army Staff", shortTitle: "COAS", loyalty: 75, competence: 82, tenure: "Since Jan 2024", note: "Competent field commander. Privately frustrated with procurement delays.", relationship: "Friendly", avatar: "IA" },
   { name: "V/Adm. Abubakar Gambo", title: "Chief of Naval Staff", shortTitle: "CNS", loyalty: 70, competence: 68, tenure: "Since Jun 2023", note: "Focused on Gulf of Guinea piracy. Needs budget for patrol boats.", relationship: "Neutral", avatar: "AG" },
   { name: "AVM Isiaka Amao", title: "Chief of Air Staff", shortTitle: "CAS", loyalty: 72, competence: 85, tenure: "Since May 2023", note: "Key to NW air campaign. Drone fleet operational under his command.", relationship: "Friendly", avatar: "IA2" },
@@ -746,12 +759,12 @@ export interface EconomicPersonnel {
 }
 
 export const economicPersonnel: EconomicPersonnel[] = [
-  { name: "Alhaji Bello Kazeem", title: "Minister of Finance", shortTitle: "Finance", loyalty: 78, competence: 85, tenure: "Since May 2023", note: "Northern Caucus loyalist. Key to IMF negotiations and fiscal consolidation.", relationship: "Friendly", avatar: "BK" },
-  { name: "Hajia Zainab Kano", title: "CBN Governor", shortTitle: "CBN", loyalty: 55, competence: 92, tenure: "Since Jun 2023", note: "Technocratic independence — resists political pressure on rates.", relationship: "Neutral", avatar: "ZK" },
+  { name: "Alh. Aminu Kazeem", title: "Minister of Finance", shortTitle: "Finance", loyalty: 78, competence: 85, tenure: "Since May 2023", note: "Northern Caucus loyalist. Key to IMF negotiations and fiscal consolidation.", relationship: "Friendly", avatar: "AK" },
+  { name: "Hajia Hadiza Bichi", title: "CBN Governor", shortTitle: "CBN", loyalty: 55, competence: 92, tenure: "Since Jun 2023", note: "Technocratic independence — resists political pressure on rates.", relationship: "Neutral", avatar: "HB" },
   { name: "Engr. Mele Kyari", title: "NNPCL Group CEO", shortTitle: "NNPC", loyalty: 65, competence: 78, tenure: "Since Jul 2023", note: "Manages oil revenue pipeline. Under scrutiny for subsidy accounting.", relationship: "Neutral", avatar: "MK" },
   { name: "Dr. Ola Olukoyede", title: "EFCC Chairman", shortTitle: "EFCC", loyalty: 82, competence: 70, tenure: "Since Oct 2023", note: "Presidential appointee. Anti-corruption enforcement a political tool.", relationship: "Friendly", avatar: "OO" },
   { name: "Barr. Zacch Adedeji", title: "FIRS Chairman", shortTitle: "FIRS", loyalty: 75, competence: 80, tenure: "Since Sep 2023", note: "Driving tax revenue expansion. Digital tax bill his priority.", relationship: "Friendly", avatar: "ZA" },
-  { name: "Chief Adaeze Okonkwo", title: "Minister of Petroleum", shortTitle: "Petroleum", loyalty: 65, competence: 72, tenure: "Since May 2023", note: "Under corruption probe. South-East political figure with high ambition.", relationship: "Wary", avatar: "AO" },
+  { name: "Chief Adaeze Okonkwo", title: "Minister of Petroleum", shortTitle: "Petroleum", loyalty: 65, competence: 72, tenure: "Since May 2023", note: "Under scrutiny. South-East political figure with high ambition.", relationship: "Wary", avatar: "AO" },
 ];
 
 // ── Legislature — Senate & House Split ────────────────────
@@ -759,13 +772,13 @@ export const senateSeats = { ruling: 59, opposition: 46, independent: 4, total: 
 export const houseSeats = { ruling: 201, opposition: 154, independent: 5, total: 360 } as const;
 
 export const senateLeadership: Character[] = [
-  { name: "Sen. Bola Martins", portfolio: "Senate President", agenda: "Push constitutional reform to strengthen Senate powers over budget. Controls committee assignments.", opinion: "Cautiously supportive — expects patronage and influence over appointments.", loyalty: 62, competence: 74, ambition: 90, faction: "South-West Alliance", relationship: "Wary", avatar: "BM" },
-  { name: "Sen. Kalu Orji", portfolio: "Deputy Senate President", agenda: "Position for 2027 presidential run. Building cross-regional alliances.", opinion: "Publicly loyal but privately calculating.", loyalty: 48, competence: 66, ambition: 88, faction: "South-East Bloc", relationship: "Neutral", avatar: "KO" },
+  { name: "Sen. Rotimi Balogun", portfolio: "Senate President", agenda: "Push constitutional reform to strengthen Senate powers over budget. Controls committee assignments.", opinion: "Cautiously supportive — expects patronage and influence over appointments.", loyalty: 62, competence: 74, ambition: 90, faction: "South-West Alliance", relationship: "Wary", avatar: "RB", age: 67, state: "Ogun", gender: "Male" },
+  { name: "Sen. Kalu Orji", portfolio: "Deputy Senate President", agenda: "Position for 2027 presidential run. Building cross-regional alliances.", opinion: "Publicly loyal but privately calculating.", loyalty: 48, competence: 66, ambition: 88, faction: "South-East Bloc", relationship: "Neutral", avatar: "KO", age: 55, state: "Abia", gender: "Male" },
 ];
 
 export const houseLeadership: Character[] = [
-  { name: "Rt. Hon. Femi Gbajabiamila", portfolio: "Speaker of the House", agenda: "Maintain house discipline and push through executive priority bills. Eyes governorship.", opinion: "Reliable ally — but expects his bills fast-tracked in return.", loyalty: 78, competence: 72, ambition: 75, faction: "South-West Alliance", relationship: "Friendly", avatar: "FG" },
-  { name: "Hon. Ahmed Idris Wase", portfolio: "Deputy Speaker", agenda: "Represent Northern interests in legislative negotiations. Broker power-sharing.", opinion: "Loyal to the party machinery. Transactional.", loyalty: 70, competence: 60, ambition: 65, faction: "Northern Caucus", relationship: "Friendly", avatar: "AW" },
+  { name: "Rt. Hon. Femi Gbajabiamila", portfolio: "Speaker of the House", agenda: "Maintain house discipline and push through executive priority bills. Eyes governorship.", opinion: "Reliable ally — but expects his bills fast-tracked in return.", loyalty: 78, competence: 72, ambition: 75, faction: "South-West Alliance", relationship: "Friendly", avatar: "FG", age: 61, state: "Lagos", gender: "Male" },
+  { name: "Hon. Ahmed Idris Wase", portfolio: "Deputy Speaker", agenda: "Represent Northern interests in legislative negotiations. Broker power-sharing.", opinion: "Loyal to the party machinery. Transactional.", loyalty: 70, competence: 60, ambition: 65, faction: "Northern Caucus", relationship: "Friendly", avatar: "AW", age: 50, state: "Plateau", gender: "Male" },
 ];
 
 // ── Politics Tab — Power Dynamics ─────────────────────────
@@ -780,8 +793,8 @@ export interface PowerBroker {
 export const powerBrokers: PowerBroker[] = [
   { name: "Alhaji Aliko Dangote", role: "Business Oligarch", influence: 92, disposition: "Ally", note: "Refinery success tied to your reform agenda. Will lobby for favorable FX policy." },
   { name: "Gen. Abdulsalami (Rtd)", role: "Ex-Head of State", influence: 78, disposition: "Neutral", note: "Elder statesman. Mediator in North-South tensions. Publicly silent but influential." },
-  { name: "Chief Emeka Obiora", role: "Party Chairman", influence: 85, disposition: "Rival", note: "Controls candidate selection for 2027. Building parallel power structure." },
-  { name: "Comrade Aisha Yusuf", role: "Labour Leader", influence: 70, disposition: "Enemy", note: "Mobilizing street protests against subsidy removal. Has NLC + TUC backing." },
+  { name: "Chief Ugochukwu Mbah", role: "Party Chairman", influence: 85, disposition: "Rival", note: "Controls candidate selection for next election cycle. Building parallel power structure." },
+  { name: "Comrade Mwuese Tarka", role: "Labour Leader", influence: 70, disposition: "Enemy", note: "Mobilizing street protests against subsidy removal. Has NLC + TUC backing." },
   { name: "Pastor Tunde Bakare", role: "Religious Leader", influence: 65, disposition: "Neutral", note: "Influence over Christian South-West. Publicly critical of corruption." },
   { name: "Sheik Ibrahim El-Zakzaky", role: "Religious Leader", influence: 60, disposition: "Rival", note: "Shi'a movement leader. Detention a flashpoint. Northern youth mobilizer." },
 ];

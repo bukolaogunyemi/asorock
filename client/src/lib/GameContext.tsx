@@ -51,7 +51,7 @@ import type {
 import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidates } from "./gameData";
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
-import { defaultLegislativeState } from "./legislativeEngine";
+import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis } from "./legislativeEngine";
 import { seedLegislativeCalendar } from "./legislativeBills";
 
 // Register constitutional officer pools at module load time
@@ -679,7 +679,10 @@ export type GameAction =
   | { type: "LOAD_STATE"; state: GameState }
   | { type: "RESET" }
   | { type: "GO_TO_SETUP" }
-  | { type: "PROPOSE_POLICY_CHANGE"; lever: PolicyLeverKey; newPosition: AnyPolicyPosition };
+  | { type: "PROPOSE_POLICY_CHANGE"; lever: PolicyLeverKey; newPosition: AnyPolicyPosition }
+  | { type: "SIGN_BILL"; billId: string }
+  | { type: "VETO_BILL"; billId: string }
+  | { type: "RESOLVE_CRISIS"; billId: string; leverIds: string[] };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -723,6 +726,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }];
       return s;
     }
+    case "SIGN_BILL":
+      return withDerivedState(signBill(state, action.billId));
+    case "VETO_BILL":
+      return withDerivedState(vetoBill(state, action.billId));
+    case "RESOLVE_CRISIS":
+      return withDerivedState(resolveLegislativeCrisis(state, action.billId, action.leverIds));
     default:
       return state;
   }
@@ -746,6 +755,9 @@ interface GameContextValue {
   loadGameState: (state: GameState) => void;
   canResolveChoice: (requirements?: Array<{ metric: string; min?: number; max?: number }>) => boolean;
   proposePolicyChange: (lever: PolicyLeverKey, newPosition: AnyPolicyPosition) => void;
+  signBill: (billId: string) => void;
+  vetoBill: (billId: string) => void;
+  resolveCrisis: (billId: string, leverIds: string[]) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -771,6 +783,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     loadGameState: (loadedState) => dispatch({ type: "LOAD_STATE", state: loadedState }),
     canResolveChoice: (requirements) => requirementsMet(state, requirements),
     proposePolicyChange: (lever, newPosition) => dispatch({ type: "PROPOSE_POLICY_CHANGE", lever, newPosition }),
+    signBill: (billId) => dispatch({ type: "SIGN_BILL", billId }),
+    vetoBill: (billId) => dispatch({ type: "VETO_BILL", billId }),
+    resolveCrisis: (billId, leverIds) => dispatch({ type: "RESOLVE_CRISIS", billId, leverIds }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

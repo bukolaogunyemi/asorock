@@ -52,6 +52,10 @@ import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidat
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
 import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis } from "./legislativeEngine";
+import { defaultPatronageState } from "./godfatherEngine";
+import { acceptDeal, rejectDeal, cashInFavour } from "./godfatherDeals";
+import { neutralizeGodfather } from "./godfatherEngine";
+import type { GodfatherDeal } from "./godfatherTypes";
 import { seedLegislativeCalendar } from "./legislativeBills";
 
 // Register constitutional officer pools at module load time
@@ -481,6 +485,8 @@ const defaultGameState: GameState = {
   lastActionAtDay: {},
   policyLevers: eraPolicyPresets["2023"],
   cabinetAppointments: {},
+  legislature: defaultLegislativeState(),
+  patronage: defaultPatronageState(),
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -658,6 +664,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
       ...defaultLegislativeState(),
       legislativeCalendar: seedLegislativeCalendar(),
     },
+    patronage: defaultPatronageState(),
   };
 
   state = syncStrategicState(state);
@@ -682,7 +689,11 @@ export type GameAction =
   | { type: "PROPOSE_POLICY_CHANGE"; lever: PolicyLeverKey; newPosition: AnyPolicyPosition }
   | { type: "SIGN_BILL"; billId: string }
   | { type: "VETO_BILL"; billId: string }
-  | { type: "RESOLVE_CRISIS"; billId: string; leverIds: string[] };
+  | { type: "RESOLVE_CRISIS"; billId: string; leverIds: string[] }
+  | { type: "ACCEPT_DEAL"; godfatherId: string; deal: GodfatherDeal }
+  | { type: "REJECT_DEAL"; godfatherId: string }
+  | { type: "RESPOND_TO_FAVOUR"; godfatherId: string; demand: string }
+  | { type: "NEUTRALIZE_GODFATHER"; godfatherId: string; method: "intelligence" | "political" | "godfather-vs-godfather" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -732,6 +743,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return withDerivedState(vetoBill(state, action.billId));
     case "RESOLVE_CRISIS":
       return withDerivedState(resolveLegislativeCrisis(state, action.billId, action.leverIds));
+    case "ACCEPT_DEAL":
+      return withDerivedState({ ...state, patronage: acceptDeal(state.patronage, action.godfatherId, action.deal) });
+    case "REJECT_DEAL":
+      return withDerivedState({ ...state, patronage: rejectDeal(state.patronage, action.godfatherId) });
+    case "RESPOND_TO_FAVOUR": {
+      const result = cashInFavour(state.patronage, action.godfatherId, action.demand);
+      return withDerivedState({ ...state, patronage: result.state });
+    }
+    case "NEUTRALIZE_GODFATHER":
+      return withDerivedState({ ...state, patronage: neutralizeGodfather(state.patronage, action.godfatherId, action.method) });
     default:
       return state;
   }
@@ -758,6 +779,10 @@ interface GameContextValue {
   signBill: (billId: string) => void;
   vetoBill: (billId: string) => void;
   resolveCrisis: (billId: string, leverIds: string[]) => void;
+  acceptDeal: (godfatherId: string, deal: GodfatherDeal) => void;
+  rejectDeal: (godfatherId: string) => void;
+  respondToFavour: (godfatherId: string, demand: string) => void;
+  neutralizeGodfather: (godfatherId: string, method: "intelligence" | "political" | "godfather-vs-godfather") => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -786,6 +811,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     signBill: (billId) => dispatch({ type: "SIGN_BILL", billId }),
     vetoBill: (billId) => dispatch({ type: "VETO_BILL", billId }),
     resolveCrisis: (billId, leverIds) => dispatch({ type: "RESOLVE_CRISIS", billId, leverIds }),
+    acceptDeal: (godfatherId, deal) => dispatch({ type: "ACCEPT_DEAL", godfatherId, deal }),
+    rejectDeal: (godfatherId) => dispatch({ type: "REJECT_DEAL", godfatherId }),
+    respondToFavour: (godfatherId, demand) => dispatch({ type: "RESPOND_TO_FAVOUR", godfatherId, demand }),
+    neutralizeGodfather: (godfatherId, method) => dispatch({ type: "NEUTRALIZE_GODFATHER", godfatherId, method }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

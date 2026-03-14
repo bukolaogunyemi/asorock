@@ -31,6 +31,7 @@ import { FACTION_PROFILES, DEMAND_EXPIRE_TIER70_LOYALTY_LOSS, DEMAND_EXPIRE_TIER
 import { computeFactionDrift, updateGrievance, checkGrievanceThresholds } from "./factionDrift";
 import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./factionNarrative";
 import { processLegislativeTurn, generateAdviserBriefing } from "./legislativeEngine";
+import { processGodfatherTurn, getPatronageEffects } from "./godfatherEngine";
 
 export type {
   ActiveEvent,
@@ -2358,6 +2359,45 @@ export function processTurn(state: GameState): GameState {
 
   // Legislative engine — process bills each turn
   next = processLegislativeTurn(next);
+
+  // Godfather engine — process patronage each turn
+  if (next.patronage) {
+    const gfResult = processGodfatherTurn(next, next.patronage);
+    next = { ...next, patronage: gfResult.patronageState };
+
+    // Apply patronage tier effects
+    const pEffects = getPatronageEffects(next.patronage.patronageIndex);
+    if (pEffects.approvalCeiling && next.approval > pEffects.approvalCeiling) {
+      next = { ...next, approval: pEffects.approvalCeiling };
+    }
+    if (pEffects.stabilityPenalty) {
+      next = { ...next, stability: Math.max(0, next.stability + pEffects.stabilityPenalty) };
+    }
+
+    // Generate inbox messages for godfather approaches
+    for (const approach of gfResult.approaches) {
+      const gf = next.patronage.godfathers.find(g => g.id === approach.godfatherId);
+      if (gf) {
+        const msg = {
+          id: `gf-approach-${gf.id}-${next.day}`,
+          day: next.day,
+          date: next.date,
+          sender: gf.name,
+          role: "Power Broker",
+          initials: gf.name.split(" ").map(n => n[0]).join("").slice(0, 2),
+          subject: `${approach.type === "contract" ? "Business Proposition" : "A Favour to Discuss"}`,
+          preview: approach.godfatherOffers,
+          fullText: `${approach.godfatherOffers}\n\nIn return: ${approach.playerOwes}`,
+          priority: "Normal" as const,
+          read: false,
+          source: "system" as const,
+        };
+        if (!next.inboxMessages.some(m => m.id === msg.id)) {
+          next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
+        }
+      }
+    }
+  }
 
   // Adviser briefing — add legislative inbox message each day
   {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 
 const testConfig = {
@@ -247,6 +247,27 @@ describe("veto and signing", () => {
     state.legislature = { ...defaultLegislativeState(), pendingSignature: [bill] };
     const result = processLegislativeTurn(state);
     expect(result.legislature.pendingSignature.length).toBe(0);
+  });
+});
+
+describe("executive bills", () => {
+  it("should generate 2-3 available executive bills based on game state", () => {
+    const state = initializeGameState(testConfig);
+    state.legislature = defaultLegislativeState();
+    const available = getAvailableExecutiveBills(state);
+    expect(available.length).toBeGreaterThanOrEqual(2);
+    expect(available.length).toBeLessThanOrEqual(3);
+  });
+
+  it("proposeExecutiveBill should add bill to activeBills", () => {
+    const state = initializeGameState(testConfig);
+    state.legislature = defaultLegislativeState();
+    const available = getAvailableExecutiveBills(state);
+    if (available.length > 0) {
+      const result = proposeExecutiveBill(state, available[0].id);
+      expect(result.legislature.activeBills.length).toBe(1);
+      expect(result.legislature.activeBills[0].sponsor).toBe("executive");
+    }
   });
 });
 

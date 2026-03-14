@@ -954,6 +954,114 @@ export function generateAdviserBriefing(state: GameState): AdviserBriefing {
   return { dailyBrief, weeklySummary };
 }
 
+// ── Executive Bill Proposal System ───────────────────────────────────────────
+
+const EXECUTIVE_BILL_TEMPLATES = [
+  { id: "petroleum-reform", title: "Petroleum Industry Reform Bill", description: "Restructure the petroleum sector to increase transparency and revenue", subjectTag: "economy" as const, stakes: "critical" as const, effects: { onPass: [{ target: "approval" as const, delta: 5 }, { target: "macroEconomy" as const, delta: -2, macroKey: "subsidyPressure" }], onFail: [{ target: "approval" as const, delta: -3 }] } },
+  { id: "security-reform", title: "National Security Architecture Bill", description: "Reform security agencies and improve inter-agency coordination", subjectTag: "security" as const, stakes: "significant" as const, effects: { onPass: [{ target: "stability" as const, delta: 5 }], onFail: [] } },
+  { id: "anti-corruption", title: "Anti-Corruption Strengthening Bill", description: "Expand EFCC powers and close loopholes in financial reporting", subjectTag: "governance" as const, stakes: "significant" as const, effects: { onPass: [{ target: "approval" as const, delta: 3 }, { target: "trust" as const, delta: 5 }], onFail: [{ target: "approval" as const, delta: -2 }] } },
+  { id: "education-reform", title: "Universal Basic Education Amendment", description: "Increase education funding and teacher quality standards", subjectTag: "social" as const, stakes: "routine" as const, effects: { onPass: [{ target: "approval" as const, delta: 4 }], onFail: [] } },
+  { id: "tax-reform", title: "Tax System Modernization Bill", description: "Broaden tax base and simplify collection", subjectTag: "economy" as const, stakes: "significant" as const, effects: { onPass: [{ target: "macroEconomy" as const, delta: 1, macroKey: "reserves" }], onFail: [{ target: "approval" as const, delta: -2 }] } },
+  { id: "healthcare-reform", title: "National Health Insurance Expansion", description: "Expand health coverage to all Nigerians", subjectTag: "social" as const, stakes: "significant" as const, effects: { onPass: [{ target: "approval" as const, delta: 6 }], onFail: [] } },
+];
+
+export interface ExecutiveBillOption {
+  id: string;
+  title: string;
+  description: string;
+  subjectTag: SubjectTag;
+  stakes: "routine" | "significant" | "critical";
+}
+
+/**
+ * getAvailableExecutiveBills
+ *
+ * Returns 2–3 executive bill options based on current game conditions:
+ * - High inflation (> 15): include economy bills
+ * - Low stability (< 50): include security bills
+ * - Low approval (< 50): include social bills
+ * - Always include 1 governance bill
+ */
+export function getAvailableExecutiveBills(state: GameState): ExecutiveBillOption[] {
+  const selected: typeof EXECUTIVE_BILL_TEMPLATES[number][] = [];
+  const addedIds = new Set<string>();
+
+  const add = (id: string) => {
+    if (addedIds.has(id)) return;
+    const t = EXECUTIVE_BILL_TEMPLATES.find((b) => b.id === id);
+    if (t) { selected.push(t); addedIds.add(id); }
+  };
+
+  // Always include 1 governance bill
+  add("anti-corruption");
+
+  // Condition-based additions
+  if (state.macroEconomy.inflation > 15) {
+    add("petroleum-reform");
+    add("tax-reform");
+  }
+
+  if (state.stability < 50) {
+    add("security-reform");
+  }
+
+  if (state.approval < 50) {
+    add("healthcare-reform");
+    add("education-reform");
+  }
+
+  // Fallback: ensure at least 2 bills
+  if (selected.length < 2) {
+    add("petroleum-reform");
+  }
+  if (selected.length < 2) {
+    add("security-reform");
+  }
+
+  // Cap at 3
+  const capped = selected.slice(0, 3);
+
+  return capped.map((t) => ({
+    id: t.id,
+    title: t.title,
+    description: t.description,
+    subjectTag: t.subjectTag,
+    stakes: t.stakes,
+  }));
+}
+
+/**
+ * proposeExecutiveBill
+ *
+ * Proposes an executive bill by template id:
+ * - Creates a Bill via createBillFromTemplate with sponsor "executive"
+ * - Adds it to activeBills (respecting the 8-bill cap)
+ * - Increments sessionStats.billsIntroduced
+ *
+ * Returns updated GameState (does not mutate the input).
+ */
+export function proposeExecutiveBill(state: GameState, templateId: string): GameState {
+  const legislature = state.legislature ?? defaultLegislativeState();
+
+  const template = EXECUTIVE_BILL_TEMPLATES.find((t) => t.id === templateId);
+  if (!template) return state;
+
+  if (legislature.activeBills.length >= MAX_ACTIVE_BILLS) return state;
+
+  const bill = createBillFromTemplate({ ...template, sponsor: "executive" }, state.day);
+
+  const newLegislature: LegislativeState = {
+    ...legislature,
+    activeBills: [...legislature.activeBills, bill],
+    sessionStats: {
+      ...legislature.sessionStats,
+      billsIntroduced: legislature.sessionStats.billsIntroduced + 1,
+    },
+  };
+
+  return { ...state, legislature: newLegislature };
+}
+
 // ── Main Turn Function ────────────────────────────────────────────────────────
 
 /**

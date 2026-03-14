@@ -16,9 +16,9 @@ The existing hooks system continues to generate compromising information through
 
 | DNI Competence | Passive Hook Rate | Accuracy | Counter-Intelligence |
 |---------------|-------------------|----------|---------------------|
-| High (70+) | 1-2 hooks per month | High — findings are reliable | Early warning of plots, coup attempts, godfather moves |
-| Medium (40-69) | 1 hook per month | Decent — occasional false leads | Some warnings, occasionally misses threats |
-| Low (<40) | Rare hooks | Poor — sometimes false leads | Blind spots — threats arrive without warning |
+| High (70+) | 1 hook every 15-30 days | High — findings are reliable | Early warning of plots, coup attempts, godfather moves |
+| Medium (40-69) | 1 hook every 30-45 days | Decent — occasional false leads | Some warnings, occasionally misses threats |
+| Low (<40) | 1 hook every 60-90 days | Poor — sometimes false leads | Blind spots — threats arrive without warning |
 
 ### 1.2 Active Operations
 
@@ -57,7 +57,7 @@ Six operation types the player can commission:
 
 **Success probability:** Base 50% + (DNI competence × 0.4). A competence-80 DNI has 82% success rate. Failure means no result and political capital is wasted.
 
-**Critical failure (bottom 10% of roll):** The operation is discovered. The target learns they're being watched, which damages relationships and can trigger retaliation (godfather escalation, governor hostility, media backlash).
+**Critical failure (10% of the failure space):** When an operation fails, there is a further 10% chance (of the failure probability) that it is a critical failure — the operation is discovered. For a competence-80 DNI with 82% success, there is an 18% failure chance, and 10% of that (1.8% absolute) is critical failure. The target learns they're being watched, which damages relationships and can trigger retaliation (godfather escalation, governor hostility, media backlash).
 
 **Duration scaling:** Higher DNI competence completes operations faster: actual duration = base duration × (1 - competence/200). A competence-80 DNI completes a 30-day investigation in 18 days.
 
@@ -109,7 +109,7 @@ If the DNI's loyalty is below 40, intelligence deployments may leak:
 - 10% chance the DNI shares the player's hook inventory with a godfather (godfather gains leverage over the player).
 - 5% chance the DNI feeds false information (operation results are fabricated — the player acts on bad intel).
 
-These probabilities scale inversely with loyalty — a loyalty-20 DNI is deeply compromised. Counter-intelligence sweeps can detect a disloyal DNI.
+These are the base rates at loyalty 40. Scaling formula: `actualRate = baseRate × (40 - loyalty) / 20`, clamped to 0. At loyalty 40, rates are as listed. At loyalty 30, rates are 1.5× (22.5%, 15%, 7.5%). At loyalty 20, rates are 2× (30%, 20%, 10%). At loyalty 0, rates are 2× (capped). Above loyalty 40, all leak rates are 0. Counter-intelligence sweeps can detect a disloyal DNI.
 
 ---
 
@@ -120,14 +120,16 @@ These probabilities scale inversely with loyalty — a loyalty-20 DNI is deeply 
 ```typescript
 interface IntelligenceState {
   dniId: string | null;              // character ID of appointed DNI
-  dniCompetence: number;             // cached from character stats
-  dniLoyalty: number;                // cached — low loyalty = leak risk
+  dniCompetence: number;             // synced from DNI's CharacterState each turn
+  dniLoyalty: number;                // synced from DNI's CharacterState each turn — low loyalty = leak risk
   activeOperations: IntelOperation[];
   completedOperations: IntelResult[];
   hooks: Hook[];                     // existing hook system, expanded
   maxConcurrentOps: number;          // 2 base, 3 if DNI competence 70+
 }
 ```
+
+**DNI stat syncing:** Each turn, `dniCompetence` and `dniLoyalty` are refreshed from the DNI character's `CharacterState`. This means loyalty drift from events, faction pressure, or other systems is automatically reflected in intelligence effectiveness and leak risk. The cached values exist for convenient access; the DNI character remains the source of truth.
 
 ### 4.2 Operation Interfaces
 
@@ -172,13 +174,22 @@ interface IntelFinding {
 
 ### 4.3 Hook Interface (Extended)
 
+The existing `Hook` interface in `gameTypes.ts` has fields: `target`, `type` (financial/personal/political/criminal), `severity`, `discovered`, `usable`, `underInvestigation`, `used`. This spec **extends** the existing interface with new deployment fields rather than replacing it. All existing fields are preserved; the intelligence system adds deployment tracking on top.
+
 ```typescript
+// Extends the existing Hook interface in gameTypes.ts — all existing fields preserved
 interface Hook {
-  id: string;
-  targetId: string;
-  description: string;
-  evidence: number;                  // 0-100, strength — affects deployment success
-  deployed: boolean;
+  // --- Existing fields (from gameTypes.ts) ---
+  target: string;
+  type: "financial" | "personal" | "political" | "criminal";
+  severity: number;
+  discovered: boolean;
+  usable: boolean;
+  underInvestigation: boolean;
+  used: boolean;
+
+  // --- New intelligence deployment fields ---
+  deployed: boolean;                 // true if used via leverage/trade/blackmail
   deploymentType?: "leverage" | "trade" | "blackmail";
   leverageTarget?: string;           // character ID of who was leveraged
   tradeRecipient?: string;           // character/godfather ID who received the intel
@@ -186,6 +197,8 @@ interface Hook {
   sourceOperation?: string;          // operation ID that produced this hook, null if passive
 }
 ```
+
+**Migration note:** The `Hook` interface stays in `gameTypes.ts` (not moved to `intelligenceTypes.ts`). The new fields are added as optional properties so existing hook creation throughout `gameEngine.ts` remains compatible. `intelligenceTypes.ts` contains only the new types: `IntelligenceState`, `IntelOperation`, `IntelResult`, `IntelFinding`.
 
 ---
 
@@ -197,10 +210,10 @@ interface Hook {
 - `client/src/lib/intelligenceTypes.ts` — TypeScript interfaces (IntelligenceState, IntelOperation, Hook, etc.)
 
 ### Modified Files
-- `client/src/lib/gameTypes.ts` — add `IntelligenceState` to `GameState`
+- `client/src/lib/gameTypes.ts` — add `IntelligenceState` to `GameState`, extend existing `Hook` interface with deployment fields (as optional properties for backward compatibility). Existing saves that lack `IntelligenceState` should default to an empty/initial state on load.
 - `client/src/lib/GameContext.tsx` — initialize intelligence state, DNI appointment during onboarding
 - `client/src/lib/gameEngine.ts` — process operations each turn (advance timers, resolve completions, tick blackmail desperation counters, check DNI loyalty leaks)
-- `client/src/components/PoliticsTab.tsx` — expand intelligence section: active operations panel with progress indicators, hook inventory with deployment options (leverage/trade/blackmail buttons), DNI status
+- `client/src/components/PoliticsTab.tsx` — PoliticsTab currently houses the legislative/political overview. The intelligence UI is added as a new panel/section within PoliticsTab (not replacing existing content): an "Intelligence" panel containing DNI status (name, competence, loyalty indicator), active operations list with progress bars, hook inventory with deployment buttons (leverage/trade/blackmail), and a "Commission Operation" button that opens the operation selection flow. If the intelligence section grows too large during implementation, it may be extracted to a dedicated `IntelligencePanel.tsx` component imported by PoliticsTab.
 - `client/src/components/OnboardingFlow.tsx` — add DNI selection step with candidate pool (3 candidates per zone, same diversity rules as other appointments)
 
 ### Integration with Other Sub-Projects

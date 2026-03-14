@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 
 const testConfig = {
@@ -268,6 +268,32 @@ describe("executive bills", () => {
       expect(result.legislature.activeBills.length).toBe(1);
       expect(result.legislature.activeBills[0].sponsor).toBe("executive");
     }
+  });
+});
+
+describe("multi-round crises", () => {
+  it("budget crisis should have 3-4 rounds", () => {
+    const crisis = initializeCrisis("budget", "test-bill-id");
+    expect(crisis.totalRounds).toBeGreaterThanOrEqual(3);
+    expect(crisis.totalRounds).toBeLessThanOrEqual(4);
+  });
+
+  it("should advance to next round after resolution", () => {
+    const crisis = initializeCrisis("budget", "test-bill-id");
+    const result = advanceCrisisRound(crisis, ["spend-political-capital"]);
+    expect(result.currentRound).toBe(2);
+    expect(result.roundHistory.length).toBe(1);
+  });
+
+  it("final round should resolve the crisis", () => {
+    const crisis = initializeCrisis("social", "test-bill-id");
+    // social = 2 rounds total
+    expect(crisis.totalRounds).toBe(2);
+    // Advance to round 2
+    const round1 = advanceCrisisRound(crisis, []);
+    // Advance past final round
+    const round2 = advanceCrisisRound(round1, []);
+    expect(round2.resolved).toBe(true);
   });
 });
 

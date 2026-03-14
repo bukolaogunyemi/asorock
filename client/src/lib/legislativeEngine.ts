@@ -1,6 +1,6 @@
 // client/src/lib/legislativeEngine.ts
 import type { GameState } from "./gameTypes";
-import type { Bill, BillStage, GameStateModifier, LegislativeState, VoteProjection } from "./legislativeTypes";
+import type { Bill, BillStage, CrisisState, GameStateModifier, LegislativeState, VoteProjection } from "./legislativeTypes";
 import { getAutonomousBillPool } from "./legislativeBills";
 import { getLeverById } from "./influenceLevers";
 
@@ -886,6 +886,68 @@ export function resolveLegislativeCrisis(
   };
 
   return { ...updatedState, legislature: updatedLegislature };
+}
+
+// ── Multi-round Crisis State Machine ─────────────────────────────────────────
+
+const CRISIS_TOTAL_ROUNDS: Record<CrisisState["crisisType"], number> = {
+  budget: 3,
+  social: 2,
+  constitutional: 3,
+  override: 1,
+  "surprise-motion": 1,
+};
+
+/**
+ * initializeCrisis
+ *
+ * Creates a new CrisisState for the given crisis type and bill.
+ * totalRounds is deterministic (not randomised) so tests are stable.
+ */
+export function initializeCrisis(
+  type: CrisisState["crisisType"],
+  billId: string,
+): CrisisState {
+  return {
+    billId,
+    currentRound: 1,
+    totalRounds: CRISIS_TOTAL_ROUNDS[type],
+    crisisType: type,
+    roundHistory: [],
+  };
+}
+
+/**
+ * advanceCrisisRound
+ *
+ * Records the current round in history and either advances to the next round
+ * or resolves the crisis if the final round has been reached.
+ *
+ * Returns a new CrisisState (does not mutate the input).
+ */
+export function advanceCrisisRound(
+  crisis: CrisisState,
+  leversUsed: string[],
+): CrisisState {
+  const historyEntry = {
+    round: crisis.currentRound,
+    leversUsed,
+    result: crisis.currentRound >= crisis.totalRounds ? "resolved" : "ongoing",
+  };
+
+  if (crisis.currentRound >= crisis.totalRounds) {
+    return {
+      ...crisis,
+      roundHistory: [...crisis.roundHistory, historyEntry],
+      resolved: true,
+    };
+  }
+
+  return {
+    ...crisis,
+    currentRound: crisis.currentRound + 1,
+    roundHistory: [...crisis.roundHistory, historyEntry],
+  };
 }
 
 // ── Adviser Briefing ──────────────────────────────────────────────────────────

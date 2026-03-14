@@ -96,6 +96,15 @@ export interface ScheduledBill {
   isCrisis: boolean;
 }
 
+export interface CrisisState {
+  billId: string;
+  currentRound: number;
+  totalRounds: number;
+  crisisType: "budget" | "social" | "constitutional" | "override" | "surprise-motion";
+  roundHistory: { round: number; leversUsed: string[]; result: string }[];
+  resolved?: boolean;
+}
+
 export interface LegislativeState {
   activeBills: Bill[];
   passedBills: Bill[];
@@ -103,6 +112,7 @@ export interface LegislativeState {
   pendingSignature: Bill[];
   legislativeCalendar: ScheduledBill[];
   adviserAccuracy: number;
+  activeCrisis?: CrisisState;
   sessionStats: {
     billsIntroduced: number;
     billsPassed: number;

@@ -90,4 +90,23 @@ describe("selectConstitutionalOfficers", () => {
       expect(o.competence).toBeGreaterThanOrEqual(0);
     }
   });
+
+  it("end-to-end: officers come from diverse zones with real pools", () => {
+    const officers = selectConstitutionalOfficers("Lagos", "Kano", 42);
+    expect(officers).toHaveLength(5);
+    const zones = officers.map((o) => getZoneForState(o.state)!.name);
+    // Should not include SW (Lagos) or NW (Kano)
+    for (const z of zones) {
+      expect(z).not.toBe("South-West");
+      expect(z).not.toBe("North-West");
+    }
+    // Should have real names, not placeholders
+    for (const o of officers) {
+      expect(o.name).not.toContain("Placeholder");
+      expect(o.religion).toMatch(/^(Muslim|Christian)$/);
+      expect(o.gender).toMatch(/^(Male|Female)$/);
+      expect(o.age).toBeGreaterThanOrEqual(45);
+      expect(o.age).toBeLessThanOrEqual(72);
+    }
+  });
 });

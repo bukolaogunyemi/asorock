@@ -1,6 +1,6 @@
 // client/src/lib/legislativeEngine.ts
 import type { GameState } from "./gameTypes";
-import type { Bill, BillStage, CrisisState, GameStateModifier, LegislativeState, VoteProjection } from "./legislativeTypes";
+import type { Amendment, Bill, BillStage, CrisisState, GameStateModifier, LegislativeState, VoteProjection } from "./legislativeTypes";
 import { getAutonomousBillPool } from "./legislativeBills";
 import { getLeverById } from "./influenceLevers";
 
@@ -1122,6 +1122,110 @@ export function proposeExecutiveBill(state: GameState, templateId: string): Game
   };
 
   return { ...state, legislature: newLegislature };
+}
+
+// ── Amendments ────────────────────────────────────────────────────────────────
+
+/**
+ * generateAmendments
+ *
+ * Proposes 0–3 amendments for a bill currently in committee stage.
+ * Sources:
+ *   - Opposition proposes 1–2 amendments on executive-sponsored bills
+ *   - Committee proposes 1 amendment on critical-stakes bills
+ *   - Cross-party proposes 0–1 amendments on social bills
+ *
+ * Returns an empty array if the bill is not in committee stage.
+ */
+export function generateAmendments(bill: Bill, _state: GameState): Amendment[] {
+  // Only generate during committee stage
+  if (bill.houseStage !== "committee" && bill.senateStage !== "committee") {
+    return [];
+  }
+
+  const amendments: Amendment[] = [];
+
+  // Opposition proposes amendments on executive-sponsored bills
+  if (bill.sponsor === "executive") {
+    // Dilute the primary onPass effect
+    const primaryEffect = bill.effects.onPass[0];
+    const dilutionDelta = primaryEffect ? Math.ceil(Math.abs(primaryEffect.delta) * 0.4) * -1 : -2;
+
+    amendments.push({
+      description: `Opposition amendment to reduce scope of "${bill.title}" and limit executive authority`,
+      sponsor: "opposition",
+      effectModifiers: [{ target: "approval" as const, delta: dilutionDelta }],
+      supportSwing: { house: 18, senate: 10 },
+      accepted: false,
+    });
+
+    // Second opposition amendment for significant/critical bills
+    if (bill.stakes === "significant" || bill.stakes === "critical") {
+      amendments.push({
+        description: `Opposition amendment to add oversight mechanisms to "${bill.title}"`,
+        sponsor: "opposition",
+        effectModifiers: [{ target: "politicalCapital" as const, delta: -5 }],
+        supportSwing: { house: 12, senate: 6 },
+        accepted: false,
+      });
+    }
+  }
+
+  // Committee proposes amendment on critical-stakes bills
+  if (bill.stakes === "critical" && amendments.length < 3) {
+    amendments.push({
+      description: `Committee amendment to phase in implementation of "${bill.title}" over 24 months`,
+      sponsor: "committee",
+      effectModifiers: [{ target: "stability" as const, delta: 2 }],
+      supportSwing: { house: 8, senate: 5 },
+      accepted: false,
+    });
+  }
+
+  // Cross-party amendment on social bills
+  if (bill.subjectTag === "social" && amendments.length < 3) {
+    amendments.push({
+      description: `Cross-party amendment to expand beneficiary coverage in "${bill.title}"`,
+      sponsor: "cross-party",
+      effectModifiers: [{ target: "approval" as const, delta: 2 }],
+      supportSwing: { house: 10, senate: 5 },
+      accepted: false,
+    });
+  }
+
+  // Cap at 3
+  return amendments.slice(0, 3);
+}
+
+/**
+ * acceptAmendment
+ *
+ * Accepts an amendment: marks it as accepted, merges its effectModifiers
+ * into the bill's onPass effects, and appends it to bill.amendments.
+ *
+ * Returns updated Bill (does not mutate the input).
+ */
+export function acceptAmendment(bill: Bill, amendment: Amendment): Bill {
+  const accepted: Amendment = { ...amendment, accepted: true };
+  return {
+    ...bill,
+    amendments: [...bill.amendments, accepted],
+    effects: {
+      ...bill.effects,
+      onPass: [...bill.effects.onPass, ...amendment.effectModifiers],
+    },
+  };
+}
+
+/**
+ * checkReconciliation
+ *
+ * Returns true if the bill has any accepted amendments, indicating the
+ * two chambers may have voted on different versions and need reconciliation.
+ * Only meaningful when both chambers are in "passed" stage.
+ */
+export function checkReconciliation(bill: Bill): boolean {
+  return bill.amendments.some((a) => a.accepted);
 }
 
 // ── Main Turn Function ────────────────────────────────────────────────────────

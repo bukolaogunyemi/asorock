@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound, generateAmendments, acceptAmendment, checkReconciliation } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
+import type { Amendment } from "./legislativeTypes";
 
 const testConfig = {
   firstName: "Test", lastName: "President", age: 55, gender: "Male" as const,
@@ -322,5 +323,67 @@ describe("resolveLegislativeCrisis", () => {
 
     const result = payLeverCosts(state, ["spend-political-capital"]);
     expect(result.politicalCapital).toBeLessThan(30);
+  });
+});
+
+describe("amendments", () => {
+  it("should generate 0-3 amendment proposals during committee stage", () => {
+    const state = initializeGameState(testConfig);
+    const bill = createBillFromTemplate({
+      title: "Test Bill", description: "Test", subjectTag: "economy",
+      stakes: "significant", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.houseStage = "committee";
+    const amendments = generateAmendments(bill, state);
+    expect(amendments.length).toBeGreaterThanOrEqual(0);
+    expect(amendments.length).toBeLessThanOrEqual(3);
+  });
+
+  it("accepting amendment should modify bill and mark accepted", () => {
+    const bill = createBillFromTemplate({
+      title: "Test", description: "Test", subjectTag: "economy",
+      stakes: "routine", effects: { onPass: [{ target: "approval" as const, delta: 5 }], onFail: [] },
+    }, 1);
+    const amendment: Amendment = {
+      description: "Reduce scope",
+      sponsor: "opposition",
+      effectModifiers: [{ target: "approval" as const, delta: -2 }],
+      supportSwing: { house: 15, senate: 8 },
+      accepted: false,
+    };
+    const result = acceptAmendment(bill, amendment);
+    expect(result.amendments.length).toBe(1);
+    expect(result.amendments[0].accepted).toBe(true);
+  });
+});
+
+describe("reconciliation", () => {
+  it("should trigger when bill has accepted amendments", () => {
+    const bill = createBillFromTemplate({
+      title: "Test", description: "Test", subjectTag: "economy",
+      stakes: "routine", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.houseStage = "passed";
+    bill.senateStage = "passed";
+    bill.amendments = [{
+      description: "Test amendment",
+      sponsor: "opposition",
+      effectModifiers: [],
+      supportSwing: { house: 10, senate: 5 },
+      accepted: true,
+    }];
+    const needsReconciliation = checkReconciliation(bill);
+    expect(needsReconciliation).toBe(true);
+  });
+
+  it("should not trigger when no amendments accepted", () => {
+    const bill = createBillFromTemplate({
+      title: "Test", description: "Test", subjectTag: "economy",
+      stakes: "routine", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.houseStage = "passed";
+    bill.senateStage = "passed";
+    bill.amendments = [];
+    expect(checkReconciliation(bill)).toBe(false);
   });
 });

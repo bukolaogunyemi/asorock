@@ -55,7 +55,7 @@ Both chambers process simultaneously but at different speeds:
 - **Floor Debate:** 3-5 days (opposition tactics can extend this)
 - **Vote:** resolves in 1 day
 
-Bills that stall for too long die. The player can spend political capital to unstall a bill or let it die quietly.
+Bills that stall for 30+ days in any single stage die automatically. The player can spend political capital to unstall a bill or let it die quietly. Maximum 8 active bills at any time across both chambers — if the cap is reached, new autonomous bills queue until a slot opens. Executive bills always get priority introduction.
 
 ### 2.4 Bicameral Dynamics
 
@@ -64,7 +64,7 @@ The House (360 members) is larger and more volatile — party discipline is weak
 **Split outcomes create pressure:**
 - Bill passes House easily but stalls in Senate → player must decide whether to spend capital whipping the Senate
 - Bill fails House but passes Senate → player can try to revive or let it die
-- Both chambers pass different versions → reconciliation needed (political capital cost + delay)
+- Both chambers pass different versions → reconciliation needed (political capital cost + 5-day delay; if the bill is a crisis bill, reconciliation becomes an additional crisis round)
 - Player's own bill passes with unwanted amendments → sign a diluted version or veto?
 
 ### 2.5 Veto Process
@@ -197,7 +197,7 @@ This creates genuine gameplay incentive to appoint a strong Political Adviser ov
 
 - **Faction grievance** — Bills that hurt a faction's interests increase grievance. A faction that loses 3 bills in a row becomes hostile.
 - **Party loyalty** — Vetoing your own party's bill costs loyalty. Passing opposition bills costs loyalty. Excessive Executive Pressure erodes internal trust.
-- **Power brokers** (Sub-Project B) — Godfathers care about specific bills. Passing or blocking their priority legislation affects disposition.
+- **Power brokers** (Sub-Project B, future) — Godfathers will care about specific bills. For now, add a `powerBrokerTag?: string` field to Bill for future integration. Do not wire up power broker effects until Sub-Project B is built.
 - **Campaign promises** — Promises requiring legislation ("Reform the petroleum sector") track against actual legislative outcomes.
 - **Approval** — Major bill outcomes shift approval along regional/religious/economic lines.
 
@@ -247,10 +247,22 @@ interface BillEffects {
   onFail: GameStateModifier[];
 }
 
+interface Amendment {
+  description: string;
+  sponsor: "ruling-backbench" | "opposition" | "cross-party" | "committee";
+  effectModifiers: GameStateModifier[];  // how this amendment changes the bill's effects
+  supportSwing: { house: number; senate: number };  // votes gained/lost by accepting
+  accepted: boolean;
+}
+
+// Reuses the existing Consequence/Effect pattern from gameEngine.ts.
+// The target field uses the same discriminated approach as the existing Effect type.
 interface GameStateModifier {
-  target: string;   // e.g., "approval", "factionGrievance.northernCaucus", "macroEconomy.inflation"
+  target: "approval" | "stability" | "politicalCapital" | "partyLoyalty" | "factionGrievance" | "macroEconomy" | "outrage" | "trust";
   delta: number;
-  delay?: number;   // game days before effect applies
+  factionName?: string;   // required when target is "factionGrievance"
+  macroKey?: string;       // required when target is "macroEconomy" (e.g., "inflation", "oilOutput")
+  delay?: number;          // game days before effect applies (for delayed consequences)
 }
 ```
 
@@ -274,7 +286,8 @@ interface LegislativeState {
 }
 
 interface ScheduledBill {
-  template: Partial<Bill>;
+  // Required fields for seeding — the rest are generated at introduction time
+  template: Pick<Bill, "title" | "description" | "subjectTag" | "stakes" | "effects"> & { sponsor?: Bill["sponsor"] };
   targetDay: number;  // when it gets introduced
   isCrisis: boolean;
 }
@@ -287,11 +300,16 @@ interface InfluenceLever {
   id: string;
   name: string;
   description: string;
-  cost: { type: "politicalCapital" | "approval" | "partyLoyalty" | "factionRelationship"; amount: number };
+  costs: LeverCost[];  // multiple costs possible (e.g., political capital + relationship damage)
   houseSwing: number;  // estimated votes gained
   senateSwing: number;
-  sideEffects: GameStateModifier[];
+  sideEffects: GameStateModifier[];  // qualitative costs modelled here: "future obligations" = faction grievance later, "bill dilution" = bill effect reduction
   available: (state: GameState, bill: Bill) => boolean;  // e.g., Back-Channel unavailable in House
+}
+
+interface LeverCost {
+  type: "politicalCapital" | "approval" | "partyLoyalty" | "billDilution";
+  amount: number;  // for billDilution, this is a 0-1 multiplier on bill effects
 }
 ```
 

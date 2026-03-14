@@ -25,7 +25,7 @@ const testConfig: CampaignConfig = {
   gender: "Female",
   stateOfOrigin: "Lagos",
   education: "Master's Degree",
-  party: "LP",
+  party: "NDM",
   era: "2023",
   vpName: "Chief Ada Okafor",
   personalAssistant: "Amara Obi",
@@ -41,7 +41,9 @@ const testConfig: CampaignConfig = {
   origin: "Lagos Politician",
   traits: ["charismatic", "calculating"],
   ideologies: ["reformist"],
-  difficulty: "standard",
+  ethnicity: "Yoruba",
+  religion: "Christianity",
+  occupation: "Politician",
 };
 
 const buildState = () => initializeGameState(testConfig);

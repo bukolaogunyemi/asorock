@@ -279,7 +279,7 @@ export default function DashboardTab() {
   const playerAge = isPlaying ? state.presidentAge : 55;
   const playerState = isPlaying ? state.presidentState : "Lagos";
   const playerEducation = isPlaying ? state.presidentEducation : "University of Lagos";
-  const playerParty = isPlaying ? state.presidentParty : "APC";
+  const playerParty = isPlaying ? state.presidentParty : "ADU";
   const playerEra = isPlaying ? state.presidentEra : "2023";
 
   const action = (title: string, description: string) => () => {

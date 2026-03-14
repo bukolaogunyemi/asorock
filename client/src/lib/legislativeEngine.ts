@@ -1460,6 +1460,67 @@ export function processDelayedEffects(
   return { applied, remaining };
 }
 
+// ── System Integration: Bill-Faction Effects & Senate President Modifier ──────
+
+/**
+ * getBillFactionEffects
+ *
+ * Maps a bill's subjectTag to the factions most likely to be affected by its
+ * outcome, then returns GameStateModifier entries for faction grievance:
+ *   - passed: grievance -5 for related factions
+ *   - failed: grievance +3 for related factions
+ */
+export function getBillFactionEffects(bill: Bill, outcome: "passed" | "failed"): GameStateModifier[] {
+  const effects: GameStateModifier[] = [];
+
+  // Map subject tags to likely affected factions
+  const tagToFaction: Record<string, string[]> = {
+    economy: ["Northern Traders", "Labour"],
+    security: ["Military", "Northern Elders"],
+    social: ["Civil Society", "Religious Leaders"],
+    governance: ["Anti-Corruption"],
+    constitutional: ["Federalists", "Southern Leaders"],
+  };
+
+  const affectedFactions = tagToFaction[bill.subjectTag] ?? [];
+
+  for (const factionName of affectedFactions) {
+    if (outcome === "passed") {
+      // Bill passing generally satisfies related factions
+      effects.push({ target: "factionGrievance", delta: -5, factionName });
+    } else {
+      // Bill failing increases related faction grievance
+      effects.push({ target: "factionGrievance", delta: 3, factionName });
+    }
+  }
+
+  return effects;
+}
+
+/**
+ * getSenatePresidentModifier
+ *
+ * Returns a vote modifier for the ruling party's senate bloc based on the
+ * alignment (loyalty) of the current Senate President constitutional officer.
+ * Range: -5 to +5 (broadly -10 to +10 when unclamped).
+ *
+ * Returns 0 if no Senate President is found in constitutionalOfficers.
+ */
+export function getSenatePresidentModifier(state: GameState): number {
+  // Check constitutional officers for Senate President
+  const officers = state.constitutionalOfficers ?? [];
+  const senatePresident = officers.find((o: any) =>
+    o.position === "Senate President" || o.role === "Senate President"
+  );
+
+  if (!senatePresident) return 0;
+
+  // Aligned Senate President boosts ruling party senate votes
+  // Check loyalty/alignment score
+  const loyalty = (senatePresident as any).loyalty ?? 50;
+  return Math.round((loyalty - 50) / 10); // -5 to +5 range
+}
+
 // ── Campaign Promise Tracking ─────────────────────────────────────────────────
 
 /**

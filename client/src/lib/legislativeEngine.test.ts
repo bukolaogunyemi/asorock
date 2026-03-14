@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound, generateAmendments, acceptAmendment, checkReconciliation, calculateOverrideProbability, attemptOverride, checkSurpriseMotions, queueDelayedEffect, processDelayedEffects, trackPromiseProgress } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound, generateAmendments, acceptAmendment, checkReconciliation, calculateOverrideProbability, attemptOverride, checkSurpriseMotions, queueDelayedEffect, processDelayedEffects, trackPromiseProgress, getBillFactionEffects, getSenatePresidentModifier } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 import type { Amendment } from "./legislativeTypes";
 
@@ -456,6 +456,24 @@ describe("delayed consequences", () => {
     const result = processDelayedEffects(pending, 40);
     expect(result.applied.length).toBe(0);
     expect(result.remaining.length).toBe(1);
+  });
+});
+
+describe("system integration", () => {
+  it("bill outcomes should generate faction effects", () => {
+    const bill = createBillFromTemplate({
+      title: "Economy Bill", description: "Test", subjectTag: "economy",
+      stakes: "routine", effects: { onPass: [], onFail: [] },
+    }, 1);
+    const effects = getBillFactionEffects(bill, "passed");
+    expect(effects.some((e) => e.target === "factionGrievance")).toBe(true);
+  });
+
+  it("Senate President alignment should return modifier in range", () => {
+    const state = initializeGameState(testConfig);
+    const modifier = getSenatePresidentModifier(state);
+    expect(modifier).toBeGreaterThanOrEqual(-10);
+    expect(modifier).toBeLessThanOrEqual(10);
   });
 });
 

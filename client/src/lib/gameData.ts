@@ -771,16 +771,6 @@ export const economicPersonnel: EconomicPersonnel[] = [
 export const senateSeats = { ruling: 59, opposition: 46, independent: 4, total: 109 } as const;
 export const houseSeats = { ruling: 201, opposition: 154, independent: 5, total: 360 } as const;
 
-export const senateLeadership: Character[] = [
-  { name: "Sen. Rotimi Balogun", portfolio: "Senate President", agenda: "Push constitutional reform to strengthen Senate powers over budget. Controls committee assignments.", opinion: "Cautiously supportive — expects patronage and influence over appointments.", loyalty: 62, competence: 74, ambition: 90, faction: "South-West Alliance", relationship: "Wary", avatar: "RB", age: 67, state: "Ogun", gender: "Male" },
-  { name: "Sen. Emeka Udeogu", portfolio: "Deputy Senate President", agenda: "Position for 2027 presidential run. Building cross-regional alliances.", opinion: "Publicly loyal but privately calculating.", loyalty: 48, competence: 66, ambition: 88, faction: "South-East Bloc", relationship: "Neutral", avatar: "EU", age: 55, state: "Abia", gender: "Male" },
-];
-
-export const houseLeadership: Character[] = [
-  { name: "Rt. Hon. Dayo Olatunji", portfolio: "Speaker of the House", agenda: "Maintain house discipline and push through executive priority bills. Eyes governorship.", opinion: "Reliable ally — but expects his bills fast-tracked in return.", loyalty: 78, competence: 72, ambition: 75, faction: "South-West Alliance", relationship: "Friendly", avatar: "DO", age: 61, state: "Lagos", gender: "Male" },
-  { name: "Hon. Suleiman Jato", portfolio: "Deputy Speaker", agenda: "Represent Northern interests in legislative negotiations. Broker power-sharing.", opinion: "Loyal to the party machinery. Transactional.", loyalty: 70, competence: 60, ambition: 65, faction: "Northern Caucus", relationship: "Friendly", avatar: "SJ", age: 50, state: "Plateau", gender: "Male" },
-];
-
 // ── Politics Tab — Power Dynamics ─────────────────────────
 export interface PowerBroker {
   name: string;

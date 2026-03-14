@@ -17,14 +17,11 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle } from "lucide-react";
-import { CharacterAvatar } from "@/components/CharacterAvatar";
-import { CompetencyBar } from "@/components/CompetencyBar";
-import { RelationshipIndicator } from "@/components/RelationshipIndicator";
+import { PersonnelCard } from "@/components/PersonnelCard";
+import { useGame } from "@/lib/GameContext";
 import {
   senateSeats,
   houseSeats,
-  senateLeadership,
-  houseLeadership,
   whipTracker,
   activeBills,
 } from "@/lib/gameData";
@@ -94,6 +91,15 @@ export default function LegislatureTab() {
   const action = (title: string, msg: string) => () =>
     toast({ title, description: msg });
 
+  const { state } = useGame();
+
+  // Split constitutional officers into Senate and House leadership
+  const senateLeadership = state.constitutionalOfficers.filter(
+    (o) => o.portfolio === "Senate President" || o.portfolio === "Deputy Senate President"
+  );
+  const houseLeadership = state.constitutionalOfficers.filter(
+    (o) => o.portfolio === "Speaker of the House" || o.portfolio === "Deputy Speaker"
+  );
   const allLeaders = [...senateLeadership, ...houseLeadership];
 
   return (
@@ -135,27 +141,22 @@ export default function LegislatureTab() {
         <CardContent className="p-4 pt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
             {allLeaders.map((c) => (
-              <Card key={c.name} className="border border-border bg-muted/30">
-                <CardContent className="p-3 space-y-2">
-                  <div className="flex items-start gap-3">
-                    <CharacterAvatar name={c.name} initials={c.avatar} size="md" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-semibold">{c.name}</p>
-                          <p className="text-xs text-muted-foreground">{c.portfolio}</p>
-                        </div>
-                        <Badge variant="outline" className="text-xs flex-shrink-0">{c.faction}</Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground"><strong>Agenda:</strong> {c.agenda}</p>
-                  <div className="space-y-0.5">
-                    <CompetencyBar value={c.loyalty} label="Loyalty" />
-                    <CompetencyBar value={c.competence} label="Competence" />
-                    <CompetencyBar value={c.ambition} label="Ambition" />
-                  </div>
-                  <RelationshipIndicator relationship={c.relationship} />
+              <PersonnelCard
+                key={c.name}
+                name={c.name}
+                avatar={c.avatar}
+                title={c.portfolio}
+                age={c.age}
+                state={c.state}
+                gender={c.gender}
+                loyalty={c.loyalty}
+                competence={c.competence}
+                ambition={c.ambition}
+                relationship={c.relationship}
+                faction={c.faction}
+                note={`Agenda: ${c.agenda}`}
+                className="bg-muted/30"
+                actions={
                   <div className="flex gap-2">
                     <Button
                       data-testid={`invite-${c.name.toLowerCase().replace(/[\s.()]+/g, "-")}`}
@@ -182,8 +183,8 @@ export default function LegislatureTab() {
                       Send Proposal
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
+                }
+              />
             ))}
           </div>
         </CardContent>

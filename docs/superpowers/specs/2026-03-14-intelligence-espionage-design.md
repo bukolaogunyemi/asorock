@@ -213,7 +213,7 @@ interface Hook {
 ### New Files
 - `client/src/lib/intelligenceEngine.ts` — operation management, passive hook generation, deployment logic, DNI competence gating, success/failure resolution
 - `client/src/lib/intelligenceEngine.test.ts` — unit tests
-- `client/src/lib/intelligenceTypes.ts` — TypeScript interfaces (IntelligenceState, IntelOperation, Hook, etc.)
+- `client/src/lib/intelligenceTypes.ts` — TypeScript interfaces (IntelligenceState, IntelOperation, IntelResult, IntelFinding)
 
 ### Modified Files
 - `client/src/lib/gameTypes.ts` — add `IntelligenceState` to `GameState`, extend existing `Hook` interface with deployment fields (as optional properties for backward compatibility). Existing saves that lack `IntelligenceState` should default to an empty/initial state on load.

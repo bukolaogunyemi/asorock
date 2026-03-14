@@ -72,7 +72,7 @@ At game start, the two strongest non-ruling parties are designated as main oppos
 - **Full NWC** (8 members, same structure as ruling party)
 - **Opposition Leader** — the party chairman acts as the player's political rival. They have personality traits (aggression, cunning, popularity) that determine their strategy
 - **Legislative bloc** — their House and Senate seat counts, which shift with defections
-- **Active strategy** — one of three modes (Obstruct/Negotiate/Attack), reassessed every 30-45 days based on conditions
+- **Active strategy** — one of three modes (Obstruct/Negotiate/Attack), reassessed every 30 days (fixed interval). Strategy can also shift immediately when a major event occurs (approval crosses a threshold, stability crisis, election cycle begins).
 
 **Strategy selection logic:**
 - **Obstruct** when: player approval is moderate (40-60), opposition sees opportunity to stall the agenda and erode support
@@ -93,7 +93,11 @@ Each strategy produces concrete gameplay effects:
 
 ### 3.3 Defection Mechanics
 
-**Defection risk builds from loyalty drift.** Each legislator and governor tracks loyalty to their current party (separate from loyalty to the player). When party loyalty drops below 40, they're flagged "at risk" — visible to the player in the legislature view.
+**Defection operates on aggregate blocs, not individual legislators.** The current codebase models legislators as aggregate bloc seat counts (Core Ruling Party 145, Ruling Allies 56, etc.), not individual character records. Defection works probabilistically against these aggregates: when conditions trigger a defection event, a number of seats shift between party blocs. The `AtRiskEntry` in the data model represents a simulated "at risk" bloc segment (e.g., "12 ruling party legislators from NE zone at risk"), not individual character records. Governors, who do have individual `GovernorState` records, are tracked individually for defection.
+
+**Governor party migration:** The existing `GovernorState.party` uses `"Ruling" | "Opposition" | "Independent"`. This will be extended to store the actual party ID (e.g., "ADU", "PFC") so the defection system can track which specific party a governor moves between. The generic union type is replaced with `string` (party ID), and a helper function maps party IDs to the ruling/opposition/independent category for backward compatibility with existing code.
+
+When party loyalty for a bloc segment drops below 40, those seats are flagged "at risk" — visible to the player in the legislature view.
 
 **Triggers that convert risk into actual defection:**
 - **Player poaching** (active) — spend 5-10 PC to recruit an at-risk opposition legislator. Success probability based on their party loyalty (lower = easier) and inducements offered
@@ -114,7 +118,7 @@ Each strategy produces concrete gameplay effects:
 
 ### 4.1 Convention Timing
 
-The ruling party convention fires in Year 3 (around day 730-760). Opposition party conventions happen within the same window. This is a fixed calendar event, not triggered by conditions. The convention marks the unofficial start of the re-election cycle.
+The ruling party convention fires in Year 3 (around day 730-760). Opposition party conventions happen within the same window but are **auto-resolved** — the player has no direct interaction with opposition conventions. Opposition NWCs are reshuffled based on internal party dynamics, and the player learns the results as a news event. This is a fixed calendar event, not triggered by conditions. The convention marks the unofficial start of the re-election cycle.
 
 ### 4.2 Pre-Convention Phase (30 days before)
 
@@ -153,16 +157,16 @@ The player doesn't need to contest every position — strategic focus on chairma
 
 ```typescript
 interface PartyState {
-  id: string;
+  id: string;                            // matches party ID from parties.ts (e.g., "ADU", "PFC")
   name: string;
   abbreviation: string;
-  nwc: NWCMember[];                    // 8 members
+  nwc: NWCMember[];                      // 8 members
   legislativeSeats: { house: number; senate: number };
   isRulingParty: boolean;
-  isMainOpposition: boolean;           // true for the 2 main opposition parties
-  partyControlScore?: number;          // 0-100, ruling party only
+  isMainOpposition: boolean;             // true for the 2 main opposition parties
+  partyControlScore?: number;            // 0-100, ruling party only
   oppositionStrategy?: OppositionStrategy;  // main opposition parties only
-  strategyReassessmentDay?: number;    // when strategy next shifts
+  strategyReassessmentDay?: number;      // when strategy next shifts
 }
 
 type OppositionStrategy = "obstruct" | "negotiate" | "attack";
@@ -201,21 +205,26 @@ interface DefectionState {
 }
 
 interface AtRiskEntry {
-  characterId: string;
-  currentParty: string;
+  id: string;                          // unique identifier for this at-risk segment
+  currentParty: string;                // party ID
+  zone: string;                        // geopolitical zone of the at-risk bloc
+  seatCount: number;                   // number of seats at risk in this segment
+  seatType: "house" | "senate";
   partyLoyalty: number;                // 0-100, below 40 = at risk
   defectionProbability: number;        // calculated from loyalty + triggers
 }
 
 interface Defection {
-  characterId: string;
-  name: string;
-  fromParty: string;
-  toParty: string;
+  id: string;
+  fromParty: string;                   // party ID
+  toParty: string;                     // party ID
   day: number;
   trigger: "player-poaching" | "godfather-pull" | "party-crisis" | "election-cycle" | "opposition-poaching";
   zone: string;
   seatType: "house" | "senate" | "governor";
+  seatCount: number;                   // number of seats shifted (1 for governors, 1+ for legislators)
+  governorId?: string;                 // GovernorState ID, only for governor defections
+  description: string;                 // human-readable summary for event log
 }
 ```
 
@@ -262,6 +271,12 @@ interface PartyInternalsState {
 }
 ```
 
+### 5.5 Relationship to Existing Data Structures
+
+**Legislative seats:** The existing codebase has two seat representations: `legislatureSeats` (ruling/opposition/independent totals) and `whipTracker` (5 named blocs with seat counts and loyalty). `PartyState.legislativeSeats` becomes the **source of truth** for per-party seat counts. The existing `whipTracker` blocs are derived from party data: "Core Ruling Party" = ruling party seats, "Ruling Allies" = sum of allied minor party seats, "Main Opposition" = sum of main opposition party seats, etc. When defections shift `PartyState.legislativeSeats`, the whipTracker blocs are recalculated. The existing `legislatureSeats` aggregate is also recalculated from party totals.
+
+**partyLoyalty:** The existing `GameState.partyLoyalty` (0-100) represents the general party base's loyalty to the player. The new `PartyState.partyControlScore` (0-100) represents NWC-level control — how much the party leadership backs the player. These are **distinct concepts**: a player can have high base party loyalty (the rank-and-file love them) but low party control (the NWC executives are hostile). Both matter: `partyLoyalty` affects legislator voting behaviour and grassroots support; `partyControlScore` affects discipline enforcement, convention outcomes, and re-election endorsement. The existing `partyLoyalty` field is preserved and continues to function as before.
+
 ---
 
 ## 6. Files & Integration Points
@@ -277,7 +292,8 @@ interface PartyInternalsState {
 - `client/src/lib/GameContext.tsx` — initialize party internals state at game start, populate all 8 party NWCs, designate 2 main opposition parties based on seat counts
 - `client/src/lib/gameEngine.ts` — each turn: drift NWC member dispositions, reassess opposition strategy on schedule, check defection risk for at-risk legislators, process opposition actions (obstruct/negotiate/attack effects on bills, approval, stability), advance convention phases when calendar triggers
 - `client/src/lib/parties.ts` — existing party definitions remain; party internals system reads ideology profiles and vote shares from here
-- `client/src/components/PoliticsTab.tsx` — add party panel: ruling party NWC with disposition indicators, Party Control Score, opposition party strategy display, at-risk legislator warnings, convention countdown and manoeuvring UI during pre-convention phase
+- `client/src/components/PoliticsTab.tsx` — PoliticsTab currently shows governor management, faction overview, and political metrics. Add a new party panel section (not replacing existing content): ruling party NWC roster with disposition indicators, Party Control Score gauge, opposition party strategy display (current strategy + leader info), at-risk legislator/bloc warnings, and convention countdown with manoeuvring UI during pre-convention phase. If the party section grows too large, extract to a dedicated `PartyPanel.tsx` component.
+- `client/src/lib/gameTypes.ts` — extend `GovernorState.party` from `"Ruling" | "Opposition" | "Independent"` to `string` (party ID). Add helper function `getPartyCategory(partyId: string): "Ruling" | "Opposition" | "Independent"` for backward compatibility.
 - `client/src/components/LegislatureTab.tsx` — defection risk indicators on individual legislators, party affiliation changes reflected in seat counts and bloc displays
 
 ### Integration with Other Sub-Projects

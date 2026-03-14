@@ -1,11 +1,17 @@
 // client/src/lib/constitutionalOfficers.test.ts
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeAll } from "vitest";
 import {
   selectConstitutionalOfficers,
   POSITION_NAMES,
   type ConstitutionalCandidate,
 } from "./constitutionalOfficers";
 import { GEOPOLITICAL_ZONES, getZoneForState } from "./zones";
+import { registerConstitutionalPools } from "./constitutionalPools";
+
+// Register real pools for testing
+beforeAll(() => {
+  registerConstitutionalPools();
+});
 
 describe("selectConstitutionalOfficers", () => {
   it("returns exactly 5 officers", () => {

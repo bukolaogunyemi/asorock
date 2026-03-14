@@ -331,6 +331,7 @@ export function defaultLegislativeState(): LegislativeState {
     pendingSignature: [],
     legislativeCalendar: [],
     adviserAccuracy: 70,
+    delayedEffects: [],
     sessionStats: {
       billsIntroduced: 0,
       billsPassed: 0,
@@ -1410,4 +1411,84 @@ export function processLegislativeTurn(state: GameState): GameState {
   }
 
   return finalState;
+}
+
+// ── Delayed Consequence Queue ─────────────────────────────────────────────────
+
+/**
+ * queueDelayedEffect
+ *
+ * Wraps a GameStateModifier in a delayed-effect envelope by computing the
+ * absolute game-day on which the effect should fire.
+ *
+ * effectDay = currentDay + (modifier.delay ?? 0)
+ */
+export function queueDelayedEffect(
+  modifier: GameStateModifier,
+  currentDay: number,
+): { modifier: GameStateModifier; effectDay: number } {
+  return {
+    modifier,
+    effectDay: currentDay + (modifier.delay ?? 0),
+  };
+}
+
+/**
+ * processDelayedEffects
+ *
+ * Partitions the pending queue into effects whose effectDay <= currentDay
+ * (applied) and those that are not yet due (remaining).
+ */
+export function processDelayedEffects(
+  pending: Array<{ modifier: GameStateModifier; effectDay: number }>,
+  currentDay: number,
+): {
+  applied: GameStateModifier[];
+  remaining: Array<{ modifier: GameStateModifier; effectDay: number }>;
+} {
+  const applied: GameStateModifier[] = [];
+  const remaining: Array<{ modifier: GameStateModifier; effectDay: number }> = [];
+
+  for (const entry of pending) {
+    if (entry.effectDay <= currentDay) {
+      applied.push(entry.modifier);
+    } else {
+      remaining.push(entry);
+    }
+  }
+
+  return { applied, remaining };
+}
+
+// ── Campaign Promise Tracking ─────────────────────────────────────────────────
+
+/**
+ * trackPromiseProgress
+ *
+ * Checks whether a bill relates to any of the player's campaign promises by
+ * doing a simple keyword match between the bill title and the promise text.
+ * Words shorter than 5 characters are ignored to reduce noise.
+ *
+ * Returns the id of the first matched promise, or null if none match.
+ */
+export function trackPromiseProgress(
+  state: GameState,
+  bill: Bill,
+): { matchedPromiseId: string | null } {
+  const promises = (state as GameState & { campaignPromises?: Array<{ id: string; text: string }> }).campaignPromises;
+  if (!promises || promises.length === 0) {
+    return { matchedPromiseId: null };
+  }
+
+  const titleWords = bill.title.split(/\s+/).filter((w) => w.length > 4);
+
+  for (const promise of promises) {
+    const lowerText = promise.text.toLowerCase();
+    const matched = titleWords.some((word) => lowerText.includes(word.toLowerCase()));
+    if (matched) {
+      return { matchedPromiseId: promise.id };
+    }
+  }
+
+  return { matchedPromiseId: null };
 }

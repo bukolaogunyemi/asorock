@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound, generateAmendments, acceptAmendment, checkReconciliation, calculateOverrideProbability, attemptOverride, checkSurpriseMotions } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound, generateAmendments, acceptAmendment, checkReconciliation, calculateOverrideProbability, attemptOverride, checkSurpriseMotions, queueDelayedEffect, processDelayedEffects, trackPromiseProgress } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 import type { Amendment } from "./legislativeTypes";
 
@@ -434,5 +434,42 @@ describe("surprise motions", () => {
     state.outrage = 20;
     const motions = checkSurpriseMotions(state);
     expect(motions.length).toBe(0);
+  });
+});
+
+describe("delayed consequences", () => {
+  it("should queue effects with delay field", () => {
+    const modifier: import("./legislativeTypes").GameStateModifier = { target: "macroEconomy", macroKey: "inflation", delta: 2, delay: 30 };
+    const queued = queueDelayedEffect(modifier, 100);
+    expect(queued.effectDay).toBe(130);
+  });
+
+  it("should apply queued effects when day is reached", () => {
+    const pending = [{ modifier: { target: "approval" as const, delta: -5 }, effectDay: 50 }];
+    const result = processDelayedEffects(pending, 50);
+    expect(result.applied.length).toBe(1);
+    expect(result.remaining.length).toBe(0);
+  });
+
+  it("should not apply effects before their day", () => {
+    const pending = [{ modifier: { target: "approval" as const, delta: -5 }, effectDay: 50 }];
+    const result = processDelayedEffects(pending, 40);
+    expect(result.applied.length).toBe(0);
+    expect(result.remaining.length).toBe(1);
+  });
+});
+
+describe("campaign promise tracking", () => {
+  it("should match bill to related campaign promise", () => {
+    const state = initializeGameState(testConfig);
+    state.campaignPromises = [
+      { id: "p1", text: "Reform the petroleum sector", status: "unfulfilled", progress: 0 }
+    ] as any;
+    const bill = createBillFromTemplate({
+      title: "Petroleum Industry Reform Bill", description: "Reform petroleum", subjectTag: "economy",
+      stakes: "critical", effects: { onPass: [], onFail: [] },
+    }, 1);
+    const result = trackPromiseProgress(state, bill);
+    expect(result.matchedPromiseId).toBeDefined();
   });
 });

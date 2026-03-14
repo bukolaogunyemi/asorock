@@ -113,6 +113,7 @@ export interface LegislativeState {
   legislativeCalendar: ScheduledBill[];
   adviserAccuracy: number;
   activeCrisis?: CrisisState;
+  delayedEffects: { modifier: GameStateModifier; effectDay: number }[];
   sessionStats: {
     billsIntroduced: number;
     billsPassed: number;

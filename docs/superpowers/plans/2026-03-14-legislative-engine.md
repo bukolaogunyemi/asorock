@@ -968,6 +968,353 @@ Expected: Build succeeds
 - [ ] **Step 6: Commit**
 
 ```bash
-git add -A
+git add client/src/lib/gameData.ts client/src/lib/gameContent.ts client/src/lib/gameEngine.ts
 git commit -m "feat(legislative): complete legislative engine integration and cleanup"
+```
+
+---
+
+## Chunk 3: Missing Spec Features
+
+### Task 13: Executive Bill Proposal
+
+**Files:**
+- Modify: `client/src/lib/legislativeEngine.ts`
+- Modify: `client/src/lib/legislativeEngine.test.ts`
+
+The player needs to propose executive bills from a contextual menu (2-3 available at any time based on campaign promises, policy lever changes, and event responses).
+
+- [ ] **Step 1: Write tests for executive bill generation**
+
+```typescript
+describe("executive bills", () => {
+  it("should generate 2-3 available executive bills based on game state", () => {
+    const state = initializeGameState(testConfig);
+    const available = getAvailableExecutiveBills(state);
+    expect(available.length).toBeGreaterThanOrEqual(2);
+    expect(available.length).toBeLessThanOrEqual(3);
+  });
+
+  it("should include bills for unfulfilled campaign promises", () => {
+    const state = initializeGameState(testConfig);
+    state.campaignPromises = [{ id: "p1", text: "Reform petroleum sector", status: "unfulfilled", progress: 0 } as any];
+    const available = getAvailableExecutiveBills(state);
+    expect(available.some((b) => b.subjectTag === "economy")).toBe(true);
+  });
+
+  it("proposeExecutiveBill should add bill to activeBills", () => {
+    const state = initializeGameState(testConfig);
+    state.legislature = defaultLegislativeState();
+    const result = proposeExecutiveBill(state, "petroleum-reform");
+    expect(result.legislature.activeBills.length).toBe(1);
+    expect(result.legislature.activeBills[0].sponsor).toBe("executive");
+  });
+});
+```
+
+- [ ] **Step 2: Implement executive bill proposal**
+
+Add: `getAvailableExecutiveBills(state)` — scans campaign promises, recent policy changes, and active events to generate 2-3 contextual executive bill options. `proposeExecutiveBill(state, billId)` — adds the selected bill to activeBills with priority introduction (bypasses queue).
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add client/src/lib/legislativeEngine.ts client/src/lib/legislativeEngine.test.ts
+git commit -m "feat(legislative): add executive bill proposal system"
+```
+
+---
+
+### Task 14: Multi-Round Crisis State Machine
+
+**Files:**
+- Modify: `client/src/lib/legislativeEngine.ts`
+- Modify: `client/src/lib/legislativeTypes.ts`
+- Modify: `client/src/lib/legislativeEngine.test.ts`
+
+Budget crises span 3-4 rounds, social flashpoints 2 rounds, constitutional amendments 3 rounds.
+
+- [ ] **Step 1: Add crisis round tracking to types**
+
+Add to `legislativeTypes.ts`:
+```typescript
+export interface CrisisState {
+  billId: string;
+  currentRound: number;
+  totalRounds: number;
+  crisisType: "budget" | "social" | "constitutional" | "override" | "surprise-motion";
+  roundHistory: { round: number; leversUsed: string[]; result: string }[];
+}
+```
+Add `activeCrisis?: CrisisState` to `LegislativeState`.
+
+- [ ] **Step 2: Write tests for multi-round crises**
+
+```typescript
+describe("multi-round crises", () => {
+  it("budget crisis should have 3-4 rounds", () => {
+    const crisis = initializeCrisis("budget", billId);
+    expect(crisis.totalRounds).toBeGreaterThanOrEqual(3);
+    expect(crisis.totalRounds).toBeLessThanOrEqual(4);
+  });
+
+  it("should advance to next round after resolution", () => {
+    const crisis = initializeCrisis("budget", billId);
+    const result = advanceCrisisRound(crisis, ["spend-political-capital"]);
+    expect(result.currentRound).toBe(2);
+  });
+
+  it("final round should resolve the bill", () => {
+    const crisis = { ...initializeCrisis("social", billId), currentRound: 2, totalRounds: 2 };
+    const result = advanceCrisisRound(crisis, []);
+    expect(result.resolved).toBe(true);
+  });
+});
+```
+
+- [ ] **Step 3: Implement multi-round state machine**
+
+Add: `initializeCrisis(type, billId)`, `advanceCrisisRound(crisis, leverIds)`. Budget: round 1 (strategy), round 2 (amendments), round 3 (floor vote), round 4 (optional deadlock). Social: round 1 (floor vote), round 2 (presidential desk). Constitutional: round 1 (floor debate), round 2 (house vote), round 3 (senate vote).
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add client/src/lib/legislativeTypes.ts client/src/lib/legislativeEngine.ts client/src/lib/legislativeEngine.test.ts
+git commit -m "feat(legislative): add multi-round crisis state machine"
+```
+
+---
+
+### Task 15: Amendments & Reconciliation
+
+**Files:**
+- Modify: `client/src/lib/legislativeEngine.ts`
+- Modify: `client/src/lib/legislativeEngine.test.ts`
+
+- [ ] **Step 1: Write tests for amendments and reconciliation**
+
+```typescript
+describe("amendments", () => {
+  it("should generate amendment proposals during committee stage", () => {
+    const bill = createBillFromTemplate(template, 1);
+    bill.houseStage = "committee";
+    const amendments = generateAmendments(bill, state);
+    expect(amendments.length).toBeGreaterThanOrEqual(0);
+    expect(amendments.length).toBeLessThanOrEqual(3);
+  });
+
+  it("accepting amendment should modify bill effects and support", () => {
+    const bill = createBillFromTemplate(template, 1);
+    const amendment = { description: "Test", sponsor: "opposition" as const, effectModifiers: [{ target: "approval" as const, delta: -2 }], supportSwing: { house: 15, senate: 8 }, accepted: false };
+    const result = acceptAmendment(bill, amendment);
+    expect(result.amendments[0].accepted).toBe(true);
+  });
+});
+
+describe("reconciliation", () => {
+  it("should trigger when chambers pass different versions", () => {
+    const bill = createBillFromTemplate(template, 1);
+    bill.houseStage = "passed";
+    bill.senateStage = "passed";
+    bill.amendments = [{ ...amendment, accepted: true }]; // house version differs
+    const needsReconciliation = checkReconciliation(bill);
+    expect(needsReconciliation).toBe(true);
+  });
+});
+```
+
+- [ ] **Step 2: Implement amendments and reconciliation**
+
+Add: `generateAmendments(bill, state)` — during committee stage, opposition/committee may propose 0-3 amendments. `acceptAmendment(bill, amendment)` — modifies bill effects by amendment.effectModifiers, applies supportSwing. `checkReconciliation(bill)` — if chambers passed different versions, requires 5-day delay + PC cost. For crisis bills, reconciliation becomes an additional crisis round.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add client/src/lib/legislativeEngine.ts client/src/lib/legislativeEngine.test.ts
+git commit -m "feat(legislative): add amendments during committee and reconciliation"
+```
+
+---
+
+### Task 16: Veto Override & Opposition Surprise Motions
+
+**Files:**
+- Modify: `client/src/lib/legislativeEngine.ts`
+- Modify: `client/src/lib/legislativeEngine.test.ts`
+
+- [ ] **Step 1: Write tests**
+
+```typescript
+describe("veto override", () => {
+  it("should check 2/3 majority threshold", () => {
+    const result = attemptOverride(state, billId);
+    const threshold = 240; // 2/3 of 360
+    expect(result.housePassed).toBe(result.houseVotes >= threshold);
+  });
+
+  it("low approval should increase override probability", () => {
+    state.approval = 25;
+    const resultLow = calculateOverrideProbability(state);
+    state.approval = 75;
+    const resultHigh = calculateOverrideProbability(state);
+    expect(resultLow).toBeGreaterThan(resultHigh);
+  });
+});
+
+describe("surprise motions", () => {
+  it("should trigger impeachment motion when approval < 25 and outrage > 70", () => {
+    state.approval = 20;
+    state.outrage = 75;
+    const motions = checkSurpriseMotions(state);
+    expect(motions.some((m) => m.type === "impeachment")).toBe(true);
+  });
+
+  it("should trigger no-confidence when stability < 20", () => {
+    state.stability = 15;
+    const motions = checkSurpriseMotions(state);
+    expect(motions.some((m) => m.type === "no-confidence")).toBe(true);
+  });
+});
+```
+
+- [ ] **Step 2: Implement override and surprise motions**
+
+Add: `attemptOverride(state, billId)` — calculates votes in both chambers against 2/3 threshold, influenced by approval. `checkSurpriseMotions(state)` — checks for impeachment (approval < 25, outrage > 70), no-confidence (stability < 20), emergency debate triggers. These are rendered as crisis events.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add client/src/lib/legislativeEngine.ts client/src/lib/legislativeEngine.test.ts
+git commit -m "feat(legislative): add veto override mechanics and opposition surprise motions"
+```
+
+---
+
+### Task 17: Delayed Consequences & Campaign Promise Tracking
+
+**Files:**
+- Modify: `client/src/lib/legislativeEngine.ts`
+- Modify: `client/src/lib/legislativeEngine.test.ts`
+
+- [ ] **Step 1: Write tests**
+
+```typescript
+describe("delayed consequences", () => {
+  it("should queue effects with delay field", () => {
+    const modifier = { target: "macroEconomy" as const, macroKey: "inflation", delta: 2, delay: 30 };
+    const queue = queueDelayedEffect(modifier, 100);
+    expect(queue.effectDay).toBe(130);
+  });
+
+  it("should apply queued effects when day is reached", () => {
+    const pending = [{ modifier: { target: "approval" as const, delta: -5 }, effectDay: 50 }];
+    const result = processDelayedEffects(pending, 50);
+    expect(result.applied.length).toBe(1);
+    expect(result.remaining.length).toBe(0);
+  });
+});
+
+describe("campaign promise tracking", () => {
+  it("should update promise progress when related bill passes", () => {
+    const state = initializeGameState(testConfig);
+    const bill = { subjectTag: "economy", title: "Petroleum Reform" };
+    const result = trackPromiseProgress(state, bill as any);
+    // Should find matching promise and increase progress
+    expect(result).toBeDefined();
+  });
+});
+```
+
+- [ ] **Step 2: Implement delayed effects and promise tracking**
+
+Add: `queueDelayedEffect(modifier, currentDay)` — creates a pending effect with target day. `processDelayedEffects(pending, currentDay)` — applies any effects whose day has arrived. Add `delayedEffects: { modifier: GameStateModifier; effectDay: number }[]` to `LegislativeState`. Add `trackPromiseProgress(state, bill)` — matches passed bill subjectTag/title against campaign promises and updates progress.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add client/src/lib/legislativeEngine.ts client/src/lib/legislativeTypes.ts client/src/lib/legislativeEngine.test.ts
+git commit -m "feat(legislative): add delayed consequence queue and campaign promise tracking"
+```
+
+---
+
+### Task 18: Existing System Integration
+
+**Files:**
+- Modify: `client/src/lib/legislativeEngine.ts`
+- Modify: `client/src/lib/factionDrift.ts`
+- Modify: `client/src/lib/legislativeEngine.test.ts`
+
+- [ ] **Step 1: Write tests for system integrations**
+
+```typescript
+describe("system integration", () => {
+  it("bill outcomes should feed faction grievance via factionDrift", () => {
+    const effects = getBillFactionEffects(bill, "passed");
+    expect(effects.some((e) => e.target === "factionGrievance")).toBe(true);
+  });
+
+  it("Senate President alignment should modify senate votes", () => {
+    const modifier = getSenatePresidentModifier(state);
+    // Aligned Senate President boosts ruling party votes
+    expect(modifier).toBeGreaterThanOrEqual(-10);
+    expect(modifier).toBeLessThanOrEqual(10);
+  });
+});
+```
+
+- [ ] **Step 2: Implement integrations**
+
+- **factionDrift.ts:** Add `billOutcomeFactionEffect(bill, outcome)` — when a bill passes/fails, affected factions gain/lose grievance. Wire into bill resolution.
+- **constitutionalOfficers:** Add `getSenatePresidentModifier(state)` — looks up Senate President from `state.constitutionalOfficers`, checks their alignment, adds ±5-10 votes to senate projections.
+- **eventChains:** Render legislative crises as event chain instances so they use the existing crisis UI framework.
+- **ideologyPressure:** Tag executive bills with ideology impact from the bill template.
+
+- [ ] **Step 3: Run all tests**
+
+Run: `cd client && npx vitest run`
+Expected: All PASS
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add client/src/lib/legislativeEngine.ts client/src/lib/factionDrift.ts client/src/lib/legislativeEngine.test.ts
+git commit -m "feat(legislative): integrate with factionDrift, constitutionalOfficers, and eventChains"
+```
+
+---
+
+### Task 19: Fix TestConfig & Return Type Consistency
+
+**Files:**
+- Modify: `client/src/lib/legislativeEngine.test.ts`
+
+- [ ] **Step 1: Fix testConfig to include all CampaignConfig fields**
+
+Update the shared testConfig across all test files to include all required fields:
+```typescript
+const testConfig: CampaignConfig = {
+  firstName: "Test", lastName: "President", age: 55,
+  gender: "Male", stateOfOrigin: "Lagos", education: "University",
+  party: "ADU", era: "2023", vpName: "VP Test",
+  vpState: "Kano", personalAssistant: "Test PA",
+  promises: [], appointments: {},
+  presidentName: "Test President", origin: "Lagos Politician",
+};
+```
+
+- [ ] **Step 2: Ensure processLegislativeTurn consistently returns LegislativeState**
+
+Verify `processLegislativeTurn(state: GameState): LegislativeState` return type is used consistently everywhere. Callers destructure as `state.legislature = processLegislativeTurn(state)`.
+
+- [ ] **Step 3: Run all tests**
+
+Run: `cd client && npx vitest run`
+Expected: All PASS
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add client/src/lib/legislativeEngine.test.ts
+git commit -m "fix(legislative): fix testConfig and return type consistency"
 ```

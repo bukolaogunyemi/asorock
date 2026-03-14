@@ -14,52 +14,6 @@ import { CompetencyBar } from "@/components/CompetencyBar";
 import { RelationshipIndicator } from "@/components/RelationshipIndicator";
 import { Scale, Gavel, ShieldAlert, UserCheck, Ban } from "lucide-react";
 
-const judiciaryPersonnel = [
-  {
-    name: "Justice Adewale Onifade",
-    title: "Chief Justice of Nigeria",
-    shortTitle: "CJN",
-    avatar: "AF",
-    gender: "Male",
-    loyalty: 55,
-    competence: 70,
-    relationship: "Neutral" as const,
-    note: "Traditionalist. Unlikely to challenge executive but protective of judicial turf.",
-  },
-  {
-    name: "Justice Hauwa Daramola",
-    title: "President, Court of Appeal",
-    shortTitle: "PCA",
-    avatar: "HD",
-    gender: "Female",
-    loyalty: 45,
-    competence: 80,
-    relationship: "Wary" as const,
-    note: "Reform-minded. Has ruled against government before.",
-  },
-  {
-    name: "Justice Kwame Mensah",
-    title: "President, ECOWAS Court",
-    shortTitle: "ECOWAS",
-    avatar: "EA",
-    gender: "Male",
-    loyalty: 40,
-    competence: 75,
-    relationship: "Neutral" as const,
-    note: "International jurist. Concerned about regional human rights record.",
-  },
-  {
-    name: "Barr. Lanre Adekunle",
-    title: "Attorney General & Minister of Justice",
-    shortTitle: "AG",
-    avatar: "LA",
-    gender: "Male",
-    loyalty: 72,
-    competence: 68,
-    relationship: "Friendly" as const,
-    note: "Loyalist. Will pursue government legal strategy but has limits.",
-  },
-];
 
 const independenceColor = (v: number) => {
   if (v >= 50) return "bg-green-500";
@@ -93,6 +47,72 @@ const statusSteps = ["Filed", "Hearing", "Deliberation", "Decided"];
 export default function JudiciaryTab() {
   const { toast } = useToast();
   const { state } = useGame();
+  const cjnOfficer = state.constitutionalOfficers.find(
+    (o) => o.portfolio === "Chief Justice of Nigeria"
+  );
+
+  const judiciaryPersonnel = [
+    // CJN — dynamically selected based on zonal balancing
+    cjnOfficer
+      ? {
+          name: cjnOfficer.name,
+          title: "Chief Justice of Nigeria" as const,
+          shortTitle: "CJN" as const,
+          avatar: cjnOfficer.avatar,
+          gender: cjnOfficer.gender,
+          loyalty: cjnOfficer.loyalty,
+          competence: cjnOfficer.competence,
+          relationship: cjnOfficer.relationship,
+          note: cjnOfficer.opinion,
+        }
+      : {
+          // Fallback if game not started
+          name: "Chief Justice",
+          title: "Chief Justice of Nigeria" as const,
+          shortTitle: "CJN" as const,
+          avatar: "CJ",
+          gender: "Male" as const,
+          loyalty: 55,
+          competence: 70,
+          relationship: "Neutral" as const,
+          note: "Awaiting appointment.",
+        },
+    // Rest remain hardcoded (PCA, ECOWAS, AG)
+    {
+      name: "Justice Hauwa Daramola",
+      title: "President, Court of Appeal",
+      shortTitle: "PCA",
+      avatar: "HD",
+      gender: "Female",
+      loyalty: 45,
+      competence: 80,
+      relationship: "Wary" as const,
+      note: "Reform-minded. Has ruled against government before.",
+    },
+    {
+      name: "Justice Kwame Mensah",
+      title: "President, ECOWAS Court",
+      shortTitle: "ECOWAS",
+      avatar: "EA",
+      gender: "Male",
+      loyalty: 40,
+      competence: 75,
+      relationship: "Neutral" as const,
+      note: "International jurist. Concerned about regional human rights record.",
+    },
+    {
+      name: "Barr. Lanre Adekunle",
+      title: "Attorney General & Minister of Justice",
+      shortTitle: "AG",
+      avatar: "LA",
+      gender: "Male",
+      loyalty: 72,
+      competence: 68,
+      relationship: "Friendly" as const,
+      note: "Loyalist. Will pursue government legal strategy but has limits.",
+    },
+  ];
+
   const action = (title: string, msg: string) => () =>
     toast({ title, description: msg });
 

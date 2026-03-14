@@ -438,7 +438,7 @@ export interface TradeDeal {
 }
 
 export const tradePipeline: TradeDeal[] = [
-  { deal: "Dangote Refinery Export Pact", partner: "EU", value: "$2.8B", status: "Negotiating" },
+  { deal: "Kaduna Mega Refinery Export Pact", partner: "EU", value: "$2.8B", status: "Negotiating" },
   { deal: "Rail Corridor Expansion", partner: "China", value: "$4.5B", status: "Pending Approval" },
   { deal: "LNG Long-Term Supply", partner: "Germany", value: "$3.2B", status: "Signed" },
   { deal: "Agri-Tech Partnership", partner: "Brazil", value: "$800M", status: "Stalled" },
@@ -461,10 +461,10 @@ export interface DiplomacyPersonnel {
 }
 
 export const diplomacyPersonnel: DiplomacyPersonnel[] = [
-  { name: "Amb. Yusuf Tuggar", title: "Minister of Foreign Affairs", shortTitle: "Foreign", loyalty: 72, competence: 78, tenure: "Since Aug 2023", note: "Career diplomat. Managing ECOWAS crisis and US relations reset.", relationship: "Friendly", avatar: "YT", age: 59, state: "Bauchi", gender: "Male" },
-  { name: "Amb. Adejoke Orelope-Adefulire", title: "Perm Rep to UN", shortTitle: "UN Rep", loyalty: 68, competence: 82, tenure: "Since Sep 2023", note: "Strong multilateral credentials. Key to IMF/World Bank engagement.", relationship: "Neutral", avatar: "AO", age: 55, state: "Lagos", gender: "Female" },
-  { name: "Alhaji Zubairu Dada", title: "MoS Foreign Affairs (Diaspora)", shortTitle: "Diaspora", loyalty: 80, competence: 65, tenure: "Since May 2023", note: "Northern Caucus link. Manages diaspora remittance policy.", relationship: "Friendly", avatar: "ZD", age: 63, state: "Niger", gender: "Male" },
-  { name: "Amb. Bianca Odumegwu-Ojukwu", title: "Ambassador to Spain & EU Trade Lead", shortTitle: "EU Envoy", loyalty: 55, competence: 75, tenure: "Since Oct 2023", note: "High-profile appointment. EU trade negotiations lead.", relationship: "Neutral", avatar: "BO", age: 52, state: "Anambra", gender: "Female" },
+  { name: "Amb. Ibrahim Garba", title: "Minister of Foreign Affairs", shortTitle: "Foreign", loyalty: 72, competence: 78, tenure: "Since Aug 2023", note: "Career diplomat. Managing ECOWAS crisis and US relations reset.", relationship: "Friendly", avatar: "IG", age: 59, state: "Bauchi", gender: "Male" },
+  { name: "Amb. Folasade Akinwale", title: "Perm Rep to UN", shortTitle: "UN Rep", loyalty: 68, competence: 82, tenure: "Since Sep 2023", note: "Strong multilateral credentials. Key to IMF/World Bank engagement.", relationship: "Neutral", avatar: "FA", age: 55, state: "Lagos", gender: "Female" },
+  { name: "Alhaji Murtala Ringim", title: "MoS Foreign Affairs (Diaspora)", shortTitle: "Diaspora", loyalty: 80, competence: 65, tenure: "Since May 2023", note: "Northern Caucus link. Manages diaspora remittance policy.", relationship: "Friendly", avatar: "MR", age: 63, state: "Niger", gender: "Male" },
+  { name: "Amb. Chioma Ezeigbo", title: "Ambassador to Spain & EU Trade Lead", shortTitle: "EU Envoy", loyalty: 55, competence: 75, tenure: "Since Oct 2023", note: "High-profile appointment. EU trade negotiations lead.", relationship: "Neutral", avatar: "CE", age: 52, state: "Anambra", gender: "Female" },
 ];
 
 // ── Media & Sentiment ────────────────────────────────────
@@ -485,7 +485,7 @@ export const mediaSentiment: { week: string; positive: number; negative: number;
 
 export const narratives: { narrative: string; source: string; reach: string; sentiment: "Positive" | "Negative" | "Neutral"; trend: "up" | "down" | "stable" }[] = [
   { narrative: "Fuel subsidy pain — cost of living crisis", source: "Social Media", reach: "42M", sentiment: "Negative", trend: "up" },
-  { narrative: "Dangote refinery — energy independence hope", source: "Mainstream Press", reach: "28M", sentiment: "Positive", trend: "stable" },
+  { narrative: "Kaduna refinery — energy independence hope", source: "Mainstream Press", reach: "28M", sentiment: "Positive", trend: "stable" },
   { narrative: "NW banditry — government inaction narrative", source: "Opposition Media", reach: "18M", sentiment: "Negative", trend: "up" },
   { narrative: "Digital economy growth — tech hub momentum", source: "International", reach: "12M", sentiment: "Positive", trend: "stable" },
   { narrative: "FX black market — naira collapse fears", source: "Social Media", reach: "35M", sentiment: "Negative", trend: "up" },
@@ -515,10 +515,10 @@ export interface MediaPersonnel {
 }
 
 export const mediaPersonnel: MediaPersonnel[] = [
-  { name: "Chief Dele Alake", title: "Minister of Information", shortTitle: "Info Min", loyalty: 90, competence: 72, tenure: "Since Aug 2023", note: "Veteran media operative. Loyal propagandist but credibility questioned by press corps.", relationship: "Friendly", avatar: "DA" },
-  { name: "Barr. Ajuri Ngelale", title: "Special Adviser Media & Publicity", shortTitle: "SA Media", loyalty: 85, competence: 78, tenure: "Since May 2023", note: "Presidential spokesperson. Controls narrative framing. Under pressure from negative sentiment spiral.", relationship: "Friendly", avatar: "AN" },
-  { name: "Dr. Olusegun Adeniyi", title: "Chairman, NTV Board", shortTitle: "NTV", loyalty: 65, competence: 70, tenure: "Since Sep 2023", note: "Former presidential spokesperson. Moderate voice. NTV viewership declining.", relationship: "Neutral", avatar: "OA" },
-  { name: "Hajia Naja'atu Mohammed", title: "Director, Social Media Strategy", shortTitle: "Social", loyalty: 75, competence: 80, tenure: "Since Jun 2023", note: "Manages government social media response. Battling misinformation on FX narrative.", relationship: "Friendly", avatar: "NM" },
+  { name: "Chief Folu Adebanjo", title: "Minister of Information", shortTitle: "Info Min", loyalty: 90, competence: 72, tenure: "Since Aug 2023", note: "Veteran media operative. Loyal propagandist but credibility questioned by press corps.", relationship: "Friendly", avatar: "FA" },
+  { name: "Barr. Tayo Omisakin", title: "Special Adviser Media & Publicity", shortTitle: "SA Media", loyalty: 85, competence: 78, tenure: "Since May 2023", note: "Presidential spokesperson. Controls narrative framing. Under pressure from negative sentiment spiral.", relationship: "Friendly", avatar: "TO" },
+  { name: "Dr. Kunle Adeyemo", title: "Chairman, NTV Board", shortTitle: "NTV", loyalty: 65, competence: 70, tenure: "Since Sep 2023", note: "Former presidential spokesperson. Moderate voice. NTV viewership declining.", relationship: "Neutral", avatar: "KA" },
+  { name: "Hajia Bilkisu Abubakar", title: "Director, Social Media Strategy", shortTitle: "Social", loyalty: 75, competence: 80, tenure: "Since Jun 2023", note: "Manages government social media response. Battling misinformation on FX narrative.", relationship: "Friendly", avatar: "BA" },
 ];
 
 // ── Event Feed ───────────────────────────────────────────
@@ -618,7 +618,7 @@ export const presidentBioData = {
   universities: ["University of Lagos", "Ahmadu Bello University", "University of Nigeria Nsukka", "Obafemi Awolowo University", "University of Ibadan", "Bayero University Kano"],
   postgrad: ["Harvard Kennedy School (MPA)", "Oxford University (MBA)", "London School of Economics (MSc)", "Georgetown University (LLM)", "NIPSS Kuru (National Defence College)", "Lagos Business School (AMP)"],
   previousPositions: ["Governor (2 terms)", "Senator (Federal Republic)", "Minister of Works & Housing", "MD of First Bank Nigeria", "Group CEO of NNPC", "DG of NIMC", "Special Adviser to the President"],
-  workHistory: ["PricewaterhouseCoopers (Partner)", "Shell Petroleum Nigeria", "Central Bank of Nigeria", "Dangote Group (VP Strategy)", "Federal Ministry of Finance", "Nigerian Bar Association (Chairman)"],
+  workHistory: ["PricewaterhouseCoopers (Partner)", "Shell Petroleum Nigeria", "Central Bank of Nigeria", "Gambo Industries (VP Strategy)", "Federal Ministry of Finance", "Nigerian Bar Association (Chairman)"],
   familyDescriptions: ["Married with 4 children — spouse is a prominent Lagos socialite and education advocate", "Married with 3 children — wife is a retired federal judge", "Married with 5 children — family traces lineage to Sokoto Caliphate royalty", "Married with 2 children — spouse runs an NGO focused on maternal health in the North-East"],
   hobbies: ["polo enthusiast", "avid chess player", "patron of the Nigerian Philharmonic", "amateur historian", "keen golfer"],
 };
@@ -761,9 +761,9 @@ export interface EconomicPersonnel {
 export const economicPersonnel: EconomicPersonnel[] = [
   { name: "Alh. Aminu Kazeem", title: "Minister of Finance", shortTitle: "Finance", loyalty: 78, competence: 85, tenure: "Since May 2023", note: "Northern Caucus loyalist. Key to IMF negotiations and fiscal consolidation.", relationship: "Friendly", avatar: "AK" },
   { name: "Hajia Hadiza Bichi", title: "CBN Governor", shortTitle: "CBN", loyalty: 55, competence: 92, tenure: "Since Jun 2023", note: "Technocratic independence — resists political pressure on rates.", relationship: "Neutral", avatar: "HB" },
-  { name: "Engr. Mele Kyari", title: "NNPCL Group CEO", shortTitle: "NNPC", loyalty: 65, competence: 78, tenure: "Since Jul 2023", note: "Manages oil revenue pipeline. Under scrutiny for subsidy accounting.", relationship: "Neutral", avatar: "MK" },
-  { name: "Dr. Ola Olukoyede", title: "EFCC Chairman", shortTitle: "EFCC", loyalty: 82, competence: 70, tenure: "Since Oct 2023", note: "Presidential appointee. Anti-corruption enforcement a political tool.", relationship: "Friendly", avatar: "OO" },
-  { name: "Barr. Zacch Adedeji", title: "FIRS Chairman", shortTitle: "FIRS", loyalty: 75, competence: 80, tenure: "Since Sep 2023", note: "Driving tax revenue expansion. Digital tax bill his priority.", relationship: "Friendly", avatar: "ZA" },
+  { name: "Engr. Abubakar Lawal", title: "NNPCL Group CEO", shortTitle: "NNPC", loyalty: 65, competence: 78, tenure: "Since Jul 2023", note: "Manages oil revenue pipeline. Under scrutiny for subsidy accounting.", relationship: "Neutral", avatar: "AL" },
+  { name: "Dr. Rotimi Ajayi", title: "EFCC Chairman", shortTitle: "EFCC", loyalty: 82, competence: 70, tenure: "Since Oct 2023", note: "Presidential appointee. Anti-corruption enforcement a political tool.", relationship: "Friendly", avatar: "RA" },
+  { name: "Barr. Gbenga Oyelaran", title: "FIRS Chairman", shortTitle: "FIRS", loyalty: 75, competence: 80, tenure: "Since Sep 2023", note: "Driving tax revenue expansion. Digital tax bill his priority.", relationship: "Friendly", avatar: "GO" },
   { name: "Chief Adaeze Okonkwo", title: "Minister of Petroleum", shortTitle: "Petroleum", loyalty: 65, competence: 72, tenure: "Since May 2023", note: "Under scrutiny. South-East political figure with high ambition.", relationship: "Wary", avatar: "AO" },
 ];
 
@@ -773,12 +773,12 @@ export const houseSeats = { ruling: 201, opposition: 154, independent: 5, total:
 
 export const senateLeadership: Character[] = [
   { name: "Sen. Rotimi Balogun", portfolio: "Senate President", agenda: "Push constitutional reform to strengthen Senate powers over budget. Controls committee assignments.", opinion: "Cautiously supportive — expects patronage and influence over appointments.", loyalty: 62, competence: 74, ambition: 90, faction: "South-West Alliance", relationship: "Wary", avatar: "RB", age: 67, state: "Ogun", gender: "Male" },
-  { name: "Sen. Kalu Orji", portfolio: "Deputy Senate President", agenda: "Position for 2027 presidential run. Building cross-regional alliances.", opinion: "Publicly loyal but privately calculating.", loyalty: 48, competence: 66, ambition: 88, faction: "South-East Bloc", relationship: "Neutral", avatar: "KO", age: 55, state: "Abia", gender: "Male" },
+  { name: "Sen. Emeka Udeogu", portfolio: "Deputy Senate President", agenda: "Position for 2027 presidential run. Building cross-regional alliances.", opinion: "Publicly loyal but privately calculating.", loyalty: 48, competence: 66, ambition: 88, faction: "South-East Bloc", relationship: "Neutral", avatar: "EU", age: 55, state: "Abia", gender: "Male" },
 ];
 
 export const houseLeadership: Character[] = [
-  { name: "Rt. Hon. Femi Gbajabiamila", portfolio: "Speaker of the House", agenda: "Maintain house discipline and push through executive priority bills. Eyes governorship.", opinion: "Reliable ally — but expects his bills fast-tracked in return.", loyalty: 78, competence: 72, ambition: 75, faction: "South-West Alliance", relationship: "Friendly", avatar: "FG", age: 61, state: "Lagos", gender: "Male" },
-  { name: "Hon. Ahmed Idris Wase", portfolio: "Deputy Speaker", agenda: "Represent Northern interests in legislative negotiations. Broker power-sharing.", opinion: "Loyal to the party machinery. Transactional.", loyalty: 70, competence: 60, ambition: 65, faction: "Northern Caucus", relationship: "Friendly", avatar: "AW", age: 50, state: "Plateau", gender: "Male" },
+  { name: "Rt. Hon. Dayo Olatunji", portfolio: "Speaker of the House", agenda: "Maintain house discipline and push through executive priority bills. Eyes governorship.", opinion: "Reliable ally — but expects his bills fast-tracked in return.", loyalty: 78, competence: 72, ambition: 75, faction: "South-West Alliance", relationship: "Friendly", avatar: "DO", age: 61, state: "Lagos", gender: "Male" },
+  { name: "Hon. Suleiman Jato", portfolio: "Deputy Speaker", agenda: "Represent Northern interests in legislative negotiations. Broker power-sharing.", opinion: "Loyal to the party machinery. Transactional.", loyalty: 70, competence: 60, ambition: 65, faction: "Northern Caucus", relationship: "Friendly", avatar: "SJ", age: 50, state: "Plateau", gender: "Male" },
 ];
 
 // ── Politics Tab — Power Dynamics ─────────────────────────
@@ -791,12 +791,12 @@ export interface PowerBroker {
 }
 
 export const powerBrokers: PowerBroker[] = [
-  { name: "Alhaji Aliko Dangote", role: "Business Oligarch", influence: 92, disposition: "Ally", note: "Refinery success tied to your reform agenda. Will lobby for favorable FX policy." },
-  { name: "Gen. Abdulsalami (Rtd)", role: "Ex-Head of State", influence: 78, disposition: "Neutral", note: "Elder statesman. Mediator in North-South tensions. Publicly silent but influential." },
+  { name: "Alhaji Aminu Gambo", role: "Business Oligarch", influence: 92, disposition: "Ally", note: "Refinery success tied to your reform agenda. Will lobby for favorable FX policy." },
+  { name: "Gen. Umaru Kwande (Rtd)", role: "Ex-Head of State", influence: 78, disposition: "Neutral", note: "Elder statesman. Mediator in North-South tensions. Publicly silent but influential." },
   { name: "Chief Ugochukwu Mbah", role: "Party Chairman", influence: 85, disposition: "Rival", note: "Controls candidate selection for next election cycle. Building parallel power structure." },
   { name: "Comrade Mwuese Tarka", role: "Labour Leader", influence: 70, disposition: "Enemy", note: "Mobilizing street protests against subsidy removal. Has NLC + TUC backing." },
-  { name: "Pastor Tunde Bakare", role: "Religious Leader", influence: 65, disposition: "Neutral", note: "Influence over Christian South-West. Publicly critical of corruption." },
-  { name: "Sheik Ibrahim El-Zakzaky", role: "Religious Leader", influence: 60, disposition: "Rival", note: "Shi'a movement leader. Detention a flashpoint. Northern youth mobilizer." },
+  { name: "Pastor Adeboye Oni", role: "Religious Leader", influence: 65, disposition: "Neutral", note: "Influence over Christian South-West. Publicly critical of corruption." },
+  { name: "Sheik Abubakar Maigari", role: "Religious Leader", influence: 60, disposition: "Rival", note: "Shi'a movement leader. Detention a flashpoint. Northern youth mobilizer." },
 ];
 
 export interface PoliticalEvent {
@@ -809,7 +809,7 @@ export interface PoliticalEvent {
 export const politicalTimeline: PoliticalEvent[] = [
   { date: "Day 1", event: "Inauguration", impact: "Initial goodwill — 58% approval", type: "milestone" },
   { date: "Day 12", event: "Fuel subsidy removal announced", impact: "Approval dropped 10 points overnight", type: "threat" },
-  { date: "Day 18", event: "Dangote refinery commissioning", impact: "+4 approval, positive press cycle", type: "opportunity" },
+  { date: "Day 18", event: "Kaduna Mega Refinery commissioning", impact: "+4 approval, positive press cycle", type: "opportunity" },
   { date: "Day 28", event: "NW banditry escalation", impact: "Security threat level raised to Elevated", type: "threat" },
   { date: "Day 35", event: "UN General Assembly speech", impact: "+2 international reputation", type: "opportunity" },
   { date: "Day 42", event: "Labour ultimatum issued", impact: "Strike risk — 14-day countdown", type: "threat" },
@@ -826,7 +826,7 @@ export interface LegacyMilestone {
 
 export const legacyMilestones: LegacyMilestone[] = [
   { title: "Fuel Subsidy Partial Removal", date: "Day 12", pillar: "Economic Reform", impact: -8, description: "Bold but costly — triggered inflation spike and social unrest. Long-term fiscal benefit unclear." },
-  { title: "Dangote Refinery Support", date: "Day 18", pillar: "Infrastructure", impact: 12, description: "Federal backing for refinery commissioning. Energy independence narrative boosted public mood." },
+  { title: "Kaduna Mega Refinery Support", date: "Day 18", pillar: "Infrastructure", impact: 12, description: "Federal backing for refinery commissioning. Energy independence narrative boosted public mood." },
   { title: "NW Security Surge", date: "Day 28", pillar: "Security & Peace", impact: -4, description: "Troop deployment to Zamfara. Results mixed — incidents decreased 15% but civilian displacement increased." },
   { title: "Digital Economy Tax Bill", date: "Day 30", pillar: "Economic Reform", impact: 5, description: "Passed first reading with bipartisan support. Projected ₦800B annual revenue." },
   { title: "Anti-Corruption Probe (Ministry of Petroleum)", date: "Day 35", pillar: "Anti-Corruption", impact: 7, description: "Launched investigation into $2.1B procurement irregularities. Chief Okonkwo under scrutiny." },

@@ -16,40 +16,44 @@ import { Scale, Gavel, ShieldAlert, UserCheck, Ban } from "lucide-react";
 
 const judiciaryPersonnel = [
   {
-    name: "Justice Olukayode Ariwoola",
+    name: "Justice Adewale Fashola",
     title: "Chief Justice of Nigeria",
     shortTitle: "CJN",
-    avatar: "OA",
+    avatar: "AF",
+    gender: "Male",
     loyalty: 55,
     competence: 70,
     relationship: "Neutral" as const,
     note: "Traditionalist. Unlikely to challenge executive but protective of judicial turf.",
   },
   {
-    name: "Justice Monica Dongban-Mensem",
+    name: "Justice Hauwa Daramola",
     title: "President, Court of Appeal",
     shortTitle: "PCA",
-    avatar: "MD",
+    avatar: "HD",
+    gender: "Female",
     loyalty: 45,
     competence: 80,
     relationship: "Wary" as const,
     note: "Reform-minded. Has ruled against government before.",
   },
   {
-    name: "Justice Edward Asante",
+    name: "Justice Kwame Mensah",
     title: "President, ECOWAS Court",
     shortTitle: "ECOWAS",
     avatar: "EA",
+    gender: "Male",
     loyalty: 40,
     competence: 75,
     relationship: "Neutral" as const,
     note: "International jurist. Concerned about regional human rights record.",
   },
   {
-    name: "Barr. Lateef Fagbemi",
+    name: "Barr. Lanre Adekunle",
     title: "Attorney General & Minister of Justice",
     shortTitle: "AG",
-    avatar: "LF",
+    avatar: "LA",
+    gender: "Male",
     loyalty: 72,
     competence: 68,
     relationship: "Friendly" as const,
@@ -141,7 +145,7 @@ export default function JudiciaryTab() {
                 <Card key={p.name} className="border border-border bg-muted/30">
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
-                      <CharacterAvatar name={p.name} initials={p.avatar} size="md" />
+                      <CharacterAvatar name={p.name} initials={p.avatar} size="md" gender={p.gender} role={p.title} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <div>

@@ -1033,7 +1033,7 @@ const sourceRoleForCategory = (category: ActiveEvent["category"]): { sender: str
     case "politics":
       return { sender: "Chief Chidubem Okafor", role: "Party Chairman", initials: "CO" };
     case "diplomacy":
-      return { sender: "Amb. Yusuf Tuggar", role: "Foreign Affairs", initials: "YT" };
+      return { sender: "Amb. Ibrahim Garba", role: "Foreign Affairs", initials: "IG" };
     case "media":
       return { sender: "State House Press Desk", role: "Media Desk", initials: "MD" };
     default:

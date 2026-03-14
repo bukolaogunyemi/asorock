@@ -1,7 +1,19 @@
+import type { IdeologyProfile } from "./parties";
+
+/** Tags a presidential decision with its ideological direction */
+export interface IdeologyImpact {
+  dimension: keyof IdeologyProfile;
+  value: number; // -2 to +2
+}
+
+/** Groups political state for clean GameState integration */
+export interface PoliticalState {
+  partyLoyalty: number;          // 0–100, starts at 70
+}
+
 export type Relationship = "Loyal" | "Friendly" | "Neutral" | "Wary" | "Distrustful" | "Hostile";
 export type EventSeverity = "critical" | "warning" | "info";
 export type InboxPriority = "Normal" | "Urgent" | "Critical";
-export type DifficultyId = "easy" | "standard" | "hard" | "nightmare";
 export type GoverningPhase = "honeymoon" | "governance" | "pre-positioning" | "campaign" | "election";
 export type MacroKey = "inflation" | "fxRate" | "reserves" | "debtToGdp" | "oilOutput" | "subsidyPressure";
 export type CabalFocus = "economy" | "security" | "politics";
@@ -73,7 +85,8 @@ export interface Effect {
     | "governorLoyalty"
     | "macro"
     | "metric"
-    | "policyLever";
+    | "policyLever"
+    | "grievance";
   characterName?: string;
   factionName?: string;
   governorName?: string;
@@ -126,11 +139,14 @@ export interface ActiveEvent {
   severity: EventSeverity;
   description: string;
   category: "economy" | "security" | "governance" | "politics" | "diplomacy" | "media";
-  source: "opening" | "contextual" | "chain" | "policy";
+  source: "opening" | "contextual" | "chain" | "policy" | "faction-demand" | "cabinet-appointment";
   choices: EventChoice[];
+  factionKey?: string;
   createdDay: number;
   expiresInDays?: number;
   policyLeverKey?: PolicyLeverKey;
+  /** For cabinet-appointment events: the ministry position being filled */
+  cabinetPortfolio?: string;
 }
 
 export interface QuickActionDefinition {
@@ -167,6 +183,10 @@ export interface CharacterState {
   traits: string[];
   betrayalThreshold: number;
   hooks: Hook[];
+  age?: number;
+  state?: string;
+  gender?: string;
+  title?: string;
 }
 
 export interface FactionState {
@@ -174,6 +194,8 @@ export interface FactionState {
   influence: number;
   loyalty: number;
   stance: "Allied" | "Cooperative" | "Neutral" | "Opposed" | "Hostile";
+  grievance: number;
+  firedThresholds: number[];
 }
 
 export interface EventChainInstance {
@@ -224,10 +246,12 @@ export interface GameInboxMessage {
   preview: string;
   fullText: string;
   day: number;
+  date?: string;
   priority: InboxPriority;
   read: boolean;
   relatedEventId?: string;
-  source: "seed" | "system" | "decision" | "chain" | "court" | "random";
+  responseOptions?: { label: string; actionId: string }[];
+  source: "seed" | "system" | "decision" | "chain" | "court" | "random" | "faction-demand";
 }
 
 export interface DaySummary {
@@ -263,12 +287,6 @@ export interface LegacyMilestoneRecord {
   impact: number;
   description: string;
   day: number;
-}
-
-export interface DifficultyState {
-  id: DifficultyId;
-  approvalMult: number;
-  crisisFreqMult: number;
 }
 
 export interface VicePresidentState {
@@ -350,7 +368,13 @@ export interface GameState {
   presidentGender: string;
   presidentState: string;
   presidentEducation: string;
+  presidentTitle: string;
+  presidentEthnicity: string;
+  presidentReligion: string;
+  presidentOccupation: string;
   presidentParty: string;
+  partyLoyalty: number; // 0–100, starts at 70
+  politicalState: PoliticalState;
   presidentEra: string;
   vicePresident: VicePresidentState;
   personalAssistant: string;
@@ -380,7 +404,7 @@ export interface GameState {
   dailySummary: DaySummary | null;
   approvalHistory: ApprovalHistoryPoint[];
   legacyMilestones: LegacyMilestoneRecord[];
-  difficulty: DifficultyState;
+  cabinetAppointments: Record<string, string | null>;
   lastActionAtDay: Record<string, number>;
   victoryPath?: string;
   defeatState?: string;

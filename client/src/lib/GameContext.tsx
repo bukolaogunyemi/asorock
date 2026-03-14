@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, type ReactNode } from "react";
 import { cloneInboxMessages, getOpeningEvents, initialHeadlines } from "./gameContent";
 import {
+  advanceDate,
   createDailyCabalMeeting,
   generatePolicyConfirmationEvent,
   type Consequence,
@@ -31,8 +32,6 @@ import type {
   ChoiceRequirement,
   CourtCase,
   DaySummary,
-  DifficultyId,
-  DifficultyState,
   FactionState,
   GameState as GameStateShape,
   GovernorState,
@@ -49,7 +48,7 @@ import type {
   SingleLeverState,
   PolicyLeverState,
 } from "./gameTypes";
-import { cabinetRoster, characters, factions } from "./gameData";
+import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidates } from "./gameData";
 
 export type {
   ActiveEvent,
@@ -81,7 +80,10 @@ export interface CampaignConfig {
   origin: string;
   traits: string[];
   ideologies: string[];
-  difficulty: DifficultyId;
+  title?: string;
+  ethnicity: string;
+  religion: string;
+  occupation: string;
 }
 
 const TERM_LENGTH_DAYS = 1460;
@@ -94,12 +96,6 @@ const originModifiers: Record<string, { approval: number; treasury: number; stab
   "People's Champion": { approval: 15, treasury: -0.05, stability: -3, politicalCapital: -5, stress: 0 },
 };
 
-const difficultyModifiers: Record<DifficultyId, DifficultyState> = {
-  easy: { id: "easy", approvalMult: 1.2, crisisFreqMult: 0.7 },
-  standard: { id: "standard", approvalMult: 1.0, crisisFreqMult: 1.0 },
-  hard: { id: "hard", approvalMult: 0.8, crisisFreqMult: 1.2 },
-  nightmare: { id: "nightmare", approvalMult: 0.65, crisisFreqMult: 1.45 },
-};
 
 const eraStartDates: Record<CampaignConfig["era"], { date: string; day: number }> = {
   "1999": { date: "29 May 1999", day: 1 },
@@ -333,21 +329,7 @@ const seedInitialHooks = (charactersMap: Record<string, CharacterState>): Record
 
 const buildCharacterMap = (vicePresident?: VicePresidentState): Record<string, CharacterState> => {
   const map: Record<string, CharacterState> = {};
-  for (const member of cabinetRoster) {
-    map[member.name] = {
-      name: member.name,
-      portfolio: member.portfolio,
-      loyalty: member.loyalty,
-      competence: member.competence,
-      ambition: member.ambition,
-      faction: member.faction,
-      relationship: member.relationship,
-      avatar: member.avatar,
-      traits: [],
-      betrayalThreshold: Math.max(15, 50 - member.ambition * 0.3),
-      hooks: [],
-    };
-  }
+  // Cabinet characters are NOT added here — they are added when the player appoints them
   for (const character of characters) {
     map[character.name] = {
       name: character.name,
@@ -361,6 +343,9 @@ const buildCharacterMap = (vicePresident?: VicePresidentState): Record<string, C
       traits: [],
       betrayalThreshold: Math.max(15, 50 - character.ambition * 0.3),
       hooks: [],
+      age: character.age,
+      state: character.state,
+      gender: character.gender,
     };
   }
   if (vicePresident && !map[vicePresident.name]) {
@@ -383,7 +368,7 @@ const buildCharacterMap = (vicePresident?: VicePresidentState): Record<string, C
 
 const buildFactionMap = (): Record<string, FactionState> => Object.fromEntries(factions.map((faction) => [
   faction.name,
-  { name: faction.name, influence: faction.influence, loyalty: 50, stance: "Neutral" as const },
+  { name: faction.name, influence: faction.influence, loyalty: 50, stance: "Neutral" as const, grievance: 0, firedThresholds: [] },
 ]));
 
 const computeElectionMomentumValue = (state: GameStateShape, vpLoyalty = state.vicePresident.loyalty): number => {
@@ -448,7 +433,13 @@ const defaultGameState: GameState = {
   presidentGender: "",
   presidentState: "",
   presidentEducation: "",
+  presidentTitle: "",
+  presidentEthnicity: "",
+  presidentReligion: "",
+  presidentOccupation: "",
   presidentParty: "",
+  partyLoyalty: 70,
+  politicalState: { partyLoyalty: 70 },
   presidentEra: "",
   vicePresident: createVicePresidentState("Vice President"),
   personalAssistant: "",
@@ -478,9 +469,9 @@ const defaultGameState: GameState = {
   dailySummary: null,
   approvalHistory: [],
   legacyMilestones: [],
-  difficulty: difficultyModifiers.standard,
   lastActionAtDay: {},
   policyLevers: eraPolicyPresets["2023"],
+  cabinetAppointments: {},
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -491,6 +482,50 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
   // Migration: add default policy levers if missing (for saves created before policyLevers existed)
   if (!state.policyLevers) {
     state.policyLevers = eraPolicyPresets[era] || eraPolicyPresets["2023"];
+  }
+
+  // Migration: add grievance fields to factions if missing (for saves created before faction drift)
+  if (state.factions) {
+    for (const key of Object.keys(state.factions)) {
+      const f = state.factions[key];
+      if (f.grievance === undefined) {
+        state.factions[key] = { ...f, grievance: 0, firedThresholds: [] };
+      }
+    }
+  }
+
+  // Migration: backfill date on inbox messages created before date field existed
+  if (state.inboxMessages?.length) {
+    const era = (state.presidentEra as CampaignConfig["era"]) || "2023";
+    const eraStart = eraStartDates[era] ?? eraStartDates["2023"];
+    state.inboxMessages = state.inboxMessages.map((msg) => {
+      if (msg.date) return msg;
+      // Derive date from era start + message day offset
+      let d = eraStart.date;
+      for (let i = 1; i < msg.day; i++) d = advanceDate(d);
+      return { ...msg, date: d };
+    });
+  }
+
+  // Migration: backfill cabinetAppointments from existing characters for old saves
+  if (!state.cabinetAppointments) {
+    const appointments: Record<string, string | null> = {};
+    for (const pos of ministryPositions) {
+      // Check if any character in state has a matching portfolio
+      const match = Object.values(state.characters ?? {}).find(
+        (c) => c.portfolio === pos || c.portfolio === `Minister of ${pos}`
+      );
+      appointments[pos] = match ? match.name : null;
+    }
+    // If no characters match but cabinetRoster names exist in state.characters, use those
+    if (Object.values(appointments).every((v) => v === null) && state.characters) {
+      for (const member of cabinetRoster) {
+        if (state.characters[member.name]) {
+          appointments[member.portfolio] = member.name;
+        }
+      }
+    }
+    state.cabinetAppointments = appointments;
   }
 
   const hydratedBase: GameState = {
@@ -507,7 +542,6 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
     characters: Object.keys(state.characters ?? {}).length > 0 ? state.characters : buildCharacterMap(fallbackVp),
     factions: Object.keys(state.factions ?? {}).length > 0 ? state.factions : buildFactionMap(),
     headlines: state.headlines?.length ? state.headlines : [...initialHeadlines],
-    difficulty: state.difficulty ?? difficultyModifiers.standard,
     lastActionAtDay: state.lastActionAtDay ?? {},
     cabalMeeting: state.cabalMeeting ?? null,
     policyLevers: state.policyLevers,
@@ -532,10 +566,9 @@ const withDerivedState = (state: GameState): GameState => {
 
 export function initializeGameState(config: CampaignConfig): GameState {
   const origin = originModifiers[config.origin] ?? originModifiers["Lagos Politician"];
-  const difficulty = difficultyModifiers[config.difficulty] ?? difficultyModifiers.standard;
   const eraStart = eraStartDates[config.era] ?? eraStartDates["2023"];
   const vicePresident = createVicePresidentState(config.vpName);
-  const baseApproval = Math.round((43 + origin.approval) * difficulty.approvalMult);
+  const baseApproval = Math.round(43 + origin.approval);
   const macroEconomy = createMacroEconomyState(config.era, config.origin);
   let state: GameState = {
     day: eraStart.day,
@@ -553,7 +586,13 @@ export function initializeGameState(config: CampaignConfig): GameState {
     presidentGender: config.gender,
     presidentState: config.stateOfOrigin,
     presidentEducation: config.education,
+    presidentTitle: config.title || "",
+    presidentEthnicity: config.ethnicity || "",
+    presidentReligion: config.religion || "",
+    presidentOccupation: config.occupation || "",
     presidentParty: config.party,
+    partyLoyalty: 70,
+    politicalState: { partyLoyalty: 70 },
     presidentEra: config.era,
     vicePresident,
     personalAssistant: config.personalAssistant,
@@ -578,7 +617,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
     judicialIndependence: 65,
     governors: defaultGovernors.map((governor) => ({ ...governor, relationship: relationshipFromLoyalty(governor.loyalty) })),
     turnLog: [],
-    inboxMessages: cloneInboxMessages(),
+    inboxMessages: cloneInboxMessages(undefined, eraStart.date),
     headlines: [...initialHeadlines],
     dailySummary: {
       day: eraStart.day,
@@ -592,9 +631,9 @@ export function initializeGameState(config: CampaignConfig): GameState {
     },
     approvalHistory: [{ day: eraStart.day, approval: baseApproval }],
     legacyMilestones: [],
-    difficulty,
     lastActionAtDay: {},
     policyLevers: eraPolicyPresets[config.era],
+    cabinetAppointments: Object.fromEntries(ministryPositions.map((p) => [p, null])),
   };
 
   state = syncStrategicState(state);

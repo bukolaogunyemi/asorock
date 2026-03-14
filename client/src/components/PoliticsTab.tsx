@@ -145,14 +145,6 @@ export default function PoliticsTab() {
   const actionableHooks = allHooks.filter((hook) => hook.usable && !hook.used).length;
   const activeInvestigations = allHooks.filter((hook) => hook.underInvestigation).length;
 
-  const powerBrokers = useMemo(() => Object.values(state.characters)
-    .map((character) => ({
-      ...character,
-      score: Math.round(character.ambition * 0.45 + character.competence * 0.2 + (100 - character.loyalty) * 0.35),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 6), [state.characters]);
-
   const suspiciousFeed = [...state.turnLog]
     .filter((entry) => entry.category === "chain" || entry.category === "decision" || entry.category === "hook" || /betrayal|rebellion|plot|governor|party/i.test(entry.event))
     .slice(-6)

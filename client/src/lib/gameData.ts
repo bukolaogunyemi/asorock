@@ -744,24 +744,6 @@ export const economicPersonnel: EconomicPersonnel[] = [
 export const senateSeats = { ruling: 59, opposition: 46, independent: 4, total: 109 } as const;
 export const houseSeats = { ruling: 201, opposition: 154, independent: 5, total: 360 } as const;
 
-// ── Politics Tab — Power Dynamics ─────────────────────────
-export interface PowerBroker {
-  name: string;
-  role: string;
-  influence: number;
-  disposition: "Ally" | "Neutral" | "Rival" | "Enemy";
-  note: string;
-}
-
-export const powerBrokers: PowerBroker[] = [
-  { name: "Alhaji Aminu Gambo", role: "Business Oligarch", influence: 92, disposition: "Ally", note: "Refinery success tied to your reform agenda. Will lobby for favorable FX policy." },
-  { name: "Gen. Umaru Kwande (Rtd)", role: "Ex-Head of State", influence: 78, disposition: "Neutral", note: "Elder statesman. Mediator in North-South tensions. Publicly silent but influential." },
-  { name: "Chief Ugochukwu Mbah", role: "Party Chairman", influence: 85, disposition: "Rival", note: "Controls candidate selection for next election cycle. Building parallel power structure." },
-  { name: "Comrade Mwuese Tarka", role: "Labour Leader", influence: 70, disposition: "Enemy", note: "Mobilizing street protests against subsidy removal. Has NLC + TUC backing." },
-  { name: "Pastor Adeboye Oni", role: "Religious Leader", influence: 65, disposition: "Neutral", note: "Influence over Christian South-West. Publicly critical of corruption." },
-  { name: "Sheik Abubakar Maigari", role: "Religious Leader", influence: 60, disposition: "Rival", note: "Shi'a movement leader. Detention a flashpoint. Northern youth mobilizer." },
-];
-
 export interface PoliticalEvent {
   date: string;
   event: string;

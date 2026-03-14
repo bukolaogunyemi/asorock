@@ -52,6 +52,7 @@ import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidat
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
 import { defaultLegislativeState } from "./legislativeEngine";
+import { seedLegislativeCalendar } from "./legislativeBills";
 
 // Register constitutional officer pools at module load time
 registerConstitutionalPools();
@@ -653,7 +654,10 @@ export function initializeGameState(config: CampaignConfig): GameState {
     lastActionAtDay: {},
     policyLevers: eraPolicyPresets[config.era],
     cabinetAppointments: Object.fromEntries(ministryPositions.map((p) => [p, null])),
-    legislature: defaultLegislativeState(),
+    legislature: {
+      ...defaultLegislativeState(),
+      legislativeCalendar: seedLegislativeCalendar(),
+    },
   };
 
   state = syncStrategicState(state);

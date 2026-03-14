@@ -30,6 +30,7 @@ import { POLICY_LEVER_DEFS, POLICY_MODIFIER_SCALE, POLICY_COOLDOWN_DAYS, type Po
 import { FACTION_PROFILES, DEMAND_EXPIRE_TIER70_LOYALTY_LOSS, DEMAND_EXPIRE_TIER90_LOYALTY_LOSS, DEMAND_EXPIRE_GRIEVANCE_GAIN, DEMAND_EXPIRE_STABILITY_LOSS } from "./factionProfiles";
 import { computeFactionDrift, updateGrievance, checkGrievanceThresholds } from "./factionDrift";
 import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./factionNarrative";
+import { processLegislativeTurn } from "./legislativeEngine";
 
 export type {
   ActiveEvent,
@@ -2354,6 +2355,9 @@ export function processTurn(state: GameState): GameState {
   if (election.defeatState) {
     return finalizePresentation({ ...next, phase: "defeat", defeatState: election.defeatState, cabalMeeting: null });
   }
+
+  // Legislative engine — process bills each turn
+  next = processLegislativeTurn(next);
 
   const defeat = checkDefeatConditions(next);
   const victory = checkVictoryConditions(next);

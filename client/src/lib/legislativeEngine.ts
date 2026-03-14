@@ -1,6 +1,6 @@
 // client/src/lib/legislativeEngine.ts
 import type { GameState } from "./gameTypes";
-import type { Bill, BillStage, LegislativeState, VoteProjection } from "./legislativeTypes";
+import type { Bill, BillStage, GameStateModifier, LegislativeState, VoteProjection } from "./legislativeTypes";
 import { getAutonomousBillPool } from "./legislativeBills";
 
 // ── Chamber Seat Blocs ────────────────────────────────────────────────────────
@@ -635,6 +635,126 @@ export function generateAutonomousBill(state: GameState): Bill | null {
   return createBillFromTemplate(template, state.day);
 }
 
+// ── Signing / Veto ────────────────────────────────────────────────────────────
+
+/**
+ * applyModifiers
+ *
+ * Applies an array of GameStateModifiers to the game state.
+ * Returns updated GameState (does not mutate the input).
+ */
+export function applyModifiers(state: GameState, modifiers: GameStateModifier[]): GameState {
+  let s = { ...state };
+
+  for (const mod of modifiers) {
+    switch (mod.target) {
+      case "approval":
+        s = { ...s, approval: Math.max(0, Math.min(100, s.approval + mod.delta)) };
+        break;
+      case "stability":
+        s = { ...s, stability: Math.max(0, Math.min(100, s.stability + mod.delta)) };
+        break;
+      case "politicalCapital":
+        s = { ...s, politicalCapital: Math.max(0, Math.min(200, s.politicalCapital + mod.delta)) };
+        break;
+      case "partyLoyalty":
+        s = { ...s, partyLoyalty: Math.max(0, Math.min(100, s.partyLoyalty + mod.delta)) };
+        break;
+      case "macroEconomy":
+        if (mod.macroKey && mod.macroKey in s.macroEconomy) {
+          const macroKey = mod.macroKey as keyof typeof s.macroEconomy;
+          s = {
+            ...s,
+            macroEconomy: {
+              ...s.macroEconomy,
+              [macroKey]: (s.macroEconomy[macroKey] as number) + mod.delta,
+            },
+          };
+        }
+        break;
+      default:
+        // Targets like factionGrievance, outrage, trust are handled elsewhere
+        break;
+    }
+  }
+
+  return s;
+}
+
+/**
+ * signBill
+ *
+ * The president signs a bill from pendingSignature:
+ * - Applies bill.effects.onPass via applyModifiers
+ * - Moves the bill to passedBills with stage "signed"
+ * - Increments sessionStats.billsPassed
+ *
+ * Returns updated GameState (does not mutate the input).
+ */
+export function signBill(state: GameState, billId: string): GameState {
+  const legislature = state.legislature ?? defaultLegislativeState();
+  const bill = legislature.pendingSignature.find((b) => b.id === billId);
+  if (!bill) return state;
+
+  const signedBill: Bill = { ...bill, houseStage: "signed", senateStage: "signed" };
+
+  const newLegislature: LegislativeState = {
+    ...legislature,
+    pendingSignature: legislature.pendingSignature.filter((b) => b.id !== billId),
+    passedBills: [...legislature.passedBills, signedBill],
+    sessionStats: {
+      ...legislature.sessionStats,
+      billsPassed: legislature.sessionStats.billsPassed + 1,
+    },
+  };
+
+  const stateWithLeg = { ...state, legislature: newLegislature };
+  return applyModifiers(stateWithLeg, bill.effects.onPass);
+}
+
+/**
+ * vetoBill
+ *
+ * The president vetoes a bill from pendingSignature:
+ * - Costs political capital scaled to stakes: routine=3, significant=8, critical=15
+ * - Moves the bill to failedBills with stage "vetoed"
+ * - Applies bill.effects.onFail via applyModifiers
+ * - Increments sessionStats.billsVetoed
+ *
+ * Returns updated GameState (does not mutate the input).
+ */
+export function vetoBill(state: GameState, billId: string): GameState {
+  const legislature = state.legislature ?? defaultLegislativeState();
+  const bill = legislature.pendingSignature.find((b) => b.id === billId);
+  if (!bill) return state;
+
+  const vetoCost: Record<Bill["stakes"], number> = {
+    routine: 3,
+    significant: 8,
+    critical: 15,
+  };
+  const cost = vetoCost[bill.stakes];
+
+  const vetoedBill: Bill = { ...bill, houseStage: "vetoed", senateStage: "vetoed" };
+
+  const newLegislature: LegislativeState = {
+    ...legislature,
+    pendingSignature: legislature.pendingSignature.filter((b) => b.id !== billId),
+    failedBills: [...legislature.failedBills, vetoedBill],
+    sessionStats: {
+      ...legislature.sessionStats,
+      billsVetoed: legislature.sessionStats.billsVetoed + 1,
+    },
+  };
+
+  const stateWithLeg: GameState = {
+    ...state,
+    politicalCapital: Math.max(0, state.politicalCapital - cost),
+    legislature: newLegislature,
+  };
+  return applyModifiers(stateWithLeg, bill.effects.onFail);
+}
+
 // ── Main Turn Function ────────────────────────────────────────────────────────
 
 /**
@@ -695,5 +815,14 @@ export function processLegislativeTurn(state: GameState): GameState {
   const advancedState = { ...state, legislature };
   legislature = advanceBills(advancedState);
 
-  return { ...state, legislature };
+  // Step 4: Auto-sign expired bills past their signing deadline
+  let finalState: GameState = { ...state, legislature };
+  const expiredBills = legislature.pendingSignature.filter(
+    (b) => b.signingDeadlineDay !== null && b.signingDeadlineDay < state.day,
+  );
+  for (const expiredBill of expiredBills) {
+    finalState = signBill(finalState, expiredBill.id);
+  }
+
+  return finalState;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 
 const testConfig = {
@@ -171,5 +171,46 @@ describe("processLegislativeTurn", () => {
     const result = processLegislativeTurn(state);
     expect(result.legislature.activeBills.length).toBe(1);
     expect(result.legislature.activeBills[0].title).toBe("Test Scheduled");
+  });
+});
+
+describe("veto and signing", () => {
+  it("signBill should apply onPass effects and move to passedBills", () => {
+    const state = initializeGameState(testConfig);
+    const bill = createBillFromTemplate({
+      title: "Test", description: "Test", subjectTag: "economy",
+      stakes: "routine", effects: { onPass: [{ target: "approval", delta: 5 }], onFail: [] },
+    }, 1);
+    state.legislature = { ...defaultLegislativeState(), pendingSignature: [bill] };
+    const result = signBill(state, bill.id);
+    expect(result.legislature.pendingSignature.length).toBe(0);
+    expect(result.legislature.passedBills.length).toBe(1);
+    expect(result.approval).toBe(state.approval + 5);
+  });
+
+  it("vetoBill should cost political capital scaled to stakes", () => {
+    const state = initializeGameState(testConfig);
+    state.politicalCapital = 50;
+    const bill = createBillFromTemplate({
+      title: "Critical Bill", description: "Test", subjectTag: "economy",
+      stakes: "critical", effects: { onPass: [], onFail: [] },
+    }, 1);
+    state.legislature = { ...defaultLegislativeState(), pendingSignature: [bill] };
+    const result = vetoBill(state, bill.id);
+    expect(result.politicalCapital).toBeLessThan(50);
+    expect(result.legislature.sessionStats.billsVetoed).toBe(1);
+  });
+
+  it("should expire unsigned bills after 21-day deadline", () => {
+    const state = initializeGameState(testConfig);
+    state.day = 30;
+    const bill = createBillFromTemplate({
+      title: "Expired Bill", description: "Test", subjectTag: "economy",
+      stakes: "routine", effects: { onPass: [{ target: "approval", delta: 3 }], onFail: [] },
+    }, 1);
+    bill.signingDeadlineDay = 25; // past deadline
+    state.legislature = { ...defaultLegislativeState(), pendingSignature: [bill] };
+    const result = processLegislativeTurn(state);
+    expect(result.legislature.pendingSignature.length).toBe(0);
   });
 });

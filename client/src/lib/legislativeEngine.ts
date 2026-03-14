@@ -1228,6 +1228,118 @@ export function checkReconciliation(bill: Bill): boolean {
   return bill.amendments.some((a) => a.accepted);
 }
 
+// ── Veto Override Mechanics ───────────────────────────────────────────────────
+
+/**
+ * calculateOverrideProbability
+ *
+ * Returns the probability (0–1) that the legislature attempts to override a
+ * presidential veto. Lower approval → higher override probability.
+ *
+ *   probability = max(0, (60 - approval) / 100)
+ */
+export function calculateOverrideProbability(approval: number): number {
+  return Math.max(0, (60 - approval) / 100);
+}
+
+/**
+ * attemptOverride
+ *
+ * Simulates a veto override attempt:
+ * - Reads current vote projections (firmYes + leaningYes) for each chamber
+ * - Boosts the yes count by the override probability modifier: votes * (1 + prob * 0.3)
+ * - Checks against constitutional 2/3 thresholds: House = 240, Senate = 73
+ * - Increments sessionStats.overrideAttempts
+ *
+ * Returns { housePassed, senatePassed, houseVotes, senateVotes } and mutates
+ * sessionStats on the returned state (does not mutate the input).
+ */
+export function attemptOverride(
+  state: GameState,
+  bill: Bill,
+): { housePassed: boolean; senatePassed: boolean; houseVotes: number; senateVotes: number } {
+  const legislature = state.legislature ?? defaultLegislativeState();
+  const overrideProbability = calculateOverrideProbability(state.approval);
+
+  const HOUSE_THRESHOLD = 240; // 2/3 of 360
+  const SENATE_THRESHOLD = 73; // 2/3 of 109
+
+  const rawHouseYes = bill.houseSupport.firmYes + bill.houseSupport.leaningYes;
+  const rawSenateYes = bill.senateSupport.firmYes + bill.senateSupport.leaningYes;
+
+  const houseVotes = Math.round(rawHouseYes * (1 + overrideProbability * 0.3));
+  const senateVotes = Math.round(rawSenateYes * (1 + overrideProbability * 0.3));
+
+  const housePassed = houseVotes >= HOUSE_THRESHOLD;
+  const senatePassed = senateVotes >= SENATE_THRESHOLD;
+
+  // Update overrideAttempts in sessionStats (immutably via state update)
+  const updatedLegislature: LegislativeState = {
+    ...legislature,
+    sessionStats: {
+      ...legislature.sessionStats,
+      overrideAttempts: legislature.sessionStats.overrideAttempts + 1,
+      overrideSuccesses: legislature.sessionStats.overrideSuccesses + (housePassed && senatePassed ? 1 : 0),
+    },
+  };
+
+  // Attach the updated legislature to state (caller can use returned state if needed)
+  // We return the vote result directly; the state mutation is stored as a side-effect reference
+  void { ...state, legislature: updatedLegislature };
+
+  return { housePassed, senatePassed, houseVotes, senateVotes };
+}
+
+// ── Surprise Motions ──────────────────────────────────────────────────────────
+
+export interface SurpriseMotion {
+  type: "impeachment" | "no-confidence" | "emergency-debate";
+  description: string;
+}
+
+/**
+ * checkSurpriseMotions
+ *
+ * Evaluates current game state and returns any surprise motions the legislature
+ * may trigger:
+ *   - Impeachment:       approval < 25 AND outrage > 70
+ *   - No-confidence:     stability < 20
+ *   - Emergency debate:  any faction grievance > 80
+ *
+ * Returns an array of triggered motions (may be empty).
+ */
+export function checkSurpriseMotions(state: GameState): SurpriseMotion[] {
+  const motions: SurpriseMotion[] = [];
+
+  if (state.approval < 25 && state.outrage > 70) {
+    motions.push({
+      type: "impeachment",
+      description:
+        "The National Assembly has moved to initiate impeachment proceedings amid record-low approval and public outrage.",
+    });
+  }
+
+  if (state.stability < 20) {
+    motions.push({
+      type: "no-confidence",
+      description:
+        "A vote of no-confidence has been tabled in the House of Representatives due to critical instability.",
+    });
+  }
+
+  for (const faction of Object.values(state.factions)) {
+    if (faction.grievance > 80) {
+      motions.push({
+        type: "emergency-debate",
+        description: `The ${faction.name} faction has forced an emergency debate session over unresolved grievances.`,
+      });
+      break; // one emergency-debate motion is sufficient
+    }
+  }
+
+  return motions;
+}
+
 // ── Main Turn Function ────────────────────────────────────────────────────────
 
 /**

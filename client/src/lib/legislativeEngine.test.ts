@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound, generateAmendments, acceptAmendment, checkReconciliation } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing, getAvailableExecutiveBills, proposeExecutiveBill, initializeCrisis, advanceCrisisRound, generateAmendments, acceptAmendment, checkReconciliation, calculateOverrideProbability, attemptOverride, checkSurpriseMotions } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 import type { Amendment } from "./legislativeTypes";
 
@@ -385,5 +385,54 @@ describe("reconciliation", () => {
     bill.senateStage = "passed";
     bill.amendments = [];
     expect(checkReconciliation(bill)).toBe(false);
+  });
+});
+
+describe("veto override", () => {
+  it("should calculate override probability based on approval", () => {
+    const resultLow = calculateOverrideProbability(25);
+    const resultHigh = calculateOverrideProbability(75);
+    expect(resultLow).toBeGreaterThan(resultHigh);
+  });
+
+  it("should check 2/3 majority threshold for override", () => {
+    const state = initializeGameState(testConfig);
+    state.legislature = defaultLegislativeState();
+    state.approval = 30; // low approval = higher override chance
+    const bill = createBillFromTemplate({
+      title: "Vetoed Bill", description: "Test", subjectTag: "economy",
+      stakes: "significant", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.houseSupport = { firmYes: 250, leaningYes: 10, undecided: 10, leaningNo: 10, firmNo: 80 };
+    bill.senateSupport = { firmYes: 75, leaningYes: 5, undecided: 5, leaningNo: 5, firmNo: 19 };
+    const result = attemptOverride(state, bill);
+    // With 250+10 = 260 > 240 (2/3 of 360), house should pass
+    expect(result.houseVotes).toBeGreaterThanOrEqual(240);
+  });
+});
+
+describe("surprise motions", () => {
+  it("should trigger impeachment motion when approval < 25 and outrage > 70", () => {
+    const state = initializeGameState(testConfig);
+    state.approval = 20;
+    state.outrage = 75;
+    const motions = checkSurpriseMotions(state);
+    expect(motions.some((m) => m.type === "impeachment")).toBe(true);
+  });
+
+  it("should trigger no-confidence when stability < 20", () => {
+    const state = initializeGameState(testConfig);
+    state.stability = 15;
+    const motions = checkSurpriseMotions(state);
+    expect(motions.some((m) => m.type === "no-confidence")).toBe(true);
+  });
+
+  it("should return empty array when no conditions met", () => {
+    const state = initializeGameState(testConfig);
+    state.approval = 60;
+    state.stability = 60;
+    state.outrage = 20;
+    const motions = checkSurpriseMotions(state);
+    expect(motions.length).toBe(0);
   });
 });

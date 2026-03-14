@@ -32,34 +32,49 @@ Diversity is enforced at pool authoring time, not at selection time. This ensure
 
 ### Candidate Shape
 
-Each candidate uses the existing `Character` interface from `gameData.ts`:
+`ConstitutionalCandidate` extends the existing `Character` interface from `gameData.ts`, adding required fields that are optional on `Character` and a new `religion` field:
 
 ```typescript
-interface ConstitutionalCandidate {
-  name: string;
-  portfolio: string;       // e.g., "Senate President"
-  agenda: string;          // Political agenda for this character
-  opinion: string;         // Initial disposition towards the player
-  loyalty: number;         // 0–100
-  competence: number;      // 0–100
-  ambition: number;        // 0–100
-  faction: string;
-  relationship: "Friendly" | "Neutral" | "Wary" | "Hostile";
-  avatar: string;          // 2-letter initials
-  age: number;
-  state: string;           // Nigerian state (determines zone)
-  gender: "Male" | "Female";
-  religion: "Muslim" | "Christian";
+import type { Character } from "./gameData";
+
+interface ConstitutionalCandidate extends Character {
+  age: number;             // Required (optional on Character)
+  state: string;           // Required — determines zone
+  gender: "Male" | "Female"; // Required (optional on Character)
+  religion: "Muslim" | "Christian"; // New field for pool design
+  // relationship uses the full Relationship union from gameTypes.ts:
+  // "Loyal" | "Friendly" | "Neutral" | "Wary" | "Distrustful" | "Hostile"
 }
 ```
 
 The `religion` field is new — not present on the existing `Character` type. It is added here for pool design purposes. Other character types may adopt it later.
 
+### Conversion to CharacterState
+
+When selected officers are stored in `GameState`, each `ConstitutionalCandidate` is converted to a `CharacterState` object with these defaults for fields not present on the candidate:
+
+- `traits`: `[]` (empty — constitutional officers don't have trait-driven mechanics yet)
+- `betrayalThreshold`: derived from `loyalty` (e.g., `100 - loyalty`)
+- `hooks`: `[]` (empty)
+
+This conversion happens inside `selectConstitutionalOfficers()` or at the call site in `GameContext.tsx`.
+
+### Judiciary Adapter
+
+The CJN candidate uses the `ConstitutionalCandidate` shape but `JudiciaryTab.tsx` renders `judiciaryPersonnel` entries with `title`, `shortTitle`, and `note` fields. The CJN entry is mapped at render time:
+
+- `title` ← `"Chief Justice of Nigeria"` (constant)
+- `shortTitle` ← `"CJN"` (constant)
+- `note` ← `opinion` (from the candidate)
+- `name`, `avatar`, `gender`, `loyalty`, `competence`, `relationship` ← direct from candidate
+
 ## Selection Algorithm
 
 Runs once at game start, after the player selects their state and VP.
 
-**Inputs**: player state of origin, VP state of origin, deterministic seed (derived from player+VP combo, same seed used by election simulation).
+**Inputs**: player state of origin, VP state of origin, deterministic seed.
+
+**Seed derivation**: Use the same hash approach as `generateElectionResults` in `OnboardingFlow.tsx` — iterate over the characters of `playerParty + playerState + vpState`, applying `((seed << 5) - seed + charCode) | 0`. Pass the absolute value to the seeded RNG. The selection function receives the seed as a parameter; the caller (GameContext or OnboardingFlow) computes it.
 
 **Steps**:
 
@@ -69,8 +84,8 @@ Runs once at game start, after the player selects their state and VP.
 4. Shuffle the available zones using seeded RNG
 5. Assign positions in order: Senate President, Deputy Senate President, Speaker, Deputy Speaker, CJN
 6. For each position: take the next zone from the shuffled list, pick one candidate at random (seeded) from that zone's pool for this position
-7. **Edge case — same zone for president and VP**: 5 available zones for 5 positions. Each position gets a unique zone. Perfect fit.
-8. **Edge case — different zones**: 4 available zones for 5 positions. The first 4 positions each get a unique zone. The 5th position picks from any of the 4 zones (the first zone in the shuffled list is reused).
+7. **Edge case — president and VP from the same zone**: Only 1 zone excluded, leaving 5 available zones for 5 positions. Each position gets a unique zone. Perfect fit.
+8. **Edge case — president and VP from different zones**: 2 zones excluded, leaving 4 available zones for 5 positions. The first 4 positions each get a unique zone. The 5th position picks from any of the 4 zones (the first zone in the shuffled list is reused).
 
 **Output**: An array of 5 `ConstitutionalCandidate` objects, one per position.
 
@@ -91,20 +106,22 @@ The function is pure (deterministic given the same inputs) and has no side effec
 
 - **`client/src/components/OnboardingFlow.tsx`** — Replace inline `GEOPOLITICAL_ZONES` with import from `zones.ts`
 
-- **`client/src/lib/gameData.ts`** — Replace hardcoded `senateLeadership` and `houseLeadership` with a function or lazy initializer that calls `selectConstitutionalOfficers()`. Since gameData is currently static exports, this may require the selection to happen at game initialization time (in `GameContext.tsx` or during onboarding) and the results stored in GameState.
+- **`client/src/lib/gameData.ts`** — Remove the hardcoded `senateLeadership` and `houseLeadership` exports (or make them fallbacks). These are replaced by the dynamically selected officers stored in GameState.
 
-- **`client/src/components/JudiciaryTab.tsx`** — Replace the hardcoded CJN entry in `judiciaryPersonnel` with the selected CJN from GameState. The other 3 judiciary personnel (PCA, ECOWAS Court, AG) remain hardcoded — they are not part of the 5 constitutional positions.
+- **`client/src/components/LegislatureTab.tsx`** — Currently imports `senateLeadership` and `houseLeadership` from `gameData.ts` (lines 24-25). Change to read from GameState via `useGame()` hook instead. The `allLeaders` array (line 95) becomes `state.constitutionalOfficers.filter(o => o.portfolio !== "Chief Justice of Nigeria")`.
+
+- **`client/src/components/JudiciaryTab.tsx`** — Replace the hardcoded CJN entry in `judiciaryPersonnel` with the selected CJN from GameState, mapped to the judiciary render shape (see "Judiciary Adapter" above). The other 3 judiciary personnel (PCA, ECOWAS Court, AG) remain hardcoded — they are not part of the 5 constitutional positions.
 
 - **`client/src/lib/GameContext.tsx`** — Call `selectConstitutionalOfficers()` during game initialization and store results in GameState.
 
-- **`client/src/lib/gameTypes.ts`** — Add `constitutionalOfficers` field to `GameState`.
+- **`client/src/lib/gameTypes.ts`** — Add `constitutionalOfficers: ConstitutionalCandidate[]` field to `GameState`. This is an array of exactly 5 entries, ordered: Senate President, Deputy Senate President, Speaker, Deputy Speaker, CJN.
 
 ## Integration with Existing Systems
 
 - The selected officers replace the current static characters in the Legislature and Judiciary tabs
 - Their `loyalty`, `competence`, `ambition`, and `relationship` values drive the same game mechanics as the current hardcoded characters
 - The `agenda` and `opinion` fields feed into narrative and decision-making the same way
-- No changes to how these characters are rendered — only where the data comes from
+- LegislatureTab and JudiciaryTab switch from static imports to reading from GameState, with a mapping adapter for the CJN entry
 
 ## What This Does NOT Cover
 

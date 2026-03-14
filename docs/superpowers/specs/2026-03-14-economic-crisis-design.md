@@ -44,10 +44,18 @@ Unemployment is calculated each turn as a weighted output of sectoral performanc
 
 Each turn, for each sector:
 
-1. Calculate `growthRate` = base momentum + sum of policy modifier effects + external shock effect + random variance (±1%)
+1. Calculate `growthRate`:
+   ```
+   baseGrowth = 0.5%                          // natural baseline per turn
+   momentumBonus = momentum × 0.1%            // each consecutive positive turn adds 0.1%
+   policyEffect = Σ(active PolicyModifier effects)
+   shockEffect = any external shock modifier (0 if none)
+   variance = random(−1%, +1%)
+   growthRate = baseGrowth + momentumBonus + policyEffect + shockEffect + variance
+   ```
 2. Update sector GDP: `gdpValue = previousGdpValue × (1 + growthRate)`
 3. Recalculate `gdpShare` from new absolute values
-4. Update `momentum`: consecutive positive turns compound (momentum += 1), any negative turn resets to 0
+4. Update `momentum`: if growthRate > 0, momentum += 1; if growthRate ≤ 0, momentum resets to 0. For tourism specifically, any security crisis in any zone also resets momentum to 0 regardless of growth rate.
 
 Total GDP = sum of all sector `gdpValue` fields.
 
@@ -73,7 +81,7 @@ These are base magnitudes. Actual effect = base × lever intensity (how far the 
 
 Tourism has unique dynamics distinct from other sectors:
 
-- **Security-gated:** Tourism growth is hard-capped by the worst-performing zone's security level. A security crisis in any zone suppresses national tourism even if other zones are stable. This creates a direct incentive to invest in security across all zones.
+- **Security-gated:** Tourism growth is hard-capped by the worst-performing zone's security level. If the worst zone's security is below 30, tourism growth is capped at -2% regardless of other factors. Between 30-60, tourism growth is capped at 0%. Above 60, no cap. A security crisis in any zone suppresses national tourism even if other zones are stable. This creates a direct incentive to invest in security across all zones.
 - **Slow to build, fast to collapse:** Tourism momentum builds over multiple turns (reputation, infrastructure) but a single major security event resets the momentum multiplier to 0. Consecutive peaceful turns compound growth; any crisis wipes the compounding.
 - **FX sensitivity:** A weaker naira makes Nigeria cheaper for international tourists (growth boost) but raises import costs for tourism infrastructure.
 - **Regional variation:** Different zones have different tourism potential — SW (Lagos, beaches), NC (Abuja, culture), SS (post-cleanup potential). Budget allocation to specific zones can unlock tourism potential.
@@ -86,7 +94,7 @@ Exogenous events the player cannot prevent but can mitigate:
 - **Drought/flood:** Agriculture sector shock, -10% to -30% depending on severity. Zone-specific.
 - **Global trade disruption:** Manufacturing and services impacted, -5% to -15%. Triggered by world events.
 
-These arrive as events with 1-2 turns of warning (if intelligence system provides early detection) or as sudden shocks.
+These arrive as game events. By default, shocks arrive with no advance warning (sudden). If the Intelligence & Espionage system (Sub-Project D) is implemented and the player has an active security assessment operation, shocks may arrive with 1-2 turns of early warning instead. The economic engine does not depend on Sub-Project D — it checks for an optional early-warning flag on the event and proceeds either way.
 
 ### 2.6 Unemployment Derivation
 
@@ -110,11 +118,11 @@ Five sources of government revenue, calculated each turn:
 
 | Stream | Calculation | Key Drivers |
 |--------|-------------|-------------|
-| **Oil revenue** | Oil sector GDP × extraction rate - fuel subsidy cost | Oil output, global price, subsidy lever |
-| **Tax revenue** | (Non-oil GDP) × effective tax rate × collection efficiency | Tax rate lever, GDP growth, anti-corruption |
-| **IGR** | Base amount × (1 + GDP growth rate) × administrative efficiency | Economic activity, governance quality |
-| **Trade revenue** | Import volume × tariff rate + export levies | Import tariff lever, FX policy, trade balance |
-| **Borrowing** | Player-initiated or automatic (deficit financing) | Debt-to-GDP ratio, interest rate, credit rating |
+| **Oil revenue** | Oil sector GDP × 0.15 (extraction rate, constant) - fuel subsidy cost from ExpenditureState.transfers | Oil output, global price, subsidy lever |
+| **Tax revenue** | (Non-oil GDP) × effective tax rate (from tax rate lever, 0-15%) × 0.6 (collection efficiency, constant — represents Nigeria's tax collection challenges) | Tax rate lever, GDP growth |
+| **IGR** | 2.0 (base, billions) × (1 + GDP growth rate) | Economic activity level |
+| **Trade revenue** | (Manufacturing GDP + Services GDP) × 0.08 × import tariff multiplier (1.0 at neutral, scales with lever) | Import tariff lever, FX policy |
+| **Borrowing** | Player-initiated or automatic (deficit financing). Borrowing cost = amount × (base interest rate + risk premium). Risk premium = 0 if debt-to-GDP <40%, +2% per 10% above 40%. | Debt-to-GDP ratio, interest rate |
 
 Total revenue = oil + tax + IGR + trade + borrowing.
 
@@ -163,7 +171,7 @@ Each metric has three zones:
 |--------|-------|------------|----------|----------------|
 | **Inflation** | <20% | 20-30% | 30%+ | Above 40%: hyperinflation spiral |
 | **Unemployment** | <25% | 25-35% | 35%+ | Above 40%: mass unrest |
-| **FX Rate** | <30% depreciation | 30-50% depreciation | 50%+ | Above 60%: currency crisis |
+| **FX Rate** | <30% depreciation from game-start baseline | 30-50% depreciation from baseline | 50%+ | Above 60%: currency crisis. Baseline is the `fxRate` value at game initialization (stored as `fxRateBaseline` on `EconomicState`). Depreciation = `(currentFxRate - fxRateBaseline) / fxRateBaseline × 100`. |
 | **Debt-to-GDP** | <40% | 40-60% | 60%+ | Above 70%: debt trap |
 | **Treasury** | 3+ months cover | 1-3 months | <1 month | Zero: government shutdown |
 | **Oil Output** | >80% capacity | 60-80% capacity | <60% | Below 50%: fiscal emergency |
@@ -225,11 +233,12 @@ interface EconomicState {
 
   // Existing metrics (preserved from MacroEconomicState, now connected)
   inflation: number;
-  fxRate: number;
-  reserves: number;
+  fxRate: number;                         // current naira/USD rate
+  fxRateBaseline: number;                // fxRate at game start — used for depreciation % calculations
+  reserves: number;                      // foreign reserves in billions USD — increases with oil exports & FX inflows, decreases with imports & CBN interventions to defend naira
   debtToGdp: number;
   oilOutput: number;
-  subsidyPressure: number;
+  subsidyPressure: number;              // 0-100, derived from fuel subsidy lever position × oil price. High = large fiscal drain from subsidies. Feeds into ExpenditureState.transfers.
 
   // Crisis tracking
   crisisIndicators: CrisisIndicators;
@@ -322,11 +331,13 @@ type CascadeType =
 interface EconomicSnapshot {
   day: number;
   gdp: number;
+  sectorGdpValues: Record<SectorId, number>; // per-sector GDP for trend charts
   unemploymentRate: number;
   inflation: number;
   fxRate: number;
   treasuryLiquidity: number;
   debtToGdp: number;
+  oilOutput: number;
 }
 ```
 
@@ -334,9 +345,13 @@ interface EconomicSnapshot {
 
 **MacroEconomicState replacement:** `EconomicState` fully replaces `MacroEconomicState`. The old interface is removed from `gameTypes.ts` and all references updated. The 6 existing fields are preserved with identical names and types on the new interface, so the migration is a path change (e.g., `gameState.macroEconomic.inflation` → `gameState.economy.inflation`), not a logic change.
 
-**Existing policy levers:** The 9 policy levers remain in their current location (likely `gameTypes.ts` or `policyEngine.ts`). The economic engine reads lever settings and translates them into `PolicyModifier` objects on the affected sectors. No changes to the lever interface itself.
+**Existing policy levers:** The 9 policy levers are defined as `PolicyLeverState` in `gameTypes.ts` and processed in `gameEngine.ts`. The economic engine reads lever settings from `GameState.policyLevers` and translates them into `PolicyModifier` objects on the affected sectors. No changes to the lever interfaces (`PolicyLeverState`, `SingleLeverState`, `PolicyLeverKey`).
 
 **Budget integration with Legislative Engine (Sub-Project A):** The Legislative Engine's budget process determines the `ExpenditureState` split. When the legislature approves a budget, it sets the allocation across recurrent, capital, debt servicing, and transfers. The economic engine then executes spending against treasury liquidity each turn. If the budget isn't approved, the previous year's allocation continues.
+
+**Reserves update logic:** Each turn, `reserves` change based on: oil export revenue (inflow), import costs from manufacturing/services sectors (outflow), and CBN interventions to defend the naira when FX is under pressure (outflow). Formula: `reserves += oilExportInflow - importOutflow - cbnIntervention`. When reserves hit 0, the CBN can no longer defend the naira — FX rate depreciates freely.
+
+**SubsidyPressure update logic:** `subsidyPressure` is derived each turn from the fuel subsidy lever position and global oil price. At full subsidy with high oil prices, subsidyPressure approaches 100 (massive fiscal drain). At zero subsidy, subsidyPressure is 0. The value feeds directly into `ExpenditureState.transfers` — higher subsidyPressure means more of the transfers budget is consumed by fuel subsidies, leaving less for cash transfers and other programs.
 
 **Sector initialization:** Starting sector GDP values are set during game initialization based on a realistic Nigerian economic baseline. The base shares (38/24/15/16/7) represent the starting state; they shift over time based on differential growth rates.
 
@@ -352,7 +367,7 @@ interface EconomicSnapshot {
 ### Modified Files
 - `client/src/lib/gameTypes.ts` — remove `MacroEconomicState`, add `EconomicState` to `GameState` (as `economy: EconomicState`). Existing saves that lack `EconomicState` should be migrated on load by mapping old `MacroEconomicState` fields into the new structure with default values for new fields.
 - `client/src/lib/gameEngine.ts` — each turn: call economic engine to advance sectors, calculate revenue, process expenditure, update treasury, derive unemployment, check crisis thresholds, propagate cascades, record snapshot. Replaces existing macro-economic update logic.
-- `client/src/lib/policyEngine.ts` (or wherever policy levers are processed) — connect each of the 9 levers to their sector effects via `PolicyModifier` objects with magnitudes from Section 2.3 and durations of 4-6 turns.
+- `client/src/lib/gameEngine.ts` (policy lever processing) — policy levers are defined in `gameTypes.ts` as `PolicyLeverState` and currently processed in `gameEngine.ts`. The economic engine reads `PolicyLeverState` from `GameState` and translates lever positions into `PolicyModifier` objects on the affected sectors, with magnitudes from Section 2.3 and durations of 4-6 turns. No separate `policyEngine.ts` file exists or is created.
 - `client/src/components/EconomyTab.tsx` — expand from showing 6 flat metrics to: GDP with sectoral breakdown (visual chart), revenue vs expenditure fiscal balance, treasury liquidity with months-of-cover indicator, unemployment rate, crisis indicator dashboard (green/yellow/red per metric), trend sparklines from history array.
 - `client/src/components/OnboardingFlow.tsx` — initialize sector GDP values and starting economic conditions based on scenario difficulty.
 

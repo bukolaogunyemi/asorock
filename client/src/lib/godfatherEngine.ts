@@ -8,6 +8,51 @@ import type {
 import { generateDealProposal } from "./godfatherDeals";
 import { GODFATHER_PROFILES } from "./godfatherProfiles";
 
+// ── PatronageEffects ─────────────────────────────────────────────────
+
+export interface PatronageEffects {
+  tier: "clean" | "pragmatic" | "compromised" | "captured";
+  approvalCeiling?: number;
+  scandalRisk: number;       // 0-1 probability per turn of a scandal event
+  stabilityPenalty: number;  // negative modifier to stability per turn
+  description: string;
+}
+
+export function getPatronageEffects(index: number): PatronageEffects {
+  if (index <= 20) {
+    return {
+      tier: "clean",
+      scandalRisk: 0,
+      stabilityPenalty: 0,
+      description: "Your administration is free from patronage obligations.",
+    };
+  }
+  if (index <= 45) {
+    return {
+      tier: "pragmatic",
+      scandalRisk: 0.05,
+      stabilityPenalty: 0,
+      description: "Minor patronage deals are in play. Small scandal risk.",
+    };
+  }
+  if (index <= 70) {
+    return {
+      tier: "compromised",
+      approvalCeiling: 60,
+      scandalRisk: 0.15,
+      stabilityPenalty: -1,
+      description: "Significant patronage obligations limit your approval and threaten stability.",
+    };
+  }
+  return {
+    tier: "captured",
+    approvalCeiling: 50,
+    scandalRisk: 0.30,
+    stabilityPenalty: -2,
+    description: "Your presidency is captured by patronage networks. Severe scandal risk and instability.",
+  };
+}
+
 // ── Constants ────────────────────────────────────────────────────────
 
 const DEFAULT_COOLDOWN_DAYS = 30;

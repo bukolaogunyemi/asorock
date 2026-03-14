@@ -8,6 +8,7 @@ import {
   processGodfatherTurn,
   neutralizeGodfather,
   defaultPatronageState,
+  getPatronageEffects,
 } from "./godfatherEngine";
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -340,5 +341,51 @@ describe("defaultPatronageState", () => {
   it("starts with empty approachCooldowns", () => {
     const state = defaultPatronageState();
     expect(state.approachCooldowns).toEqual({});
+  });
+});
+
+// ── patronageIndex ─────────────────────────────────────────────────
+
+describe("patronageIndex", () => {
+  it("should have no penalty in Clean tier (0-20)", () => {
+    const effects = getPatronageEffects(15);
+    expect(effects.tier).toBe("clean");
+    expect(effects.approvalCeiling).toBeUndefined();
+    expect(effects.scandalRisk).toBe(0);
+    expect(effects.stabilityPenalty).toBe(0);
+  });
+
+  it("should have minor scandal risk in Pragmatic tier (21-45)", () => {
+    const effects = getPatronageEffects(30);
+    expect(effects.tier).toBe("pragmatic");
+    expect(effects.approvalCeiling).toBeUndefined();
+    expect(effects.scandalRisk).toBe(0.05);
+  });
+
+  it("should cap approval at 60 in Compromised tier (46-70)", () => {
+    const effects = getPatronageEffects(55);
+    expect(effects.tier).toBe("compromised");
+    expect(effects.approvalCeiling).toBe(60);
+    expect(effects.scandalRisk).toBe(0.15);
+    expect(effects.stabilityPenalty).toBe(-1);
+  });
+
+  it("should cap approval at 50 in Captured tier (71-100)", () => {
+    const effects = getPatronageEffects(80);
+    expect(effects.tier).toBe("captured");
+    expect(effects.approvalCeiling).toBe(50);
+    expect(effects.scandalRisk).toBe(0.30);
+    expect(effects.stabilityPenalty).toBe(-2);
+  });
+
+  it("should handle boundary values", () => {
+    expect(getPatronageEffects(0).tier).toBe("clean");
+    expect(getPatronageEffects(20).tier).toBe("clean");
+    expect(getPatronageEffects(21).tier).toBe("pragmatic");
+    expect(getPatronageEffects(45).tier).toBe("pragmatic");
+    expect(getPatronageEffects(46).tier).toBe("compromised");
+    expect(getPatronageEffects(70).tier).toBe("compromised");
+    expect(getPatronageEffects(71).tier).toBe("captured");
+    expect(getPatronageEffects(100).tier).toBe("captured");
   });
 });

@@ -182,7 +182,7 @@ export const APPOINTMENT_POSITIONS = [
     position: "Chief Economic Adviser", abbrev: "CEA",
     candidates: [
       {
-        name: "Prof. Nduka Soludo", avatar: "NS", loyalty: 45, competence: 90,
+        name: "Prof. Nduka Okafor", avatar: "NO", loyalty: 45, competence: 90,
         age: 55, state: "Anambra", gender: "Male" as const,
         traits: ["Brilliant", "Ambitious", "Globally Connected", "Outspoken"],
         note: "Former CBN Deputy Gov. IMF will love this pick. May overshadow you.",

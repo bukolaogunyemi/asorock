@@ -154,7 +154,7 @@ export default function EconomyTab() {
   const economyTeam = useMemo(() => {
     const orderedNames = [
       "Alhaji Bello Kazeem",
-      "Hajia Zainab Kano",
+      "Hajia Fatima Waziri",
       "Chief Adaeze Okonkwo",
       "Engr. Chidi Nwosu",
     ];
@@ -166,7 +166,7 @@ export default function EconomyTab() {
         mandate:
           character.name === "Alhaji Bello Kazeem"
             ? "Keep the treasury liquid while holding the coalition together."
-            : character.name === "Hajia Zainab Kano"
+            : character.name === "Hajia Fatima Waziri"
               ? "Defend institutional credibility while markets test the presidency."
               : character.name === "Chief Adaeze Okonkwo"
                 ? "Protect oil cash flow without triggering another scandal cycle."
@@ -558,7 +558,7 @@ export default function EconomyTab() {
                 <Card key={person.name} className="border border-border bg-muted/20">
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
-                      <CharacterAvatar name={person.name} initials={person.avatar} size="md" />
+                      <CharacterAvatar name={person.name} initials={person.avatar} size="md" gender={person.gender} role={person.portfolio} />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold">{person.name}</p>
                         <p className="text-xs text-muted-foreground">{person.portfolio}</p>

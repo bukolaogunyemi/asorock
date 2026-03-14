@@ -116,7 +116,7 @@ const governorsRebellion: EventChain = {
     },
     {
       id: "gr-2-freeze",
-      narrative: "The freeze hits hard. Salaries go unpaid in three states. Workers take to the streets. Governor Soludo calls it 'economic warfare against Igbo people' — the ethnic dimension makes international headlines.",
+      narrative: "The freeze hits hard. Salaries go unpaid in three states. Workers take to the streets. Governor Nwosu calls it 'economic warfare against Igbo people' — the ethnic dimension makes international headlines.",
       choices: [
         {
           label: "Release partial funds as a goodwill gesture",
@@ -184,7 +184,7 @@ const whistleblower: EventChain = {
   steps: [
     {
       id: "wb-1",
-      narrative: "An encrypted flash drive arrives at Channels Television containing 2,400 pages of NNPC documents showing ₦1.2 trillion in fraudulent subsidy claims. Three names are circled in red — one is your Petroleum Minister, Chief Adaeze Okonkwo. The story will break in 48 hours.",
+      narrative: "An encrypted flash drive arrives at Federal Capital TV containing 2,400 pages of NNPC documents showing ₦1.2 trillion in fraudulent subsidy claims. Three names are circled in red — one is your Petroleum Minister, Chief Adaeze Okonkwo. The story will break in 48 hours.",
       choices: [
         {
           label: "Get ahead of the story — announce an investigation",

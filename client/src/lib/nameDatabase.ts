@@ -36,13 +36,13 @@ export const NAME_POOLS: Record<string, NamePool> = {
       "Dangote", "Garba", "Gusau", "Hassan", "Ibrahim",
       "Inuwa", "Jibrin", "Lawal", "Makarfi", "Musa",
       "Rabiu", "Ringim", "Sani", "Umar", "Yakubu",
-      "Danmusa", "Gwamna", "Jega", "Kwankwaso", "Lawan",
+      "Danmusa", "Gwamna", "Kagara", "Kankarofi", "Lawan",
     ],
   },
 
   Fulani: {
     male: [
-      "Ardo", "Bello", "Buhari", "Danjuma", "Dikko",
+      "Ardo", "Bello", "Danbatta", "Danjuma", "Dikko",
       "Garba", "Hamidu", "Isa", "Jafaru", "Ladan",
       "Mamman", "Modibo", "Muhammadu", "Murtala", "Nuhu",
       "Saddiq", "Sule", "Tanko", "Usman", "Yahaya",
@@ -56,7 +56,7 @@ export const NAME_POOLS: Record<string, NamePool> = {
       "Asma", "Bilkisu", "Hauwa", "Inna", "Ladidi",
     ],
     surnames: [
-      "Abdullahi", "Abubakar", "Aliyu", "Bello", "Buhari",
+      "Abdullahi", "Abubakar", "Aliyu", "Bello", "Danbatta",
       "Danjuma", "Dikko", "Garba", "Hassan", "Isa",
       "Jafaru", "Ladan", "Mamman", "Modibo", "Murtala",
       "Nuhu", "Sule", "Tanko", "Usman", "Yahaya",
@@ -81,10 +81,10 @@ export const NAME_POOLS: Record<string, NamePool> = {
     ],
     surnames: [
       "Abiodun", "Adebayo", "Adeleke", "Adesanya", "Afolabi",
-      "Ajayi", "Akinwale", "Alabi", "Asiwaju", "Awolowo",
+      "Ajayi", "Akinwale", "Alabi", "Akande", "Awolowo",
       "Balogun", "Fashola", "Fawehimi", "Ipaye", "Lawal",
-      "Makinde", "Obasanjo", "Oduya", "Ogunleye", "Okonkwo",
-      "Olawale", "Oshiomhole", "Sanwo-Olu", "Tinubu", "Wole",
+      "Makinde", "Oladele", "Oduya", "Ogunleye", "Okonkwo",
+      "Olawale", "Adegoke", "Aregbe", "Adeniyi", "Wole",
     ],
   },
 
@@ -101,14 +101,14 @@ export const NAME_POOLS: Record<string, NamePool> = {
       "Ebele", "Ezinne", "Ifunanya", "Ijeoma", "Ngozi",
       "Nkechi", "Nkiruka", "Nneka", "Ogechi", "Olachi",
       "Onyinye", "Sinachi", "Somkene", "Uchechi", "Ugochi",
-      "Chinyere", "Obiageli", "Ogechukwu", "Ujunwa", "Zulum",
+      "Chinyere", "Obiageli", "Ogechukwu", "Ujunwa", "Chisom",
     ],
     surnames: [
       "Achebe", "Adichie", "Agu", "Anyanwu", "Chukwu",
       "Dike", "Eze", "Ihejirika", "Ikpeazu", "Mbah",
       "Mbeki", "Ngige", "Nnamdi", "Nwosu", "Obiora",
       "Obi", "Ojukwu", "Okafor", "Okonkwo", "Okoro",
-      "Onyeka", "Orji", "Soludo", "Umahi", "Uzor",
+      "Onyeka", "Orji", "Enwerem", "Amogu", "Uzor",
     ],
   },
 
@@ -179,7 +179,7 @@ export const NAME_POOLS: Record<string, NamePool> = {
       "Abba", "Abubakar", "Ali", "Bulama", "Bukar",
       "Fannami", "Gana", "Gambari", "Hassan", "Ibrahim",
       "Idris", "Kachalla", "Kashim", "Kyari", "Lawan",
-      "Maina", "Modu", "Mustapha", "Shettima", "Zulum",
+      "Maina", "Modu", "Mustapha", "Ngamdu", "Wakil",
       "Borno", "Gujba", "Kaka", "Monguno", "Yerima",
     ],
   },
@@ -202,9 +202,9 @@ export const NAME_POOLS: Record<string, NamePool> = {
     surnames: [
       "Aigbe", "Aikhionbare", "Airen", "Asoro", "Ehigie",
       "Ekhosuehi", "Eribo", "Eseoghene", "Igbinoba", "Iyamu",
-      "Obahiagbon", "Obeki", "Obaseki", "Ogbeide", "Ogbimi",
+      "Obahiagbon", "Obeki", "Ehanire", "Ogbeide", "Ogbimi",
       "Ogieva", "Okonoboh", "Omoruyi", "Osagie", "Osunbor",
-      "Akhigbe", "Edomwonyi", "Ighodaro", "Nosa", "Oshiomhole",
+      "Akhigbe", "Edomwonyi", "Ighodaro", "Nosa", "Ezomo",
     ],
   },
 

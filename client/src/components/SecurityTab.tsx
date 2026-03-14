@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -18,9 +18,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { useGame } from "@/lib/GameContext";
-import { CharacterAvatar } from "@/components/CharacterAvatar";
-import { CompetencyBar } from "@/components/CompetencyBar";
-import { RelationshipIndicator } from "@/components/RelationshipIndicator";
+import { PersonnelCard } from "@/components/PersonnelCard";
 import { getChainById } from "@/lib/eventChains";
 import {
   AlertTriangle,
@@ -46,12 +44,9 @@ import {
 } from "recharts";
 import type { ActiveEvent } from "@/lib/gameTypes";
 
-const SEC_SUBTABS = [
-  { id: "overview", label: "Overview" },
-  { id: "theaters", label: "Theaters" },
-  { id: "intel", label: "Intel" },
-  { id: "command", label: "Command" },
-] as const;
+interface SecurityTabProps {
+  view?: "intel" | "military" | "police";
+}
 
 const ACTIONS = [
   { id: "emergency-powers", label: "Emergency Measures", blurb: "Centralise command for a short, sharp response." },
@@ -85,7 +80,7 @@ const formatRequirements = (requirements?: { metric: string; min?: number; max?:
     .join(" | ");
 };
 
-export default function SecurityTab() {
+export default function SecurityTab({ view = "intel" }: SecurityTabProps) {
   const { toast } = useToast();
   const {
     state,
@@ -94,7 +89,6 @@ export default function SecurityTab() {
     resolveChainChoice,
     resolveEventChoice,
   } = useGame();
-  const [subTab, setSubTab] = useState<(typeof SEC_SUBTABS)[number]["id"]>("overview");
 
   const securityEvents = state.activeEvents.filter((event) => event.category === "security");
   const crisisChains = useMemo(() => state.activeChains
@@ -182,10 +176,10 @@ export default function SecurityTab() {
 
   const commandTeam = useMemo(() => {
     const orderedNames = [
-      "Brig. Tukur Hassan (Rtd)",
+      "Brig. Kabiru Musa (Rtd)",
       "Gen. Yakubu Musa (Rtd)",
       "Barr. Funke Adeyemi",
-      "Gov. Abdullahi Sule",
+      "Gov. Musa Garba",
     ];
     return orderedNames
       .map((name) => state.characters[name])
@@ -193,7 +187,7 @@ export default function SecurityTab() {
       .map((character) => ({
         ...character,
         brief:
-          character.name === "Brig. Tukur Hassan (Rtd)"
+          character.name === "Brig. Kabiru Musa (Rtd)"
             ? "Pressing for a harder doctrine and faster authority loops."
             : character.name === "Gen. Yakubu Musa (Rtd)"
               ? "Measures you by whether field pressure eases rather than speeches land."
@@ -216,174 +210,205 @@ export default function SecurityTab() {
     return lastUsed !== undefined && state.day - lastUsed < 2;
   };
 
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-1" data-testid="security-subtabs">
-        {SEC_SUBTABS.map((tab) => (
-          <button
-            key={tab.id}
-            data-testid={`sec-subtab-${tab.id}`}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-              subTab === tab.id
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted"
-            }`}
-            onClick={() => setSubTab(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+  // INTEL view: Overview KPIs + Security Files + Directives + Incident Board + Pressure Chart
+  if (view === "intel") {
+    return (
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4" data-testid="security-kpis">
+          {[
+            { label: "National Stability", value: `${state.stability}%`, note: "The broadest measure of coercive order and compliance." },
+            { label: "Coup Risk", value: `${coupRisk}%`, note: "Driven by command loyalty, approval, and institutional stress." },
+            { label: "Popular Blowback", value: `${popularRisk}%`, note: "Public anger can now spill into the street without warning." },
+            { label: "Critical Files", value: `${securityEvents.length}`, note: "Security crises still waiting for a decision in the Office." },
+          ].map((metric) => (
+            <Card key={metric.label} className="border border-border">
+              <CardContent className="p-4 space-y-1.5">
+                <p className="text-xs font-medium text-muted-foreground">{metric.label}</p>
+                <p className="text-2xl font-semibold tabular-nums">{metric.value}</p>
+                <p className="text-xs text-muted-foreground">{metric.note}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      {subTab === "overview" && (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4" data-testid="security-kpis">
-            {[
-              { label: "National Stability", value: `${state.stability}%`, note: "The broadest measure of coercive order and compliance." },
-              { label: "Coup Risk", value: `${coupRisk}%`, note: "Driven by command loyalty, approval, and institutional stress." },
-              { label: "Popular Blowback", value: `${popularRisk}%`, note: "Public anger can now spill into the street without warning." },
-              { label: "Critical Files", value: `${securityEvents.length}`, note: "Security crises still waiting for a decision in the Office." },
-            ].map((metric) => (
-              <Card key={metric.label} className="border border-border">
-                <CardContent className="p-4 space-y-1.5">
-                  <p className="text-xs font-medium text-muted-foreground">{metric.label}</p>
-                  <p className="text-2xl font-semibold tabular-nums">{metric.value}</p>
-                  <p className="text-xs text-muted-foreground">{metric.note}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-4">
-            <Card className="border border-border" data-testid="security-live-files-card">
-              <CardHeader className="p-4 pb-2">
-                <div className="flex items-center justify-between gap-3">
-                  <CardTitle className="text-sm font-semibold">Security Files</CardTitle>
-                  <Badge variant="outline" className="text-xs">{securityEvents.length} live</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4 pt-0 space-y-3">
-                {securityEvents.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">No dedicated security event is waiting right now. Keep an eye on stability, field sentiment, and the next crisis chain trigger.</p>
-                ) : (
-                  securityEvents.map((event) => (
-                    <Card key={event.id} className="border border-border bg-muted/20">
-                      <CardContent className="p-3 space-y-3">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant={severityBadge(event.severity)} className="text-xs">{event.severity}</Badge>
-                          <p className="text-sm font-semibold">{event.title}</p>
-                        </div>
-                        <p className="text-xs text-muted-foreground">{event.description}</p>
-                        <div className="grid gap-2">
-                          {event.choices.map((choice, index) => {
-                            const enabled = canResolveChoice(choice.requirements);
-                            return (
-                              <div key={`${event.id}-${choice.id}`} className="space-y-1">
-                                <Button
-                                  data-testid={`security-event-${event.id}-choice-${index}`}
-                                  variant="outline"
-                                  size="sm"
-                                  className="w-full justify-start text-xs"
-                                  disabled={!enabled}
-                                  onClick={() => {
-                                    resolveEventChoice(event.id, index);
-                                    toast({ title: choice.label, description: `${event.title} has been updated.` });
-                                  }}
-                                >
-                                  {choice.label}
-                                </Button>
-                                <p className="text-[11px] text-muted-foreground">{choice.context}</p>
-                                {!enabled && choice.requirements && (
-                                  <p className="text-[11px] text-muted-foreground">Requires {formatRequirements(choice.requirements)}</p>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-
-                {crisisChains.length > 0 && (
-                  <Card className="border border-border bg-muted/20" data-testid="security-crisis-chain-card">
+        <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-4">
+          <Card className="border border-border" data-testid="security-live-files-card">
+            <CardHeader className="p-4 pb-2">
+              <div className="flex items-center justify-between gap-3">
+                <CardTitle className="text-sm font-semibold">Security Files</CardTitle>
+                <Badge variant="outline" className="text-xs">{securityEvents.length} live</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-3">
+              {securityEvents.length === 0 ? (
+                <p className="text-xs text-muted-foreground">No dedicated security event is waiting right now. Keep an eye on stability, field sentiment, and the next crisis chain trigger.</p>
+              ) : (
+                securityEvents.map((event) => (
+                  <Card key={event.id} className="border border-border bg-muted/20">
                     <CardContent className="p-3 space-y-3">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <Badge variant="destructive" className="text-xs">chain</Badge>
-                        <p className="text-sm font-semibold">{crisisChains[0].title}</p>
+                        <Badge variant={severityBadge(event.severity)} className="text-xs">{event.severity}</Badge>
+                        <p className="text-sm font-semibold">{event.title}</p>
                       </div>
-                      <p className="text-xs text-muted-foreground">{crisisChains[0].narrative}</p>
+                      <p className="text-xs text-muted-foreground">{event.description}</p>
                       <div className="grid gap-2">
-                        {crisisChains[0].choices.map((choice, index) => {
+                        {event.choices.map((choice, index) => {
                           const enabled = canResolveChoice(choice.requirements);
                           return (
-                            <Button
-                              key={`${crisisChains[0].chainId}-${index}`}
-                              data-testid={`security-chain-${crisisChains[0].chainId}-choice-${index}`}
-                              variant="outline"
-                              size="sm"
-                              className="w-full justify-start text-xs"
-                              disabled={!enabled}
-                              onClick={() => {
-                                resolveChainChoice(crisisChains[0].chainId, index);
-                                toast({ title: crisisChains[0].title, description: "Chain decision recorded." });
-                              }}
-                            >
-                              {choice.label}
-                            </Button>
+                            <div key={`${event.id}-${choice.id}`} className="space-y-1">
+                              <Button
+                                data-testid={`security-event-${event.id}-choice-${index}`}
+                                variant="outline"
+                                size="sm"
+                                className="w-full justify-start text-xs"
+                                disabled={!enabled}
+                                onClick={() => {
+                                  resolveEventChoice(event.id, index);
+                                  toast({ title: choice.label, description: `${event.title} has been updated.` });
+                                }}
+                              >
+                                {choice.label}
+                              </Button>
+                              <p className="text-[11px] text-muted-foreground">{choice.context}</p>
+                              {!enabled && choice.requirements && (
+                                <p className="text-[11px] text-muted-foreground">Requires {formatRequirements(choice.requirements)}</p>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
                     </CardContent>
                   </Card>
-                )}
-              </CardContent>
-            </Card>
+                ))
+              )}
 
-            <Card className="border border-border" data-testid="security-directives-card">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm font-semibold">Security Directives</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0 space-y-3">
-                {ACTIONS.map((action) => {
-                  const disabled = coolingDown(action.id);
-                  return (
-                    <Card key={action.id} className="border border-border bg-muted/20">
-                      <CardContent className="p-3 space-y-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-semibold">{action.label}</p>
-                          {disabled && <Badge variant="secondary" className="text-[11px]">Cooling down</Badge>}
-                        </div>
-                        <p className="text-xs text-muted-foreground">{action.blurb}</p>
-                        <Button
-                          data-testid={`security-action-${action.id}`}
-                          variant="outline"
-                          size="sm"
-                          className="w-full text-xs"
-                          disabled={disabled}
-                          onClick={() => runAction(action.id, action.label)}
-                        >
-                          Issue Directive
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </CardContent>
-            </Card>
-          </div>
+              {crisisChains.length > 0 && (
+                <Card className="border border-border bg-muted/20" data-testid="security-crisis-chain-card">
+                  <CardContent className="p-3 space-y-3">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="destructive" className="text-xs">chain</Badge>
+                      <p className="text-sm font-semibold">{crisisChains[0].title}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{crisisChains[0].narrative}</p>
+                    <div className="grid gap-2">
+                      {crisisChains[0].choices.map((choice, index) => {
+                        const enabled = canResolveChoice(choice.requirements);
+                        return (
+                          <Button
+                            key={`${crisisChains[0].chainId}-${index}`}
+                            data-testid={`security-chain-${crisisChains[0].chainId}-choice-${index}`}
+                            variant="outline"
+                            size="sm"
+                            className="w-full justify-start text-xs"
+                            disabled={!enabled}
+                            onClick={() => {
+                              resolveChainChoice(crisisChains[0].chainId, index);
+                              toast({ title: crisisChains[0].title, description: "Chain decision recorded." });
+                            }}
+                          >
+                            {choice.label}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </CardContent>
+          </Card>
 
-          <Alert variant={coupRisk >= 70 ? "destructive" : "default"} className="py-3 px-4" data-testid="security-warning">
-            <Siren className="h-4 w-4" />
-            <AlertTitle className="text-xs font-medium">National Security Warning</AlertTitle>
-            <AlertDescription className="text-xs">
-              Command cohesion is being measured against stability, public anger, and whether crises keep outpacing your response tempo. A bad few turns from here can turn fragility into a constitutional emergency.
-            </AlertDescription>
-          </Alert>
-        </>
-      )}
+          <Card className="border border-border" data-testid="security-directives-card">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-semibold">Security Directives</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-3">
+              {ACTIONS.map((action) => {
+                const disabled = coolingDown(action.id);
+                return (
+                  <Card key={action.id} className="border border-border bg-muted/20">
+                    <CardContent className="p-3 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold">{action.label}</p>
+                        {disabled && <Badge variant="secondary" className="text-[11px]">Cooling down</Badge>}
+                      </div>
+                      <p className="text-xs text-muted-foreground">{action.blurb}</p>
+                      <Button
+                        data-testid={`security-action-${action.id}`}
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs"
+                        disabled={disabled}
+                        onClick={() => runAction(action.id, action.label)}
+                      >
+                        Issue Directive
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </CardContent>
+          </Card>
+        </div>
 
-      {subTab === "theaters" && (
+        {/* Incident Board + Pressure Chart */}
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_0.9fr] gap-4">
+          <Card className="border border-border" data-testid="security-incidents-card">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-semibold">Incident Board</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-2">
+              {incidentBoard.map((incident) => (
+                <div key={incident.id} className="rounded-md border border-border bg-muted/20 p-3 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium">{incident.title}</p>
+                    <Badge variant={incident.urgency === "High" ? "destructive" : "outline"} className="text-[11px]">{incident.urgency}</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{incident.note}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card className="border border-border" data-testid="security-pressure-chart-card">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-semibold">Pressure Indicators</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={threatAxes}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="axis" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                  <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" domain={[0, 10]} />
+                  <Tooltip
+                    contentStyle={{
+                      background: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                  />
+                  <Bar dataKey="value" fill="hsl(210, 70%, 50%)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Alert variant={coupRisk >= 70 ? "destructive" : "default"} className="py-3 px-4" data-testid="security-warning">
+          <Siren className="h-4 w-4" />
+          <AlertTitle className="text-xs font-medium">National Security Warning</AlertTitle>
+          <AlertDescription className="text-xs">
+            Command cohesion is being measured against stability, public anger, and whether crises keep outpacing your response tempo. A bad few turns from here can turn fragility into a constitutional emergency.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  // MILITARY view: Threat Map + Theaters + Command Team + State Relations
+  if (view === "military") {
+    return (
+      <div className="space-y-4">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <Card className="border border-border" data-testid="security-threat-radar-card">
             <CardHeader className="p-4 pb-2">
@@ -441,54 +466,7 @@ export default function SecurityTab() {
             </CardContent>
           </Card>
         </div>
-      )}
 
-      {subTab === "intel" && (
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_0.9fr] gap-4">
-          <Card className="border border-border" data-testid="security-incidents-card">
-            <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-semibold">Incident Board</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0 space-y-2">
-              {incidentBoard.map((incident) => (
-                <div key={incident.id} className="rounded-md border border-border bg-muted/20 p-3 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium">{incident.title}</p>
-                    <Badge variant={incident.urgency === "High" ? "destructive" : "outline"} className="text-[11px]">{incident.urgency}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{incident.note}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="border border-border" data-testid="security-pressure-chart-card">
-            <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-semibold">Pressure Indicators</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={threatAxes}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="axis" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                  <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" domain={[0, 10]} />
-                  <Tooltip
-                    contentStyle={{
-                      background: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: 8,
-                      fontSize: 12,
-                    }}
-                  />
-                  <Bar dataKey="value" fill="hsl(210, 70%, 50%)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {subTab === "command" && (
         <div className="grid grid-cols-1 xl:grid-cols-[1.05fr_0.95fr] gap-4">
           <Card className="border border-border" data-testid="security-command-team-card">
             <CardHeader className="p-4 pb-2">
@@ -496,24 +474,23 @@ export default function SecurityTab() {
             </CardHeader>
             <CardContent className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-3">
               {commandTeam.map((person) => (
-                <Card key={person.name} className="border border-border bg-muted/20">
-                  <CardContent className="p-3 space-y-2">
-                    <div className="flex items-start gap-3">
-                      <CharacterAvatar name={person.name} initials={person.avatar} size="md" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold">{person.name}</p>
-                        <p className="text-xs text-muted-foreground">{person.portfolio}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-0.5">
-                      <CompetencyBar value={person.loyalty} label="Loyalty" />
-                      <CompetencyBar value={person.competence} label="Competence" />
-                      <CompetencyBar value={person.ambition} label="Ambition" />
-                    </div>
-                    <RelationshipIndicator relationship={person.relationship} />
-                    <p className="text-xs text-muted-foreground">{person.brief}</p>
-                  </CardContent>
-                </Card>
+                <PersonnelCard
+                  key={person.name}
+                  name={person.name}
+                  avatar={person.avatar}
+                  title={person.portfolio}
+                  age={person.age}
+                  state={person.state}
+                  gender={person.gender}
+                  loyalty={person.loyalty}
+                  competence={person.competence}
+                  ambition={person.ambition}
+                  relationship={person.relationship}
+                  faction={person.faction}
+                  traits={person.traits}
+                  note={person.brief}
+                  className="bg-muted/20"
+                />
               ))}
             </CardContent>
           </Card>
@@ -547,7 +524,18 @@ export default function SecurityTab() {
             </CardContent>
           </Card>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  // POLICE view: placeholder
+  return (
+    <div className="space-y-4">
+      <Card><CardContent className="p-8 text-center text-muted-foreground">
+        <Shield className="w-10 h-10 mx-auto mb-3 opacity-40" />
+        <p className="text-lg font-medium">Police Command</p>
+        <p className="text-sm mt-1">Nigeria Police Force oversight, zonal commands, community policing, and internal affairs will be available here.</p>
+      </CardContent></Card>
     </div>
   );
 }

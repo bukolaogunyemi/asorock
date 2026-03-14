@@ -672,11 +672,11 @@ export default function OnboardingFlow() {
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">First Name</Label>
-                      <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Bola" className="text-sm" />
+                      <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Femi" className="text-sm" />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">Last Name</Label>
-                      <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Tinubu" className="text-sm" />
+                      <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Adeyemi" className="text-sm" />
                     </div>
                   </div>
                   {/* Row 2: Age · Gender */}
@@ -1109,11 +1109,11 @@ export default function OnboardingFlow() {
               <CardContent className="p-4 space-y-3">
                 <NarrativeHeader step={6} />
                 {[
-                  { source: "The Punch", headline: `HISTORY MADE: ${gender === "Female" ? "First Female" : ""} ${stateOfOrigin} ${gender === "Female" ? "Woman" : "Native"} Wins Presidency on ${party} Ticket` },
-                  { source: "Daily Trust", headline: `${lastName} Sweeps ${electionResults?.totalStatesWon[party] ?? 25} States — Opposition Cries Foul` },
+                  { source: "The Tribune", headline: `HISTORY MADE: ${gender === "Female" ? "First Female" : ""} ${stateOfOrigin} ${gender === "Female" ? "Woman" : "Native"} Wins Presidency on ${party} Ticket` },
+                  { source: "Northern Vanguard", headline: `${lastName} Sweeps ${electionResults?.totalStatesWon[party] ?? 25} States — Opposition Cries Foul` },
                   { source: "Vanguard", headline: `"I Will Not Let You Down" — President-Elect ${lastName} Addresses the Nation` },
                   { source: "BusinessDay", headline: `Markets Rally on ${lastName} Victory — Naira Firms, NSE Gains 3.2%` },
-                  { source: "The Guardian", headline: `Era of ${ERAS.find((e) => e.id === era)?.label}: What ${lastName}'s ${party} Presidency Means for Nigeria` },
+                  { source: "West African Tribune", headline: `Era of ${ERAS.find((e) => e.id === era)?.label}: What ${lastName}'s ${party} Presidency Means for Nigeria` },
                 ].map((h, i) => (
                   <motion.div
                     key={i}

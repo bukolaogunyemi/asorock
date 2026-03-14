@@ -179,7 +179,7 @@ export const failureStates: FailureState[] = [
     icon: "UserX",
     color: "hsl(280, 60%, 45%)",
     riskFn: (s) => {
-      const chairman = s.characters["Chief Emeka Obiora"];
+      const chairman = s.characters["Chief Chidubem Okafor"];
       const chairmanRisk = chairman ? Math.max(0, ((100 - chairman.loyalty) / 100) * 40) : 20;
       const factionRisk = Math.max(0, ((100 - averageFactionLoyalty(s)) / 100) * 35);
       const pcDeficit = Math.max(0, ((100 - s.politicalCapital) / 100) * 25);

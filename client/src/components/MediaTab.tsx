@@ -16,8 +16,7 @@ import {
 } from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
-import { CompetencyBar } from "@/components/CompetencyBar";
-import { RelationshipIndicator } from "@/components/RelationshipIndicator";
+import { PersonnelCard } from "@/components/PersonnelCard";
 import { useGame } from "@/lib/GameContext";
 import {
   AlertTriangle,
@@ -50,8 +49,8 @@ const ACTIONS = [
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 const sourceForHeadline = (headline: string) => {
-  if (/labour|strike|worker/i.test(headline)) return "Premium Times";
-  if (/security|bandit|crisis|betrayal/i.test(headline)) return "Channels TV";
+  if (/labour|strike|worker/i.test(headline)) return "The Reporter";
+  if (/security|bandit|crisis|betrayal/i.test(headline)) return "Federal Capital TV";
   if (/market|treasury|naira|fx|cbn/i.test(headline)) return "BusinessDay";
   if (/governor|party|senate|election/i.test(headline)) return "The Cable";
   return "State House Wire";
@@ -125,9 +124,9 @@ export default function MediaTab() {
   const narrativeStakeholders = useMemo(() => {
     const names = [
       "Alhaji Bello Kazeem",
-      "Brig. Tukur Hassan (Rtd)",
-      "Chief Emeka Obiora",
-      "Comrade Aisha Yusuf",
+      "Brig. Kabiru Musa (Rtd)",
+      "Chief Chidubem Okafor",
+      "Comrade Ngozi Okafor",
     ];
     return names
       .map((name) => state.characters[name])
@@ -137,9 +136,9 @@ export default function MediaTab() {
         note:
           character.name === "Alhaji Bello Kazeem"
             ? "Every market wobble ends up with his face on television."
-            : character.name === "Brig. Tukur Hassan (Rtd)"
-              ? "Security success or failure is translating directly into your legitimacy." 
-              : character.name === "Chief Emeka Obiora"
+            : character.name === "Brig. Kabiru Musa (Rtd)"
+              ? "Security success or failure is translating directly into your legitimacy."
+              : character.name === "Chief Chidubem Okafor"
                 ? "Party leaks change the tone of the press room before you even arrive."
                 : "Labour rhetoric can set the emotional temperature of the whole week.",
       }));
@@ -251,45 +250,6 @@ export default function MediaTab() {
         </Card>
       </div>
 
-      <Card className="border border-border" data-testid="social-media-feed-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm font-semibold">Social Feed</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0 space-y-3">
-          {socialFeed.map((post) => (
-            <div key={post.id} className="border border-border rounded-lg p-3 space-y-2">
-              <div className="flex items-start gap-2.5">
-                <CharacterAvatar name={post.name} initials={post.avatar} size="sm" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-sm font-semibold">{post.name}</span>
-                    <span className="text-xs text-muted-foreground">{post.handle}</span>
-                    <Badge variant={socialSentimentBadge(post.sentiment)} className="text-xs ml-auto">
-                      {post.sentiment}
-                    </Badge>
-                  </div>
-                  <p className="text-xs mt-1">{post.text}</p>
-                  <div className="flex items-center gap-4 mt-2">
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <MessageCircle className="h-3 w-3" /> {post.replies}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Repeat2 className="h-3 w-3" /> {post.reposts}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Heart className="h-3 w-3" /> {post.likes}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Share className="h-3 w-3" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
       <div className="grid grid-cols-1 xl:grid-cols-[1.05fr_0.95fr] gap-4">
         <Card className="border border-border" data-testid="media-personnel-card">
           <CardHeader className="p-4 pb-2">
@@ -297,28 +257,23 @@ export default function MediaTab() {
           </CardHeader>
           <CardContent className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-3">
             {narrativeStakeholders.map((person) => (
-              <Card key={person.name} className="border border-border bg-muted/20">
-                <CardContent className="p-3 space-y-2">
-                  <div className="flex items-start gap-3">
-                    <CharacterAvatar name={person.name} initials={person.avatar} size="md" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <div>
-                          <p className="text-sm font-semibold">{person.name}</p>
-                          <p className="text-xs text-muted-foreground">{person.portfolio}</p>
-                        </div>
-                        <Badge variant="outline" className="text-xs">{person.faction}</Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-0.5">
-                    <CompetencyBar value={person.loyalty} label="Loyalty" />
-                    <CompetencyBar value={person.competence} label="Competence" />
-                  </div>
-                  <RelationshipIndicator relationship={person.relationship} />
-                  <p className="text-xs text-muted-foreground">{person.note}</p>
-                </CardContent>
-              </Card>
+              <PersonnelCard
+                key={person.name}
+                name={person.name}
+                avatar={person.avatar}
+                title={person.portfolio}
+                age={person.age}
+                state={person.state}
+                gender={person.gender}
+                loyalty={person.loyalty}
+                competence={person.competence}
+                ambition={person.ambition}
+                relationship={person.relationship}
+                faction={person.faction}
+                traits={person.traits}
+                note={person.note}
+                className="bg-muted/20"
+              />
             ))}
           </CardContent>
         </Card>

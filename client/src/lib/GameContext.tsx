@@ -168,12 +168,12 @@ const eraMacroPresets: Record<CampaignConfig["era"], MacroEconomicState> = {
 };
 
 const defaultGovernors: GovernorState[] = [
-  { name: "Gov. Abdullahi Sule", zone: "North-West", party: "Ruling", loyalty: 50, competence: 70, approval: 39, relationship: "Wary", avatar: "AS", demands: "Fiscal autonomy and security support" },
-  { name: "Gov. Babagana Zulum", zone: "North-East", party: "Ruling", loyalty: 70, competence: 82, approval: 41, relationship: "Friendly", avatar: "BZ", demands: "Counter-insurgency resources" },
-  { name: "Gov. Caleb Mutfwang", zone: "North-Central", party: "Opposition", loyalty: 40, competence: 65, approval: 44, relationship: "Neutral", avatar: "CM", demands: "Farmer-herder mediation" },
-  { name: "Gov. Babajide Sanwo-Olu", zone: "South-West", party: "Ruling", loyalty: 72, competence: 78, approval: 52, relationship: "Friendly", avatar: "BS", demands: "Lagos special economic status" },
-  { name: "Gov. Charles Soludo", zone: "South-East", party: "Opposition", loyalty: 25, competence: 88, approval: 33, relationship: "Hostile", avatar: "CS", demands: "South-East representation in cabinet" },
-  { name: "Gov. Udom Emmanuel", zone: "South-South", party: "Ruling", loyalty: 55, competence: 72, approval: 45, relationship: "Wary", avatar: "UE", demands: "Niger Delta oil revenue sharing" },
+  { name: "Gov. Musa Garba", zone: "North-West", party: "Ruling", loyalty: 50, competence: 70, approval: 39, relationship: "Wary", avatar: "MG", demands: "Fiscal autonomy and security support" },
+  { name: "Gov. Yerima Kanuri", zone: "North-East", party: "Ruling", loyalty: 70, competence: 82, approval: 41, relationship: "Friendly", avatar: "YK", demands: "Counter-insurgency resources" },
+  { name: "Gov. James Deshi", zone: "North-Central", party: "Opposition", loyalty: 40, competence: 65, approval: 44, relationship: "Neutral", avatar: "JD", demands: "Farmer-herder mediation" },
+  { name: "Gov. Adewale Adekunle", zone: "South-West", party: "Ruling", loyalty: 72, competence: 78, approval: 52, relationship: "Friendly", avatar: "AA", demands: "Lagos special economic status" },
+  { name: "Gov. Obiora Nwosu", zone: "South-East", party: "Opposition", loyalty: 25, competence: 88, approval: 33, relationship: "Hostile", avatar: "ON", demands: "South-East representation in cabinet" },
+  { name: "Gov. Edet Okon", zone: "South-South", party: "Ruling", loyalty: 55, competence: 72, approval: 45, relationship: "Wary", avatar: "EO", demands: "Niger Delta oil revenue sharing" },
 ];
 
 const defaultCases: CourtCase[] = [

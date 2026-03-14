@@ -97,7 +97,7 @@ export const quickActionDefinitions: QuickActionDefinition[] = [
       mkC("qa-cbn-now", "quick-action-cbn-directive", "Pressure on the CBN jolts markets", [
         { target: "treasury", delta: 0.06, description: "Short-term liquidity relief arrives" },
         { target: "trust", delta: -5, description: "Institutional independence erodes" },
-        { target: "character", characterName: "Hajia Zainab Kano", delta: -9, description: "The CBN governor resents interference" },
+        { target: "character", characterName: "Hajia Fatima Waziri", delta: -9, description: "The CBN governor resents interference" },
       ]),
       mkC("qa-cbn-later", "quick-action-cbn-directive", "Market suspicion lingers after intervention", [
         { target: "approval", delta: -2, description: "Critics call the move desperate" },
@@ -505,12 +505,17 @@ export const startingInboxMessages: GameInboxMessage[] = [
     read: false,
     source: "seed",
     relatedEventId: "ae-imf-loan",
+    responseOptions: [
+      { label: "Approve the Report", actionId: "approve" },
+      { label: "Revise the Numbers", actionId: "modify" },
+      { label: "Delay the Meeting", actionId: "defer" },
+    ],
   },
   {
     id: "msg-security-nw",
-    sender: "Brig. Tukur Hassan (Rtd)",
+    sender: "Brig. Kabiru Musa (Rtd)",
     role: "National Security Adviser",
-    initials: "TH",
+    initials: "KM",
     subject: "North-West Threat Window",
     preview: "Intelligence suggests coordinated attacks are being prepared across multiple northern states.",
     fullText: "Mr. President, our sources indicate a coordinated attack is being prepared across Zamfara, Katsina, and Sokoto. We have 48 to 72 hours before the threat matures. I need a political decision on whether to move early and accept the optics of a heavy deployment.",
@@ -519,12 +524,17 @@ export const startingInboxMessages: GameInboxMessage[] = [
     read: false,
     source: "seed",
     relatedEventId: "ae-pipeline-crisis",
+    responseOptions: [
+      { label: "Authorise Deployment", actionId: "approve" },
+      { label: "Order Surveillance First", actionId: "investigate" },
+      { label: "Assign to NSA", actionId: "delegate" },
+    ],
   },
   {
     id: "msg-party-unity",
-    sender: "Chief Emeka Obiora",
+    sender: "Chief Chidubem Okafor",
     role: "Party Chairman",
-    initials: "EO",
+    initials: "CO",
     subject: "Party Unity Warning",
     preview: "The South-East caucus is threatening to break ranks over appointments and patronage.",
     fullText: "Your Excellency, I write to express concern about the growing division within our party. The South-East caucus believes your coalition is taking them for granted. If we do not move symbolically and quickly, I cannot guarantee discipline at the next NEC meeting.",
@@ -532,12 +542,17 @@ export const startingInboxMessages: GameInboxMessage[] = [
     priority: "Normal",
     read: false,
     source: "seed",
+    responseOptions: [
+      { label: "Schedule Meeting", actionId: "engage" },
+      { label: "Send Reassurance", actionId: "acknowledge" },
+      { label: "Ignore for Now", actionId: "ignore-response" },
+    ],
   },
   {
     id: "msg-labour-pressure",
-    sender: "Comrade Aisha Yusuf",
+    sender: "Comrade Ngozi Okafor",
     role: "Labour Leader",
-    initials: "AY",
+    initials: "NO",
     subject: "Strike Notice",
     preview: "Labour is preparing a coordinated shutdown unless the Presidency moves on wages and transport relief.",
     fullText: "Mr. President, the NLC has formally resolved to commence a nationwide strike if our demands are ignored. The minimum wage review is stalled and subsidy pain is unbearable. We await a serious offer, not another speech.",
@@ -545,12 +560,17 @@ export const startingInboxMessages: GameInboxMessage[] = [
     priority: "Urgent",
     read: false,
     source: "seed",
+    responseOptions: [
+      { label: "Open Negotiations", actionId: "engage" },
+      { label: "Issue Public Statement", actionId: "acknowledge" },
+      { label: "Stand Firm", actionId: "reject" },
+    ],
   },
   {
     id: "msg-governors-fiscal",
-    sender: "Gov. Abdullahi Sule",
+    sender: "Gov. Musa Garba",
     role: "Governors Forum",
-    initials: "AS",
+    initials: "MG",
     subject: "Fiscal Autonomy Request",
     preview: "Governors want an emergency discussion on revenue sharing and emergency support.",
     fullText: "On behalf of the Governors Forum, I request an emergency discussion on fiscal autonomy reforms. Several states are approaching salary defaults and will blame the Presidency if no bridge support emerges.",
@@ -558,6 +578,11 @@ export const startingInboxMessages: GameInboxMessage[] = [
     priority: "Normal",
     read: false,
     source: "seed",
+    responseOptions: [
+      { label: "Grant Bridge Funding", actionId: "approve" },
+      { label: "Negotiate Terms", actionId: "modify" },
+      { label: "Refer to Budget Office", actionId: "delegate" },
+    ],
   },
 ];
 
@@ -588,8 +613,8 @@ export function getQuickActionByLabel(label: string): QuickActionDefinition | un
   return quickActionDefinitions.find((action) => action.label === label);
 }
 
-export function cloneInboxMessages(messages = startingInboxMessages): GameInboxMessage[] {
-  return messages.map((message) => ({ ...message }));
+export function cloneInboxMessages(messages = startingInboxMessages, date?: string): GameInboxMessage[] {
+  return messages.map((message) => ({ ...message, ...(date ? { date } : {}) }));
 }
 
 function evaluateCondition(currentValue: number, condition: TriggerCondition): boolean {

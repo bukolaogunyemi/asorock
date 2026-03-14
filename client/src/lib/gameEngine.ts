@@ -26,7 +26,10 @@ import type {
   Relationship,
   TurnLogEntry,
 } from "./gameTypes";
-import { POLICY_LEVER_DEFS, POLICY_MODIFIER_SCALE, POLICY_COOLDOWN_DAYS, type PolicyModifiers } from "./gameData";
+import { POLICY_LEVER_DEFS, POLICY_MODIFIER_SCALE, POLICY_COOLDOWN_DAYS, type PolicyModifiers, ministryPositions, cabinetCandidates, type MinistryPosition } from "./gameData";
+import { FACTION_PROFILES, DEMAND_EXPIRE_TIER70_LOYALTY_LOSS, DEMAND_EXPIRE_TIER90_LOYALTY_LOSS, DEMAND_EXPIRE_GRIEVANCE_GAIN, DEMAND_EXPIRE_STABILITY_LOSS } from "./factionProfiles";
+import { computeFactionDrift, updateGrievance, checkGrievanceThresholds } from "./factionDrift";
+import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./factionNarrative";
 
 export type {
   ActiveEvent,
@@ -266,6 +269,13 @@ export function processConsequences(state: GameState, consequences: Consequence[
             };
           }
           break;
+        case "grievance":
+          if (effect.factionName && next.factions[effect.factionName]) {
+            const current = next.factions[effect.factionName];
+            const grievance = Math.round(Math.max(0, Math.min(100, (current.grievance ?? 0) + effect.delta)));
+            next.factions[effect.factionName] = { ...current, grievance };
+          }
+          break;
         default:
           break;
       }
@@ -292,7 +302,7 @@ const queueFutureConsequences = (state: GameState, consequences: Consequence[]):
 const createInboxMessage = (
   state: GameState,
   partial: Omit<GameInboxMessage, "day" | "read"> & { day?: number; read?: boolean },
-): GameInboxMessage => ({ day: partial.day ?? state.day, read: partial.read ?? false, ...partial });
+): GameInboxMessage => ({ day: partial.day ?? state.day, date: state.date, read: partial.read ?? false, ...partial });
 
 const addInboxMessage = (state: GameState, message: GameInboxMessage): GameState => ({
   ...state,
@@ -358,6 +368,11 @@ const createProbeInbox = (state: GameState, hook: Hook): GameInboxMessage => cre
   fullText: `A quiet probe is now open on ${hook.target}. Current evidence level: ${hook.evidence}%. The file will mature over the next few days if pressure is maintained.`,
   priority: "Normal",
   source: "system",
+  responseOptions: [
+    { label: "Acknowledge", actionId: "acknowledge" },
+    { label: "Accelerate Probe", actionId: "investigate" },
+    { label: "Suspend Probe", actionId: "dismiss" },
+  ],
 });
 
 const primeHookInvestigation = (state: GameState, ownerName: string, hookId: string, silent = false): GameState => {
@@ -613,7 +628,7 @@ export function createDailyCabalMeeting(state: GameState): CabalMeetingState {
     return {
       day: state.day,
       focus,
-      adviser: "Brig. Tukur Hassan (Rtd)",
+      adviser: "Brig. Kabiru Musa (Rtd)",
       role: "National Security Adviser",
       title: "Morning Cabal: Security Posture",
       brief: `National stability is ${state.stability}. The villa needs a clear line before theatre commanders, governors, and the press start free-lancing.`,
@@ -671,7 +686,7 @@ export function createDailyCabalMeeting(state: GameState): CabalMeetingState {
     return {
       day: state.day,
       focus,
-      adviser: "Chief Emeka Obiora",
+      adviser: "Chief Chidubem Okafor",
       role: "Party Chairman",
       title: "Morning Cabal: Hold The Coalition",
       brief: `${state.vicePresident.name} is ${state.vicePresident.mood.toLowerCase()} and the weakest bloc is ${weakestFaction ?? "the coalition fringe"}. Abuja expects the villa to pick a line before the gossip outruns the whip.`,
@@ -968,6 +983,10 @@ const resolveElectionCycle = (state: GameState): { state: GameState; items: stri
       fullText: `Estimated governing margin: ${score}%. Your coalition has been returned to office, but the next term resets neither ambition nor elite expectations.`,
       priority: "Urgent",
       source: "system",
+      responseOptions: [
+        { label: "Address the Nation", actionId: "approve" },
+        { label: "Acknowledge", actionId: "acknowledge" },
+      ],
     }));
 
     next = syncStrategicState(next);
@@ -991,6 +1010,11 @@ const resolveElectionCycle = (state: GameState): { state: GameState; items: stri
     fullText: `Estimated governing score: ${score}%. The coalition failed to carry the election. Attention now turns to whether the handover will be orderly, disputed, or violent.`,
     priority: "Critical",
     source: "system",
+    responseOptions: [
+      { label: "Concede Gracefully", actionId: "approve" },
+      { label: "Demand Recount", actionId: "appeal" },
+      { label: "Consult Legal Team", actionId: "investigate" },
+    ],
   }));
 
   return {
@@ -1005,9 +1029,9 @@ const sourceRoleForCategory = (category: ActiveEvent["category"]): { sender: str
     case "economy":
       return { sender: "Alhaji Bello Kazeem", role: "Finance Minister", initials: "BK" };
     case "security":
-      return { sender: "Brig. Tukur Hassan (Rtd)", role: "National Security Adviser", initials: "TH" };
+      return { sender: "Brig. Kabiru Musa (Rtd)", role: "National Security Adviser", initials: "KM" };
     case "politics":
-      return { sender: "Chief Emeka Obiora", role: "Party Chairman", initials: "EO" };
+      return { sender: "Chief Chidubem Okafor", role: "Party Chairman", initials: "CO" };
     case "diplomacy":
       return { sender: "Amb. Yusuf Tuggar", role: "Foreign Affairs", initials: "YT" };
     case "media":
@@ -1116,6 +1140,14 @@ const applyDecisionConsequences = (
   });
   next = maybeRecordMilestone(next, title, description, consequences);
   const source = sourceRoleForCategory(categoryForMessage);
+  const msgSource = category === "event" ? "random" : category === "court" ? "court" : category === "chain" ? "chain" : "decision";
+  const contextualResponses = msgSource === "court"
+    ? [{ label: "Comply", actionId: "comply" }, { label: "Appeal Ruling", actionId: "appeal" }, { label: "Seek Delay", actionId: "delay" }]
+    : msgSource === "chain"
+      ? [{ label: "Accept Outcome", actionId: "accept" }, { label: "Escalate", actionId: "escalate" }, { label: "Order Investigation", actionId: "investigate" }]
+      : categoryForMessage === "security"
+        ? [{ label: "Authorise Action", actionId: "approve" }, { label: "Assign to NSA", actionId: "delegate" }, { label: "Monitor Situation", actionId: "acknowledge" }]
+        : [{ label: "Acknowledge", actionId: "acknowledge" }, { label: "Assign to Minister", actionId: "delegate" }, { label: "Review Personally", actionId: "investigate" }];
   next = addInboxMessage(next, createInboxMessage(next, {
     id: `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${state.day}`,
     sender: source.sender,
@@ -1125,7 +1157,8 @@ const applyDecisionConsequences = (
     preview: description,
     fullText: `${description}\n\nOperational note: ${consequences.map((consequence) => consequence.description).join(" ")}`,
     priority: categoryForMessage === "security" ? "Urgent" : "Normal",
-    source: category === "event" ? "random" : category === "court" ? "court" : category === "chain" ? "chain" : "decision",
+    source: msgSource,
+    responseOptions: contextualResponses,
   }));
   return finalizePresentation(next);
 };
@@ -1136,7 +1169,7 @@ export function resolveActiveEventChoice(state: GameState, eventId: string, choi
   const choice = event.choices[choiceIndex];
   if (!choice || !requirementsMet(state, choice.requirements)) return state;
 
-  const next = applyDecisionConsequences(
+  let next = applyDecisionConsequences(
     { ...state, activeEvents: state.activeEvents.filter((candidate) => candidate.id !== eventId) },
     `${event.title}: ${choice.label}`,
     choice.context,
@@ -1144,6 +1177,53 @@ export function resolveActiveEventChoice(state: GameState, eventId: string, choi
     "decision",
     event.category,
   );
+
+  // Cabinet appointment: add the appointed character to state.characters and update cabinetAppointments
+  if (event.source === "cabinet-appointment" && event.cabinetPortfolio) {
+    const portfolio = event.cabinetPortfolio as MinistryPosition;
+    const candidates = cabinetCandidates[portfolio];
+    if (candidates && candidates[choiceIndex]) {
+      const c = candidates[choiceIndex];
+      const newChar: CharacterState = {
+        name: c.name,
+        portfolio: `Minister of ${c.portfolio}`,
+        loyalty: c.loyalty,
+        competence: c.competence,
+        ambition: c.ambition,
+        faction: c.faction,
+        relationship: c.relationship as Relationship,
+        avatar: c.avatar,
+        traits: [],
+        betrayalThreshold: Math.max(15, 50 - c.ambition * 0.3),
+        hooks: [],
+        age: c.age,
+        state: c.state,
+        gender: c.gender,
+      };
+      next = {
+        ...next,
+        characters: { ...next.characters, [c.name]: newChar },
+        cabinetAppointments: { ...next.cabinetAppointments, [portfolio]: c.name },
+        inboxMessages: [
+          ...next.inboxMessages,
+          {
+            id: `cabinet-confirmed-${portfolio}-${next.day}`,
+            day: next.day,
+            date: next.date,
+            sender: "Secretary to the Government",
+            role: "SGF Office",
+            initials: "SG",
+            subject: `${c.name} Confirmed as Minister of ${portfolio}`,
+            preview: `${c.name} has been formally appointed as Minister of ${portfolio}.`,
+            fullText: `${c.name} has been formally appointed as Minister of ${portfolio}. The appointee is expected to begin duties immediately. Faction reaction: ${c.faction}.`,
+            priority: "Normal" as const,
+            read: false,
+            source: "system" as const,
+          },
+        ],
+      };
+    }
+  }
 
   return finalizePresentation(next);
 }
@@ -1344,79 +1424,70 @@ const inboxActionConsequences = (state: GameState, messageId: string, actionId: 
     ? [{ target: "character", characterName: senderTarget, delta, description }]
     : [];
 
-  switch (actionId) {
-    case "reply-terrible":
-      return [{
-        id: `${sourceEvent}-now`,
-        sourceEvent,
-        delayDays: 0,
-        description: "A hostile reply deepens the political problem",
-        effects: [
-          { target: "approval", delta: -2, description: "The tone leaks and hurts your standing" },
-          { target: "trust", delta: -3, description: "Your team looks erratic" },
-          ...senderEffect(-8, "The sender feels publicly insulted"),
-        ],
-      }];
-    case "reply-poor":
-      return [{
-        id: `${sourceEvent}-now`,
-        sourceEvent,
-        delayDays: 0,
-        description: "A weak response buys little goodwill",
-        effects: [
-          { target: "trust", delta: -1, description: "The reply feels non-committal" },
-          ...senderEffect(-3, "The sender remains unconvinced"),
-        ],
-      }];
-    case "reply-good":
-      return [{
-        id: `${sourceEvent}-now`,
-        sourceEvent,
-        delayDays: 0,
-        description: "A professional response steadies the conversation",
-        effects: [
-          { target: "trust", delta: 1, description: "The institution sees responsive leadership" },
-          ...senderEffect(3, "The sender feels heard"),
-        ],
-      }];
-    case "reply-excellent":
-      return [{
-        id: `${sourceEvent}-now`,
-        sourceEvent,
-        delayDays: 0,
-        description: "An excellent reply sharpens discipline and alignment",
-        effects: [
-          { target: "approval", delta: 1, description: "The response leaks positively through the system" },
-          { target: "trust", delta: 2, description: "Leadership looks composed" },
-          ...senderEffect(5, "The sender leaves reassured"),
-        ],
-      }];
-    case "forward":
-      return [{
-        id: `${sourceEvent}-now`,
-        sourceEvent,
-        delayDays: 0,
-        description: "Delegation keeps the bureaucracy moving",
-        effects: [
-          { target: "politicalCapital", delta: 1, description: "The file moves without consuming your full attention" },
-          { target: "trust", delta: 1, description: "Cabinet process looks competent" },
-        ],
-      }];
-    case "ignore":
-      return [{
-        id: `${sourceEvent}-now`,
-        sourceEvent,
-        delayDays: 0,
-        description: "Ignoring the file creates downstream friction",
-        effects: [
-          { target: "trust", delta: -2, description: "The system notices the neglect" },
-          { target: message.priority === "Critical" ? "stability" : "approval", delta: -2, description: "The issue grows while unattended" },
-          ...senderEffect(-4, "The sender feels abandoned"),
-        ],
-      }];
-    default:
-      return [];
+  // Map action IDs to effect tiers
+  // Strong positive: approve, comply, engage, accept, address
+  // Moderate positive: acknowledge, note, modify, escalate, investigate, appeal
+  // Neutral/weak: defer, delay, delegate, dismiss, forward
+  // Negative: reject, ignore, ignore-response
+
+  // Backward compat: keep old IDs working
+  const strongPositive = ["reply-excellent", "approve", "comply", "engage", "accept", "address"];
+  const moderate = ["reply-good", "acknowledge", "note", "modify", "escalate", "investigate", "appeal"];
+  const neutral = ["reply-poor", "defer", "delay", "delegate", "dismiss", "forward"];
+  const negative = ["reply-terrible", "reject", "ignore", "ignore-response"];
+
+  if (strongPositive.includes(actionId)) {
+    return [{
+      id: `${sourceEvent}-now`,
+      sourceEvent,
+      delayDays: 0,
+      description: "A decisive response sharpens discipline and alignment",
+      effects: [
+        { target: "approval", delta: 1, description: "The response leaks positively through the system" },
+        { target: "trust", delta: 2, description: "Leadership looks composed" },
+        ...senderEffect(5, "The sender leaves reassured"),
+      ],
+    }];
   }
+  if (moderate.includes(actionId)) {
+    return [{
+      id: `${sourceEvent}-now`,
+      sourceEvent,
+      delayDays: 0,
+      description: "A professional response steadies the conversation",
+      effects: [
+        { target: "trust", delta: 1, description: "The institution sees responsive leadership" },
+        ...senderEffect(3, "The sender feels heard"),
+      ],
+    }];
+  }
+  if (neutral.includes(actionId)) {
+    return [{
+      id: `${sourceEvent}-now`,
+      sourceEvent,
+      delayDays: 0,
+      description: "A non-committal response buys little goodwill",
+      effects: [
+        { target: "trust", delta: -1, description: "The reply feels non-committal" },
+        ...senderEffect(-3, "The sender remains unconvinced"),
+      ],
+    }];
+  }
+  if (negative.includes(actionId)) {
+    return [{
+      id: `${sourceEvent}-now`,
+      sourceEvent,
+      delayDays: 0,
+      description: "A dismissive reply deepens the political problem",
+      effects: [
+        { target: "approval", delta: -2, description: "The tone leaks and hurts your standing" },
+        { target: "trust", delta: -3, description: "Your team looks erratic" },
+        ...senderEffect(-8, "The sender feels publicly insulted"),
+      ],
+    }];
+  }
+
+  return [];
 };
 
 export function handleInboxAction(state: GameState, messageId: string, actionId: string): GameState {
@@ -1437,7 +1508,7 @@ export function checkDefeatConditions(state: GameState): FailureState | null {
 
 export function driftMetrics(state: GameState): GameState {
   const rand = () => (Math.random() - 0.5) * 2;
-  const crisisMultiplier = state.difficulty.crisisFreqMult;
+  const crisisMultiplier = 1.0;
   const negativeBias = state.outrage > 55 || state.trust < 35 ? 1.2 : 1;
   const inflationDrag = Math.max(0, state.macroEconomy.inflation - 20) * 0.04;
   const fxDrag = Math.max(0, state.macroEconomy.fxRate - 1400) * 0.0009;
@@ -1503,7 +1574,7 @@ const randomEventPool = [
 export function generateRandomEvent(state: GameState): Consequence | null {
   const stressMultiplier = state.stress > 50 ? 1.25 : 1;
   for (const event of randomEventPool) {
-    if (Math.random() < event.probability * stressMultiplier * state.difficulty.crisisFreqMult) {
+    if (Math.random() < event.probability * stressMultiplier) {
       return {
         id: `random-${state.day}-${Date.now()}`,
         sourceEvent: "random",
@@ -1550,20 +1621,75 @@ const processTraitDrift = (state: GameState): { state: GameState; items: string[
   return changed ? { state: { ...state, characters }, items } : { state, items: [] };
 };
 
-const processFactionAndGovernorMood = (state: GameState): GameState => {
-  const macroSupport = clamp((32 - state.macroEconomy.inflation) * 0.12 + state.macroEconomy.reserves * 0.04 - Math.max(0, state.macroEconomy.fxRate - 1500) * 0.004, -3, 3);
-  const factionDelta = (state.approval - 50) * 0.03 + (state.politicalCapital - 50) * 0.02 + macroSupport * 0.3;
+const processFactionAndGovernorMood = (state: GameState): { state: GameState; summaryItems: string[]; newEvents: ActiveEvent[] } => {
+  const summaryItems: string[] = [];
+  const newEvents: ActiveEvent[] = [];
+
+  // ── Governor drift (unchanged) ────────────────────────
+  const macroSupport = clamp(
+    (32 - state.macroEconomy.inflation) * 0.12 +
+    state.macroEconomy.reserves * 0.04 -
+    Math.max(0, state.macroEconomy.fxRate - 1500) * 0.004,
+    -3, 3,
+  );
   const governorDelta = (state.stability - 50) * 0.03 + (state.treasury - 1) * 3 + macroSupport * 0.4;
-  const factions = Object.fromEntries(Object.entries(state.factions).map(([name, faction]) => {
-    const loyalty = Math.round(clamp(faction.loyalty + factionDelta, 0, 100));
-    return [name, { ...faction, loyalty, stance: factionStanceFromLoyalty(loyalty) }];
-  }));
   const governors = state.governors.map((governor) => {
     const loyalty = Math.round(clamp(governor.loyalty + governorDelta, 0, 100));
     const approval = Math.round(clamp(governor.approval + (state.approval - 45) * 0.04 + macroSupport * 0.25, 0, 100));
     return { ...governor, loyalty, approval, relationship: relationshipFromLoyalty(loyalty) };
   });
-  return { ...state, factions, governors };
+
+  // ── Per-faction drift ─────────────────────────────────
+  const factions = { ...state.factions };
+  let runningState = { ...state, factions, governors };
+  for (const profile of FACTION_PROFILES) {
+    const faction = factions[profile.key];
+    if (!faction) continue;
+
+    const driftDelta = computeFactionDrift(profile, runningState);
+    const newLoyalty = Math.round(clamp(faction.loyalty + driftDelta, 0, 100));
+    const newGrievance = updateGrievance(faction.grievance ?? 0, driftDelta, profile.temperament);
+
+    const thresholdResult = checkGrievanceThresholds(
+      profile.key,
+      newGrievance,
+      faction.firedThresholds ?? [],
+      runningState.day,
+    );
+
+    if (thresholdResult.breakingPointConsequences) {
+      runningState = processConsequences(
+        { ...runningState, factions },
+        [thresholdResult.breakingPointConsequences],
+      );
+      Object.assign(factions, runningState.factions);
+    }
+
+    factions[profile.key] = {
+      ...factions[profile.key],
+      loyalty: thresholdResult.breakingPointConsequences ? factions[profile.key].loyalty : newLoyalty,
+      stance: factionStanceFromLoyalty(thresholdResult.breakingPointConsequences ? factions[profile.key].loyalty : newLoyalty),
+      grievance: newGrievance,
+      firedThresholds: thresholdResult.firedThresholds,
+    };
+
+    newEvents.push(...thresholdResult.events);
+
+    if (thresholdResult.advisorLine) {
+      summaryItems.push(thresholdResult.advisorLine);
+    }
+
+    if (Math.abs(driftDelta) >= 5) {
+      const direction = driftDelta > 0 ? "pleased with recent shifts" : "frustrated with your direction";
+      summaryItems.push(`The ${profile.key} are reportedly ${direction}.`);
+    }
+  }
+
+  return {
+    state: { ...runningState, factions },
+    summaryItems,
+    newEvents,
+  };
 };
 
 /** High-impact lever changes that require political capital + approval gates */
@@ -2016,6 +2142,58 @@ const spawnNarrativePressure = (state: GameState): { state: GameState; items: st
   return { state: next, items };
 };
 
+/**
+ * Generate a cabinet appointment ActiveEvent for a ministry position.
+ * One position is presented per day on days 2-8.
+ */
+function generateCabinetAppointmentEvent(state: GameState): ActiveEvent | null {
+  // Only on days 2 through 8
+  const appointmentDay = state.day - 1; // day 2 → index 0 (Finance), day 3 → index 1 (Petroleum), etc.
+  if (appointmentDay < 1 || appointmentDay > ministryPositions.length) return null;
+
+  const portfolio = ministryPositions[appointmentDay - 1] as MinistryPosition;
+
+  // Skip if already appointed (shouldn't happen in normal flow, but guard for save migration)
+  if (state.cabinetAppointments[portfolio]) return null;
+
+  // Skip if there's already a pending appointment event for this portfolio
+  if (state.activeEvents.some((e) => e.source === "cabinet-appointment" && e.cabinetPortfolio === portfolio)) return null;
+
+  const candidates = cabinetCandidates[portfolio];
+  if (!candidates || candidates.length === 0) return null;
+
+  const choices: EventChoice[] = candidates.map((c, i) => ({
+    id: `appoint-${portfolio.toLowerCase().replace(/\s+&\s+/g, "-").replace(/\s+/g, "-")}-${i}`,
+    label: `Appoint ${c.name}`,
+    context: `${c.name} — ${c.faction}. ${c.tradeOff}`,
+    consequences: [
+      {
+        id: `cabinet-appoint-${portfolio}-${i}`,
+        sourceEvent: `cabinet-appointment-${portfolio}`,
+        delayDays: 0,
+        description: `${c.name} appointed as Minister of ${portfolio}`,
+        effects: [
+          { target: "approval", delta: c.competence >= 80 ? 2 : -1, description: c.competence >= 80 ? "A credible appointment boosts confidence" : "Questions arise about the appointment" },
+          ...(c.faction ? [{ target: "faction" as const, factionName: c.faction, delta: c.loyalty >= 70 ? 5 : -3, description: c.loyalty >= 70 ? `${c.faction} approves of the appointment` : `${c.faction} is wary of this choice` }] : []),
+        ],
+      },
+    ],
+  }));
+
+  return {
+    id: `cabinet-appointment-${portfolio.toLowerCase().replace(/\s+&\s+/g, "-").replace(/\s+/g, "-")}`,
+    title: `Appoint Minister of ${portfolio}`,
+    severity: "critical",
+    description: `The Ministry of ${portfolio} awaits your appointment. Each candidate brings different strengths, faction ties, and political trade-offs.`,
+    category: "governance",
+    source: "cabinet-appointment",
+    choices,
+    createdDay: state.day,
+    expiresInDays: 10,
+    cabinetPortfolio: portfolio,
+  };
+}
+
 export function processTurn(state: GameState): GameState {
   if (state.cabalMeeting && state.cabalMeeting.day === state.day && !state.cabalMeeting.resolved) {
     return finalizePresentation(state);
@@ -2035,8 +2213,22 @@ export function processTurn(state: GameState): GameState {
   next = traitDrift.state;
   summaryItems.push(...traitDrift.items.slice(0, 2));
 
-  next = processFactionAndGovernorMood(next);
-  summaryItems.push("Faction and governor mood shifted with national conditions");
+  const factionMood = processFactionAndGovernorMood(next);
+  next = factionMood.state;
+  summaryItems.push(...factionMood.summaryItems.slice(0, 3));
+  next.activeEvents = [...next.activeEvents, ...factionMood.newEvents];
+  for (const profile of FACTION_PROFILES) {
+    const faction = next.factions[profile.key];
+    if (!faction) continue;
+    const headline = generateHeadline(profile.key, faction.grievance ?? 0);
+    if (headline && !next.headlines.includes(headline)) {
+      next = { ...next, headlines: [headline, ...next.headlines].slice(0, 20) };
+    }
+    const inboxMsg = generateInboxMessage(profile.key, faction.grievance ?? 0, next.day, next.date);
+    if (inboxMsg && !next.inboxMessages.some((m) => m.id === inboxMsg.id)) {
+      next = { ...next, inboxMessages: [...next.inboxMessages, inboxMsg] };
+    }
+  }
 
   const randomEvent = generateRandomEvent(next);
   if (randomEvent) {
@@ -2081,6 +2273,13 @@ export function processTurn(state: GameState): GameState {
   next = strategic.state;
   summaryItems.push(...strategic.items);
 
+  // Cabinet appointment events — one per day on days 2-8
+  const cabinetEvent = generateCabinetAppointmentEvent(next);
+  if (cabinetEvent) {
+    next = { ...next, activeEvents: [...next.activeEvents, cabinetEvent] };
+    summaryItems.push(`${cabinetEvent.title} — candidates await your decision`);
+  }
+
   const election = resolveElectionCycle(next);
   next = election.state;
   summaryItems.push(...election.items);
@@ -2094,6 +2293,21 @@ export function processTurn(state: GameState): GameState {
           ...next.policyLevers[event.policyLeverKey],
           pendingPosition: null,
         };
+      }
+      if (event.source === "faction-demand" && event.factionKey) {
+        const isTier90 = event.severity === "critical";
+        const loyaltyLoss = isTier90 ? DEMAND_EXPIRE_TIER90_LOYALTY_LOSS : DEMAND_EXPIRE_TIER70_LOYALTY_LOSS;
+        next = processConsequences(next, [{
+          id: `fd-expire-${event.factionKey}-${next.day}`,
+          sourceEvent: event.id,
+          delayDays: 0,
+          description: `${event.factionKey} demand expired unanswered`,
+          effects: [
+            { target: "faction", factionName: event.factionKey, delta: -loyaltyLoss, description: `${event.factionKey} loses patience` },
+            { target: "grievance", factionName: event.factionKey, delta: DEMAND_EXPIRE_GRIEVANCE_GAIN, description: `${event.factionKey} grievance deepens` },
+            { target: "stability", delta: -DEMAND_EXPIRE_STABILITY_LOSS, description: "Unanswered demands erode stability" },
+          ],
+        }]);
       }
     }
   }

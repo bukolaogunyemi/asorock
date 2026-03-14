@@ -16,7 +16,7 @@ import { Scale, Gavel, ShieldAlert, UserCheck, Ban } from "lucide-react";
 
 const judiciaryPersonnel = [
   {
-    name: "Justice Adewale Fashola",
+    name: "Justice Adewale Onifade",
     title: "Chief Justice of Nigeria",
     shortTitle: "CJN",
     avatar: "AF",

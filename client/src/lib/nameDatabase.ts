@@ -33,7 +33,7 @@ export const NAME_POOLS: Record<string, NamePool> = {
     ],
     surnames: [
       "Abdullahi", "Abubakar", "Aliyu", "Bello", "Danbatta",
-      "Dangote", "Garba", "Gusau", "Hassan", "Ibrahim",
+      "Dankwambo", "Garba", "Gusau", "Hassan", "Ibrahim",
       "Inuwa", "Jibrin", "Lawal", "Makarfi", "Musa",
       "Rabiu", "Ringim", "Sani", "Umar", "Yakubu",
       "Danmusa", "Gwamna", "Kagara", "Kankarofi", "Lawan",
@@ -81,8 +81,8 @@ export const NAME_POOLS: Record<string, NamePool> = {
     ],
     surnames: [
       "Abiodun", "Adebayo", "Adeleke", "Adesanya", "Afolabi",
-      "Ajayi", "Akinwale", "Alabi", "Akande", "Awolowo",
-      "Balogun", "Fashola", "Fawehimi", "Ipaye", "Lawal",
+      "Ajayi", "Akinwale", "Alabi", "Akande", "Adeyanju",
+      "Balogun", "Famuyiwa", "Fawehimi", "Ipaye", "Lawal",
       "Makinde", "Oladele", "Oduya", "Ogunleye", "Okonkwo",
       "Olawale", "Adegoke", "Aregbe", "Adeniyi", "Wole",
     ],

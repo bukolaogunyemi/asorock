@@ -9,7 +9,10 @@ import {
   neutralizeGodfather,
   defaultPatronageState,
   getPatronageEffects,
+  getGodfatherVoteModifier,
+  generateNuclearEvent,
 } from "./godfatherEngine";
+import { GODFATHER_PROFILES } from "./godfatherProfiles";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -387,5 +390,81 @@ describe("patronageIndex", () => {
     expect(getPatronageEffects(70).tier).toBe("compromised");
     expect(getPatronageEffects(71).tier).toBe("captured");
     expect(getPatronageEffects(100).tier).toBe("captured");
+  });
+});
+
+// ── legislative integration ──────────────────────────────────────────
+
+describe("legislative integration", () => {
+  it("should provide positive vote modifier from friendly godfather", () => {
+    const gf = { ...GODFATHER_PROFILES[0], disposition: "friendly" as const };
+    const modifier = getGodfatherVoteModifier(gf, gf.interests[0] || "economy");
+    expect(modifier.house).toBeGreaterThan(0);
+    expect(modifier.senate).toBeGreaterThanOrEqual(0);
+  });
+
+  it("hostile godfather should provide negative votes", () => {
+    const gf = { ...GODFATHER_PROFILES[0], disposition: "hostile" as const };
+    const modifier = getGodfatherVoteModifier(gf, gf.interests[0] || "economy");
+    expect(modifier.house).toBeLessThan(0);
+  });
+
+  it("neutral godfather should provide zero votes", () => {
+    const gf = { ...GODFATHER_PROFILES[0], disposition: "neutral" as const };
+    const modifier = getGodfatherVoteModifier(gf, "economy");
+    expect(modifier.house).toBe(0);
+    expect(modifier.senate).toBe(0);
+  });
+
+  it("neutralized godfather should provide zero votes", () => {
+    const gf = { ...GODFATHER_PROFILES[0], disposition: "friendly" as const, neutralized: true };
+    const modifier = getGodfatherVoteModifier(gf, "economy");
+    expect(modifier.house).toBe(0);
+  });
+
+  it("matching interest should amplify modifier", () => {
+    const gf = { ...GODFATHER_PROFILES[0], disposition: "friendly" as const, interests: ["economy"] };
+    const matching = getGodfatherVoteModifier(gf, "economy");
+    const nonMatching = getGodfatherVoteModifier(gf, "security");
+    expect(Math.abs(matching.house)).toBeGreaterThan(Math.abs(nonMatching.house));
+  });
+});
+
+// ── nuclear events ──────────────────────────────────────────────────
+
+describe("nuclear events", () => {
+  it("should generate capital-flight for business-oligarch at stage 4", () => {
+    const oligarch = { ...GODFATHER_PROFILES.find((g) => g.archetype === "business-oligarch")!, escalationStage: 4 as const };
+    const event = generateNuclearEvent(oligarch);
+    expect(event.type).toBe("capital-flight");
+    expect(event.effects.length).toBeGreaterThan(0);
+  });
+
+  it("should generate coup-signals for military-elder", () => {
+    const elder = { ...GODFATHER_PROFILES.find((g) => g.archetype === "military-elder")!, escalationStage: 4 as const };
+    const event = generateNuclearEvent(elder);
+    expect(event.type).toBe("coup-signals");
+  });
+
+  it("should generate party-split for party-boss", () => {
+    const boss = { ...GODFATHER_PROFILES.find((g) => g.archetype === "party-boss")!, escalationStage: 4 as const };
+    const event = generateNuclearEvent(boss);
+    expect(event.type).toBe("party-split");
+  });
+
+  it("should generate general-strike for labour-civil", () => {
+    const labour = { ...GODFATHER_PROFILES.find((g) => g.archetype === "labour-civil")!, escalationStage: 4 as const };
+    const event = generateNuclearEvent(labour);
+    expect(event.type).toBe("general-strike");
+  });
+
+  it("each event should have title, description, and effects", () => {
+    for (const archetype of ["business-oligarch", "military-elder", "party-boss", "labour-civil", "religious-leader", "regional-strongman", "media-mogul"] as const) {
+      const gf = { ...GODFATHER_PROFILES.find((g) => g.archetype === archetype)!, escalationStage: 4 as const };
+      const event = generateNuclearEvent(gf);
+      expect(event.title).toBeTruthy();
+      expect(event.description).toBeTruthy();
+      expect(event.effects.length).toBeGreaterThan(0);
+    }
   });
 });

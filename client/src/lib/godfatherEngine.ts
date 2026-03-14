@@ -2,9 +2,11 @@
 import type { GameState } from "./gameTypes";
 import type {
   Godfather,
+  GodfatherArchetype,
   GodfatherDeal,
   PatronageState,
 } from "./godfatherTypes";
+import type { GameStateModifier } from "./legislativeTypes";
 import { generateDealProposal } from "./godfatherDeals";
 import { GODFATHER_PROFILES } from "./godfatherProfiles";
 
@@ -221,4 +223,131 @@ export function defaultPatronageState(): PatronageState {
     neutralizedGodfathers: [],
     approachCooldowns: {},
   };
+}
+
+// ── getGodfatherVoteModifier ─────────────────────────────────────────
+
+const DISPOSITION_MULTIPLIER: Record<Godfather["disposition"], number> = {
+  friendly: 1,
+  neutral: 0,
+  cold: -0.5,
+  hostile: -1,
+};
+
+/**
+ * Returns the vote modifier a godfather applies to a legislative bill
+ * based on their disposition, legislative bloc size, and interest match.
+ */
+export function getGodfatherVoteModifier(
+  godfather: Godfather,
+  billSubjectTag: string,
+): { house: number; senate: number } {
+  if (godfather.neutralized) {
+    return { house: 0, senate: 0 };
+  }
+
+  const multiplier = DISPOSITION_MULTIPLIER[godfather.disposition];
+  if (multiplier === 0) {
+    return { house: 0, senate: 0 };
+  }
+
+  const interestMatch = godfather.interests.some(
+    (interest) => interest.toLowerCase().includes(billSubjectTag.toLowerCase()),
+  );
+  const interestMultiplier = interestMatch ? 1.5 : 1;
+
+  const { house, senate } = godfather.stable.legislativeBloc;
+
+  return {
+    house: Math.round(house * multiplier * interestMultiplier),
+    senate: Math.round(senate * multiplier * interestMultiplier),
+  };
+}
+
+// ── generateNuclearEvent ─────────────────────────────────────────────
+
+interface NuclearEventTemplate {
+  type: string;
+  title: string;
+  description: string;
+  effects: GameStateModifier[];
+}
+
+const NUCLEAR_EVENTS: Record<GodfatherArchetype, (gf: Godfather) => NuclearEventTemplate> = {
+  "business-oligarch": (gf) => ({
+    type: "capital-flight",
+    title: "Capital Flight Crisis",
+    description: `${gf.name} has orchestrated a massive capital flight. Foreign investors are pulling out and the naira is in freefall as confidence in the economy collapses.`,
+    effects: [
+      { target: "stability", delta: -15 },
+      { target: "macroEconomy", delta: -20 },
+    ],
+  }),
+  "military-elder": (gf) => ({
+    type: "coup-signals",
+    title: "Coup Signals Detected",
+    description: `${gf.name}'s network within the military establishment is sending unmistakable signals of discontent. Troop movements have been reported near Abuja.`,
+    effects: [
+      { target: "stability", delta: -20 },
+      { target: "trust", delta: -15 },
+    ],
+  }),
+  "party-boss": (gf) => ({
+    type: "party-split",
+    title: "Ruling Party Split",
+    description: `${gf.name} has led a faction out of the ruling party, taking key legislators and governors. The party's legislative majority is in jeopardy.`,
+    effects: [
+      { target: "partyLoyalty", delta: -25 },
+      { target: "politicalCapital", delta: -15 },
+    ],
+  }),
+  "labour-civil": (gf) => ({
+    type: "general-strike",
+    title: "Nationwide General Strike",
+    description: `${gf.name} has called a general strike. Markets, schools, and transport are shut down across the country as workers demand the president's resignation.`,
+    effects: [
+      { target: "approval", delta: -15 },
+      { target: "stability", delta: -10 },
+      { target: "outrage", delta: 20 },
+    ],
+  }),
+  "religious-leader": (gf) => ({
+    type: "sectarian-crisis",
+    title: "Sectarian Crisis Erupts",
+    description: `${gf.name} has inflamed sectarian tensions, leading to communal violence in multiple states. The president is blamed for failing to maintain order.`,
+    effects: [
+      { target: "stability", delta: -15 },
+      { target: "trust", delta: -10 },
+      { target: "outrage", delta: 15 },
+    ],
+  }),
+  "regional-strongman": (gf) => ({
+    type: "secession-threat",
+    title: "Secession Threat",
+    description: `${gf.name} has rallied regional governors and legislators behind a secession ultimatum. The territorial integrity of the nation is at stake.`,
+    effects: [
+      { target: "stability", delta: -20 },
+      { target: "approval", delta: -10 },
+    ],
+  }),
+  "media-mogul": (gf) => ({
+    type: "media-war",
+    title: "Total Media War",
+    description: `${gf.name} has unleashed a coordinated media blitz across television, newspapers, and social media. The presidency's reputation is being systematically destroyed.`,
+    effects: [
+      { target: "approval", delta: -20 },
+      { target: "trust", delta: -15 },
+    ],
+  }),
+};
+
+/**
+ * Generates an archetype-specific nuclear crisis event when a godfather
+ * reaches escalation stage 4.
+ */
+export function generateNuclearEvent(
+  godfather: Godfather,
+): { type: string; title: string; description: string; effects: GameStateModifier[] } {
+  const templateFn = NUCLEAR_EVENTS[godfather.archetype];
+  return templateFn(godfather);
 }

@@ -30,7 +30,7 @@ import { POLICY_LEVER_DEFS, POLICY_MODIFIER_SCALE, POLICY_COOLDOWN_DAYS, type Po
 import { FACTION_PROFILES, DEMAND_EXPIRE_TIER70_LOYALTY_LOSS, DEMAND_EXPIRE_TIER90_LOYALTY_LOSS, DEMAND_EXPIRE_GRIEVANCE_GAIN, DEMAND_EXPIRE_STABILITY_LOSS } from "./factionProfiles";
 import { computeFactionDrift, updateGrievance, checkGrievanceThresholds } from "./factionDrift";
 import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./factionNarrative";
-import { processLegislativeTurn } from "./legislativeEngine";
+import { processLegislativeTurn, generateAdviserBriefing } from "./legislativeEngine";
 
 export type {
   ActiveEvent,
@@ -2358,6 +2358,31 @@ export function processTurn(state: GameState): GameState {
 
   // Legislative engine — process bills each turn
   next = processLegislativeTurn(next);
+
+  // Adviser briefing — add legislative inbox message each day
+  {
+    const briefing = generateAdviserBriefing(next);
+    const briefText = briefing.weeklySummary
+      ? `${briefing.dailyBrief} ${briefing.weeklySummary}`
+      : briefing.dailyBrief;
+    const briefMsg = {
+      id: `legislative-brief-${next.day}`,
+      day: next.day,
+      date: next.date,
+      sender: "Sen. Adaobi Nwosu",
+      role: "Legislative Affairs Adviser",
+      initials: "AN",
+      subject: briefing.weeklySummary ? "Weekly Legislative Summary" : "Legislative Update",
+      preview: briefing.dailyBrief,
+      fullText: briefText,
+      priority: (next.legislature?.activeBills.some((b) => b.isCrisis) ? "Urgent" : "Normal") as "Urgent" | "Normal",
+      read: false,
+      source: "system" as const,
+    };
+    if (!next.inboxMessages.some((m) => m.id === briefMsg.id)) {
+      next = { ...next, inboxMessages: [...next.inboxMessages, briefMsg] };
+    }
+  }
 
   const defeat = checkDefeatConditions(next);
   const victory = checkVictoryConditions(next);

@@ -386,33 +386,6 @@ export const securityIncidents: { week: string; nw: number; ne: number }[] = [
   { week: "D42", nw: 30, ne: 10 },
 ];
 
-// ── Legislature ──────────────────────────────────────────
-export const legislatureSeats = { ruling: 201, opposition: 154, independent: 5 } as const;
-
-export const whipTracker: { bloc: string; seats: number; loyalty: number; leaning: string }[] = [
-  { bloc: "Core Ruling Party", seats: 145, loyalty: 88, leaning: "Reliable" },
-  { bloc: "Ruling Allies", seats: 56, loyalty: 62, leaning: "Negotiable" },
-  { bloc: "Main Opposition", seats: 120, loyalty: 15, leaning: "Hostile" },
-  { bloc: "Opp. Moderates", seats: 34, loyalty: 35, leaning: "Persuadable" },
-  { bloc: "Independents", seats: 5, loyalty: 50, leaning: "Swing" },
-];
-
-export interface Bill {
-  name: string;
-  status: "Committee" | "Floor Debate" | "Passed" | "Stalled";
-  support: number;
-  opposition: number;
-  stakes: "Low" | "Medium" | "High" | "Critical";
-}
-
-export const activeBills: Bill[] = [
-  { name: "Petroleum Industry Amendment", status: "Floor Debate", support: 188, opposition: 152, stakes: "Critical" },
-  { name: "Electoral Reform Bill", status: "Committee", support: 165, opposition: 140, stakes: "High" },
-  { name: "Digital Economy Tax", status: "Floor Debate", support: 210, opposition: 130, stakes: "Medium" },
-  { name: "Police Reform Act", status: "Stalled", support: 145, opposition: 170, stakes: "High" },
-  { name: "Climate Adaptation Fund", status: "Committee", support: 178, opposition: 108, stakes: "Low" },
-];
-
 // ── Diplomacy ────────────────────────────────────────────
 export interface DiplomacyPartner {
   partner: string;

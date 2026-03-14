@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 
 const testConfig = {
@@ -119,5 +119,57 @@ describe("advanceBills", () => {
     const result = advanceBills(state);
     expect(result.activeBills.length).toBe(0);
     expect(result.pendingSignature.length).toBe(1);
+  });
+});
+
+describe("detectCrisis", () => {
+  it("should flag budget bills reaching floor-debate as crisis", () => {
+    const bill = createBillFromTemplate({
+      title: "Annual Budget 2024", description: "Test", subjectTag: "economy",
+      stakes: "critical", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.isCrisis = true;
+    bill.houseStage = "floor-debate";
+    expect(shouldTriggerCrisis(bill)).toBe(true);
+  });
+
+  it("should flag tight-margin bills as crisis", () => {
+    const bill = createBillFromTemplate({
+      title: "Social Bill", description: "Test", subjectTag: "social",
+      stakes: "significant", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.houseStage = "floor-debate";
+    bill.houseSupport = { firmYes: 170, leaningYes: 10, undecided: 5, leaningNo: 10, firmNo: 165 };
+    expect(shouldTriggerCrisis(bill)).toBe(true);
+  });
+});
+
+describe("generateAutonomousBill", () => {
+  it("should generate economy bill when inflation is high", () => {
+    const state = initializeGameState(testConfig);
+    state.macroEconomy.inflation = 30;
+    state.day = 20; // ensure rate-limit passes (day % 20 === 0)
+    state.legislature = defaultLegislativeState();
+    const bill = generateAutonomousBill(state);
+    if (bill) {
+      expect(bill.subjectTag).toBe("economy");
+    }
+  });
+});
+
+describe("processLegislativeTurn", () => {
+  it("should introduce scheduled bills when their day arrives", () => {
+    const state = initializeGameState(testConfig);
+    state.legislature = {
+      ...defaultLegislativeState(),
+      legislativeCalendar: [{
+        template: { title: "Test Scheduled", description: "Test", subjectTag: "economy", stakes: "routine", effects: { onPass: [], onFail: [] } },
+        targetDay: state.day,
+        isCrisis: false,
+      }],
+    };
+    const result = processLegislativeTurn(state);
+    expect(result.legislature.activeBills.length).toBe(1);
+    expect(result.legislature.activeBills[0].title).toBe("Test Scheduled");
   });
 });

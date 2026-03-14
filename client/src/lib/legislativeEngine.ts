@@ -1,6 +1,7 @@
 // client/src/lib/legislativeEngine.ts
 import type { GameState } from "./gameTypes";
 import type { Bill, BillStage, LegislativeState, VoteProjection } from "./legislativeTypes";
+import { getAutonomousBillPool } from "./legislativeBills";
 
 // ── Chamber Seat Blocs ────────────────────────────────────────────────────────
 
@@ -496,4 +497,203 @@ export function advanceBills(state: GameState): LegislativeState {
     failedBills: newFailedBills,
     pendingSignature: newPendingSignature,
   };
+}
+
+// ── Crisis Detection ──────────────────────────────────────────────────────────
+
+/**
+ * shouldTriggerCrisis
+ *
+ * Returns true when a bill needs presidential attention as a crisis event:
+ * - Bill is marked isCrisis and has reached floor-debate in either chamber
+ * - Tight-margin vote: |yes - no| < 10 in either chamber at floor-debate
+ * - Constitutional bill reaching floor-debate in either chamber
+ */
+export function shouldTriggerCrisis(bill: Bill): boolean {
+  const houseAtFloor = bill.houseStage === "floor-debate";
+  const senateAtFloor = bill.senateStage === "floor-debate";
+  const atFloor = houseAtFloor || senateAtFloor;
+
+  // Crisis-flagged bill reaches floor debate
+  if (bill.isCrisis && atFloor) {
+    return true;
+  }
+
+  // Constitutional bill reaches floor debate
+  if (bill.subjectTag === "constitutional" && atFloor) {
+    return true;
+  }
+
+  // Tight margin check: significant/critical bills with margin < 10
+  if (bill.stakes === "critical" || bill.stakes === "significant") {
+    if (houseAtFloor) {
+      const houseYes = bill.houseSupport.firmYes + bill.houseSupport.leaningYes;
+      const houseNo = bill.houseSupport.firmNo + bill.houseSupport.leaningNo;
+      if (Math.abs(houseYes - houseNo) < 10) {
+        return true;
+      }
+    }
+    if (senateAtFloor) {
+      const senateYes = bill.senateSupport.firmYes + bill.senateSupport.leaningYes;
+      const senateNo = bill.senateSupport.firmNo + bill.senateSupport.leaningNo;
+      if (Math.abs(senateYes - senateNo) < 10) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+// ── Autonomous Bill Generation ────────────────────────────────────────────────
+
+/** Domain keywords to match faction names against bill subject tags */
+const FACTION_DOMAIN_TAG: Record<string, Bill["subjectTag"]> = {
+  economy:    "economy",
+  fiscal:     "economy",
+  budget:     "economy",
+  trade:      "economy",
+  labour:     "economy",
+  security:   "security",
+  military:   "security",
+  police:     "security",
+  social:     "social",
+  welfare:    "social",
+  health:     "social",
+  education:  "social",
+  governance: "governance",
+  corruption: "governance",
+  institutions: "governance",
+  constitution: "constitutional",
+  federal:    "constitutional",
+};
+
+/**
+ * generateAutonomousBill
+ *
+ * Conditionally selects a bill from the autonomous pool based on game state:
+ * - High inflation (> 20): prioritise an economy bill
+ * - Faction grievance > 60: pick a bill matching that faction's domain
+ * - Election year (day > 1000): pick a governance bill
+ *
+ * Rate-limited: only fires when state.day % 20 === 0.
+ * Returns null if the cap (8 active bills) is reached or no condition fires.
+ */
+export function generateAutonomousBill(state: GameState): Bill | null {
+  const legislature = state.legislature ?? defaultLegislativeState();
+
+  // Rate-limit: only every 20 days
+  if (state.day % 20 !== 0) {
+    return null;
+  }
+
+  // Cap check
+  if (legislature.activeBills.length >= MAX_ACTIVE_BILLS) {
+    return null;
+  }
+
+  const pool = getAutonomousBillPool();
+
+  // Determine desired tag based on conditions
+  let desiredTag: Bill["subjectTag"] | null = null;
+
+  if (state.macroEconomy.inflation > 20) {
+    desiredTag = "economy";
+  } else if (state.day > 1000) {
+    desiredTag = "governance";
+  } else {
+    // Check faction grievances
+    for (const faction of Object.values(state.factions)) {
+      if (faction.grievance > 60) {
+        const nameLower = faction.name.toLowerCase();
+        for (const [keyword, tag] of Object.entries(FACTION_DOMAIN_TAG)) {
+          if (nameLower.includes(keyword)) {
+            desiredTag = tag;
+            break;
+          }
+        }
+        if (desiredTag) break;
+      }
+    }
+  }
+
+  if (!desiredTag) {
+    return null;
+  }
+
+  // Find a matching template not already active
+  const activeTitles = new Set(legislature.activeBills.map((b) => b.title));
+  const candidates = pool.filter(
+    (t) => t.subjectTag === desiredTag && !activeTitles.has(t.title),
+  );
+
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  const template = candidates[Math.floor(Math.random() * candidates.length)];
+  return createBillFromTemplate(template, state.day);
+}
+
+// ── Main Turn Function ────────────────────────────────────────────────────────
+
+/**
+ * processLegislativeTurn
+ *
+ * Runs one full game-day of legislative processing:
+ * 1. Introduce any calendar bills whose targetDay <= state.day
+ * 2. Optionally generate an autonomous bill
+ * 3. Advance all active bills by one day
+ *
+ * Returns updated GameState (does not mutate the input).
+ */
+export function processLegislativeTurn(state: GameState): GameState {
+  let legislature = state.legislature ?? defaultLegislativeState();
+
+  // Step 1: Introduce scheduled calendar bills
+  const dueEntries = legislature.legislativeCalendar.filter(
+    (entry) => entry.targetDay <= state.day,
+  );
+  const remainingCalendar = legislature.legislativeCalendar.filter(
+    (entry) => entry.targetDay > state.day,
+  );
+
+  let newActiveBills = [...legislature.activeBills];
+
+  for (const entry of dueEntries) {
+    if (newActiveBills.length >= MAX_ACTIVE_BILLS) break;
+    const bill = createBillFromTemplate(entry.template, state.day);
+    bill.isCrisis = entry.isCrisis;
+    newActiveBills.push(bill);
+  }
+
+  legislature = {
+    ...legislature,
+    activeBills: newActiveBills,
+    legislativeCalendar: remainingCalendar,
+    sessionStats: {
+      ...legislature.sessionStats,
+      billsIntroduced: legislature.sessionStats.billsIntroduced + dueEntries.length,
+    },
+  };
+
+  // Step 2: Try autonomous bill generation
+  const stateWithUpdatedLeg = { ...state, legislature };
+  const autonomousBill = generateAutonomousBill(stateWithUpdatedLeg);
+  if (autonomousBill && legislature.activeBills.length < MAX_ACTIVE_BILLS) {
+    legislature = {
+      ...legislature,
+      activeBills: [...legislature.activeBills, autonomousBill],
+      sessionStats: {
+        ...legislature.sessionStats,
+        billsIntroduced: legislature.sessionStats.billsIntroduced + 1,
+      },
+    };
+  }
+
+  // Step 3: Advance all active bills
+  const advancedState = { ...state, legislature };
+  legislature = advanceBills(advancedState);
+
+  return { ...state, legislature };
 }

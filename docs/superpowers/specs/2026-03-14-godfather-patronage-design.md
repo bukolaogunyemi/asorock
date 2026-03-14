@@ -99,7 +99,7 @@ The player starts seeing ~60% of each godfather's stable — the public knowledg
 
 **Player-initiated:** The player encounters a problem — a bill failing, a faction revolting, an election approaching. The Political Adviser surfaces the option: "Alhaji Gambo controls 12 House members from the NW. He could swing the vote. Want me to reach out?" The player sees the godfather's profile, visible stable, and deal style before committing.
 
-**Godfather-initiated:** Inbox message from the godfather or an intermediary. "Chief Mbah requests a meeting. He says he can resolve the party discipline crisis — but he wants to discuss the Anambra highway contract." Frequency scales with the godfather's aggression trait and current trigger windows (see Section 7).
+**Godfather-initiated:** Inbox message from the godfather or an intermediary. "Chief Mbah requests a meeting. He says he can resolve the party discipline crisis — but he wants to discuss the Anambra highway contract." Frequency scales with the godfather's aggression trait and current trigger windows (see Section 6).
 
 ### 4.2 Two Deal Styles
 
@@ -118,7 +118,7 @@ The player starts seeing ~60% of each godfather's stable — the public knowledg
 
 ### 4.3 Deal Limits
 
-A player can have active deals with up to 5-6 godfathers simultaneously. Beyond that, the web of obligations becomes unmanageable — conflicting demands start appearing (two godfathers want the same contract, or one wants a bill the other opposes). Conflicting godfather interests create forced choices that damage at least one relationship.
+A player can have active deals with up to 6 godfathers simultaneously. Beyond that, the web of obligations becomes unmanageable — conflicting demands start appearing (two godfathers want the same contract, or one wants a bill the other opposes). Conflicting godfather interests create forced choices that damage at least one relationship.
 
 ### 4.4 What Deals Cost
 
@@ -168,19 +168,20 @@ The player can permanently neutralize a godfather through three paths:
 
 **Political power route** — When the player has high approval (65+) and sufficient political capital, they can move against a godfather publicly: anti-corruption probe, regulatory action against their business, or party restructuring that sidelines them. This is a visible confrontation that plays out over several turns. Success depends on approval holding steady during the fight — the godfather will hit back.
 
-**Godfather-vs-godfather route** — The player uses one godfather to neutralize another. See Section 7.2.
+**Godfather-vs-godfather route** — The player uses one godfather to neutralize another. See Section 6.2.
 
 All routes carry risk proportional to the godfather's influence score. Neutralizing a 90-influence oligarch is a major campaign; removing a 50-influence regional figure is manageable.
 
 ### 5.3 The Patronage Index
 
-Every active godfather deal contributes to a hidden patronage index (0-100). As this rises:
+Every active godfather deal contributes to a hidden patronage index (0-100). Effects escalate across four tiers:
 
-- **Media scrutiny increases** — More scandal risk, investigative journalism events
-- **Reform-minded factions lose trust** — Faction grievance among anti-corruption constituencies
-- **Approval ceiling drops** — Heavily patronage-dependent presidents can't exceed ~60% approval regardless of performance
-- **Leverage inverts** — Godfathers with multiple deals know too much, making neutralization harder and riskier
-- **Re-election narrative shifts** — From "strong leader" to "captured president"
+| Tier | Range | Effects |
+|------|-------|---------|
+| Clean | 0-20 | No penalties. Player is seen as independent. |
+| Pragmatic | 21-45 | Mild media scrutiny. Reform factions notice. Minor approval ceiling reduction (~5%). |
+| Compromised | 46-70 | Regular scandal risk. Reform factions lose trust. Approval ceiling drops to ~60%. Neutralizing godfathers becomes harder (they have leverage). |
+| Captured | 71-100 | Sustained media attacks. Faction grievance spikes. Approval ceiling ~50%. Re-election narrative shifts to "puppet president." Godfathers dictate terms. |
 
 A player who avoids godfathers entirely has no patronage penalty but faces a harder game. A player who uses them strategically keeps the index manageable. A player who relies on them heavily wins battles but loses the war.
 
@@ -270,8 +271,7 @@ interface GodfatherStable {
     senate: number;             // vote count they control in Senate
   };
   cabinetCandidates: string[];  // character IDs of their protégés
-  hiddenConnections: GodfatherConnection[];  // revealed through intelligence
-  revealedConnections: GodfatherConnection[];  // public knowledge (~60% at start)
+  connections: GodfatherConnection[];  // ~60% start with revealed=true, rest discovered over time
 }
 
 interface GodfatherConnection {
@@ -279,6 +279,7 @@ interface GodfatherConnection {
   entityId?: string;            // for governors, characters
   description: string;          // human-readable: "Controls Channels TV editorial"
   effect: GameStateModifier[];  // what this connection can do when activated
+  revealed: boolean;            // false = hidden, discovered through intelligence/events/deals
 }
 ```
 
@@ -299,7 +300,7 @@ interface GodfatherDeal {
   type: "contract" | "favour";
   godfatherOffers: string;      // what the godfather will do
   playerOwes: string;           // what the player must do (vague for favours)
-  estimatedCost: LeverCost[];   // political capital, approval, etc.
+  estimatedCost: LeverCost[];   // reuses LeverCost from Legislative Engine spec (Sub-Project A)
   estimatedBenefit: string;     // what the player gets
 }
 ```
@@ -312,7 +313,7 @@ interface PatronageState {
   patronageIndex: number;       // 0-100, accumulated corruption pressure
   activeDeals: number;          // count of current godfather entanglements
   neutralizedGodfathers: string[];  // IDs of permanently removed godfathers
-  approachCooldowns: Record<string, number>;  // godfather ID → next eligible approach day
+  approachCooldowns: Record<string, number>;  // godfather ID → next eligible approach day (base: 14 days between approaches, halved during trigger windows)
 }
 ```
 
@@ -327,7 +328,7 @@ Reuses the same `GameStateModifier` interface defined in the Legislative Engine 
 ### New Files
 - `client/src/lib/godfatherEngine.ts` — core simulation (background tick, approach logic, escalation, neutralization)
 - `client/src/lib/godfatherEngine.test.ts` — unit tests
-- `client/src/lib/godfatherProfiles.ts` — 20-25 godfather definitions with traits, stables, and backstories
+- `client/src/lib/godfatherProfiles.ts` — 20-25 handcrafted godfather definitions with traits, stables, and backstories (not procedurally generated — each has a unique identity and role in the political ecosystem)
 - `client/src/lib/godfatherTypes.ts` — TypeScript interfaces (Godfather, GodfatherStable, GodfatherContract, etc.)
 - `client/src/lib/godfatherDeals.ts` — deal generation, contract tracking, favour-bank accounting
 

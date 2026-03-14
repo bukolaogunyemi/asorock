@@ -343,7 +343,7 @@ interface EconomicSnapshot {
 
 ### 5.6 Clarifications
 
-**MacroEconomicState replacement:** `EconomicState` fully replaces `MacroEconomicState`. The old interface is removed from `gameTypes.ts` and all references updated. The 6 existing fields are preserved with identical names and types on the new interface, so the migration is a path change (e.g., `gameState.macroEconomic.inflation` → `gameState.economy.inflation`), not a logic change.
+**MacroEconomicState replacement:** `EconomicState` fully replaces `MacroEconomicState`. The old interface is removed from `gameTypes.ts` and all references updated. The 6 existing fields are preserved with identical names and types on the new interface, so the migration is a path change (e.g., `gameState.macroEconomy.inflation` → `gameState.economy.inflation`), not a logic change. The existing `macroHistory: MacroHistoryPoint[]` field on `GameState` is also removed and replaced by `EconomicState.history: EconomicSnapshot[]`.
 
 **Existing policy levers:** The 9 policy levers are defined as `PolicyLeverState` in `gameTypes.ts` and processed in `gameEngine.ts`. The economic engine reads lever settings from `GameState.policyLevers` and translates them into `PolicyModifier` objects on the affected sectors. No changes to the lever interfaces (`PolicyLeverState`, `SingleLeverState`, `PolicyLeverKey`).
 

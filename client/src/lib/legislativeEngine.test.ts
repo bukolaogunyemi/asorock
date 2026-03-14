@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 
 const testConfig = {
@@ -212,5 +212,33 @@ describe("veto and signing", () => {
     state.legislature = { ...defaultLegislativeState(), pendingSignature: [bill] };
     const result = processLegislativeTurn(state);
     expect(result.legislature.pendingSignature.length).toBe(0);
+  });
+});
+
+describe("resolveLegislativeCrisis", () => {
+  it("should apply lever effects to vote projection", () => {
+    const state = initializeGameState(testConfig);
+    const bill = createBillFromTemplate({
+      title: "Crisis Bill", description: "Test", subjectTag: "economy",
+      stakes: "critical", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.houseSupport = { firmYes: 150, leaningYes: 20, undecided: 30, leaningNo: 20, firmNo: 140 };
+
+    const result = applyInfluenceLevers(state, bill, ["spend-political-capital"], "house");
+    const newTotal = result.firmYes + result.leaningYes;
+    const oldTotal = 150 + 20;
+    expect(newTotal).toBeGreaterThan(oldTotal);
+  });
+
+  it("should deduct lever costs from game state", () => {
+    const state = initializeGameState(testConfig);
+    state.politicalCapital = 30;
+    const bill = createBillFromTemplate({
+      title: "Test", description: "Test", subjectTag: "economy",
+      stakes: "critical", effects: { onPass: [], onFail: [] },
+    }, 1);
+
+    const result = payLeverCosts(state, ["spend-political-capital"]);
+    expect(result.politicalCapital).toBeLessThan(30);
   });
 });

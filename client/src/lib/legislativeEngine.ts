@@ -2,6 +2,7 @@
 import type { GameState } from "./gameTypes";
 import type { Bill, BillStage, GameStateModifier, LegislativeState, VoteProjection } from "./legislativeTypes";
 import { getAutonomousBillPool } from "./legislativeBills";
+import { getLeverById } from "./influenceLevers";
 
 // ── Chamber Seat Blocs ────────────────────────────────────────────────────────
 
@@ -753,6 +754,138 @@ export function vetoBill(state: GameState, billId: string): GameState {
     legislature: newLegislature,
   };
   return applyModifiers(stateWithLeg, bill.effects.onFail);
+}
+
+// ── Crisis Resolution ─────────────────────────────────────────────────────────
+
+/**
+ * applyInfluenceLevers
+ *
+ * Applies a list of influence levers to a bill's vote projection for a given
+ * chamber. For each lever's swing value, seats are moved from undecided (first)
+ * then leaningNo toward leaningYes/firmYes, keeping the total constant.
+ *
+ * Returns the updated VoteProjection for the given chamber.
+ */
+export function applyInfluenceLevers(
+  _state: GameState,
+  bill: Bill,
+  leverIds: string[],
+  chamber: "house" | "senate",
+): VoteProjection {
+  const support = chamber === "house"
+    ? { ...bill.houseSupport }
+    : { ...bill.senateSupport };
+
+  for (const leverId of leverIds) {
+    const lever = getLeverById(leverId);
+    if (!lever) continue;
+
+    const swing = chamber === "house" ? lever.houseSwing : lever.senateSwing;
+    if (swing <= 0) continue;
+
+    let remaining = swing;
+
+    // First drain from undecided → leaningYes
+    const fromUndecided = Math.min(remaining, support.undecided);
+    support.undecided -= fromUndecided;
+    support.leaningYes += fromUndecided;
+    remaining -= fromUndecided;
+
+    // Then drain from leaningNo → undecided
+    if (remaining > 0) {
+      const fromLeaningNo = Math.min(remaining, support.leaningNo);
+      support.leaningNo -= fromLeaningNo;
+      support.undecided += fromLeaningNo;
+      remaining -= fromLeaningNo;
+    }
+  }
+
+  return support;
+}
+
+/**
+ * payLeverCosts
+ *
+ * Deducts the resource costs of each influence lever from the game state and
+ * applies any lever side-effects. Returns updated GameState.
+ *
+ * Costs are clamped: politicalCapital >= 0, approval 0–100, partyLoyalty 0–100.
+ */
+export function payLeverCosts(state: GameState, leverIds: string[]): GameState {
+  let s = { ...state };
+
+  for (const leverId of leverIds) {
+    const lever = getLeverById(leverId);
+    if (!lever) continue;
+
+    for (const cost of lever.costs) {
+      switch (cost.type) {
+        case "politicalCapital":
+          s = { ...s, politicalCapital: Math.max(0, s.politicalCapital - cost.amount) };
+          break;
+        case "approval":
+          s = { ...s, approval: Math.max(0, Math.min(100, s.approval - cost.amount)) };
+          break;
+        case "partyLoyalty":
+          s = { ...s, partyLoyalty: Math.max(0, Math.min(100, (s.partyLoyalty ?? 70) - cost.amount)) };
+          break;
+        case "billDilution":
+          // No immediate resource cost — tracked separately via amendments
+          break;
+        default:
+          break;
+      }
+    }
+
+    // Apply lever side-effects
+    if (lever.sideEffects.length > 0) {
+      s = applyModifiers(s, lever.sideEffects);
+    }
+  }
+
+  return s;
+}
+
+/**
+ * resolveLegislativeCrisis
+ *
+ * Responds to a legislative crisis by applying influence levers:
+ * 1. Pays the resource costs of all chosen levers.
+ * 2. Applies lever vote swings to both house and senate projections.
+ * 3. Updates the bill's support projections in activeBills.
+ *
+ * Returns updated GameState (does not mutate the input).
+ */
+export function resolveLegislativeCrisis(
+  state: GameState,
+  billId: string,
+  leverIds: string[],
+): GameState {
+  const legislature = state.legislature ?? defaultLegislativeState();
+  const bill = legislature.activeBills.find((b) => b.id === billId);
+  if (!bill) return state;
+
+  // Pay costs
+  let updatedState = payLeverCosts(state, leverIds);
+
+  // Apply lever swings to both chambers
+  const updatedHouseSupport = applyInfluenceLevers(updatedState, bill, leverIds, "house");
+  const updatedSenateSupport = applyInfluenceLevers(updatedState, bill, leverIds, "senate");
+
+  // Update the bill in activeBills
+  const updatedBill: Bill = {
+    ...bill,
+    houseSupport: updatedHouseSupport,
+    senateSupport: updatedSenateSupport,
+  };
+
+  const updatedLegislature: LegislativeState = {
+    ...legislature,
+    activeBills: legislature.activeBills.map((b) => (b.id === billId ? updatedBill : b)),
+  };
+
+  return { ...updatedState, legislature: updatedLegislature };
 }
 
 // ── Main Turn Function ────────────────────────────────────────────────────────

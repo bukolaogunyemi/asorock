@@ -888,6 +888,72 @@ export function resolveLegislativeCrisis(
   return { ...updatedState, legislature: updatedLegislature };
 }
 
+// ── Adviser Briefing ──────────────────────────────────────────────────────────
+
+export interface AdviserBriefing {
+  dailyBrief: string;
+  weeklySummary?: string;
+  crisisAlert?: string;
+}
+
+/**
+ * generateAdviserBriefing
+ *
+ * Produces a daily legislative briefing for the player:
+ * - Summarises active and pending-signature bill counts
+ * - Warns about crisis bills approaching a critical vote (≤ 2 days remaining)
+ * - Generates a weekly summary on every 7th day
+ *
+ * Returns an AdviserBriefing object (does not mutate state).
+ */
+export function generateAdviserBriefing(state: GameState): AdviserBriefing {
+  const leg = state.legislature ?? defaultLegislativeState();
+  const activeBillCount = leg.activeBills.length;
+  const pendingCount = leg.pendingSignature.length;
+
+  let dailyBrief = `Legislative Update: ${activeBillCount} active bill${activeBillCount !== 1 ? "s" : ""} in the National Assembly.`;
+
+  if (pendingCount > 0) {
+    dailyBrief += ` ${pendingCount} bill${pendingCount !== 1 ? "s" : ""} awaiting your signature.`;
+  }
+
+  // Check for crisis bills approaching vote
+  for (const bill of leg.activeBills) {
+    if (
+      bill.isCrisis &&
+      bill.houseStageDaysRemaining <= 2 &&
+      (bill.houseStage === "committee" || bill.houseStage === "floor-debate")
+    ) {
+      dailyBrief += ` WARNING: "${bill.title}" is approaching a critical vote in ${bill.houseStageDaysRemaining} day${bill.houseStageDaysRemaining !== 1 ? "s" : ""}.`;
+    }
+    if (
+      bill.isCrisis &&
+      bill.senateStageDaysRemaining <= 2 &&
+      (bill.senateStage === "committee" || bill.senateStage === "floor-debate")
+    ) {
+      dailyBrief += ` WARNING: "${bill.title}" faces Senate action in ${bill.senateStageDaysRemaining} day${bill.senateStageDaysRemaining !== 1 ? "s" : ""}.`;
+    }
+  }
+
+  // Weekly summary every 7 days
+  let weeklySummary: string | undefined;
+  if (state.day % 7 === 0) {
+    const stats = leg.sessionStats;
+    weeklySummary = `Weekly Legislative Summary — Bills introduced: ${stats.billsIntroduced}, passed: ${stats.billsPassed}, vetoed: ${stats.billsVetoed}.`;
+
+    const recentlyAdvanced = leg.activeBills.filter(
+      (b) =>
+        state.day - b.houseStageEnteredDay < 7 ||
+        state.day - b.senateStageEnteredDay < 7,
+    );
+    if (recentlyAdvanced.length > 0) {
+      weeklySummary += ` ${recentlyAdvanced.length} bill${recentlyAdvanced.length !== 1 ? "s" : ""} advanced this week.`;
+    }
+  }
+
+  return { dailyBrief, weeklySummary };
+}
+
 // ── Main Turn Function ────────────────────────────────────────────────────────
 
 /**

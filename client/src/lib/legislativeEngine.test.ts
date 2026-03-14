@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts } from "./legislativeEngine";
+import { calculateVoteProjection, advanceBills, createBillFromTemplate, defaultLegislativeState, shouldTriggerCrisis, generateAutonomousBill, processLegislativeTurn, signBill, vetoBill, applyInfluenceLevers, payLeverCosts, generateAdviserBriefing } from "./legislativeEngine";
 import { initializeGameState } from "./GameContext";
 
 const testConfig = {
@@ -154,6 +154,41 @@ describe("generateAutonomousBill", () => {
     if (bill) {
       expect(bill.subjectTag).toBe("economy");
     }
+  });
+});
+
+describe("generateAdviserBriefing", () => {
+  it("should generate daily brief with active bill count", () => {
+    const state = initializeGameState(testConfig);
+    const bill = createBillFromTemplate({
+      title: "Test Bill", description: "Test", subjectTag: "economy",
+      stakes: "routine", effects: { onPass: [], onFail: [] },
+    }, 1);
+    state.legislature = { ...defaultLegislativeState(), activeBills: [bill] };
+    const briefing = generateAdviserBriefing(state);
+    expect(briefing.dailyBrief).toContain("1");
+  });
+
+  it("should generate weekly summary every 7 days", () => {
+    const state = initializeGameState(testConfig);
+    state.day = 7;
+    state.legislature = defaultLegislativeState();
+    const briefing = generateAdviserBriefing(state);
+    expect(briefing.weeklySummary).toBeDefined();
+  });
+
+  it("should warn about crisis bills approaching vote", () => {
+    const state = initializeGameState(testConfig);
+    const bill = createBillFromTemplate({
+      title: "Budget", description: "Test", subjectTag: "economy",
+      stakes: "critical", effects: { onPass: [], onFail: [] },
+    }, 1);
+    bill.isCrisis = true;
+    bill.houseStage = "committee";
+    bill.houseStageDaysRemaining = 2;
+    state.legislature = { ...defaultLegislativeState(), activeBills: [bill] };
+    const briefing = generateAdviserBriefing(state);
+    expect(briefing.dailyBrief).toContain("WARNING");
   });
 });
 

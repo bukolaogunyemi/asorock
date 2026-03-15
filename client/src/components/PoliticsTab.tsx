@@ -1128,7 +1128,7 @@ export default function PoliticsTab() {
                                   <span className="text-[10px] text-muted-foreground">Competence</span>
                                   <span className="text-[10px] tabular-nums text-muted-foreground">{member.competence}</span>
                                 </div>
-                                <CompetencyBar value={member.competence} />
+                                <CompetencyBar value={member.competence} label="Competence" />
                               </div>
                               <div className="space-y-0.5">
                                 <div className="flex items-center justify-between">

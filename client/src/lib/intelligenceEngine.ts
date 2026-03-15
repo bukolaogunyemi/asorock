@@ -129,6 +129,74 @@ export function resolveOperation(
   };
 }
 
+export function getPassiveHookRate(competence: number): { min: number; max: number } {
+  if (competence >= 70) return { min: 15, max: 30 };
+  if (competence >= 40) return { min: 30, max: 60 };
+  return { min: 60, max: 90 };
+}
+
+export function calculateLeakRate(loyalty: number, baseRate: number): number {
+  if (loyalty > 40) return 0;
+  if (loyalty === 40) return baseRate;
+  const multiplier = 1 + (40 - loyalty) / 20;
+  return Math.min(baseRate * 2, baseRate * multiplier);
+}
+
+export function deployLeverage(
+  hookId: string,
+  targetId: string
+): {
+  hookUpdate: { deployed: boolean; deploymentType: "leverage"; leverageTarget: string };
+  targetEffects: Array<{ type: string; value: number }>;
+} {
+  return {
+    hookUpdate: {
+      deployed: true,
+      deploymentType: "leverage",
+      leverageTarget: targetId,
+    },
+    targetEffects: [
+      { type: "loyalty-boost", value: 15 },
+      { type: "resentment", value: 1 },
+    ],
+  };
+}
+
+export function deployTrade(
+  hookId: string,
+  recipientId: string
+): {
+  hookUpdate: { deployed: boolean; deploymentType: "trade"; tradeRecipient: string };
+} {
+  return {
+    hookUpdate: {
+      deployed: true,
+      deploymentType: "trade",
+      tradeRecipient: recipientId,
+    },
+  };
+}
+
+export function deployBlackmail(
+  hookId: string,
+  targetId: string
+): {
+  hookUpdate: { deployed: boolean; deploymentType: "blackmail"; blackmailDesperation: number };
+} {
+  return {
+    hookUpdate: {
+      deployed: true,
+      deploymentType: "blackmail",
+      blackmailDesperation: 0,
+    },
+  };
+}
+
+export function tickBlackmailDesperation(current: number, isRepeated: boolean): number {
+  const increment = isRepeated ? 8 : 5;
+  return Math.min(100, current + increment);
+}
+
 export function processIntelligenceTurn(
   state: IntelligenceState,
   currentDay: number

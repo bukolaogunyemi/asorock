@@ -57,7 +57,7 @@ export const MILESTONE_DEFS: MilestoneDef[] = [
     points: 5,
     description: "Pass a critical or high-stakes bill through the legislature.",
     check: (_prev, next) =>
-      Boolean(next.legislature.passedBills?.some(b => b.stakes === "critical" || b.stakes === "high")),
+      Boolean(next.legislature.passedBills?.some(b => b.stakes === "critical" || b.stakes === "significant")),
   },
   {
     id: "ten_bills",

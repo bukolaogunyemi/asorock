@@ -27,6 +27,7 @@ import {
   Users,
   Briefcase,
   FileText,
+  Shield,
 } from "lucide-react";
 
 // ── Constants ────────────────────────────────────────────
@@ -448,11 +449,19 @@ function DossierPanel({
   );
 }
 
+// ── DNI Candidates ───────────────────────────────────────
+
+const DNI_CANDIDATES = [
+  { id: "dni-okafor", name: "Col. Emeka Okafor (Rtd)", zone: "SE", competence: 82, loyalty: 55, description: "Ex-Army Intelligence. Brilliant analyst, but ambiguous allegiances." },
+  { id: "dni-ibrahim", name: "Mallam Yusuf Ibrahim", zone: "NW", competence: 65, loyalty: 85, description: "Party loyalist. Reliable but limited operational experience." },
+  { id: "dni-adeyemi", name: "Dr. Funke Adeyemi", zone: "SW", competence: 78, loyalty: 70, description: "Academic turned intelligence professional. Balanced capability." },
+];
+
 // ── Component ────────────────────────────────────────────
 
 export default function OnboardingFlow() {
   const { toast } = useToast();
-  const { startCampaign } = useGame();
+  const { startCampaign, setDni } = useGame();
   const [step, setStep] = useState(0);
 
   // Page 1: Player info
@@ -503,6 +512,7 @@ export default function OnboardingFlow() {
   // Page 11: Intel
   const [intelIndex, setIntelIndex] = useState(0);
   const [intelActions, setIntelActions] = useState<Record<string, string>>({});
+  const [selectedDni, setSelectedDni] = useState<string | null>(null);
 
   const next = useCallback(() => setStep((s) => s + 1), []);
   const prev = useCallback(() => setStep((s) => Math.max(0, s - 1)), []);
@@ -565,6 +575,13 @@ export default function OnboardingFlow() {
       occupation,
     };
     startCampaign(config);
+    // Set the DNI after campaign state is initialized
+    if (selectedDni) {
+      const dni = DNI_CANDIDATES.find((c) => c.id === selectedDni);
+      if (dni) {
+        setDni(dni.id, dni.competence, dni.loyalty);
+      }
+    }
     toast({ title: `Welcome, ${gender === "Female" ? "Madam" : "Mr."} President`, description: "Your administration begins now." });
   };
 
@@ -1563,6 +1580,51 @@ export default function OnboardingFlow() {
                     ))}
                   </div>
 
+                  {/* DNI Appointment */}
+                  {allDone && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-2 pt-1"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-[hsl(42,70%,50%)]" />
+                        <span className="text-xs font-semibold">Appoint Director of National Intelligence</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Select your DNI. They will oversee all intelligence operations and their competence determines your espionage capacity.</p>
+                      <div className="grid gap-2">
+                        {DNI_CANDIDATES.map((candidate) => (
+                          <button
+                            key={candidate.id}
+                            onClick={() => setSelectedDni(candidate.id)}
+                            className={`w-full text-left rounded-lg border p-3 transition-all ${
+                              selectedDni === candidate.id
+                                ? "border-[hsl(42,70%,50%)] bg-[hsl(42,70%,50%)]/10"
+                                : "border-border hover:border-[hsl(42,70%,50%)]/40"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-semibold">{candidate.name}</span>
+                              <Badge variant="outline" className="text-[10px]">{candidate.zone}</Badge>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground mt-1">{candidate.description}</p>
+                            <div className="flex gap-3 mt-1.5">
+                              <span className="text-[10px] text-muted-foreground">Competence: <span className="text-foreground font-medium">{candidate.competence}</span></span>
+                              <span className="text-[10px] text-muted-foreground">Loyalty: <span className="text-foreground font-medium">{candidate.loyalty}</span></span>
+                            </div>
+                            {selectedDni === candidate.id && (
+                              <div className="flex items-center gap-1 mt-1.5">
+                                <CheckCircle className="h-3 w-3 text-[hsl(42,70%,50%)]" />
+                                <span className="text-[10px] text-[hsl(42,70%,50%)] font-medium">Selected</span>
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
                   <div className="flex justify-between pt-2">
                     <Button variant="ghost" size="sm" onClick={prev}><ChevronLeft className="h-3.5 w-3.5 mr-1" /> Back</Button>
                     <Button
@@ -1574,7 +1636,7 @@ export default function OnboardingFlow() {
                         });
                         finishOnboarding();
                       }}
-                      disabled={!allDone}
+                      disabled={!allDone || !selectedDni}
                     >
                       Enter Aso Rock <ChevronRight className="h-3.5 w-3.5 ml-1" />
                     </Button>

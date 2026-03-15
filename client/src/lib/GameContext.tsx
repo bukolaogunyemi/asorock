@@ -714,7 +714,8 @@ export type GameAction =
   | { type: "REJECT_DEAL"; godfatherId: string }
   | { type: "RESPOND_TO_FAVOUR"; godfatherId: string; demand: string }
   | { type: "NEUTRALIZE_GODFATHER"; godfatherId: string; method: "intelligence" | "political" | "godfather-vs-godfather" }
-  | { type: "COMMISSION_OPERATION"; opType: string; targetId?: string; description: string };
+  | { type: "COMMISSION_OPERATION"; opType: string; targetId?: string; description: string }
+  | { type: "SET_DNI"; dniId: string; dniCompetence: number; dniLoyalty: number };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -779,6 +780,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const newIntel = commissionOperation(state.intelligence, action.opType as any, action.targetId, action.description, state.day);
       return withDerivedState({ ...state, intelligence: newIntel });
     }
+    case "SET_DNI":
+      return withDerivedState({
+        ...state,
+        intelligence: {
+          ...state.intelligence,
+          dniId: action.dniId,
+          dniCompetence: action.dniCompetence,
+          dniLoyalty: action.dniLoyalty,
+          maxConcurrentOps: action.dniCompetence >= 70 ? 3 : 2,
+        },
+      });
     default:
       return state;
   }
@@ -810,6 +822,7 @@ interface GameContextValue {
   respondToFavour: (godfatherId: string, demand: string) => void;
   neutralizeGodfather: (godfatherId: string, method: "intelligence" | "political" | "godfather-vs-godfather") => void;
   commissionOperation: (opType: string, targetId: string | undefined, description: string) => void;
+  setDni: (dniId: string, dniCompetence: number, dniLoyalty: number) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -843,6 +856,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     respondToFavour: (godfatherId, demand) => dispatch({ type: "RESPOND_TO_FAVOUR", godfatherId, demand }),
     neutralizeGodfather: (godfatherId, method) => dispatch({ type: "NEUTRALIZE_GODFATHER", godfatherId, method }),
     commissionOperation: (opType, targetId, description) => dispatch({ type: "COMMISSION_OPERATION", opType, targetId, description }),
+    setDni: (dniId, dniCompetence, dniLoyalty) => dispatch({ type: "SET_DNI", dniId, dniCompetence, dniLoyalty }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

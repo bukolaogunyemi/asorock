@@ -33,6 +33,7 @@ import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./f
 import { processLegislativeTurn, generateAdviserBriefing } from "./legislativeEngine";
 import { processGodfatherTurn, getPatronageEffects } from "./godfatherEngine";
 import { calculateComplianceScore, calculateZoneBalances, getConsequences } from "./federalCharacter";
+import { processIntelligenceTurn } from "./intelligenceEngine";
 
 export type {
   ActiveEvent,
@@ -2423,6 +2424,50 @@ export function processTurn(state: GameState): GameState {
         next = { ...next, stability: Math.max(0, next.stability + effect.delta) };
       } else if (effect.target === "approval") {
         next = { ...next, approval: Math.max(0, next.approval + effect.delta) };
+      }
+    }
+  }
+
+  // Intelligence engine — process operations each turn
+  if (next.intelligence && next.intelligence.dniId) {
+    const intelResult = processIntelligenceTurn(next.intelligence, next.day);
+    next = { ...next, intelligence: intelResult };
+
+    // Generate inbox messages for completed operations
+    for (const completed of intelResult.completedOperations) {
+      // Only notify about operations completed this turn (not previously)
+      const alreadyNotified = next.inboxMessages.some(m => m.id === `intel-${completed.operationId}`);
+      if (!alreadyNotified) {
+        const msg = {
+          id: `intel-${completed.operationId}`,
+          day: next.day,
+          date: next.date,
+          sender: "Director of National Intelligence",
+          role: "DNI",
+          initials: "DN",
+          subject: completed.success ? "Operation Complete — Findings" : completed.exposed ? "CRITICAL: Operation Exposed" : "Operation Failed",
+          preview: completed.success
+            ? `Operation ${completed.type} succeeded. ${completed.findings.length} findings.`
+            : completed.exposed
+              ? `Operation ${completed.type} was exposed. Political damage expected.`
+              : `Operation ${completed.type} failed to produce results.`,
+          fullText: completed.success
+            ? `The ${completed.type} operation has concluded successfully.\n\nFindings:\n${completed.findings.map(f => `- ${f.description}`).join("\n")}`
+            : completed.exposed
+              ? `CRITICAL FAILURE: The ${completed.type} operation has been exposed. Expect political backlash and potential media coverage.`
+              : `The ${completed.type} operation did not produce actionable intelligence.`,
+          priority: (completed.exposed ? "Urgent" : "Normal") as "Urgent" | "Normal",
+          read: false,
+          source: "system" as const,
+        };
+        next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
+      }
+    }
+
+    // Apply exposure penalties
+    for (const completed of intelResult.completedOperations) {
+      if (completed.exposed) {
+        next = { ...next, approval: Math.max(0, next.approval - 5), trust: Math.max(0, next.trust - 8) };
       }
     }
   }

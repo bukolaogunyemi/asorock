@@ -54,6 +54,7 @@ import { registerConstitutionalPools } from "./constitutionalPools";
 import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis } from "./legislativeEngine";
 import { defaultPatronageState } from "./godfatherEngine";
 import { defaultFederalCharacterState } from "./federalCharacter";
+import { commissionOperation } from "./intelligenceEngine";
 import { acceptDeal, rejectDeal, cashInFavour } from "./godfatherDeals";
 import { neutralizeGodfather } from "./godfatherEngine";
 import type { GodfatherDeal } from "./godfatherTypes";
@@ -712,7 +713,8 @@ export type GameAction =
   | { type: "ACCEPT_DEAL"; godfatherId: string; deal: GodfatherDeal }
   | { type: "REJECT_DEAL"; godfatherId: string }
   | { type: "RESPOND_TO_FAVOUR"; godfatherId: string; demand: string }
-  | { type: "NEUTRALIZE_GODFATHER"; godfatherId: string; method: "intelligence" | "political" | "godfather-vs-godfather" };
+  | { type: "NEUTRALIZE_GODFATHER"; godfatherId: string; method: "intelligence" | "political" | "godfather-vs-godfather" }
+  | { type: "COMMISSION_OPERATION"; opType: string; targetId?: string; description: string };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -772,6 +774,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
     case "NEUTRALIZE_GODFATHER":
       return withDerivedState({ ...state, patronage: neutralizeGodfather(state.patronage, action.godfatherId, action.method) });
+    case "COMMISSION_OPERATION": {
+      if (!state.intelligence) return state;
+      const newIntel = commissionOperation(state.intelligence, action.opType as any, action.targetId, action.description, state.day);
+      return withDerivedState({ ...state, intelligence: newIntel });
+    }
     default:
       return state;
   }
@@ -802,6 +809,7 @@ interface GameContextValue {
   rejectDeal: (godfatherId: string) => void;
   respondToFavour: (godfatherId: string, demand: string) => void;
   neutralizeGodfather: (godfatherId: string, method: "intelligence" | "political" | "godfather-vs-godfather") => void;
+  commissionOperation: (opType: string, targetId: string | undefined, description: string) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -834,6 +842,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     rejectDeal: (godfatherId) => dispatch({ type: "REJECT_DEAL", godfatherId }),
     respondToFavour: (godfatherId, demand) => dispatch({ type: "RESPOND_TO_FAVOUR", godfatherId, demand }),
     neutralizeGodfather: (godfatherId, method) => dispatch({ type: "NEUTRALIZE_GODFATHER", godfatherId, method }),
+    commissionOperation: (opType, targetId, description) => dispatch({ type: "COMMISSION_OPERATION", opType, targetId, description }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

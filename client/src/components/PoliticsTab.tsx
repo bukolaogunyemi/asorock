@@ -18,7 +18,11 @@ import { RelationshipIndicator } from "@/components/RelationshipIndicator";
 import { useGame } from "@/lib/GameContext";
 import { getChainById } from "@/lib/eventChains";
 import { checkBetrayalRisk } from "@/lib/traits";
-import { AlertTriangle, Briefcase, Key, Search, Users } from "lucide-react";
+import type { Godfather } from "@/lib/godfatherTypes";
+import { getPatronageEffects } from "@/lib/godfatherEngine";
+import { AlertTriangle, Briefcase, Eye, Key, Search, Shield, Users, Crown, Megaphone, Vote, ArrowRightLeft, Landmark } from "lucide-react";
+import type { IntelOperationType } from "@/lib/intelligenceTypes";
+import type { PartyState, NWCMember, AtRiskEntry, Defection, ConventionRace } from "@/lib/partyTypes";
 import {
   Bar,
   BarChart,
@@ -35,7 +39,59 @@ const POL_SUBTABS = [
   { id: "factions", label: "Factions" },
   { id: "intrigue", label: "Intrigue" },
   { id: "brokers", label: "Brokers" },
+  { id: "intel", label: "Intelligence" },
+  { id: "party", label: "Party" },
 ] as const;
+
+const DISPOSITION_COLORS: Record<NWCMember["disposition"], { variant: "default" | "outline" | "destructive"; label: string }> = {
+  supportive: { variant: "default", label: "Supportive" },
+  neutral: { variant: "outline", label: "Neutral" },
+  hostile: { variant: "destructive", label: "Hostile" },
+};
+
+const NWC_POSITION_LABELS: Record<string, string> = {
+  "national-chairman": "National Chairman",
+  "vice-chairman": "Vice Chairman",
+  "national-secretary": "National Secretary",
+  "national-treasurer": "National Treasurer",
+  "publicity-secretary": "Publicity Secretary",
+  "organising-secretary": "Organising Secretary",
+  "legal-adviser": "Legal Adviser",
+  "youth-women-leader": "Youth/Women Leader",
+};
+
+const STRATEGY_COLORS: Record<string, "default" | "outline" | "destructive"> = {
+  obstruct: "destructive",
+  negotiate: "outline",
+  attack: "destructive",
+};
+
+const OP_TYPE_META: Record<IntelOperationType, { label: string; blurb: string }> = {
+  "investigate-person": { label: "Investigate Person", blurb: "Deep background check on a cabinet member or political figure." },
+  "monitor-godfather": { label: "Monitor Godfather", blurb: "Sustained surveillance of a godfather network." },
+  "counter-intel": { label: "Counter-Intelligence", blurb: "Detect and neutralise leaks inside the system." },
+  "opposition-research": { label: "Opposition Research", blurb: "Gather strategic intelligence on opposition figures." },
+  "media-intel": { label: "Media Intelligence", blurb: "Identify media sources and narrative strategies." },
+  "security-assessment": { label: "Security Assessment", blurb: "Evaluate threat posture in a region or institution." },
+};
+
+const OP_COSTS: Record<IntelOperationType, number> = {
+  "investigate-person": 8,
+  "monitor-godfather": 12,
+  "counter-intel": 6,
+  "opposition-research": 10,
+  "media-intel": 4,
+  "security-assessment": 4,
+};
+
+const OP_DURATIONS: Record<IntelOperationType, number> = {
+  "investigate-person": 21,
+  "monitor-godfather": 30,
+  "counter-intel": 14,
+  "opposition-research": 21,
+  "media-intel": 10,
+  "security-assessment": 10,
+};
 
 const ACTIONS = [
   { id: "reshuffle-cabinet", label: "Reshuffle Power Centres", blurb: "Move pieces before rivals decide you are too weak to act." },
@@ -88,13 +144,17 @@ export default function PoliticsTab() {
   const {
     state,
     canResolveChoice,
+    commissionOperation,
     executeQuickAction,
     resolveChainChoice,
     resolveEventChoice,
     startHookInvestigation,
     useHook,
+    poachLegislators,
+    endorseConventionCandidate,
   } = useGame();
   const [subTab, setSubTab] = useState<(typeof POL_SUBTABS)[number]["id"]>("overview");
+  const [selectedGodfatherId, setSelectedGodfatherId] = useState<string | null>(null);
 
   const factionRows = useMemo(() => Object.values(state.factions)
     .map((faction) => ({
@@ -141,14 +201,6 @@ export default function PoliticsTab() {
 
   const actionableHooks = allHooks.filter((hook) => hook.usable && !hook.used).length;
   const activeInvestigations = allHooks.filter((hook) => hook.underInvestigation).length;
-
-  const powerBrokers = useMemo(() => Object.values(state.characters)
-    .map((character) => ({
-      ...character,
-      score: Math.round(character.ambition * 0.45 + character.competence * 0.2 + (100 - character.loyalty) * 0.35),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 6), [state.characters]);
 
   const suspiciousFeed = [...state.turnLog]
     .filter((entry) => entry.category === "chain" || entry.category === "decision" || entry.category === "hook" || /betrayal|rebellion|plot|governor|party/i.test(entry.event))
@@ -475,60 +527,862 @@ export default function PoliticsTab() {
         </div>
       )}
 
-      {subTab === "brokers" && (
-        <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-4">
-          <Card className="border border-border" data-testid="politics-brokers-card">
-            <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Users className="h-4 w-4" /> Power Brokers
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {powerBrokers.map((broker) => (
-                <Card key={broker.name} className="border border-border bg-muted/20">
-                  <CardContent className="p-3 space-y-2">
-                    <div className="flex items-start gap-3">
-                      <CharacterAvatar name={broker.name} initials={broker.avatar} size="md" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold">{broker.name}</p>
-                        <p className="text-xs text-muted-foreground">{broker.portfolio}</p>
+      {subTab === "brokers" && (() => {
+        const patronage = state.patronage;
+        const effects = getPatronageEffects(patronage.patronageIndex);
+        const godfathers = patronage.godfathers;
+        const selectedGodfather = godfathers.find((g) => g.id === selectedGodfatherId) ?? null;
+
+        const tierColor: Record<string, string> = {
+          clean: "#22c55e",
+          pragmatic: "#eab308",
+          compromised: "#f97316",
+          captured: "#ef4444",
+        };
+        const tierBarColor = tierColor[effects.tier] ?? "#22c55e";
+
+        const dispositionColor: Record<string, string> = {
+          friendly: "#22c55e",
+          neutral: "#9ca3af",
+          cold: "#f97316",
+          hostile: "#ef4444",
+        };
+
+        const archetypeIcon = (archetype: Godfather["archetype"]) => {
+          switch (archetype) {
+            case "business-oligarch": return "💰";
+            case "military-elder": return "🎖️";
+            case "party-boss": return "🏛️";
+            case "labour-civil": return "✊";
+            case "religious-leader": return "🕌";
+            case "regional-strongman": return "👑";
+            case "media-mogul": return "📡";
+            default: return "👤";
+          }
+        };
+
+        const archetypeLabel = (archetype: Godfather["archetype"]) =>
+          archetype.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+
+        return (
+          <div className="space-y-4">
+            {/* Patronage Index Meter */}
+            <Card className="border border-[#0A4D2C]/20" data-testid="politics-patronage-meter">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Briefcase className="h-4 w-4 text-[#C5A55A]" />
+                    <p className="text-sm font-semibold">Patronage Index</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      className="text-xs capitalize"
+                      style={{ backgroundColor: tierBarColor, color: effects.tier === "clean" || effects.tier === "pragmatic" ? "#000" : "#fff" }}
+                    >
+                      {effects.tier}
+                    </Badge>
+                    <span className="text-sm font-semibold tabular-nums text-[#C5A55A]">{patronage.patronageIndex}</span>
+                  </div>
+                </div>
+                <div className="w-full h-3 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${patronage.patronageIndex}%`, backgroundColor: tierBarColor }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">{effects.description}</p>
+                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                  <span>Active Deals: <strong className="text-foreground">{patronage.activeDeals}</strong></span>
+                  <span>Scandal Risk: <strong className="text-foreground">{Math.round(effects.scandalRisk * 100)}%</strong></span>
+                  {effects.approvalCeiling !== undefined && (
+                    <span>Approval Ceiling: <strong className="text-foreground">{effects.approvalCeiling}%</strong></span>
+                  )}
+                  {effects.stabilityPenalty !== 0 && (
+                    <span>Stability Penalty: <strong className="text-red-500">{effects.stabilityPenalty}/turn</strong></span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-4">
+              {/* Godfather Grid */}
+              <Card className="border border-[#0A4D2C]/20" data-testid="politics-godfathers-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Crown className="h-4 w-4 text-[#C5A55A]" /> Godfathers
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {godfathers.length === 0 ? (
+                    <p className="text-xs text-muted-foreground col-span-full">No godfather networks have been identified yet.</p>
+                  ) : (
+                    godfathers.map((gf) => {
+                      const isSelected = selectedGodfatherId === gf.id;
+                      return (
+                        <button
+                          key={gf.id}
+                          data-testid={`godfather-card-${gf.id}`}
+                          className={`text-left rounded-lg border p-3 space-y-2 transition-colors cursor-pointer ${
+                            gf.neutralized
+                              ? "opacity-60 bg-muted/30 border-border"
+                              : isSelected
+                                ? "border-[#C5A55A] bg-[#0A4D2C]/5 ring-1 ring-[#C5A55A]/40"
+                                : "border-border bg-muted/20 hover:border-[#0A4D2C]/40"
+                          }`}
+                          onClick={() => setSelectedGodfatherId(isSelected ? null : gf.id)}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="text-lg">{archetypeIcon(gf.archetype)}</span>
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold truncate">{gf.name}</p>
+                                <p className="text-[11px] text-muted-foreground">{archetypeLabel(gf.archetype)}</p>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-1 shrink-0">
+                              <Badge variant="outline" className="text-[11px] font-mono">{gf.zone}</Badge>
+                              {gf.neutralized && (
+                                <Badge variant="secondary" className="text-[11px]">Neutralized</Badge>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Disposition indicator */}
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="h-2 w-2 rounded-full shrink-0"
+                              style={{ backgroundColor: dispositionColor[gf.disposition] }}
+                            />
+                            <span className="text-[11px] text-muted-foreground capitalize">{gf.disposition}</span>
+                          </div>
+
+                          {/* Influence score bar */}
+                          <div className="space-y-0.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] text-muted-foreground">Influence</span>
+                              <span className="text-[11px] tabular-nums text-muted-foreground">{gf.influenceScore}</span>
+                            </div>
+                            <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-[#C5A55A]"
+                                style={{ width: `${clamp(gf.influenceScore, 0, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Escalation stage dots */}
+                          <div className="flex items-center gap-1">
+                            <span className="text-[11px] text-muted-foreground mr-1">Escalation</span>
+                            {[0, 1, 2, 3, 4].map((stage) => (
+                              <span
+                                key={stage}
+                                className={`h-2 w-2 rounded-full ${
+                                  stage <= gf.escalationStage
+                                    ? stage >= 3
+                                      ? "bg-red-500"
+                                      : stage >= 2
+                                        ? "bg-orange-400"
+                                        : "bg-[#0A4D2C]"
+                                    : "bg-muted"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </button>
+                      );
+                    })
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Selected Godfather Detail Panel */}
+              <Card className="border border-[#0A4D2C]/20" data-testid="politics-godfather-detail-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-[#C5A55A]" /> Godfather Dossier
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-3">
+                  {!selectedGodfather ? (
+                    <p className="text-xs text-muted-foreground">Select a godfather to view their full dossier, connections, and active contracts.</p>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">{archetypeIcon(selectedGodfather.archetype)}</span>
+                        <div>
+                          <p className="text-sm font-semibold">{selectedGodfather.name}</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {archetypeLabel(selectedGodfather.archetype)} &middot; {selectedGodfather.zone} &middot;{" "}
+                            <span style={{ color: dispositionColor[selectedGodfather.disposition] }} className="capitalize font-medium">
+                              {selectedGodfather.disposition}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-muted-foreground">{selectedGodfather.description}</p>
+
+                      {/* Traits */}
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Traits</p>
+                        {(["aggression", "loyalty", "greed", "visibility"] as const).map((trait) => (
+                          <div key={trait} className="flex items-center gap-2">
+                            <span className="text-[11px] text-muted-foreground w-16 capitalize">{trait}</span>
+                            <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className="h-full rounded-full"
+                                style={{
+                                  width: `${clamp(selectedGodfather.traits[trait], 0, 100)}%`,
+                                  backgroundColor:
+                                    trait === "aggression" || trait === "greed"
+                                      ? selectedGodfather.traits[trait] > 70
+                                        ? "#ef4444"
+                                        : "#f97316"
+                                      : "#0A4D2C",
+                                }}
+                              />
+                            </div>
+                            <span className="text-[11px] tabular-nums text-muted-foreground w-6 text-right">{selectedGodfather.traits[trait]}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Deal style and favour debt */}
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-[11px]">
+                          {selectedGodfather.dealStyle === "contract" ? "Contract Dealer" : "Favour Banker"}
+                        </Badge>
+                        {selectedGodfather.favourDebt > 0 && (
+                          <Badge variant="destructive" className="text-[11px]">
+                            Favour Debt: {selectedGodfather.favourDebt}
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Connections (revealed only) */}
+                      {selectedGodfather.stable.connections.filter((c) => c.revealed).length > 0 && (
+                        <div className="space-y-1">
+                          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Known Connections</p>
+                          {selectedGodfather.stable.connections
+                            .filter((c) => c.revealed)
+                            .map((conn, i) => (
+                              <div key={i} className="rounded-md border border-border bg-muted/20 p-2 flex items-center gap-2">
+                                <Badge variant="outline" className="text-[10px] shrink-0">{conn.entityType}</Badge>
+                                <p className="text-xs text-muted-foreground">{conn.description}</p>
+                              </div>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* Active contracts */}
+                      {selectedGodfather.activeContracts.length > 0 && (
+                        <div className="space-y-1">
+                          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Active Contracts</p>
+                          {selectedGodfather.activeContracts.map((contract) => {
+                            const daysLeft = contract.deadlineDay - state.day;
+                            return (
+                              <div key={contract.id} className="rounded-md border border-border bg-muted/20 p-2 space-y-1">
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="text-xs font-medium">{contract.description}</p>
+                                  <Badge
+                                    variant={daysLeft <= 3 ? "destructive" : "outline"}
+                                    className="text-[10px] shrink-0"
+                                  >
+                                    {daysLeft > 0 ? `${daysLeft}d left` : "overdue"}
+                                  </Badge>
+                                </div>
+                                <div className="flex gap-2 text-[10px] text-muted-foreground">
+                                  <span>GF delivered: {contract.deliveredByGodfather ? "Yes" : "No"}</span>
+                                  <span>You delivered: {contract.playerDelivered ? "Yes" : "No"}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {/* Stable summary */}
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Political Stable</p>
+                        <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+                          <span>Governors: <strong className="text-foreground">{selectedGodfather.stable.governors.length}</strong></span>
+                          <span>House bloc: <strong className="text-foreground">{selectedGodfather.stable.legislativeBloc.house}</strong></span>
+                          <span>Senate bloc: <strong className="text-foreground">{selectedGodfather.stable.legislativeBloc.senate}</strong></span>
+                          <span>Cabinet candidates: <strong className="text-foreground">{selectedGodfather.stable.cabinetCandidates.length}</strong></span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+      })()}
+
+      {subTab === "intel" && (() => {
+        const intel = state.intelligence;
+        const dniCharacter = intel.dniId ? state.characters[intel.dniId] : null;
+        const dniName = dniCharacter?.name ?? (intel.dniId || "No DNI Appointed");
+        const activeOps = intel.activeOperations;
+        const recentResults = [...intel.completedOperations].slice(-5).reverse();
+        const canCommission = intel.dniId !== null && activeOps.length < intel.maxConcurrentOps;
+
+        return (
+          <div className="space-y-4">
+            {/* DNI Status Card */}
+            <Card className="border border-[#0A4D2C]/20" data-testid="intel-dni-status">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-4 w-4 text-[#C5A55A]" />
+                    <p className="text-sm font-semibold">Director of National Intelligence</p>
+                  </div>
+                  <Badge variant={intel.dniId ? "default" : "secondary"} className="text-xs">
+                    {intel.dniId ? "Active" : "Vacant"}
+                  </Badge>
+                </div>
+
+                <p className="text-base font-semibold">{dniName}</p>
+
+                {intel.dniId && (
+                  <div className="space-y-2">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-muted-foreground">Competence</span>
+                        <span className="text-[11px] tabular-nums text-muted-foreground">{intel.dniCompetence}</span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-[#0A4D2C]"
+                          style={{ width: `${clamp(intel.dniCompetence, 0, 100)}%` }}
+                        />
                       </div>
                     </div>
                     <div className="space-y-0.5">
-                      <CompetencyBar value={broker.loyalty} label="Loyalty" />
-                      <CompetencyBar value={broker.competence} label="Competence" />
-                      <CompetencyBar value={broker.ambition} label="Ambition" />
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-muted-foreground">Loyalty</span>
+                        <span className="text-[11px] tabular-nums text-muted-foreground">{intel.dniLoyalty}</span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${clamp(intel.dniLoyalty, 0, 100)}%`,
+                            backgroundColor: intel.dniLoyalty >= 60 ? "#0A4D2C" : intel.dniLoyalty >= 35 ? "#eab308" : "#ef4444",
+                          }}
+                        />
+                      </div>
                     </div>
-                    <RelationshipIndicator relationship={broker.relationship} />
-                    <p className="text-xs text-muted-foreground">Broker score {broker.score}. This actor matters because ambition, competence, and disloyalty are combining into leverage.</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="border border-border" data-testid="politics-faction-notes-card">
-            <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Briefcase className="h-4 w-4" /> Pressure Notes
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0 space-y-2">
-              {factionRows.slice(0, 5).map((faction) => (
-                <div key={faction.name} className="rounded-md border border-border bg-muted/20 p-3 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium">{faction.name}</p>
-                    <Badge variant={factionBadge(faction.loyalty)} className="text-[11px]">tension {faction.tension}</Badge>
+                    <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                      <span>Active Ops: <strong className="text-foreground">{activeOps.length}/{intel.maxConcurrentOps}</strong></span>
+                      <span>Completed: <strong className="text-foreground">{intel.completedOperations.length}</strong></span>
+                    </div>
                   </div>
+                )}
+
+                {!intel.dniId && (
                   <p className="text-xs text-muted-foreground">
-                    Influence {faction.influence}. Loyalty {faction.loyalty}. When this bloc moves, it changes both your legislature and your succession anxiety at once.
+                    No Director of National Intelligence has been appointed. Intelligence operations cannot be commissioned until a DNI is in place.
                   </p>
+                )}
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-4">
+              {/* Active Operations */}
+              <Card className="border border-[#0A4D2C]/20" data-testid="intel-active-operations">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-[#C5A55A]" /> Active Operations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-2">
+                  {activeOps.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">No intelligence operations are currently running.</p>
+                  ) : (
+                    activeOps.map((op) => {
+                      const elapsed = Math.max(0, state.day - op.startDay);
+                      const totalDuration = Math.max(1, op.estimatedEndDay - op.startDay);
+                      const progress = Math.min(100, Math.round((elapsed / totalDuration) * 100));
+                      const daysRemaining = Math.max(0, op.estimatedEndDay - state.day);
+                      return (
+                        <div key={op.id} className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-sm font-medium">{OP_TYPE_META[op.type]?.label ?? op.type}</p>
+                              <Badge
+                                variant={op.successProbability >= 70 ? "default" : op.successProbability >= 55 ? "outline" : "destructive"}
+                                className="text-[11px]"
+                              >
+                                {op.successProbability}% success
+                              </Badge>
+                            </div>
+                            <Badge variant="outline" className="text-[11px] tabular-nums">
+                              {daysRemaining}d remaining
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{op.targetDescription}</p>
+                          <div className="space-y-0.5">
+                            <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-[#C5A55A] transition-all duration-500"
+                                style={{ width: `${progress}%` }}
+                              />
+                            </div>
+                            <p className="text-[11px] text-muted-foreground text-right tabular-nums">{progress}% complete</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Commission New Operation */}
+              <Card className="border border-[#0A4D2C]/20" data-testid="intel-commission-panel">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Briefcase className="h-4 w-4 text-[#C5A55A]" /> Commission Operation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-2">
+                  {!canCommission && intel.dniId && (
+                    <p className="text-xs text-muted-foreground">All operation slots are in use. Wait for a current operation to conclude.</p>
+                  )}
+                  {!intel.dniId && (
+                    <p className="text-xs text-muted-foreground">Appoint a DNI before commissioning operations.</p>
+                  )}
+                  {(Object.keys(OP_TYPE_META) as IntelOperationType[]).map((opType) => {
+                    const meta = OP_TYPE_META[opType];
+                    const cost = OP_COSTS[opType];
+                    const duration = OP_DURATIONS[opType];
+                    return (
+                      <div key={opType} className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-medium">{meta.label}</p>
+                          <div className="flex items-center gap-1.5">
+                            <Badge variant="outline" className="text-[10px] tabular-nums">{cost} PC</Badge>
+                            <Badge variant="outline" className="text-[10px] tabular-nums">~{duration}d</Badge>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">{meta.blurb}</p>
+                        <Button
+                          data-testid={`intel-commission-${opType}`}
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-xs"
+                          disabled={!canCommission}
+                          onClick={() => {
+                            commissionOperation(opType, undefined, meta.label);
+                            toast({ title: `Operation Commissioned`, description: `${meta.label} has been authorised. The DNI will report when results are available.` });
+                          }}
+                        >
+                          Commission
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Results */}
+            {recentResults.length > 0 && (
+              <Card className="border border-[#0A4D2C]/20" data-testid="intel-recent-results">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Search className="h-4 w-4 text-[#C5A55A]" /> Recent Intelligence Results
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-2">
+                  {recentResults.map((result) => (
+                    <div key={result.operationId} className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <p className="text-sm font-medium">{OP_TYPE_META[result.type]?.label ?? result.type}</p>
+                        <Badge
+                          variant={result.success ? "default" : result.exposed ? "destructive" : "secondary"}
+                          className="text-[11px]"
+                        >
+                          {result.success ? "Success" : result.exposed ? "Exposed" : "Failed"}
+                        </Badge>
+                      </div>
+                      {result.findings.length > 0 ? (
+                        <div className="space-y-1">
+                          {result.findings.map((finding, i) => (
+                            <p key={i} className="text-xs text-muted-foreground">
+                              <Badge variant="outline" className="text-[10px] mr-1.5">{finding.type}</Badge>
+                              {finding.description}
+                            </p>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">
+                          {result.exposed
+                            ? "The operation was detected. Expect political fallout."
+                            : "No actionable intelligence was recovered."}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+      })()}
+
+      {subTab === "party" && (() => {
+        if (!state.partyInternals) {
+          return <p className="text-sm text-muted-foreground">Party data is not yet available.</p>;
+        }
+
+        const pi = state.partyInternals;
+        const rulingParty = pi.parties.find((p) => p.id === pi.rulingPartyId);
+        const oppositionParties = pi.parties.filter((p) => pi.mainOppositionIds.includes(p.id));
+        const atRisk = pi.defections.atRiskLegislators;
+        const recentDefections = pi.defections.recentDefections;
+        const convention = pi.convention;
+
+        const partyControlScore = rulingParty?.partyControlScore ??
+          (rulingParty?.nwc.length
+            ? Math.round(rulingParty.nwc.reduce((sum, m) => sum + m.loyalty, 0) / rulingParty.nwc.length)
+            : 0);
+
+        const defectionWarnings = atRisk.filter((e) => e.currentParty === pi.rulingPartyId);
+
+        return (
+          <div className="space-y-4">
+            {/* ── Ruling Party Panel ── */}
+            <Card className="border border-[#C5A55A]/30" data-testid="party-ruling-panel">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Crown className="h-4 w-4 text-[#C5A55A]" /> Ruling Party
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 space-y-4">
+                {rulingParty ? (
+                  <>
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div>
+                        <p className="text-base font-semibold">{rulingParty.name}</p>
+                        <p className="text-xs text-muted-foreground">{rulingParty.abbreviation}</p>
+                      </div>
+                      <div className="flex gap-3 text-xs">
+                        <span>House: <strong className="text-foreground">{rulingParty.legislativeSeats.house}</strong></span>
+                        <span>Senate: <strong className="text-foreground">{rulingParty.legislativeSeats.senate}</strong></span>
+                      </div>
+                    </div>
+
+                    {/* Party Control Score */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Party Control Score</span>
+                        <span className="text-xs tabular-nums font-medium">{partyControlScore}/100</span>
+                      </div>
+                      <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${clamp(partyControlScore, 0, 100)}%`,
+                            backgroundColor: partyControlScore >= 60 ? "#0A4D2C" : partyControlScore >= 35 ? "#eab308" : "#ef4444",
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Defection Warnings */}
+                    {defectionWarnings.length > 0 && (
+                      <Alert variant="destructive" className="border-red-500/30" data-testid="party-defection-warnings">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle className="text-xs font-semibold">Defection Risk</AlertTitle>
+                        <AlertDescription className="text-xs">
+                          {defectionWarnings.length} bloc{defectionWarnings.length > 1 ? "s" : ""} at risk of defection from the ruling party.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
+                    {/* NWC Members Grid */}
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">National Working Committee</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2" data-testid="party-nwc-grid">
+                        {rulingParty.nwc.map((member) => (
+                          <div
+                            key={member.characterId}
+                            className="rounded-md border border-border bg-gradient-to-br from-[#0A4D2C]/10 to-transparent p-3 space-y-2"
+                          >
+                            <div className="flex items-center justify-between gap-1">
+                              <p className="text-sm font-medium truncate">{member.name}</p>
+                              <Badge
+                                variant={DISPOSITION_COLORS[member.disposition].variant}
+                                className="text-[10px] shrink-0"
+                              >
+                                {DISPOSITION_COLORS[member.disposition].label}
+                              </Badge>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground">{NWC_POSITION_LABELS[member.position] ?? member.position}</p>
+                            <p className="text-[11px] text-muted-foreground">{member.zone} &middot; {member.state}</p>
+                            <div className="space-y-1">
+                              <div className="space-y-0.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] text-muted-foreground">Competence</span>
+                                  <span className="text-[10px] tabular-nums text-muted-foreground">{member.competence}</span>
+                                </div>
+                                <CompetencyBar value={member.competence} label="Competence" />
+                              </div>
+                              <div className="space-y-0.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] text-muted-foreground">Loyalty</span>
+                                  <span className="text-[10px] tabular-nums text-muted-foreground">{member.loyalty}</span>
+                                </div>
+                                <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full transition-all"
+                                    style={{
+                                      width: `${clamp(member.loyalty, 0, 100)}%`,
+                                      backgroundColor: member.loyalty >= 60 ? "#0A4D2C" : member.loyalty >= 35 ? "#eab308" : "#ef4444",
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-xs text-muted-foreground">No ruling party data available.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* ── Opposition Panel ── */}
+            {oppositionParties.length > 0 && (
+              <Card className="border border-[#0A4D2C]/20" data-testid="party-opposition-panel">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Megaphone className="h-4 w-4 text-[#C5A55A]" /> Opposition Parties
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-3">
+                  {oppositionParties.map((opp) => {
+                    const chairman = opp.nwc.find((m) => m.position === "national-chairman");
+                    return (
+                      <div
+                        key={opp.id}
+                        className="rounded-md border border-border bg-muted/20 p-3 space-y-2"
+                        data-testid={`opposition-party-${opp.id}`}
+                      >
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <div>
+                            <p className="text-sm font-semibold">{opp.name}</p>
+                            <p className="text-[11px] text-muted-foreground">{opp.abbreviation}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {opp.oppositionStrategy && (
+                              <Badge
+                                variant={STRATEGY_COLORS[opp.oppositionStrategy] ?? "outline"}
+                                className="text-[10px] capitalize"
+                              >
+                                {opp.oppositionStrategy}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                          <span>House: <strong className="text-foreground">{opp.legislativeSeats.house}</strong></span>
+                          <span>Senate: <strong className="text-foreground">{opp.legislativeSeats.senate}</strong></span>
+                          {chairman && (
+                            <span>Chairman: <strong className="text-foreground">{chairman.name}</strong></span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Defection Panel ── */}
+            <Card className="border border-[#0A4D2C]/20" data-testid="party-defection-panel">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <ArrowRightLeft className="h-4 w-4 text-[#C5A55A]" /> Defections
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 space-y-4">
+                {/* At-Risk Blocs */}
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">At-Risk Blocs</p>
+                  {atRisk.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">No at-risk legislative blocs detected.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {atRisk.map((entry) => {
+                        const fromPartyObj = pi.parties.find((p) => p.id === entry.currentParty);
+                        return (
+                          <div
+                            key={entry.id}
+                            className="rounded-md border border-border bg-muted/20 p-3 space-y-2"
+                            data-testid={`at-risk-${entry.id}`}
+                          >
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-medium">{entry.zone}</p>
+                                <Badge variant="outline" className="text-[10px] capitalize">{entry.seatType}</Badge>
+                                <Badge variant="outline" className="text-[10px] tabular-nums">{entry.seatCount} seat{entry.seatCount > 1 ? "s" : ""}</Badge>
+                              </div>
+                              <Badge
+                                variant={entry.defectionProbability >= 60 ? "destructive" : entry.defectionProbability >= 30 ? "outline" : "secondary"}
+                                className="text-[10px] tabular-nums"
+                              >
+                                {Math.round(entry.defectionProbability)}% risk
+                              </Badge>
+                            </div>
+                            <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                              <span>From: <strong className="text-foreground">{fromPartyObj?.abbreviation ?? entry.currentParty}</strong></span>
+                              <span>Party Loyalty: <strong className="text-foreground">{entry.partyLoyalty}</strong></span>
+                            </div>
+                            {/* Poach button — only if this bloc is NOT already in the ruling party */}
+                            {entry.currentParty !== pi.rulingPartyId && rulingParty && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full text-xs"
+                                data-testid={`poach-${entry.id}`}
+                                onClick={() => {
+                                  poachLegislators(entry.currentParty, pi.rulingPartyId, entry.zone, entry.seatType, entry.seatCount);
+                                  toast({
+                                    title: "Poaching Initiated",
+                                    description: `Attempting to pull ${entry.seatCount} ${entry.seatType} seat${entry.seatCount > 1 ? "s" : ""} from ${fromPartyObj?.abbreviation ?? entry.currentParty} in ${entry.zone}.`,
+                                  });
+                                }}
+                              >
+                                Poach to {rulingParty.abbreviation}
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-      )}
+
+                {/* Recent Defection History */}
+                {recentDefections.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground mb-2">Recent Defections</p>
+                    <div className="space-y-2">
+                      {recentDefections.slice(-5).reverse().map((d) => {
+                        const fromObj = pi.parties.find((p) => p.id === d.fromParty);
+                        const toObj = pi.parties.find((p) => p.id === d.toParty);
+                        return (
+                          <div key={d.id} className="rounded-md border border-border bg-muted/20 p-3 space-y-1" data-testid={`defection-${d.id}`}>
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <p className="text-xs font-medium">
+                                {fromObj?.abbreviation ?? d.fromParty} → {toObj?.abbreviation ?? d.toParty}
+                              </p>
+                              <div className="flex items-center gap-1.5">
+                                <Badge variant="outline" className="text-[10px] capitalize">{d.seatType}</Badge>
+                                <Badge variant="outline" className="text-[10px] tabular-nums">{d.seatCount} seat{d.seatCount > 1 ? "s" : ""}</Badge>
+                                <Badge variant="secondary" className="text-[10px] tabular-nums">Day {d.day}</Badge>
+                              </div>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground">{d.description}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* ── Convention Panel (only if active) ── */}
+            {convention.phase !== "inactive" && (
+              <Card className="border border-[#C5A55A]/30" data-testid="party-convention-panel">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Vote className="h-4 w-4 text-[#C5A55A]" /> Party Convention
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-4">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge
+                      variant={convention.phase === "voting" ? "default" : "outline"}
+                      className="text-xs capitalize"
+                    >
+                      {convention.phase.replace("-", " ")}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">Day {convention.conventionDay}</span>
+                    <span className="text-xs text-muted-foreground">PC spent: <strong className="text-foreground">{convention.playerPCSpent}</strong></span>
+                  </div>
+
+                  {/* Convention Races */}
+                  {convention.races.map((race) => (
+                    <div key={race.position} className="rounded-md border border-border bg-muted/20 p-3 space-y-2" data-testid={`convention-race-${race.position}`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold">{NWC_POSITION_LABELS[race.position] ?? race.position}</p>
+                        {race.winner && (
+                          <Badge variant="default" className="text-[10px]">
+                            Winner: {race.candidates.find((c) => c.characterId === race.winner)?.name ?? race.winner}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="space-y-1.5">
+                        {race.candidates
+                          .slice()
+                          .sort((a, b) => b.supportScore - a.supportScore)
+                          .map((candidate) => {
+                            const isPlayerBacked = race.playerBacked === candidate.characterId;
+                            return (
+                              <div
+                                key={candidate.characterId}
+                                className={`flex items-center justify-between gap-2 rounded-md p-2 ${
+                                  isPlayerBacked ? "bg-[#0A4D2C]/10 border border-[#C5A55A]/30" : "bg-muted/30"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <p className="text-xs font-medium truncate">{candidate.name}</p>
+                                  {isPlayerBacked && (
+                                    <Badge variant="default" className="text-[10px] shrink-0 bg-[#C5A55A] text-black">
+                                      Endorsed
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="text-xs tabular-nums text-muted-foreground">{candidate.supportScore}%</span>
+                                  {!race.winner && !isPlayerBacked && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="text-[11px] h-6 px-2"
+                                      data-testid={`endorse-${race.position}-${candidate.characterId}`}
+                                      onClick={() => {
+                                        endorseConventionCandidate(race.position, candidate.characterId);
+                                        toast({
+                                          title: "Candidate Endorsed",
+                                          description: `You have backed ${candidate.name} for ${NWC_POSITION_LABELS[race.position] ?? race.position}.`,
+                                        });
+                                      }}
+                                    >
+                                      Endorse
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }

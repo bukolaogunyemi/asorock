@@ -51,6 +51,16 @@ import type {
 import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidates } from "./gameData";
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
+import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis } from "./legislativeEngine";
+import { defaultPatronageState } from "./godfatherEngine";
+import { defaultFederalCharacterState } from "./federalCharacter";
+import { commissionOperation } from "./intelligenceEngine";
+import { acceptDeal, rejectDeal, cashInFavour } from "./godfatherDeals";
+import { neutralizeGodfather } from "./godfatherEngine";
+import { defaultPartyInternalsState, initiatePoaching, executeDefection, checkPoachingCooldown } from "./partyEngine";
+import type { GodfatherDeal } from "./godfatherTypes";
+import { seedLegislativeCalendar } from "./legislativeBills";
+import { defaultEconomicState } from "./economicEngine";
 
 // Register constitutional officer pools at module load time
 registerConstitutionalPools();
@@ -479,6 +489,19 @@ const defaultGameState: GameState = {
   lastActionAtDay: {},
   policyLevers: eraPolicyPresets["2023"],
   cabinetAppointments: {},
+  legislature: defaultLegislativeState(),
+  patronage: defaultPatronageState(),
+  federalCharacter: defaultFederalCharacterState(),
+  intelligence: {
+    dniId: null,
+    dniCompetence: 50,
+    dniLoyalty: 50,
+    activeOperations: [],
+    completedOperations: [],
+    maxConcurrentOps: 2,
+  },
+  partyInternals: defaultPartyInternalsState("ADU"),
+  economy: defaultEconomicState(),
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -552,6 +575,7 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
     lastActionAtDay: state.lastActionAtDay ?? {},
     cabalMeeting: state.cabalMeeting ?? null,
     policyLevers: state.policyLevers,
+    economy: state.economy ?? defaultEconomicState(),
   };
   const hydrated = syncStrategicState(hydratedBase);
   return {
@@ -652,6 +676,22 @@ export function initializeGameState(config: CampaignConfig): GameState {
     lastActionAtDay: {},
     policyLevers: eraPolicyPresets[config.era],
     cabinetAppointments: Object.fromEntries(ministryPositions.map((p) => [p, null])),
+    legislature: {
+      ...defaultLegislativeState(),
+      legislativeCalendar: seedLegislativeCalendar(),
+    },
+    patronage: defaultPatronageState(),
+    federalCharacter: defaultFederalCharacterState(),
+    intelligence: {
+      dniId: null,
+      dniCompetence: 50,
+      dniLoyalty: 50,
+      activeOperations: [],
+      completedOperations: [],
+      maxConcurrentOps: 2,
+    },
+    partyInternals: defaultPartyInternalsState(config.party),
+    economy: defaultEconomicState(),
   };
 
   state = syncStrategicState(state);
@@ -673,7 +713,18 @@ export type GameAction =
   | { type: "LOAD_STATE"; state: GameState }
   | { type: "RESET" }
   | { type: "GO_TO_SETUP" }
-  | { type: "PROPOSE_POLICY_CHANGE"; lever: PolicyLeverKey; newPosition: AnyPolicyPosition };
+  | { type: "PROPOSE_POLICY_CHANGE"; lever: PolicyLeverKey; newPosition: AnyPolicyPosition }
+  | { type: "SIGN_BILL"; billId: string }
+  | { type: "VETO_BILL"; billId: string }
+  | { type: "RESOLVE_CRISIS"; billId: string; leverIds: string[] }
+  | { type: "ACCEPT_DEAL"; godfatherId: string; deal: GodfatherDeal }
+  | { type: "REJECT_DEAL"; godfatherId: string }
+  | { type: "RESPOND_TO_FAVOUR"; godfatherId: string; demand: string }
+  | { type: "NEUTRALIZE_GODFATHER"; godfatherId: string; method: "intelligence" | "political" | "godfather-vs-godfather" }
+  | { type: "COMMISSION_OPERATION"; opType: string; targetId?: string; description: string }
+  | { type: "SET_DNI"; dniId: string; dniCompetence: number; dniLoyalty: number }
+  | { type: "POACH_LEGISLATORS"; fromParty: string; toParty: string; zone: string; seatType: "house" | "senate"; seatCount: number }
+  | { type: "ENDORSE_CONVENTION_CANDIDATE"; position: string; candidateId: string };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -717,6 +768,71 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }];
       return s;
     }
+    case "SIGN_BILL":
+      return withDerivedState(signBill(state, action.billId));
+    case "VETO_BILL":
+      return withDerivedState(vetoBill(state, action.billId));
+    case "RESOLVE_CRISIS":
+      return withDerivedState(resolveLegislativeCrisis(state, action.billId, action.leverIds));
+    case "ACCEPT_DEAL":
+      return withDerivedState({ ...state, patronage: acceptDeal(state.patronage, action.godfatherId, action.deal) });
+    case "REJECT_DEAL":
+      return withDerivedState({ ...state, patronage: rejectDeal(state.patronage, action.godfatherId) });
+    case "RESPOND_TO_FAVOUR": {
+      const result = cashInFavour(state.patronage, action.godfatherId, action.demand);
+      return withDerivedState({ ...state, patronage: result.state });
+    }
+    case "NEUTRALIZE_GODFATHER":
+      return withDerivedState({ ...state, patronage: neutralizeGodfather(state.patronage, action.godfatherId, action.method) });
+    case "COMMISSION_OPERATION": {
+      if (!state.intelligence) return state;
+      const newIntel = commissionOperation(state.intelligence, action.opType as any, action.targetId, action.description, state.day);
+      return withDerivedState({ ...state, intelligence: newIntel });
+    }
+    case "SET_DNI":
+      return withDerivedState({
+        ...state,
+        intelligence: {
+          ...state.intelligence,
+          dniId: action.dniId,
+          dniCompetence: action.dniCompetence,
+          dniLoyalty: action.dniLoyalty,
+          maxConcurrentOps: action.dniCompetence >= 70 ? 3 : 2,
+        },
+      });
+    case "POACH_LEGISLATORS": {
+      if (!state.partyInternals) return state;
+      const key = `${action.toParty}-${action.zone}`;
+      if (!checkPoachingCooldown(state.partyInternals.defections.poachingCooldown, action.toParty, action.zone, state.day)) return state;
+      const poach = initiatePoaching(action.fromParty, action.toParty, action.zone, action.seatType, action.seatCount, state.day);
+      if (state.politicalCapital < poach.pcCost) return state;
+      const updatedParties = executeDefection(state.partyInternals.parties, { fromParty: action.fromParty, toParty: action.toParty, seatType: action.seatType, seatCount: action.seatCount });
+      return withDerivedState({
+        ...state,
+        politicalCapital: state.politicalCapital - poach.pcCost,
+        partyInternals: {
+          ...state.partyInternals,
+          parties: updatedParties,
+          defections: {
+            ...state.partyInternals.defections,
+            poachingCooldown: { ...state.partyInternals.defections.poachingCooldown, [key]: poach.cooldownUntilDay },
+          },
+        },
+      });
+    }
+    case "ENDORSE_CONVENTION_CANDIDATE": {
+      if (!state.partyInternals) return state;
+      const races = state.partyInternals.convention.races.map(race =>
+        race.position === action.position ? { ...race, playerBacked: action.candidateId } : race
+      );
+      return withDerivedState({
+        ...state,
+        partyInternals: {
+          ...state.partyInternals,
+          convention: { ...state.partyInternals.convention, races },
+        },
+      });
+    }
     default:
       return state;
   }
@@ -740,6 +856,17 @@ interface GameContextValue {
   loadGameState: (state: GameState) => void;
   canResolveChoice: (requirements?: Array<{ metric: string; min?: number; max?: number }>) => boolean;
   proposePolicyChange: (lever: PolicyLeverKey, newPosition: AnyPolicyPosition) => void;
+  signBill: (billId: string) => void;
+  vetoBill: (billId: string) => void;
+  resolveCrisis: (billId: string, leverIds: string[]) => void;
+  acceptDeal: (godfatherId: string, deal: GodfatherDeal) => void;
+  rejectDeal: (godfatherId: string) => void;
+  respondToFavour: (godfatherId: string, demand: string) => void;
+  neutralizeGodfather: (godfatherId: string, method: "intelligence" | "political" | "godfather-vs-godfather") => void;
+  commissionOperation: (opType: string, targetId: string | undefined, description: string) => void;
+  setDni: (dniId: string, dniCompetence: number, dniLoyalty: number) => void;
+  poachLegislators: (fromParty: string, toParty: string, zone: string, seatType: "house" | "senate", seatCount: number) => void;
+  endorseConventionCandidate: (position: string, candidateId: string) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -765,6 +892,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
     loadGameState: (loadedState) => dispatch({ type: "LOAD_STATE", state: loadedState }),
     canResolveChoice: (requirements) => requirementsMet(state, requirements),
     proposePolicyChange: (lever, newPosition) => dispatch({ type: "PROPOSE_POLICY_CHANGE", lever, newPosition }),
+    signBill: (billId) => dispatch({ type: "SIGN_BILL", billId }),
+    vetoBill: (billId) => dispatch({ type: "VETO_BILL", billId }),
+    resolveCrisis: (billId, leverIds) => dispatch({ type: "RESOLVE_CRISIS", billId, leverIds }),
+    acceptDeal: (godfatherId, deal) => dispatch({ type: "ACCEPT_DEAL", godfatherId, deal }),
+    rejectDeal: (godfatherId) => dispatch({ type: "REJECT_DEAL", godfatherId }),
+    respondToFavour: (godfatherId, demand) => dispatch({ type: "RESPOND_TO_FAVOUR", godfatherId, demand }),
+    neutralizeGodfather: (godfatherId, method) => dispatch({ type: "NEUTRALIZE_GODFATHER", godfatherId, method }),
+    commissionOperation: (opType, targetId, description) => dispatch({ type: "COMMISSION_OPERATION", opType, targetId, description }),
+    setDni: (dniId, dniCompetence, dniLoyalty) => dispatch({ type: "SET_DNI", dniId, dniCompetence, dniLoyalty }),
+    poachLegislators: (fromParty, toParty, zone, seatType, seatCount) => dispatch({ type: "POACH_LEGISLATORS", fromParty, toParty, zone, seatType, seatCount }),
+    endorseConventionCandidate: (position, candidateId) => dispatch({ type: "ENDORSE_CONVENTION_CANDIDATE", position, candidateId }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

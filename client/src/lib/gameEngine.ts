@@ -28,8 +28,14 @@ import type {
 } from "./gameTypes";
 import { POLICY_LEVER_DEFS, POLICY_MODIFIER_SCALE, POLICY_COOLDOWN_DAYS, type PolicyModifiers, ministryPositions, cabinetCandidates, type MinistryPosition } from "./gameData";
 import { FACTION_PROFILES, DEMAND_EXPIRE_TIER70_LOYALTY_LOSS, DEMAND_EXPIRE_TIER90_LOYALTY_LOSS, DEMAND_EXPIRE_GRIEVANCE_GAIN, DEMAND_EXPIRE_STABILITY_LOSS } from "./factionProfiles";
+import { processPartyTurn } from "./partyEngine";
 import { computeFactionDrift, updateGrievance, checkGrievanceThresholds } from "./factionDrift";
 import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./factionNarrative";
+import { processLegislativeTurn, generateAdviserBriefing } from "./legislativeEngine";
+import { processGodfatherTurn, getPatronageEffects } from "./godfatherEngine";
+import { calculateComplianceScore, calculateZoneBalances, getConsequences } from "./federalCharacter";
+import { processIntelligenceTurn } from "./intelligenceEngine";
+import { processEconomicTurn } from "./economicEngine";
 
 export type {
   ActiveEvent,
@@ -2247,6 +2253,29 @@ export function processTurn(state: GameState): GameState {
   next.trust = clamp(next.trust + macro.policyTrust, 0, 100);
   summaryItems.push(...macro.items.slice(0, 2));
 
+  // Process new economic engine
+  const fuelSubsidyPos = state.policyLevers?.fuelSubsidy?.position ?? "partial";
+  const updatedEconomy = processEconomicTurn(next.economy, {
+    policyLevers: state.policyLevers,
+    currentDay: next.day,
+    fuelSubsidyPosition: fuelSubsidyPos,
+  });
+  next = { ...next, economy: updatedEconomy };
+
+  // Sync macroEconomy from new economy state (backward compatibility)
+  next = {
+    ...next,
+    macroEconomy: {
+      ...next.macroEconomy,
+      inflation: updatedEconomy.inflation,
+      fxRate: updatedEconomy.fxRate,
+      reserves: updatedEconomy.reserves,
+      debtToGdp: updatedEconomy.debtToGdp,
+      oilOutput: updatedEconomy.oilOutput,
+      subsidyPressure: updatedEconomy.subsidyPressure,
+    },
+  };
+
   const hookProgress = processHookInvestigations(next);
   next = hookProgress.state;
   summaryItems.push(...hookProgress.items.slice(0, 2));
@@ -2353,6 +2382,157 @@ export function processTurn(state: GameState): GameState {
 
   if (election.defeatState) {
     return finalizePresentation({ ...next, phase: "defeat", defeatState: election.defeatState, cabalMeeting: null });
+  }
+
+  // Legislative engine — process bills each turn
+  next = processLegislativeTurn(next);
+
+  // Godfather engine — process patronage each turn
+  if (next.patronage) {
+    const gfResult = processGodfatherTurn(next, next.patronage);
+    next = { ...next, patronage: gfResult.patronageState };
+
+    // Apply patronage tier effects
+    const pEffects = getPatronageEffects(next.patronage.patronageIndex);
+    if (pEffects.approvalCeiling && next.approval > pEffects.approvalCeiling) {
+      next = { ...next, approval: pEffects.approvalCeiling };
+    }
+    if (pEffects.stabilityPenalty) {
+      next = { ...next, stability: Math.max(0, next.stability + pEffects.stabilityPenalty) };
+    }
+
+    // Generate inbox messages for godfather approaches
+    for (const approach of gfResult.approaches) {
+      const gf = next.patronage.godfathers.find(g => g.id === approach.godfatherId);
+      if (gf) {
+        const msg = {
+          id: `gf-approach-${gf.id}-${next.day}`,
+          day: next.day,
+          date: next.date,
+          sender: gf.name,
+          role: "Power Broker",
+          initials: gf.name.split(" ").map(n => n[0]).join("").slice(0, 2),
+          subject: `${approach.type === "contract" ? "Business Proposition" : "A Favour to Discuss"}`,
+          preview: approach.godfatherOffers,
+          fullText: `${approach.godfatherOffers}\n\nIn return: ${approach.playerOwes}`,
+          priority: "Normal" as const,
+          read: false,
+          source: "system" as const,
+        };
+        if (!next.inboxMessages.some(m => m.id === msg.id)) {
+          next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
+        }
+      }
+    }
+  }
+
+  // Federal Character compliance check
+  if (next.federalCharacter) {
+    const fcAppointments = next.federalCharacter.appointments;
+    const fcBudget = next.federalCharacter.budgetAllocation;
+    const newScore = calculateComplianceScore(fcAppointments, fcBudget);
+    const newZoneScores = calculateZoneBalances(fcAppointments);
+    const consequences = getConsequences(newScore);
+
+    next = {
+      ...next,
+      federalCharacter: {
+        ...next.federalCharacter,
+        complianceScore: newScore,
+        zoneScores: newZoneScores,
+      },
+    };
+
+    // Apply consequence effects
+    for (const effect of consequences.effects) {
+      if (effect.target === "stability") {
+        next = { ...next, stability: Math.max(0, next.stability + effect.delta) };
+      } else if (effect.target === "approval") {
+        next = { ...next, approval: Math.max(0, next.approval + effect.delta) };
+      }
+    }
+  }
+
+  // Intelligence engine — process operations each turn
+  if (next.intelligence && next.intelligence.dniId) {
+    const intelResult = processIntelligenceTurn(next.intelligence, next.day);
+    next = { ...next, intelligence: intelResult };
+
+    // Generate inbox messages for completed operations
+    for (const completed of intelResult.completedOperations) {
+      // Only notify about operations completed this turn (not previously)
+      const alreadyNotified = next.inboxMessages.some(m => m.id === `intel-${completed.operationId}`);
+      if (!alreadyNotified) {
+        const msg = {
+          id: `intel-${completed.operationId}`,
+          day: next.day,
+          date: next.date,
+          sender: "Director of National Intelligence",
+          role: "DNI",
+          initials: "DN",
+          subject: completed.success ? "Operation Complete — Findings" : completed.exposed ? "CRITICAL: Operation Exposed" : "Operation Failed",
+          preview: completed.success
+            ? `Operation ${completed.type} succeeded. ${completed.findings.length} findings.`
+            : completed.exposed
+              ? `Operation ${completed.type} was exposed. Political damage expected.`
+              : `Operation ${completed.type} failed to produce results.`,
+          fullText: completed.success
+            ? `The ${completed.type} operation has concluded successfully.\n\nFindings:\n${completed.findings.map(f => `- ${f.description}`).join("\n")}`
+            : completed.exposed
+              ? `CRITICAL FAILURE: The ${completed.type} operation has been exposed. Expect political backlash and potential media coverage.`
+              : `The ${completed.type} operation did not produce actionable intelligence.`,
+          priority: (completed.exposed ? "Urgent" : "Normal") as "Urgent" | "Normal",
+          read: false,
+          source: "system" as const,
+        };
+        next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
+      }
+    }
+
+    // Apply exposure penalties
+    for (const completed of intelResult.completedOperations) {
+      if (completed.exposed) {
+        next = { ...next, approval: Math.max(0, next.approval - 5), trust: Math.max(0, next.trust - 8) };
+      }
+    }
+  }
+
+  // Adviser briefing — add legislative inbox message each day
+  {
+    const briefing = generateAdviserBriefing(next);
+    const briefText = briefing.weeklySummary
+      ? `${briefing.dailyBrief} ${briefing.weeklySummary}`
+      : briefing.dailyBrief;
+    const briefMsg = {
+      id: `legislative-brief-${next.day}`,
+      day: next.day,
+      date: next.date,
+      sender: "Sen. Adaobi Nwosu",
+      role: "Legislative Affairs Adviser",
+      initials: "AN",
+      subject: briefing.weeklySummary ? "Weekly Legislative Summary" : "Legislative Update",
+      preview: briefing.dailyBrief,
+      fullText: briefText,
+      priority: (next.legislature?.activeBills.some((b) => b.isCrisis) ? "Urgent" : "Normal") as "Urgent" | "Normal",
+      read: false,
+      source: "system" as const,
+    };
+    if (!next.inboxMessages.some((m) => m.id === briefMsg.id)) {
+      next = { ...next, inboxMessages: [...next.inboxMessages, briefMsg] };
+    }
+  }
+
+  // Party internals — process each turn
+  if (next.partyInternals) {
+    next = {
+      ...next,
+      partyInternals: processPartyTurn(next.partyInternals, {
+        day: next.day,
+        approval: next.approval,
+        stability: next.stability,
+        partyLoyalty: next.partyLoyalty,
+      }),
+    };
   }
 
   const defeat = checkDefeatConditions(next);

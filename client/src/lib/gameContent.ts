@@ -632,6 +632,55 @@ function evaluateCondition(currentValue: number, condition: TriggerCondition): b
   }
 }
 
+// ── Godfather Message Templates ─────────────────────────
+export const godfatherMessages = {
+  approach: {
+    "business-oligarch": [
+      "My people have been watching your reform agenda with interest. Perhaps we can find mutual benefit.",
+      "The markets are nervous. I can stabilize things — for the right considerations.",
+    ],
+    "military-elder": [
+      "I have served this nation through many administrations. Let me share some wisdom.",
+      "The barracks are restless. I can keep things quiet, but I need assurances.",
+    ],
+    "party-boss": [
+      "The party structure needs attention. I can deliver the votes you need.",
+      "Your opponents are organizing. I know their playbook — and I can counter it.",
+    ],
+    "labour-civil": [
+      "The workers are suffering. Address their concerns, and I'll keep the streets calm.",
+      "A general strike is brewing. I can help you avoid it — if you listen.",
+    ],
+    "religious-leader": [
+      "My congregation prays for your success. But faith requires action.",
+      "The faithful are looking for leadership. I can guide their sentiment — in your favour.",
+    ],
+    "regional-strongman": [
+      "My zone has been neglected. Invest here, and I'll ensure your mandate holds.",
+      "The governors answer to me, not to Abuja. Let's make a deal that works for everyone.",
+    ],
+    "media-mogul": [
+      "I control the narrative in this country. Let me shape it in your favour.",
+      "The press cycle is about to turn against you. I can change that — for a price.",
+    ],
+  },
+  escalation: [
+    "I've been patient, but my patience has limits.",
+    "You made promises. The people I represent are growing restless.",
+    "This is your last warning before I take matters into my own hands.",
+    "You have chosen your path. Now face the consequences.",
+  ],
+  nuclear: {
+    "capital-flight": "Major investors are pulling out of Nigeria. The naira is in freefall.",
+    "coup-signals": "Military movements detected near Abuja. The generals are restless.",
+    "party-split": "The ruling party has fractured. Key legislators are crossing the aisle.",
+    "general-strike": "Workers across the nation have downed tools. The economy is grinding to a halt.",
+    "sectarian-crisis": "Religious violence has erupted in multiple states. Security forces are overwhelmed.",
+    "secession-threat": "Regional leaders are threatening to secede. The federation is at breaking point.",
+    "media-war": "A coordinated media campaign is destroying your credibility. Every headline is hostile.",
+  },
+} as const;
+
 export function getTriggeredActiveEvents(state: GameState, activeIds: string[]): ActiveEvent[] {
   return contextualEventTemplates
     .filter((template) => !activeIds.includes(template.id))

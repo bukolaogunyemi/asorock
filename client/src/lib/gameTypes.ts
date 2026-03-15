@@ -1,5 +1,11 @@
 import type { IdeologyProfile } from "./parties";
 import type { ConstitutionalCandidate } from "./constitutionalOfficers";
+import type { LegislativeState } from "./legislativeTypes";
+import type { PatronageState } from "./godfatherTypes";
+import type { FederalCharacterState } from "./federalCharacterTypes";
+import type { IntelligenceState } from "./intelligenceTypes";
+import type { PartyInternalsState } from "./partyTypes";
+import type { EconomicState } from "./economicTypes";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -170,6 +176,12 @@ export interface Hook {
   evidence: number;
   underInvestigation: boolean;
   used: boolean;
+  deployed?: boolean;
+  deploymentType?: "leverage" | "trade" | "blackmail";
+  leverageTarget?: string;
+  tradeRecipient?: string;
+  blackmailDesperation?: number;
+  sourceOperation?: string;
 }
 
 export interface CharacterState {
@@ -411,6 +423,12 @@ export interface GameState {
   victoryPath?: string;
   defeatState?: string;
   policyLevers: PolicyLeverState;
+  legislature: LegislativeState;
+  patronage: PatronageState;
+  federalCharacter: FederalCharacterState;
+  intelligence: IntelligenceState;
+  partyInternals: PartyInternalsState;
+  economy: EconomicState;
 }
 
 export interface SaveGameData {

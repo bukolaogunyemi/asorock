@@ -165,7 +165,7 @@ export default function JudiciaryTab() {
                 <Card key={p.name} className="border border-border bg-muted/30">
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
-                      <CharacterAvatar name={p.name} initials={p.avatar} size="md" gender={p.gender} role={p.title} />
+                      <CharacterAvatar name={p.name} initials={p.avatar} size="md" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <div>

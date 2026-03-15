@@ -56,7 +56,7 @@ export function PersonnelCard({
       <CardContent className="p-4 space-y-3">
         {/* Header: Avatar + Name + Demographics */}
         <div className="flex items-start gap-3">
-          <CharacterAvatar name={name} initials={avatar} size="md" gender={gender} role={title} />
+          <CharacterAvatar name={name} initials={avatar} size="md" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <p className="text-sm font-semibold truncate">{name}</p>

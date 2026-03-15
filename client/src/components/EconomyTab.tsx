@@ -32,6 +32,7 @@ import {
   YAxis,
 } from "recharts";
 import type { ActiveEvent } from "@/lib/gameTypes";
+import type { SectorState, CrisisIndicators, CascadeEvent } from "@/lib/economicTypes";
 import { POLICY_LEVER_DEFS } from "@/lib/gameData";
 import { HIGH_IMPACT_CHANGES } from "@/lib/gameEngine";
 import type { PolicyLeverKey, AnyPolicyPosition } from "@/lib/gameTypes";
@@ -429,6 +430,228 @@ export default function EconomyTab() {
               Inflation is {state.macroEconomy.inflation}% and FX is hovering around {state.macroEconomy.fxRate.toLocaleString()} NGN/USD with reserves at ${state.macroEconomy.reserves.toFixed(1)}B. These are now real engine-tracked values, not UI estimates.
             </AlertDescription>
           </Alert>
+
+          {/* === Active Cascades Alert === */}
+          {state.economy && state.economy.activeCascades.filter((c) => !c.resolved).length > 0 && (
+            <Alert variant="destructive" className="py-3 px-4" data-testid="economy-cascades-alert">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle className="text-xs font-medium">Active Economic Cascades</AlertTitle>
+              <AlertDescription className="text-xs space-y-1.5">
+                {state.economy.activeCascades.filter((c) => !c.resolved).map((cascade) => (
+                  <div key={cascade.id} className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold">
+                      {cascade.type.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+                    </span>
+                    <Badge variant="outline" className="text-[11px]">{cascade.turnsActive} turns</Badge>
+                    <Badge
+                      variant={cascade.severity >= 0.7 ? "destructive" : "secondary"}
+                      className="text-[11px]"
+                    >
+                      Severity {Math.round(cascade.severity * 100)}%
+                    </Badge>
+                  </div>
+                ))}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* === Sectoral GDP Card === */}
+          {state.economy && state.economy.sectors.length > 0 && (
+            <Card className="border border-[#C5A55A]/30" data-testid="economy-sectoral-gdp">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Sectoral GDP Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart
+                    data={state.economy.sectors.map((s) => ({
+                      name: s.name,
+                      gdpValue: roundTo(s.gdpValue, 2),
+                      growthRate: roundTo(s.growthRate, 1),
+                      gdpShare: roundTo(s.gdpShare * 100, 1),
+                    }))}
+                    layout="vertical"
+                    margin={{ left: 90, right: 20, top: 5, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" width={85} />
+                    <Tooltip
+                      contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                      formatter={(value: number, name: string) => {
+                        if (name === "GDP (T)") return [`N${value}T`, name];
+                        return [value, name];
+                      }}
+                    />
+                    <Bar dataKey="gdpValue" name="GDP (T)" fill="#C5A55A" radius={[0, 6, 6, 0]} isAnimationActive={false} />
+                  </BarChart>
+                </ResponsiveContainer>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mt-3">
+                  {state.economy.sectors.map((sector) => (
+                    <div key={sector.id} className="rounded-md border border-border bg-muted/20 p-2 text-center space-y-0.5">
+                      <p className="text-[11px] text-muted-foreground">{sector.name}</p>
+                      <p className={`text-xs font-semibold tabular-nums ${sector.growthRate >= 0 ? "text-green-500" : "text-red-500"}`}>
+                        {sector.growthRate >= 0 ? "+" : ""}{roundTo(sector.growthRate, 1)}%
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">{roundTo(sector.gdpShare * 100, 1)}% share</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* === Fiscal Balance Card === */}
+          {state.economy && (
+            <Card className="border border-[#C5A55A]/30" data-testid="economy-fiscal-balance">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Fiscal Pipeline</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Revenue breakdown */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Revenue Streams</p>
+                    {([
+                      { label: "Oil Revenue", value: state.economy.revenue.oil },
+                      { label: "Tax Revenue", value: state.economy.revenue.tax },
+                      { label: "IGR", value: state.economy.revenue.igr },
+                      { label: "Trade", value: state.economy.revenue.trade },
+                      { label: "Borrowing", value: state.economy.revenue.borrowing },
+                    ] as const).map((item) => {
+                      const pct = state.economy!.revenue.total > 0 ? (item.value / state.economy!.revenue.total) * 100 : 0;
+                      return (
+                        <div key={item.label} className="space-y-0.5">
+                          <div className="flex items-center justify-between text-xs">
+                            <span>{item.label}</span>
+                            <span className="tabular-nums">N{roundTo(item.value, 2)}T</span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div className="h-full rounded-full bg-green-600" style={{ width: `${Math.min(pct, 100)}%` }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Expenditure breakdown */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Expenditure</p>
+                    {([
+                      { label: "Recurrent", value: state.economy.expenditure.recurrent },
+                      { label: "Capital", value: state.economy.expenditure.capital },
+                      { label: "Debt Servicing", value: state.economy.expenditure.debtServicing },
+                      { label: "Transfers", value: state.economy.expenditure.transfers },
+                    ] as const).map((item) => {
+                      const pct = state.economy!.expenditure.total > 0 ? (item.value / state.economy!.expenditure.total) * 100 : 0;
+                      return (
+                        <div key={item.label} className="space-y-0.5">
+                          <div className="flex items-center justify-between text-xs">
+                            <span>{item.label}</span>
+                            <span className="tabular-nums">N{roundTo(item.value, 2)}T</span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div className="h-full rounded-full bg-red-500/80" style={{ width: `${Math.min(pct, 100)}%` }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                {/* Net fiscal position */}
+                <div className="mt-4 flex flex-wrap items-center gap-3 rounded-md border border-border bg-gradient-to-br from-[#0A4D2C]/10 to-transparent p-3">
+                  {(() => {
+                    const net = state.economy!.revenue.total - state.economy!.expenditure.total;
+                    const isDeficit = net < 0;
+                    return (
+                      <>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Net Fiscal Position</p>
+                          <p className={`text-lg font-bold tabular-nums ${isDeficit ? "text-red-500" : "text-green-500"}`}>
+                            {isDeficit ? "-" : "+"}N{roundTo(Math.abs(net), 2)}T
+                          </p>
+                        </div>
+                        <div className="border-l border-border pl-3">
+                          <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Treasury Liquidity</p>
+                          <p className="text-lg font-bold tabular-nums">N{roundTo(state.economy!.treasuryLiquidity, 2)}T</p>
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          {roundTo(state.economy!.treasuryMonthsOfCover, 1)} months cover
+                        </Badge>
+                      </>
+                    );
+                  })()}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* === Employment Card === */}
+          {state.economy && (
+            <Card className="border border-[#C5A55A]/30" data-testid="economy-employment">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Employment</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="flex items-start gap-6 flex-wrap">
+                  <div>
+                    <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Unemployment Rate</p>
+                    <p className={`text-4xl font-bold tabular-nums ${
+                      state.economy.unemploymentRate < 20 ? "text-green-500" :
+                      state.economy.unemploymentRate <= 30 ? "text-yellow-500" :
+                      "text-red-500"
+                    }`}>
+                      {roundTo(state.economy.unemploymentRate, 1)}%
+                    </p>
+                  </div>
+                  <div className="flex-1 min-w-[200px] space-y-1.5">
+                    <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Sector Employment Weights</p>
+                    {state.economy.sectors.map((sector) => (
+                      <div key={sector.id} className="flex items-center gap-2">
+                        <span className="text-xs w-24 shrink-0">{sector.name}</span>
+                        <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div className="h-full rounded-full bg-[#C5A55A]" style={{ width: `${Math.min(sector.employmentWeight * 100, 100)}%` }} />
+                        </div>
+                        <span className="text-[11px] tabular-nums text-muted-foreground w-10 text-right">{roundTo(sector.employmentWeight * 100, 0)}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* === Crisis Dashboard Card === */}
+          {state.economy && state.economy.crisisIndicators && (
+            <Card className="border border-[#C5A55A]/30" data-testid="economy-crisis-dashboard">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Crisis Dashboard</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {([
+                    { key: "inflationZone" as const, label: "Inflation" },
+                    { key: "unemploymentZone" as const, label: "Unemployment" },
+                    { key: "fxZone" as const, label: "FX Pressure" },
+                    { key: "debtZone" as const, label: "Debt Burden" },
+                    { key: "treasuryZone" as const, label: "Treasury Health" },
+                    { key: "oilOutputZone" as const, label: "Oil Output" },
+                  ] as const).map((indicator) => {
+                    const zone = state.economy!.crisisIndicators[indicator.key];
+                    const dotColor = zone === "green" ? "bg-green-500" : zone === "yellow" ? "bg-yellow-500" : "bg-red-500";
+                    return (
+                      <div key={indicator.key} className="rounded-md border border-border bg-muted/20 p-3 flex items-center gap-2.5">
+                        <span className={`h-3 w-3 rounded-full ${dotColor} shrink-0`} />
+                        <div>
+                          <p className="text-xs font-semibold">{indicator.label}</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{zone}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </>
       )}
 
@@ -558,7 +781,7 @@ export default function EconomyTab() {
                 <Card key={person.name} className="border border-border bg-muted/20">
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
-                      <CharacterAvatar name={person.name} initials={person.avatar} size="md" gender={person.gender} role={person.portfolio} />
+                      <CharacterAvatar name={person.name} initials={person.avatar} size="md" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold">{person.name}</p>
                         <p className="text-xs text-muted-foreground">{person.portfolio}</p>

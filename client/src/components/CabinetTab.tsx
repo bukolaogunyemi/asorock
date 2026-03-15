@@ -6,6 +6,14 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { useGame } from "@/lib/GameContext";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
@@ -23,6 +31,7 @@ import {
 } from "recharts";
 import { cabinetRoster, factions } from "@/lib/gameData";
 import { traitDefinitions } from "@/lib/traits";
+import { getConsequences } from "@/lib/federalCharacter";
 
 
 const traitBadgeVariant = (category: string) => {
@@ -125,6 +134,101 @@ export default function CabinetTab() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Federal Character Compliance Panel */}
+      {isPlaying && state.federalCharacter && (() => {
+        const fc = state.federalCharacter;
+        const consequences = getConsequences(fc.complianceScore);
+        const scoreColor =
+          fc.complianceScore >= 85 ? "text-green-400" :
+          fc.complianceScore >= 70 ? "text-yellow-400" :
+          fc.complianceScore >= 45 ? "text-orange-400" :
+          "text-red-400";
+        const tierBadgeColor =
+          consequences.level === "balanced" ? "bg-[#0A4D2C] text-[#C5A55A] border-[#C5A55A]/40" :
+          consequences.level === "mild" ? "bg-yellow-900/30 text-yellow-400 border-yellow-500/40" :
+          consequences.level === "moderate" ? "bg-orange-900/30 text-orange-400 border-orange-500/40" :
+          "bg-red-900/30 text-red-400 border-red-500/40";
+        const zones = Object.values(fc.zoneScores);
+
+        return (
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4" data-testid="federal-character-panel">
+            {/* Compliance Score Card */}
+            <Card className="border border-[#C5A55A]/30 bg-gradient-to-br from-[#0A4D2C]/10 to-transparent" data-testid="compliance-score-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Federal Character Compliance</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 space-y-3">
+                <div className="flex items-center gap-4">
+                  <div className={`text-4xl font-bold tabular-nums ${scoreColor}`} data-testid="compliance-score">
+                    {Math.round(fc.complianceScore)}
+                  </div>
+                  <div className="space-y-1">
+                    <Badge className={`text-xs border ${tierBadgeColor}`} data-testid="compliance-tier">
+                      {consequences.level.charAt(0).toUpperCase() + consequences.level.slice(1)}
+                    </Badge>
+                    <p className="text-xs text-muted-foreground leading-snug">{consequences.description}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Zone Balance Table */}
+            <Card className="xl:col-span-2 border border-[#C5A55A]/30 bg-gradient-to-br from-[#0A4D2C]/10 to-transparent" data-testid="zone-balance-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Zone Balance</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-[#C5A55A]/20">
+                      <TableHead className="text-xs text-[#C5A55A]/70 h-8">Zone</TableHead>
+                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Weighted</TableHead>
+                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Expected</TableHead>
+                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Actual</TableHead>
+                      <TableHead className="text-xs text-[#C5A55A]/70 h-8">Deviation</TableHead>
+                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Grievance</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {zones.map((z) => {
+                      const deviationPct = z.deviation * 100;
+                      const barWidth = Math.min(Math.abs(deviationPct) * 4, 100);
+                      const barColor =
+                        Math.abs(deviationPct) < 2 ? "bg-green-500" :
+                        deviationPct < 0 ? "bg-red-500" :
+                        "bg-orange-500";
+
+                      return (
+                        <TableRow key={z.zone} className="border-[#C5A55A]/10" data-testid={`zone-row-${z.zone}`}>
+                          <TableCell className="p-2 text-xs font-semibold">{z.zone}</TableCell>
+                          <TableCell className="p-2 text-xs text-right tabular-nums">{z.weightedAppointments}</TableCell>
+                          <TableCell className="p-2 text-xs text-right tabular-nums">{(z.expectedShare * 100).toFixed(1)}%</TableCell>
+                          <TableCell className="p-2 text-xs text-right tabular-nums">{(z.actualShare * 100).toFixed(1)}%</TableCell>
+                          <TableCell className="p-2">
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full ${barColor}`}
+                                  style={{ width: `${barWidth}%` }}
+                                />
+                              </div>
+                              <span className="text-xs tabular-nums text-muted-foreground">
+                                {deviationPct >= 0 ? "+" : ""}{deviationPct.toFixed(1)}%
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="p-2 text-xs text-right tabular-nums">{z.grievanceContribution.toFixed(1)}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        );
+      })()}
 
       {/* Faction Influence (unchanged chart) */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">

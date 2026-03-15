@@ -19,7 +19,10 @@ import {
   resolveChainChoice,
   startHookInvestigation,
   useHook,
+  delegateToVP,
 } from "./gameEngine";
+import { generateBrief } from "./intelligenceBrief";
+import { checkMilestones } from "./legacyScore";
 import {
   computeFailureRisks,
   computeVictoryProgress,
@@ -515,6 +518,7 @@ const defaultGameState: GameState = {
   },
   partyInternals: defaultPartyInternalsState("ADU"),
   economy: defaultEconomicState(),
+  lastBriefData: null,
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -726,6 +730,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
     },
     partyInternals: defaultPartyInternalsState(config.party),
     economy: defaultEconomicState(),
+    lastBriefData: null,
   };
 
   state = syncStrategicState(state);
@@ -759,14 +764,27 @@ export type GameAction =
   | { type: "SET_DNI"; dniId: string; dniCompetence: number; dniLoyalty: number }
   | { type: "POACH_LEGISLATORS"; fromParty: string; toParty: string; zone: string; seatType: "house" | "senate"; seatCount: number }
   | { type: "ENDORSE_CONVENTION_CANDIDATE"; position: string; candidateId: string }
+  | { type: "DELEGATE_TO_VP"; eventId: string }
+  | { type: "DISMISS_BRIEF" }
+  | { type: "REOPEN_BRIEF" }
   | { type: "EXECUTE_ENTITY_ACTION"; entityId: string; actionId: string };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "START_CAMPAIGN":
       return initializeGameState(action.config);
-    case "END_DAY":
-      return state.phase !== "playing" ? state : withDerivedState(processTurn(state));
+    case "END_DAY": {
+      if (state.phase !== "playing") return state;
+      const prevState = state;
+      const newState = processTurn(state);
+      const brief = generateBrief(prevState, newState);
+      const milestones = checkMilestones(prevState, newState);
+      return withDerivedState({
+        ...newState,
+        lastBriefData: brief,
+        legacyMilestones: [...newState.legacyMilestones, ...milestones],
+      });
+    }
     case "RESOLVE_EVENT":
       return withDerivedState(resolveActiveEventChoice(state, action.eventId, action.choiceIndex));
     case "RESOLVE_CHAIN_CHOICE":
@@ -870,6 +888,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
     case "EXECUTE_ENTITY_ACTION":
       return withDerivedState(executeEntityAction(state, action.entityId, action.actionId));
+    case "DELEGATE_TO_VP":
+      return withDerivedState(delegateToVP(state, action.eventId));
+    case "DISMISS_BRIEF":
+      return state.lastBriefData
+        ? { ...state, lastBriefData: { ...state.lastBriefData, dismissed: true } }
+        : state;
+    case "REOPEN_BRIEF":
+      return state.lastBriefData
+        ? { ...state, lastBriefData: { ...state.lastBriefData, dismissed: false } }
+        : state;
     default:
       return state;
   }
@@ -905,6 +933,9 @@ interface GameContextValue {
   poachLegislators: (fromParty: string, toParty: string, zone: string, seatType: "house" | "senate", seatCount: number) => void;
   endorseConventionCandidate: (position: string, candidateId: string) => void;
   executeEntityAction: (entityId: string, actionId: string) => void;
+  delegateToVP: (eventId: string) => void;
+  dismissBrief: () => void;
+  reopenBrief: () => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -942,6 +973,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     poachLegislators: (fromParty, toParty, zone, seatType, seatCount) => dispatch({ type: "POACH_LEGISLATORS", fromParty, toParty, zone, seatType, seatCount }),
     endorseConventionCandidate: (position, candidateId) => dispatch({ type: "ENDORSE_CONVENTION_CANDIDATE", position, candidateId }),
     executeEntityAction: (entityId, actionId) => dispatch({ type: "EXECUTE_ENTITY_ACTION", entityId, actionId }),
+    delegateToVP: (eventId) => dispatch({ type: "DELEGATE_TO_VP", eventId }),
+    dismissBrief: () => dispatch({ type: "DISMISS_BRIEF" }),
+    reopenBrief: () => dispatch({ type: "REOPEN_BRIEF" }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

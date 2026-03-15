@@ -2755,8 +2755,71 @@ export function executeEntityAction(state: GameState, entityId: string, actionId
   return newState;
 }
 
+export function vpChoose(choices: EventChoice[], loyalty: number): EventChoice {
+  if (choices.length === 0) throw new Error("No choices to delegate");
+  if (choices.length === 1) return choices[0];
 
+  const scored = choices.map((choice) => {
+    const effects = choice.consequences.flatMap((c) => c.effects);
+    const approvalSum = effects.filter((e) => e.target === "approval").reduce((s, e) => s + e.delta, 0);
+    const stabilitySum = effects.filter((e) => e.target === "stability").reduce((s, e) => s + e.delta, 0);
+    const treasurySum = effects.filter((e) => e.target === "treasury").reduce((s, e) => s + e.delta, 0);
+    const outrageSum = effects.filter((e) => e.target === "outrage").reduce((s, e) => s + e.delta, 0);
+    const totalAbs = effects.reduce((s, e) => s + Math.abs(e.delta), 0);
+    const positiveSum = approvalSum + stabilitySum + treasurySum;
+    return { choice, approvalSum, positiveSum, totalAbs, outrageSum };
+  });
 
+  if (loyalty > 70) {
+    // Loyal: pick highest positive sum
+    scored.sort((a, b) => b.positiveSum - a.positiveSum);
+  } else if (loyalty >= 40) {
+    // Moderate: pick smallest absolute impact
+    scored.sort((a, b) => a.totalAbs - b.totalAbs);
+  } else {
+    // Disloyal: pick most negative approval (or most outrage if tied)
+    const hasNegApproval = scored.some((s) => s.approvalSum < 0);
+    if (hasNegApproval) {
+      scored.sort((a, b) => a.approvalSum - b.approvalSum);
+    } else {
+      // Default to moderate algorithm
+      scored.sort((a, b) => a.totalAbs - b.totalAbs);
+    }
+  }
 
+  return scored[0].choice;
+}
+
+export function delegateToVP(state: GameState, eventId: string): GameState {
+  const event = state.activeEvents.find((e) => e.id === eventId);
+  if (!event) return state;
+
+  const chosenOption = vpChoose(event.choices, state.vicePresident.loyalty);
+  const newPending = [...state.pendingConsequences, ...chosenOption.consequences];
+  const newEvents = state.activeEvents.filter((e) => e.id !== eventId);
+  const newAmbition = Math.min(100, state.vicePresident.ambition + 2);
+
+  const inboxMessage: GameInboxMessage = {
+    id: `vp-delegation-${state.day}-${eventId}`,
+    sender: state.vicePresident.name,
+    role: "Vice President",
+    initials: state.vicePresident.name.split(" ").map((n: string) => n[0]).join(""),
+    subject: `VP's Decision Report: ${event.title}`,
+    preview: `Chose: ${chosenOption.label}`,
+    fullText: `Mr. President,\n\nRegarding "${event.title}", I have decided to proceed with "${chosenOption.label}". ${chosenOption.context}\n\nRespectfully,\n${state.vicePresident.name}`,
+    day: state.day,
+    priority: "Normal",
+    read: false,
+    source: "system",
+  };
+
+  return {
+    ...state,
+    activeEvents: newEvents,
+    pendingConsequences: newPending,
+    vicePresident: { ...state.vicePresident, ambition: newAmbition },
+    inboxMessages: [inboxMessage, ...state.inboxMessages],
+  };
+}
 
 

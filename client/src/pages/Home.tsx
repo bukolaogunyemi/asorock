@@ -10,6 +10,7 @@ import { resolveEntityProfile } from "@/lib/entityAdapters";
 import { PresidentialDashboard } from "@/components/PresidentialDashboard";
 import { TabNavBar } from "@/components/TabNavBar";
 import { AdvisoryWhisper } from "@/components/AdvisoryWhisper";
+import { EconomySection } from "@/components/governance/EconomySection";
 
 const DailyBriefColumn = lazy(() => import("@/components/DailyBriefColumn"));
 const DecisionDesk = lazy(() => import("@/components/DecisionDesk"));
@@ -21,7 +22,6 @@ const EntityProfile = lazy(() => import("@/components/EntityProfile"));
 const LegacyTab = lazy(() => import("@/components/LegacyTab"));
 const CabinetTab = lazy(() => import("@/components/CabinetTab"));
 const PoliticsTab = lazy(() => import("@/components/PoliticsTab"));
-const EconomyTab = lazy(() => import("@/components/EconomyTab"));
 const SecurityTab = lazy(() => import("@/components/SecurityTab"));
 const LegislatureTab = lazy(() => import("@/components/LegislatureTab"));
 const JudiciaryTab = lazy(() => import("@/components/JudiciaryTab"));
@@ -171,11 +171,11 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
       case "politics":
         return <PoliticsTab onCharacterClick={charClick("politics", "Politics")} onEntityClick={entityClick("politics", "Politics")} />;
       case "governance":
-        if (activeSubTab === "economy") return <EconomyTab onCharacterClick={charClick("governance", "Economy")} onEntityClick={entityClick("governance", "Economy")} />;
+        if (activeSubTab === "economy") return <EconomySection onCharacterClick={charClick("governance", "Economy")} />;
         if (activeSubTab === "infrastructure") return <InfrastructureTab />;
         if (activeSubTab === "health") return <HealthTab />;
         if (activeSubTab === "education") return <EducationTab />;
-        return <EconomyTab onCharacterClick={charClick("governance", "Economy")} onEntityClick={entityClick("governance", "Economy")} />;
+        return <EconomySection onCharacterClick={charClick("governance", "Economy")} />;
       case "security":
         return <SecurityTab view={(activeSubTab as "intel" | "military" | "police") ?? "intel"} onCharacterClick={charClick("security", "Security")} onEntityClick={entityClick("security", "Security")} />;
       case "legislature": return <LegislatureTab onCharacterClick={charClick("legislature", "Legislature")} onEntityClick={entityClick("legislature", "Legislature")} />;

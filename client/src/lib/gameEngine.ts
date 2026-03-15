@@ -28,6 +28,7 @@ import type {
 } from "./gameTypes";
 import { POLICY_LEVER_DEFS, POLICY_MODIFIER_SCALE, POLICY_COOLDOWN_DAYS, type PolicyModifiers, ministryPositions, cabinetCandidates, type MinistryPosition } from "./gameData";
 import { FACTION_PROFILES, DEMAND_EXPIRE_TIER70_LOYALTY_LOSS, DEMAND_EXPIRE_TIER90_LOYALTY_LOSS, DEMAND_EXPIRE_GRIEVANCE_GAIN, DEMAND_EXPIRE_STABILITY_LOSS } from "./factionProfiles";
+import { processPartyTurn } from "./partyEngine";
 import { computeFactionDrift, updateGrievance, checkGrievanceThresholds } from "./factionDrift";
 import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./factionNarrative";
 import { processLegislativeTurn, generateAdviserBriefing } from "./legislativeEngine";
@@ -2495,6 +2496,19 @@ export function processTurn(state: GameState): GameState {
     if (!next.inboxMessages.some((m) => m.id === briefMsg.id)) {
       next = { ...next, inboxMessages: [...next.inboxMessages, briefMsg] };
     }
+  }
+
+  // Party internals — process each turn
+  if (next.partyInternals) {
+    next = {
+      ...next,
+      partyInternals: processPartyTurn(next.partyInternals, {
+        day: next.day,
+        approval: next.approval,
+        stability: next.stability,
+        partyLoyalty: next.partyLoyalty,
+      }),
+    };
   }
 
   const defeat = checkDefeatConditions(next);

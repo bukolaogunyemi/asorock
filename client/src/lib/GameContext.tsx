@@ -57,6 +57,7 @@ import { defaultFederalCharacterState } from "./federalCharacter";
 import { commissionOperation } from "./intelligenceEngine";
 import { acceptDeal, rejectDeal, cashInFavour } from "./godfatherDeals";
 import { neutralizeGodfather } from "./godfatherEngine";
+import { defaultPartyInternalsState, initiatePoaching, executeDefection, checkPoachingCooldown } from "./partyEngine";
 import type { GodfatherDeal } from "./godfatherTypes";
 import { seedLegislativeCalendar } from "./legislativeBills";
 
@@ -498,23 +499,7 @@ const defaultGameState: GameState = {
     completedOperations: [],
     maxConcurrentOps: 2,
   },
-  partyInternals: {
-    parties: [],
-    rulingPartyId: "",
-    mainOppositionIds: [],
-    defections: {
-      atRiskLegislators: [],
-      recentDefections: [],
-      poachingCooldown: {},
-    },
-    convention: {
-      phase: "inactive",
-      conventionDay: 0,
-      races: [],
-      playerPCSpent: 0,
-    },
-    partyLoyaltyDrift: 0,
-  },
+  partyInternals: defaultPartyInternalsState("ADU"),
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -702,23 +687,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
       completedOperations: [],
       maxConcurrentOps: 2,
     },
-    partyInternals: {
-      parties: [],
-      rulingPartyId: "",
-      mainOppositionIds: [],
-      defections: {
-        atRiskLegislators: [],
-        recentDefections: [],
-        poachingCooldown: {},
-      },
-      convention: {
-        phase: "inactive",
-        conventionDay: 0,
-        races: [],
-        playerPCSpent: 0,
-      },
-      partyLoyaltyDrift: 0,
-    },
+    partyInternals: defaultPartyInternalsState(config.party),
   };
 
   state = syncStrategicState(state);
@@ -749,7 +718,9 @@ export type GameAction =
   | { type: "RESPOND_TO_FAVOUR"; godfatherId: string; demand: string }
   | { type: "NEUTRALIZE_GODFATHER"; godfatherId: string; method: "intelligence" | "political" | "godfather-vs-godfather" }
   | { type: "COMMISSION_OPERATION"; opType: string; targetId?: string; description: string }
-  | { type: "SET_DNI"; dniId: string; dniCompetence: number; dniLoyalty: number };
+  | { type: "SET_DNI"; dniId: string; dniCompetence: number; dniLoyalty: number }
+  | { type: "POACH_LEGISLATORS"; fromParty: string; toParty: string; zone: string; seatType: "house" | "senate"; seatCount: number }
+  | { type: "ENDORSE_CONVENTION_CANDIDATE"; position: string; candidateId: string };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -825,6 +796,39 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           maxConcurrentOps: action.dniCompetence >= 70 ? 3 : 2,
         },
       });
+    case "POACH_LEGISLATORS": {
+      if (!state.partyInternals) return state;
+      const key = `${action.toParty}-${action.zone}`;
+      if (!checkPoachingCooldown(state.partyInternals.defections.poachingCooldown, action.toParty, action.zone, state.day)) return state;
+      const poach = initiatePoaching(action.fromParty, action.toParty, action.zone, action.seatType, action.seatCount, state.day);
+      if (state.politicalCapital < poach.pcCost) return state;
+      const updatedParties = executeDefection(state.partyInternals.parties, { fromParty: action.fromParty, toParty: action.toParty, seatType: action.seatType, seatCount: action.seatCount });
+      return withDerivedState({
+        ...state,
+        politicalCapital: state.politicalCapital - poach.pcCost,
+        partyInternals: {
+          ...state.partyInternals,
+          parties: updatedParties,
+          defections: {
+            ...state.partyInternals.defections,
+            poachingCooldown: { ...state.partyInternals.defections.poachingCooldown, [key]: poach.cooldownUntilDay },
+          },
+        },
+      });
+    }
+    case "ENDORSE_CONVENTION_CANDIDATE": {
+      if (!state.partyInternals) return state;
+      const races = state.partyInternals.convention.races.map(race =>
+        race.position === action.position ? { ...race, playerBacked: action.candidateId } : race
+      );
+      return withDerivedState({
+        ...state,
+        partyInternals: {
+          ...state.partyInternals,
+          convention: { ...state.partyInternals.convention, races },
+        },
+      });
+    }
     default:
       return state;
   }
@@ -857,6 +861,8 @@ interface GameContextValue {
   neutralizeGodfather: (godfatherId: string, method: "intelligence" | "political" | "godfather-vs-godfather") => void;
   commissionOperation: (opType: string, targetId: string | undefined, description: string) => void;
   setDni: (dniId: string, dniCompetence: number, dniLoyalty: number) => void;
+  poachLegislators: (fromParty: string, toParty: string, zone: string, seatType: "house" | "senate", seatCount: number) => void;
+  endorseConventionCandidate: (position: string, candidateId: string) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -891,6 +897,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     neutralizeGodfather: (godfatherId, method) => dispatch({ type: "NEUTRALIZE_GODFATHER", godfatherId, method }),
     commissionOperation: (opType, targetId, description) => dispatch({ type: "COMMISSION_OPERATION", opType, targetId, description }),
     setDni: (dniId, dniCompetence, dniLoyalty) => dispatch({ type: "SET_DNI", dniId, dniCompetence, dniLoyalty }),
+    poachLegislators: (fromParty, toParty, zone, seatType, seatCount) => dispatch({ type: "POACH_LEGISLATORS", fromParty, toParty, zone, seatType, seatCount }),
+    endorseConventionCandidate: (position, candidateId) => dispatch({ type: "ENDORSE_CONVENTION_CANDIDATE", position, candidateId }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

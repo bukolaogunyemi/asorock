@@ -1,4 +1,4 @@
-import type { SectorState, EconomicState, SectorId, PolicyModifier, RevenueState, ExpenditureState, CrisisIndicators, CascadeEvent, CascadeType } from "./economicTypes";
+import type { SectorState, EconomicState, SectorId, PolicyModifier, RevenueState, ExpenditureState, CrisisIndicators, CascadeEvent, CascadeType, EconomicSnapshot } from "./economicTypes";
 import type { PolicyLeverKey, AnyPolicyPosition } from "./gameTypes";
 
 /** External shocks applied per-turn to sectors */
@@ -407,4 +407,140 @@ export function processCascades(state: EconomicState): {
   }
 
   return { cascades, cascadeEffects: effects };
+}
+
+// ── Task 6: Master Per-Turn Economic Processing ──
+
+export function processEconomicTurn(
+  economicState: EconomicState,
+  context: {
+    policyLevers: any;
+    currentDay: number;
+    fuelSubsidyPosition?: string;
+  },
+): EconomicState {
+  // 1. Advance sectors
+  const updatedSectors = advanceSectors(economicState.sectors, []);
+
+  // 2. Calculate total GDP
+  const newGdp = updatedSectors.reduce((sum, s) => sum + s.gdpValue, 0);
+
+  // 3. Calculate GDP growth rate
+  const gdpGrowthRate = economicState.gdp > 0
+    ? (newGdp - economicState.gdp) / economicState.gdp * 100
+    : 0;
+
+  // 4. Calculate unemployment
+  const unemploymentRate = calculateUnemployment(updatedSectors, economicState.unemploymentRate);
+
+  // Build intermediate state for revenue/expenditure calculations
+  let state: EconomicState = {
+    ...economicState,
+    sectors: updatedSectors,
+    gdp: newGdp,
+    gdpGrowthRate,
+    unemploymentRate,
+  };
+
+  // 5. Calculate revenue
+  const revenue = calculateRevenue(state);
+  state = { ...state, revenue };
+
+  // 6. Calculate expenditure
+  const expenditure = calculateExpenditure(state);
+  state = { ...state, expenditure };
+
+  // 7. Update treasury
+  state = updateTreasury(state);
+
+  // 8. Calculate months of cover
+  const treasuryMonthsOfCover = calculateMonthsOfCover(state.treasuryLiquidity, state.expenditure.total);
+  state = { ...state, treasuryMonthsOfCover };
+
+  // 9. Update reserves
+  const reserves = updateReserves(state);
+  state = { ...state, reserves };
+
+  // 10. Update subsidy pressure
+  const subsidyPressure = updateSubsidyPressure(
+    context.fuelSubsidyPosition ?? "partial",
+    state.oilOutput,
+  );
+  state = { ...state, subsidyPressure };
+
+  // 11. Update inflation
+  const inflationDrift = gdpGrowthRate < 0 ? 0.3 : -0.1;
+  const inflation = Math.max(0, Math.min(60,
+    economicState.inflation + inflationDrift + subsidyPressure * 0.01,
+  ));
+  state = { ...state, inflation };
+
+  // 12. Update FX rate
+  const fxRate = Math.max(400, Math.min(3000,
+    economicState.fxRate + (inflation - 15) * 0.5 + (reserves < 20 ? 5 : -1),
+  ));
+  state = { ...state, fxRate };
+
+  // 13. Update debt-to-GDP
+  const debtToGdp = Math.max(0, Math.min(100,
+    state.debtToGdp + (state.expenditure.total > state.revenue.total ? 0.2 : -0.1),
+  ));
+  state = { ...state, debtToGdp };
+
+  // 14. Update oil output
+  const oilDrift = (Math.random() - 0.5) * 0.04; // random(-0.02, 0.02)
+  const oilOutput = Math.max(0.5, Math.min(3.0, economicState.oilOutput + oilDrift));
+  state = { ...state, oilOutput };
+
+  // 15. Evaluate crisis indicators
+  const crisisIndicators = evaluateCrisisIndicators({
+    inflation: state.inflation,
+    unemploymentRate: state.unemploymentRate,
+    fxRate: state.fxRate,
+    fxRateBaseline: state.fxRateBaseline,
+    debtToGdp: state.debtToGdp,
+    treasuryMonthsOfCover: state.treasuryMonthsOfCover,
+    oilOutput: state.oilOutput,
+  });
+  state = { ...state, crisisIndicators };
+
+  // 16. Process cascades
+  const { cascades, cascadeEffects } = processCascades(state);
+  state = { ...state, activeCascades: cascades };
+
+  // 17. Apply cascade effects to inflation and fxRate
+  if (cascadeEffects.inflation) {
+    state = {
+      ...state,
+      inflation: Math.max(0, Math.min(60, state.inflation + cascadeEffects.inflation)),
+    };
+  }
+  if (cascadeEffects.fxRate) {
+    state = {
+      ...state,
+      fxRate: Math.max(400, Math.min(3000, state.fxRate + cascadeEffects.fxRate)),
+    };
+  }
+
+  // 18. Record history snapshot (cap at 12 entries)
+  const sectorGdpValues = {} as Record<SectorId, number>;
+  for (const s of state.sectors) {
+    sectorGdpValues[s.id] = s.gdpValue;
+  }
+  const snapshot: EconomicSnapshot = {
+    day: context.currentDay,
+    gdp: state.gdp,
+    sectorGdpValues,
+    unemploymentRate: state.unemploymentRate,
+    inflation: state.inflation,
+    fxRate: state.fxRate,
+    treasuryLiquidity: state.treasuryLiquidity,
+    debtToGdp: state.debtToGdp,
+    oilOutput: state.oilOutput,
+  };
+  const history = [...state.history, snapshot].slice(-12);
+  state = { ...state, history };
+
+  // 19. Return complete updated EconomicState
+  return state;
 }

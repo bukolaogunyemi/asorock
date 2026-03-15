@@ -12,6 +12,7 @@ import {
   detectNewCascades,
   advanceCascade,
   checkCascadeResolution,
+  processEconomicTurn,
 } from "./economicEngine";
 
 describe("defaultEconomicState", () => {
@@ -478,5 +479,55 @@ describe("checkCascadeResolution", () => {
     });
     const resolved = checkCascadeResolution(cascade, indicators);
     expect(resolved.resolved).toBe(true);
+  });
+});
+
+// ── Task 6: processEconomicTurn Tests ──
+
+describe("processEconomicTurn", () => {
+  it("should update all economic state components", () => {
+    const state = defaultEconomicState();
+    const result = processEconomicTurn(state, { policyLevers: {}, currentDay: 10 });
+    expect(result.gdp).toBeGreaterThan(0);
+    expect(result.unemploymentRate).toBeGreaterThanOrEqual(5);
+    expect(result.revenue.total).toBeGreaterThan(0);
+    expect(result.history.length).toBe(1);
+  });
+
+  it("should cap history at 12 snapshots", () => {
+    let state = defaultEconomicState();
+    state.history = Array.from({ length: 12 }, (_, i) => ({
+      day: i, gdp: 100, sectorGdpValues: { oil: 38, agriculture: 24, manufacturing: 15, services: 16, tourism: 7 },
+      unemploymentRate: 25, inflation: 15, fxRate: 1200,
+      treasuryLiquidity: 100, debtToGdp: 30, oilOutput: 2,
+    }));
+    const result = processEconomicTurn(state, { policyLevers: {}, currentDay: 13 });
+    expect(result.history.length).toBe(12);
+  });
+
+  it("should decrement policy modifier durations", () => {
+    const state = defaultEconomicState();
+    state.sectors[0].policyModifiers = [
+      { source: "test", effect: 1, duration: 2 },
+      { source: "expiring", effect: 1, duration: 1 },
+    ];
+    const result = processEconomicTurn(state, { policyLevers: {}, currentDay: 10 });
+    expect(result.sectors[0].policyModifiers.length).toBe(1);
+    expect(result.sectors[0].policyModifiers[0].duration).toBe(1);
+  });
+
+  it("should update inflation based on economic conditions", () => {
+    const state = defaultEconomicState();
+    const result = processEconomicTurn(state, { policyLevers: {}, currentDay: 10 });
+    expect(typeof result.inflation).toBe("number");
+    expect(result.inflation).toBeGreaterThanOrEqual(0);
+    expect(result.inflation).toBeLessThanOrEqual(60);
+  });
+
+  it("should update FX rate", () => {
+    const state = defaultEconomicState();
+    const result = processEconomicTurn(state, { policyLevers: {}, currentDay: 10 });
+    expect(result.fxRate).toBeGreaterThanOrEqual(400);
+    expect(result.fxRate).toBeLessThanOrEqual(3000);
   });
 });

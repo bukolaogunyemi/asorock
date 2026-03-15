@@ -45,13 +45,13 @@ export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBr
         Daily Brief &middot; View Full &#8599;
       </button>
 
-      <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-1">
+      <div className="flex-1 overflow-hidden px-2 pb-2 space-y-1">
         {items.length === 0 ? (
           <p className="text-xs text-[#e8dcc8]/40 italic px-1 pt-2">
             No briefing available
           </p>
         ) : (
-          items.map((item, i) => (
+          items.slice(0, 8).map((item, i) => (
             <div
               key={i}
               className={`border-l-2 ${severityBorder[item.severity] ?? "border-gray-500"} pl-2 py-1`}
@@ -60,12 +60,17 @@ export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBr
                 <span
                   className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${severityDot[item.severity] ?? "bg-gray-500"}`}
                 />
-                <span className="text-xs text-[#e8dcc8]/80 leading-tight">
+                <span className="text-xs text-[#e8dcc8]/80 leading-tight line-clamp-2">
                   {item.text}
                 </span>
               </div>
             </div>
           ))
+        )}
+        {items.length > 8 && (
+          <p className="text-[10px] text-[#d4af37]/50 px-1 pt-1">
+            +{items.length - 8} more — click above to view all
+          </p>
         )}
       </div>
     </div>

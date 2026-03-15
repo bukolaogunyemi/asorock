@@ -56,7 +56,7 @@ export default function DecisionDesk({
   const showAllTabs = activeTab === "villa" || activeTab === "cabinet";
 
   return (
-    <div className="flex-1 flex flex-col items-center px-4 py-3 overflow-y-auto">
+    <div className="flex-1 flex flex-col items-center px-4 py-3 overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-2 mb-3 w-full max-w-2xl">
         <h2 className="text-lg font-bold text-[#d4af37]">Decision Desk</h2>

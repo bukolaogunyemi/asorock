@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useGame } from "../lib/GameContext";
 import { getWhisper } from "../lib/advisoryWhispers";
 
@@ -8,21 +8,21 @@ interface AdvisoryWhisperProps {
 
 export function AdvisoryWhisper({ activeTab }: AdvisoryWhisperProps) {
   const { state } = useGame();
-  const [recentRuleIds, setRecentRuleIds] = useState<string[]>([]);
+  const recentRuleIdsRef = useRef<string[]>([]);
   const [visible, setVisible] = useState(false);
 
   const whisper = useMemo(
-    () => getWhisper(state, activeTab, recentRuleIds),
-    [state, activeTab, recentRuleIds],
+    () => getWhisper(state, activeTab, recentRuleIdsRef.current),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state, activeTab],
   );
 
   useEffect(() => {
     if (whisper.ruleId) {
-      setRecentRuleIds((prev) => {
-        if (prev[prev.length - 1] === whisper.ruleId) return prev;
-        const next = [...prev, whisper.ruleId].slice(-5);
-        return next;
-      });
+      const prev = recentRuleIdsRef.current;
+      if (prev[prev.length - 1] !== whisper.ruleId) {
+        recentRuleIdsRef.current = [...prev, whisper.ruleId].slice(-5);
+      }
     }
     // Trigger fade-in
     setVisible(false);

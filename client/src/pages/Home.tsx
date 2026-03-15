@@ -66,6 +66,9 @@ const securitySubTabs = [
   { id: "police", label: "Police" },
 ];
 
+// Tabs that use the fixed three-column layout (Intel Brief | Decision Desk | Headlines)
+const THREE_COLUMN_TABS = ["villa", "governance", "politics", "security", "diplomacy"];
+
 // Tabs that use hub-style breadcrumb navigation
 const HUB_TABS: Record<string, { label: string; defaultSub: string; subTabs: { id: string; label: string }[] }> = {
   governance: { label: "Governance", defaultSub: "economy", subTabs: governanceSubTabs },
@@ -231,55 +234,61 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
           </div>
         )}
 
-        {/* Zone B — Three-column layout */}
-        <div className="flex-1 flex min-h-0 overflow-hidden">
-          {/* Left: Daily Brief Column */}
-          <Suspense fallback={<div className="w-[220px] shrink-0" />}>
-            <DailyBriefColumn activeTab={activeTab} onOpenFullBrief={handleReopenBrief} />
-          </Suspense>
-
-          {/* Center: Decision Desk + Tab Content */}
-          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+        {/* Zone B */}
+        {isProfileOpen && currentProfile ? (
+          /* Profile view — full width, scrollable */
+          <div className="flex-1 overflow-y-auto p-4">
             <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
-              <DecisionDesk
-                activeTab={activeTab}
-                onProceed={handleProceed}
-                canProceed={canProceed}
-                proceedDisabledReason={proceedDisabledReason}
-                onNavigateToTab={handleTabChange}
-              />
+              {currentProfile.type === "entity" ? (
+                <EntityProfile
+                  entityId={currentProfile.key}
+                  onCharacterClick={handleCharacterClick}
+                  onEntityClick={handleEntityClick}
+                />
+              ) : (
+                <CharacterProfile
+                  characterKey={currentProfile.key}
+                  sourceTab={currentProfile.sourceTab}
+                  onCharacterClick={handleCharacterClick}
+                  onEntityClick={handleEntityClick}
+                />
+              )}
+            </Suspense>
+          </div>
+        ) : THREE_COLUMN_TABS.includes(activeTab) ? (
+          /* Three-column fixed layout — no scrollbars */
+          <div className="flex-1 flex min-h-0 overflow-hidden">
+            {/* Left: Daily Brief Column */}
+            <Suspense fallback={<div className="w-[220px] shrink-0" />}>
+              <DailyBriefColumn activeTab={activeTab} onOpenFullBrief={handleReopenBrief} />
             </Suspense>
 
-            {/* Tab content or Profile */}
-            <div className="flex-1 p-4">
+            {/* Center: Decision Desk only — fixed, no scroll */}
+            <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
               <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
-                {isProfileOpen && currentProfile ? (
-                  currentProfile.type === "entity" ? (
-                    <EntityProfile
-                      entityId={currentProfile.key}
-                      onCharacterClick={handleCharacterClick}
-                      onEntityClick={handleEntityClick}
-                    />
-                  ) : (
-                    <CharacterProfile
-                      characterKey={currentProfile.key}
-                      sourceTab={currentProfile.sourceTab}
-                      onCharacterClick={handleCharacterClick}
-                      onEntityClick={handleEntityClick}
-                    />
-                  )
-                ) : (
-                  renderTabContent()
-                )}
+                <DecisionDesk
+                  activeTab={activeTab}
+                  onProceed={handleProceed}
+                  canProceed={canProceed}
+                  proceedDisabledReason={proceedDisabledReason}
+                  onNavigateToTab={handleTabChange}
+                />
               </Suspense>
             </div>
-          </div>
 
-          {/* Right: Headlines Column */}
-          <Suspense fallback={<div className="w-[220px] shrink-0" />}>
-            <HeadlinesColumn activeTab={activeTab} />
-          </Suspense>
-        </div>
+            {/* Right: Headlines Column */}
+            <Suspense fallback={<div className="w-[220px] shrink-0" />}>
+              <HeadlinesColumn activeTab={activeTab} />
+            </Suspense>
+          </div>
+        ) : (
+          /* Full-page tab content (Cabinet, Legislature, Judiciary, Media, Legacy) */
+          <div className="flex-1 overflow-y-auto p-4">
+            <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
+              {renderTabContent()}
+            </Suspense>
+          </div>
+        )}
       </div>
 
       {/* Overlays */}

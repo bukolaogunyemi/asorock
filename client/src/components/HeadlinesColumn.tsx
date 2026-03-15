@@ -24,13 +24,13 @@ export default function HeadlinesColumn({ activeTab }: HeadlinesColumnProps) {
         Headlines
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-2">
+      <div className="flex-1 overflow-hidden px-2 pb-2 space-y-2">
         {headlines.length === 0 ? (
           <p className="text-xs text-[#e8dcc8]/40 italic px-1">
             No headlines available
           </p>
         ) : (
-          headlines.map((headline, i) => {
+          headlines.slice(0, 8).map((headline, i) => {
             const source = SOURCES[i % SOURCES.length];
             return (
               <div key={i} className="px-1">
@@ -40,7 +40,7 @@ export default function HeadlinesColumn({ activeTab }: HeadlinesColumnProps) {
                 >
                   {source.name}
                 </span>
-                <span className="text-xs text-[#e8dcc8]/70 italic leading-tight">
+                <span className="text-xs text-[#e8dcc8]/70 italic leading-tight line-clamp-2">
                   {headline}
                 </span>
               </div>

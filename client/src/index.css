@@ -34,7 +34,7 @@
   --secondary: 140 4% 90%;
   --secondary-foreground: 150 12% 12%;
   --muted: 140 4% 92%;
-  --muted-foreground: 150 4% 42%;
+  --muted-foreground: 150 5% 40%;
   --accent: 42 70% 50%;
   --accent-foreground: 150 12% 10%;
   --destructive: 0 72% 45%;
@@ -98,7 +98,7 @@
   --secondary: 150 6% 18%;
   --secondary-foreground: 45 10% 90%;
   --muted: 150 5% 20%;
-  --muted-foreground: 45 5% 55%;
+  --muted-foreground: 45 8% 75%;
   --accent: 42 65% 55%;
   --accent-foreground: 150 12% 8%;
   --destructive: 0 72% 50%;
@@ -192,4 +192,45 @@ input[type="search"]::-webkit-search-cancel-button {
   .active-elevate:active:not(.no-default-active-elevate)::after {
     background-color: var(--elevate-2);
   }
+}
+
+/* Typewriter cursor */
+.typewriter-cursor {
+  animation: blink 0.7s step-end infinite;
+  color: hsl(42, 70%, 50%);
+  font-weight: 300;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Classified stamps */
+.stamp-top-secret {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(220, 38, 38, 0.25);
+  transform: rotate(-12deg);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.stamp-classified-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 32px;
+  font-weight: 800;
+  color: rgba(220, 38, 38, 0.03);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 0;
+  white-space: nowrap;
 }

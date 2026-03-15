@@ -33,6 +33,7 @@ const whistleblowers = [
     name: "Mallam Ibrahim Danladi",
     role: "Former NNPC Auditor",
     avatar: "ID",
+    gender: "Male",
     info: "Claims to have evidence of diverted crude oil revenues. Currently in hiding.",
     risk: "High",
   },
@@ -40,6 +41,7 @@ const whistleblowers = [
     name: "Dr. Amina Bello",
     role: "Ex-Health Ministry Director",
     avatar: "AB",
+    gender: "Female",
     info: "Alleges procurement fraud in the National Health Insurance Scheme rollout.",
     risk: "Medium",
   },
@@ -47,6 +49,7 @@ const whistleblowers = [
     name: "Barr. Chidi Okonkwo",
     role: "Retired Civil Servant",
     avatar: "CO",
+    gender: "Male",
     info: "Possesses documents showing ghost workers in the Federal Payroll system.",
     risk: "High",
   },
@@ -207,7 +210,7 @@ export default function PublicAffairsTab() {
                 <Card key={w.name} className="border border-border bg-muted/30">
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
-                      <CharacterAvatar name={w.name} initials={w.avatar} size="md" />
+                      <CharacterAvatar name={w.name} initials={w.avatar} size="md" gender={w.gender} role={w.role} />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold">{w.name}</p>
                         <p className="text-xs text-muted-foreground">{w.role}</p>

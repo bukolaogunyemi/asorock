@@ -19,8 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Info, AlertTriangle, Globe, Handshake, Users, Building2 } from "lucide-react";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
-import { CompetencyBar } from "@/components/CompetencyBar";
-import { RelationshipIndicator } from "@/components/RelationshipIndicator";
+import { PersonnelCard } from "@/components/PersonnelCard";
 import {
   BarChart,
   Bar,
@@ -96,27 +95,21 @@ export default function DiplomacyTab() {
         <CardContent className="p-4 pt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
             {diplomacyPersonnel.map((p) => (
-              <Card key={p.name} className="border border-border bg-muted/30">
-                <CardContent className="p-3 space-y-2">
-                  <div className="flex items-start gap-3">
-                    <CharacterAvatar name={p.name} initials={p.avatar} size="md" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-semibold">{p.name}</p>
-                          <p className="text-xs text-muted-foreground">{p.title}</p>
-                        </div>
-                        <Badge variant="outline" className="text-xs flex-shrink-0">{p.shortTitle}</Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{p.tenure}</p>
-                  <div className="space-y-0.5">
-                    <CompetencyBar value={p.loyalty} label="Loyalty" />
-                    <CompetencyBar value={p.competence} label="Competence" />
-                  </div>
-                  <RelationshipIndicator relationship={p.relationship} />
-                  <p className="text-xs text-muted-foreground italic">{p.note}</p>
+              <PersonnelCard
+                key={p.name}
+                name={p.name}
+                avatar={p.avatar}
+                title={p.title}
+                age={p.age}
+                state={p.state}
+                gender={p.gender}
+                loyalty={p.loyalty}
+                competence={p.competence}
+                relationship={p.relationship}
+                faction={p.shortTitle}
+                note={`${p.tenure}. ${p.note}`}
+                className="bg-muted/30"
+                actions={
                   <Button
                     data-testid={`summon-${p.shortTitle.toLowerCase()}`}
                     variant="outline"
@@ -129,8 +122,8 @@ export default function DiplomacyTab() {
                   >
                     Summon for Briefing
                   </Button>
-                </CardContent>
-              </Card>
+                }
+              />
             ))}
           </div>
         </CardContent>

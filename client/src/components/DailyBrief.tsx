@@ -84,7 +84,7 @@ export default function DailyBrief({ onDismiss }: DailyBriefProps) {
             <div>
               <h2 className="text-lg font-bold">Daily Brief</h2>
               <p className="text-xs text-muted-foreground">
-                Day {state.day} — {state.date}
+                {state.date}
               </p>
             </div>
           </div>

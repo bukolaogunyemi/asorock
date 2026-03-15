@@ -8,12 +8,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useGame } from "@/lib/GameContext";
 import type { GameInboxMessage } from "@/lib/gameTypes";
 
-const replyOptions = [
-  { label: "Terrible", actionId: "reply-terrible" },
-  { label: "Poor", actionId: "reply-poor" },
-  { label: "Good", actionId: "reply-good" },
-  { label: "Excellent", actionId: "reply-excellent" },
-] as const;
+const categoryResponses: Record<string, readonly { label: string; actionId: string }[]> = {
+  seed:             [{ label: "Acknowledge", actionId: "acknowledge" }, { label: "Investigate", actionId: "investigate" }, { label: "Defer", actionId: "defer" }],
+  system:           [{ label: "Acknowledge", actionId: "acknowledge" }, { label: "Note for Review", actionId: "note" }],
+  decision:         [{ label: "Acknowledge", actionId: "acknowledge" }, { label: "Review Personally", actionId: "investigate" }, { label: "Assign to Minister", actionId: "delegate" }],
+  chain:            [{ label: "Accept Outcome", actionId: "accept" }, { label: "Escalate", actionId: "escalate" }, { label: "Order Investigation", actionId: "investigate" }],
+  court:            [{ label: "Comply", actionId: "comply" }, { label: "Appeal Ruling", actionId: "appeal" }, { label: "Seek Delay", actionId: "delay" }],
+  random:           [{ label: "Address Directly", actionId: "address" }, { label: "Delegate", actionId: "delegate" }, { label: "Monitor", actionId: "acknowledge" }],
+  "faction-demand": [{ label: "Schedule Dialogue", actionId: "engage" }, { label: "Send Emissary", actionId: "acknowledge" }, { label: "Dismiss", actionId: "dismiss" }],
+};
 
 const priorityBadge = (priority: string) => {
   if (priority === "Critical") return "destructive" as const;
@@ -76,7 +79,7 @@ export default function InboxPanel({ open, onOpenChange, messages }: InboxPanelP
                         <p className="text-sm font-semibold truncate">{message.sender}</p>
                         <div className="flex items-center gap-1.5 flex-shrink-0">
                           <Badge variant={priorityBadge(message.priority)} className="text-xs">{message.priority}</Badge>
-                          <span className="text-xs text-muted-foreground tabular-nums">Day {message.day}</span>
+                          <span className="text-xs text-muted-foreground tabular-nums">{message.date ?? `Day ${message.day}`}</span>
                         </div>
                       </div>
                       <p className="text-xs text-muted-foreground">{message.role}</p>
@@ -89,9 +92,9 @@ export default function InboxPanel({ open, onOpenChange, messages }: InboxPanelP
                     <div className="space-y-3 pt-1">
                       <p className="text-xs text-foreground leading-relaxed whitespace-pre-line">{message.fullText}</p>
                       <div className="space-y-2">
-                        <p className="text-xs text-muted-foreground font-medium">Response quality</p>
+                        <p className="text-xs text-muted-foreground font-medium">Response</p>
                         <div className="grid grid-cols-2 gap-1.5">
-                          {replyOptions.map((option) => (
+                          {(message.responseOptions ?? categoryResponses[message.source] ?? categoryResponses.random).map((option) => (
                             <Button
                               key={option.actionId}
                               variant="outline"
@@ -99,7 +102,7 @@ export default function InboxPanel({ open, onOpenChange, messages }: InboxPanelP
                               className="text-xs"
                               onClick={(event) => {
                                 event.stopPropagation();
-                                performAction(message, option.actionId, `${option.label} reply sent`, `${message.sender} has been answered.`);
+                                performAction(message, option.actionId, `${option.label} response sent`, `${message.sender} has been answered.`);
                               }}
                             >
                               {option.label}

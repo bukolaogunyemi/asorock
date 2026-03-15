@@ -32,6 +32,7 @@ import { computeFactionDrift, updateGrievance, checkGrievanceThresholds } from "
 import { generateAdvisorLine, generateHeadline, generateInboxMessage } from "./factionNarrative";
 import { processLegislativeTurn, generateAdviserBriefing } from "./legislativeEngine";
 import { processGodfatherTurn, getPatronageEffects } from "./godfatherEngine";
+import { calculateComplianceScore, calculateZoneBalances, getConsequences } from "./federalCharacter";
 
 export type {
   ActiveEvent,
@@ -2395,6 +2396,33 @@ export function processTurn(state: GameState): GameState {
         if (!next.inboxMessages.some(m => m.id === msg.id)) {
           next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
         }
+      }
+    }
+  }
+
+  // Federal Character compliance check
+  if (next.federalCharacter) {
+    const fcAppointments = next.federalCharacter.appointments;
+    const fcBudget = next.federalCharacter.budgetAllocation;
+    const newScore = calculateComplianceScore(fcAppointments, fcBudget);
+    const newZoneScores = calculateZoneBalances(fcAppointments);
+    const consequences = getConsequences(newScore);
+
+    next = {
+      ...next,
+      federalCharacter: {
+        ...next.federalCharacter,
+        complianceScore: newScore,
+        zoneScores: newZoneScores,
+      },
+    };
+
+    // Apply consequence effects
+    for (const effect of consequences.effects) {
+      if (effect.target === "stability") {
+        next = { ...next, stability: Math.max(0, next.stability + effect.delta) };
+      } else if (effect.target === "approval") {
+        next = { ...next, approval: Math.max(0, next.approval + effect.delta) };
       }
     }
   }

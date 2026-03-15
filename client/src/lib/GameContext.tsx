@@ -53,6 +53,7 @@ import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
 import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis } from "./legislativeEngine";
 import { defaultPatronageState } from "./godfatherEngine";
+import { defaultFederalCharacterState } from "./federalCharacter";
 import { acceptDeal, rejectDeal, cashInFavour } from "./godfatherDeals";
 import { neutralizeGodfather } from "./godfatherEngine";
 import type { GodfatherDeal } from "./godfatherTypes";
@@ -487,6 +488,7 @@ const defaultGameState: GameState = {
   cabinetAppointments: {},
   legislature: defaultLegislativeState(),
   patronage: defaultPatronageState(),
+  federalCharacter: defaultFederalCharacterState(),
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -665,6 +667,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
       legislativeCalendar: seedLegislativeCalendar(),
     },
     patronage: defaultPatronageState(),
+    federalCharacter: defaultFederalCharacterState(),
   };
 
   state = syncStrategicState(state);

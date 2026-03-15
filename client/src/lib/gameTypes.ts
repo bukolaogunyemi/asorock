@@ -2,6 +2,7 @@ import type { IdeologyProfile } from "./parties";
 import type { ConstitutionalCandidate } from "./constitutionalOfficers";
 import type { LegislativeState } from "./legislativeTypes";
 import type { PatronageState } from "./godfatherTypes";
+import type { FederalCharacterState } from "./federalCharacterTypes";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -415,6 +416,7 @@ export interface GameState {
   policyLevers: PolicyLeverState;
   legislature: LegislativeState;
   patronage: PatronageState;
+  federalCharacter: FederalCharacterState;
 }
 
 export interface SaveGameData {

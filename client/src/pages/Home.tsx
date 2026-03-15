@@ -1,18 +1,23 @@
 import { Suspense, lazy, useState, useCallback } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import TopBar from "@/components/TopBar";
-import Sidebar from "@/components/Sidebar";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
 import { ProfileBreadcrumbNav } from "@/components/ProfileBreadcrumbNav";
 import { PerplexityAttribution } from "@/components/PerplexityAttribution";
 import InboxPanel from "@/components/InboxPanel";
 import { useGame } from "@/lib/GameContext";
-import DailyBrief from "@/components/DailyBrief";
 import { ProfileNavigationProvider, useProfileNavigation } from "@/lib/ProfileNavigationContext";
+import { resolveEntityProfile } from "@/lib/entityAdapters";
+import { PresidentialDashboard } from "@/components/PresidentialDashboard";
+import { TabNavBar } from "@/components/TabNavBar";
+import { AdvisoryWhisper } from "@/components/AdvisoryWhisper";
+
+const DailyBriefColumn = lazy(() => import("@/components/DailyBriefColumn"));
+const DecisionDesk = lazy(() => import("@/components/DecisionDesk"));
+const HeadlinesColumn = lazy(() => import("@/components/HeadlinesColumn"));
+const IntelligenceBrief = lazy(() => import("@/components/IntelligenceBrief"));
 
 const CharacterProfile = lazy(() => import("@/components/CharacterProfile"));
+const EntityProfile = lazy(() => import("@/components/EntityProfile"));
 const LegacyTab = lazy(() => import("@/components/LegacyTab"));
 const CabinetTab = lazy(() => import("@/components/CabinetTab"));
 const PoliticsTab = lazy(() => import("@/components/PoliticsTab"));
@@ -32,17 +37,6 @@ const SocialMediaTab = lazy(() => import("@/components/SocialMediaTab"));
 interface HomeProps {
   dark: boolean;
   toggleDark: () => void;
-}
-
-function TabFallback() {
-  return (
-    <Card className="border border-border bg-muted/20">
-      <CardContent className="p-6 space-y-2">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Loading</p>
-        <p className="text-sm font-medium">Preparing the next section of the presidency...</p>
-      </CardContent>
-    </Card>
-  );
 }
 
 // Hub sub-tab definitions
@@ -92,37 +86,45 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
   const [activeTab, setActiveTab] = useState("villa");
   const [activeSubTab, setActiveSubTab] = useState<string | null>(null);
   const [inboxOpen, setInboxOpen] = useState(false);
-  const { state, endDay, resolveCabalChoice } = useGame();
+  const [pulsingIndicators, setPulsingIndicators] = useState<string[]>([]);
+  const { state, endDay, dismissBrief, reopenBrief } = useGame();
   const { isProfileOpen, currentProfile, pushProfile, clearStack } = useProfileNavigation();
 
   const isPlaying = state.phase === "playing";
-  const [lastBriefedDay, setLastBriefedDay] = useState(state.day);
-  const showDailyBrief = isPlaying && state.day > 1 && state.day > lastBriefedDay;
+
   const hasPendingCritical = state.activeEvents.some((event) => event.severity === "critical");
   const activeCabalMeeting = state.cabalMeeting && state.cabalMeeting.day === state.day ? state.cabalMeeting : null;
   const hasPendingCabal = isPlaying && !!activeCabalMeeting && !activeCabalMeeting.resolved;
-  const proceedDisabled = hasPendingCritical || hasPendingCabal;
-  const proceedReason = hasPendingCritical
-    ? "Resolve all critical files in the Office tab before proceeding."
-    : hasPendingCabal
-      ? "Hear the morning cabal and set the line for the day before proceeding."
-      : null;
-  const headlines = state.headlines.length > 0 ? state.headlines : ["The day begins quietly in Aso Rock."];
+
+  const canProceed = state.activeEvents.length === 0 && (!state.cabalMeeting || state.cabalMeeting.resolved);
+  const proceedDisabledReason = state.activeEvents.length > 0
+    ? "Resolve pending decisions first"
+    : "Attend the cabal meeting first";
+
+  const showBrief = state.lastBriefData && !state.lastBriefData.dismissed;
+  const handleDismissBrief = () => dismissBrief();
+  const handleReopenBrief = () => reopenBrief();
+
   const unreadCount = state.inboxMessages.filter((message) => !message.read).length;
 
-  const handleNavigate = (tab: string) => {
-    // Clear profile stack when switching tabs
+  const handleNavigate = (tab: string, subTab?: string) => {
     clearStack();
-
-    // Hub tabs go directly to their first sub-tab
     const hub = HUB_TABS[tab];
     if (hub) {
       setActiveTab(tab);
-      setActiveSubTab(hub.defaultSub);
+      setActiveSubTab(subTab ?? hub.defaultSub);
       return;
     }
     setActiveTab(tab);
-    setActiveSubTab(null);
+    setActiveSubTab(subTab ?? null);
+  };
+
+  const handleTabChange = (tab: string) => {
+    handleNavigate(tab);
+  };
+
+  const handleSubTabChange = (subTab: string) => {
+    setActiveSubTab(subTab);
   };
 
   const handleCharacterClick = useCallback((characterKey: string, sourceTab: string, sourceLabel: string) => {
@@ -142,197 +144,159 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
     }
   }, [state.characters, state.governors, state.constitutionalOfficers, pushProfile]);
 
-  const canProceed = !proceedDisabled;
-  const proceedDisabledReason = proceedReason ?? "Cannot proceed right now";
+  const handleEntityClick = useCallback((entityId: string, sourceTab: string, sourceLabel: string) => {
+    const profile = resolveEntityProfile(entityId, state);
+    if (profile) {
+      pushProfile({ key: entityId, type: "entity", label: profile.name, sourceTab, sourceLabel });
+    }
+  }, [state, pushProfile]);
+
   const handleProceed = endDay;
 
   const charClick = useCallback((sourceTab: string, sourceLabel: string) =>
     (characterKey: string) => handleCharacterClick(characterKey, sourceTab, sourceLabel),
     [handleCharacterClick]);
 
+  const entityClick = useCallback((sourceTab: string, sourceLabel: string) =>
+    (entityId: string) => handleEntityClick(entityId, sourceTab, sourceLabel),
+    [handleEntityClick]);
+
+  // Current hub config (if active tab is a hub)
+  const currentHub = HUB_TABS[activeTab];
+
   function renderTabContent() {
     switch (activeTab) {
       case "villa": return <DecisionsTab />;
-      case "cabinet": return <CabinetTab onCharacterClick={charClick("cabinet", "Cabinet")} />;
+      case "cabinet": return <CabinetTab onCharacterClick={charClick("cabinet", "Cabinet")} onEntityClick={entityClick("cabinet", "Cabinet")} />;
       case "politics":
-        return <PoliticsTab onCharacterClick={charClick("politics", "Politics")} />;
+        return <PoliticsTab onCharacterClick={charClick("politics", "Politics")} onEntityClick={entityClick("politics", "Politics")} />;
       case "governance":
-        if (activeSubTab === "economy") return <EconomyTab onCharacterClick={charClick("governance", "Economy")} />;
+        if (activeSubTab === "economy") return <EconomyTab onCharacterClick={charClick("governance", "Economy")} onEntityClick={entityClick("governance", "Economy")} />;
         if (activeSubTab === "infrastructure") return <InfrastructureTab />;
         if (activeSubTab === "health") return <HealthTab />;
         if (activeSubTab === "education") return <EducationTab />;
-        return <EconomyTab onCharacterClick={charClick("governance", "Economy")} />;
+        return <EconomyTab onCharacterClick={charClick("governance", "Economy")} onEntityClick={entityClick("governance", "Economy")} />;
       case "security":
-        return <SecurityTab view={(activeSubTab as "intel" | "military" | "police") ?? "intel"} onCharacterClick={charClick("security", "Security")} />;
-      case "legislature": return <LegislatureTab onCharacterClick={charClick("legislature", "Legislature")} />;
-      case "judiciary": return <JudiciaryTab onCharacterClick={charClick("judiciary", "Judiciary")} />;
-      case "diplomacy": return <DiplomacyTab onCharacterClick={charClick("diplomacy", "Diplomacy")} />;
+        return <SecurityTab view={(activeSubTab as "intel" | "military" | "police") ?? "intel"} onCharacterClick={charClick("security", "Security")} onEntityClick={entityClick("security", "Security")} />;
+      case "legislature": return <LegislatureTab onCharacterClick={charClick("legislature", "Legislature")} onEntityClick={entityClick("legislature", "Legislature")} />;
+      case "judiciary": return <JudiciaryTab onCharacterClick={charClick("judiciary", "Judiciary")} onEntityClick={entityClick("judiciary", "Judiciary")} />;
+      case "diplomacy": return <DiplomacyTab onCharacterClick={charClick("diplomacy", "Diplomacy")} onEntityClick={entityClick("diplomacy", "Diplomacy")} />;
       case "media":
-        if (activeSubTab === "news") return <MediaTab onCharacterClick={charClick("media", "Media")} />;
-        if (activeSubTab === "public-affairs") return <PublicAffairsTab onCharacterClick={charClick("media", "Public Affairs")} />;
+        if (activeSubTab === "news") return <MediaTab onCharacterClick={charClick("media", "Media")} onEntityClick={entityClick("media", "Media")} />;
+        if (activeSubTab === "public-affairs") return <PublicAffairsTab onCharacterClick={charClick("media", "Public Affairs")} onEntityClick={entityClick("media", "Public Affairs")} />;
         if (activeSubTab === "social-media") return <SocialMediaTab />;
-        return <MediaTab onCharacterClick={charClick("media", "Media")} />;
+        return <MediaTab onCharacterClick={charClick("media", "Media")} onEntityClick={entityClick("media", "Media")} />;
       case "legacy": return <LegacyTab />;
       default: return <DecisionsTab />;
     }
   }
 
-  // Current hub config (if active tab is a hub)
-  const currentHub = HUB_TABS[activeTab];
-
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
-      {/* Top Bar — full width */}
+    <div className="h-screen flex flex-col bg-[#0a1f14]">
+      {/* Top Bar */}
       <TopBar
         dark={dark}
         toggleDark={toggleDark}
+        onProceed={handleProceed}
+        canProceed={canProceed}
+        proceedDisabledReason={proceedDisabledReason}
       />
 
-      {/* Below top bar: main area + sidebar */}
-      <div className="flex flex-1 min-h-0">
-        {/* Main content area — this scrolls */}
-        <div className="flex-1 flex flex-col overflow-y-auto">
-          {/* Ticker */}
-          <div className="bg-card border-b border-border overflow-hidden group/ticker">
-            <div className="animate-scroll group-hover/ticker:[animation-play-state:paused] flex whitespace-nowrap py-1.5 px-4">
-              {[...headlines, ...headlines].map((headline, index) => (
-                <span key={`${headline}-${index}`} className="text-xs text-muted-foreground mx-3">
-                  {headline} <span className="text-muted-foreground/40 mx-1">|</span>
-                </span>
-              ))}
-            </div>
-          </div>
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        {/* Zone A — Persistent Dashboard */}
+        <PresidentialDashboard onNavigate={handleNavigate} pulsingIndicators={pulsingIndicators} />
 
-          {/* Daily Summary card */}
-          {state.dailySummary && (
-            <div className="px-4 pt-4">
-              <Card className="border border-border bg-muted/20">
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <div className="space-y-1">
-                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Daily Brief</p>
-                      <h2 className="text-sm font-semibold">{state.dailySummary.headline}</h2>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Pending critical files: {state.dailySummary.pendingCritical}</p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant="outline" className="text-[10px] uppercase tracking-[0.18em]">Term {state.term.current}</Badge>
-                    <Badge variant="secondary" className="text-[10px] capitalize">{state.term.governingPhase.replace(/-/g, " ")}</Badge>
-                    <Badge variant="outline" className="text-[10px] uppercase tracking-[0.18em]">Election in {state.term.daysUntilElection}d</Badge>
-                    <Badge variant="outline" className="text-[10px] uppercase tracking-[0.18em]">VP {state.vicePresident.mood}</Badge>
-                    <Badge variant="outline" className="text-[10px] uppercase tracking-[0.18em]">Inflation {state.macroEconomy.inflation}%</Badge>
-                    <Badge variant="outline" className="text-[10px] uppercase tracking-[0.18em]">FX {state.macroEconomy.fxRate.toLocaleString()}</Badge>
-                  </div>
-                  <div className="grid gap-1 md:grid-cols-2">
-                    {state.dailySummary.items.map((item) => (
-                      <p key={item} className="text-xs text-muted-foreground">{item}</p>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+        {/* Advisory Whisper */}
+        <AdvisoryWhisper activeTab={activeTab} />
 
-          {/* Cabal Meeting card */}
-          {activeCabalMeeting && (
-            <div className="px-4 pt-4">
-              <Card data-testid="cabal-meeting-card" className="border border-border bg-card/70 backdrop-blur-sm">
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <div className="space-y-1 max-w-3xl">
-                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Morning Cabal</p>
-                      <h2 className="text-sm font-semibold">{activeCabalMeeting.title}</h2>
-                      <p className="text-xs text-muted-foreground">{activeCabalMeeting.adviser} · {activeCabalMeeting.role}</p>
-                      <p className="text-xs text-muted-foreground">{activeCabalMeeting.brief}</p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className="text-[10px] uppercase tracking-[0.18em]">{activeCabalMeeting.focus}</Badge>
-                      <Badge variant={activeCabalMeeting.resolved ? "secondary" : "outline"} className="text-[10px] uppercase tracking-[0.18em]">
-                        {activeCabalMeeting.resolved ? "Resolved" : "Awaiting line"}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="grid gap-3 md:grid-cols-3">
-                    {activeCabalMeeting.choices.map((choice, index) => {
-                      const recommended = activeCabalMeeting.recommendedChoiceId === choice.id;
-                      return (
-                        <Card key={choice.id} className="border border-border bg-muted/20">
-                          <CardContent className="p-3 space-y-2">
-                            <div className="flex items-center justify-between gap-2">
-                              <p className="text-sm font-medium">{choice.label}</p>
-                              {recommended && <Badge variant="secondary" className="text-[10px] uppercase tracking-[0.18em]">Recommended</Badge>}
-                            </div>
-                            <p className="text-xs text-muted-foreground">{choice.summary}</p>
-                            <Button
-                              data-testid={`cabal-choice-${index}`}
-                              variant="outline"
-                              size="sm"
-                              className="w-full text-xs"
-                              disabled={activeCabalMeeting.resolved}
-                              onClick={() => resolveCabalChoice(index)}
-                            >
-                              Set This Line
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Breadcrumb navigation: profile breadcrumbs OR hub sub-tab breadcrumbs */}
-          {isProfileOpen ? (
-            <div className="px-4 pt-4">
-              <ProfileBreadcrumbNav />
-            </div>
-          ) : (
-            currentHub && activeSubTab && (
-              <BreadcrumbNav
-                hubName={currentHub.label}
-                activeSubTab={activeSubTab}
-                subTabs={currentHub.subTabs}
-                onSelectSubTab={setActiveSubTab}
-                onBackToHub={() => setActiveSubTab(currentHub.defaultSub)}
-              />
-            )
-          )}
-
-          {/* Tab content or Character Profile */}
-          <div className="flex-1 p-4">
-            <Suspense fallback={<TabFallback />}>
-              {isProfileOpen && currentProfile ? (
-                <CharacterProfile
-                  characterKey={currentProfile.key}
-                  sourceTab={currentProfile.sourceTab}
-                  onCharacterClick={handleCharacterClick}
-                />
-              ) : (
-                renderTabContent()
-              )}
-            </Suspense>
-          </div>
-        </div>
-
-        {/* Right Sidebar */}
-        <Sidebar
+        {/* Tab Navigation Bar */}
+        <TabNavBar
           activeTab={activeTab}
-          onNavigate={handleNavigate}
-          onProceed={handleProceed}
-          canProceed={canProceed}
-          proceedDisabledReason={proceedDisabledReason}
-          onOpenInbox={() => setInboxOpen(true)}
-          unreadCount={unreadCount}
+          activeSubTab={activeSubTab}
+          onNavigate={handleTabChange}
+          onSubNavigate={handleSubTabChange}
         />
+
+        {/* Profile breadcrumbs or hub sub-tab breadcrumbs */}
+        {isProfileOpen ? (
+          <div className="px-4 pt-2 shrink-0">
+            <ProfileBreadcrumbNav />
+          </div>
+        ) : (
+          currentHub && activeSubTab && (
+            <BreadcrumbNav
+              hubName={currentHub.label}
+              activeSubTab={activeSubTab}
+              subTabs={currentHub.subTabs}
+              onSelectSubTab={setActiveSubTab}
+              onBackToHub={() => setActiveSubTab(currentHub.defaultSub)}
+            />
+          )
+        )}
+
+        {/* Zone B — Three-column layout */}
+        <div className="flex-1 flex min-h-0 overflow-hidden">
+          {/* Left: Daily Brief Column */}
+          <Suspense fallback={<div className="w-[220px] shrink-0" />}>
+            <DailyBriefColumn activeTab={activeTab} onOpenFullBrief={handleReopenBrief} />
+          </Suspense>
+
+          {/* Center: Decision Desk + Tab Content */}
+          <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+            <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
+              <DecisionDesk
+                activeTab={activeTab}
+                onProceed={handleProceed}
+                canProceed={canProceed}
+                proceedDisabledReason={proceedDisabledReason}
+                onNavigateToTab={handleTabChange}
+              />
+            </Suspense>
+
+            {/* Tab content or Profile */}
+            <div className="flex-1 p-4">
+              <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
+                {isProfileOpen && currentProfile ? (
+                  currentProfile.type === "entity" ? (
+                    <EntityProfile
+                      entityId={currentProfile.key}
+                      onCharacterClick={handleCharacterClick}
+                      onEntityClick={handleEntityClick}
+                    />
+                  ) : (
+                    <CharacterProfile
+                      characterKey={currentProfile.key}
+                      sourceTab={currentProfile.sourceTab}
+                      onCharacterClick={handleCharacterClick}
+                      onEntityClick={handleEntityClick}
+                    />
+                  )
+                ) : (
+                  renderTabContent()
+                )}
+              </Suspense>
+            </div>
+          </div>
+
+          {/* Right: Headlines Column */}
+          <Suspense fallback={<div className="w-[220px] shrink-0" />}>
+            <HeadlinesColumn activeTab={activeTab} />
+          </Suspense>
+        </div>
       </div>
 
       {/* Overlays */}
       <PerplexityAttribution />
-      {showDailyBrief && (
-        <DailyBrief onDismiss={() => setLastBriefedDay(state.day)} />
+
+      {/* Intelligence Brief Overlay */}
+      {showBrief && (
+        <Suspense fallback={null}>
+          <IntelligenceBrief onDismiss={handleDismissBrief} />
+        </Suspense>
       )}
+
+      {/* Inbox Panel */}
       <InboxPanel open={inboxOpen} onOpenChange={setInboxOpen} messages={state.inboxMessages} />
     </div>
   );

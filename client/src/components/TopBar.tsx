@@ -4,19 +4,24 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { loadGameStateFromFile, downloadGameState } from "@/lib/gamePersistence";
 import { useGame } from "@/lib/GameContext";
+import { TermProgressBar } from "./TermProgressBar";
 import {
   Sun,
   Moon,
   Upload,
   Download,
+  ChevronRight,
 } from "lucide-react";
 
 interface TopBarProps {
   dark: boolean;
   toggleDark: () => void;
+  onProceed: () => void;
+  canProceed: boolean;
+  proceedDisabledReason: string;
 }
 
-export default function TopBar({ dark, toggleDark }: TopBarProps) {
+export default function TopBar({ dark, toggleDark, onProceed, canProceed, proceedDisabledReason }: TopBarProps) {
   const { toast } = useToast();
   const { state, loadGameState } = useGame();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -47,11 +52,12 @@ export default function TopBar({ dark, toggleDark }: TopBarProps) {
 
   return (
     <header
-      className="border-b border-[rgba(212,175,55,0.2)] px-4 py-3"
+      className="border-b border-[rgba(212,175,55,0.2)] px-4 py-2 shrink-0"
       style={{ background: "linear-gradient(90deg, #0f2b1e 0%, #163822 50%, #0f2b1e 100%)" }}
     >
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
+        {/* Left: Logo + Day/Date */}
+        <div className="flex items-center gap-3 shrink-0">
           <span
             className="text-lg font-extrabold tracking-wider"
             style={{
@@ -63,13 +69,27 @@ export default function TopBar({ dark, toggleDark }: TopBarProps) {
             ASO ROCK
           </span>
           {isPlaying && (
-            <Badge className="bg-[rgba(212,175,55,0.15)] text-[#d4af37] border border-[rgba(212,175,55,0.3)] text-[10px] uppercase tracking-wider">
-              Term {state.term.current}
-            </Badge>
+            <>
+              <Badge className="bg-[rgba(212,175,55,0.15)] text-[#d4af37] border border-[rgba(212,175,55,0.3)] text-[10px] uppercase tracking-wider">
+                Term {state.term.current}
+              </Badge>
+              <span className="text-xs text-[#d4af37]/80 font-medium whitespace-nowrap">
+                Day {state.day} · {state.date}
+              </span>
+            </>
           )}
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap justify-end">
+        {/* Center: Term Progress Bar */}
+        {isPlaying && (
+          <div className="flex-1 flex justify-center px-4 min-w-0">
+            <TermProgressBar />
+          </div>
+        )}
+        {!isPlaying && <div className="flex-1" />}
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2 shrink-0">
           <input
             ref={fileInputRef}
             type="file"
@@ -83,7 +103,7 @@ export default function TopBar({ dark, toggleDark }: TopBarProps) {
             className="h-8 text-xs gap-1.5 border-[rgba(212,175,55,0.3)] text-[#d4af37] bg-transparent hover:bg-[rgba(212,175,55,0.1)]"
             onClick={handleExport}
           >
-            <Download className="h-3.5 w-3.5" /> Export Save
+            <Download className="h-3.5 w-3.5" /> Export
           </Button>
           <Button
             variant="outline"
@@ -91,7 +111,7 @@ export default function TopBar({ dark, toggleDark }: TopBarProps) {
             className="h-8 text-xs gap-1.5 border-[rgba(212,175,55,0.3)] text-[#d4af37] bg-transparent hover:bg-[rgba(212,175,55,0.1)]"
             onClick={() => fileInputRef.current?.click()}
           >
-            <Upload className="h-3.5 w-3.5" /> Import Save
+            <Upload className="h-3.5 w-3.5" /> Import
           </Button>
           <Button
             data-testid="dark-mode-toggle"
@@ -103,6 +123,19 @@ export default function TopBar({ dark, toggleDark }: TopBarProps) {
           >
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
+
+          {/* Proceed Button */}
+          {isPlaying && (
+            <Button
+              size="sm"
+              className="h-8 text-xs gap-1.5 font-semibold text-[#0a1f14] bg-gradient-to-r from-[#d4af37] to-[#b8960c] hover:from-[#e0c050] hover:to-[#c4a420] disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={!canProceed}
+              title={!canProceed ? proceedDisabledReason : "Advance to the next day"}
+              onClick={onProceed}
+            >
+              Next Day <ChevronRight className="h-3.5 w-3.5" />
+            </Button>
+          )}
         </div>
       </div>
     </header>

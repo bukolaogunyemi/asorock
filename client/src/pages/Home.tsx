@@ -126,7 +126,7 @@ export default function Home({ dark, toggleDark }: HomeProps) {
       case "villa": return <DecisionsTab />;
       case "cabinet": return <CabinetTab />;
       case "politics":
-        return <PoliticsTab view={(activeSubTab as "cabal" | "party" | "elections" | "campaign") ?? "cabal"} />;
+        return <PoliticsTab />;
       case "governance":
         if (activeSubTab === "economy") return <EconomyTab />;
         if (activeSubTab === "infrastructure") return <InfrastructureTab />;

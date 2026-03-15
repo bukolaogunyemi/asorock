@@ -31,7 +31,7 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
-// ─── ProfilePanel ───────────────────────────────────────────────────────────
+// ─── ProfilePanel (compact horizontal layout) ───────────────────────────────
 
 export function ProfilePanel() {
   const { state } = useGame();
@@ -47,10 +47,10 @@ export function ProfilePanel() {
   const initials = getInitials(state.presidentName);
 
   return (
-    <div className="flex flex-col items-center gap-3 px-4 py-5">
-      {/* Avatar */}
+    <div className="flex items-center gap-3 px-4 py-2">
+      {/* Avatar — smaller */}
       <div
-        className="flex h-20 w-20 items-center justify-center rounded-full border-[3px] text-2xl font-bold"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold"
         style={{
           borderColor: "#d4af37",
           background: "linear-gradient(135deg, #0a1f14 0%, #14382a 100%)",
@@ -60,60 +60,44 @@ export function ProfilePanel() {
         {initials}
       </div>
 
-      {/* Name */}
-      <h2
-        className="text-center text-lg font-semibold tracking-wide"
-        style={{ color: "#d4af37" }}
-      >
-        {state.presidentName}
-      </h2>
+      {/* Name + bio + stats in a compact column */}
+      <div className="min-w-0 flex-1">
+        {/* Name */}
+        <h2
+          className="text-sm font-semibold tracking-wide truncate"
+          style={{ color: "#d4af37" }}
+        >
+          {state.presidentName}
+        </h2>
 
-      {/* Biodata line */}
-      <p className="text-center text-xs text-gray-400">
-        {state.presidentAge} yrs &middot; {state.presidentState} &middot;{" "}
-        {state.presidentParty}
-      </p>
+        {/* Biodata line */}
+        <p className="text-[10px] text-gray-400 truncate">
+          {state.presidentAge} yrs &middot; {state.presidentState} &middot;{" "}
+          {state.presidentParty}
+        </p>
 
-      {/* 2x2 Stats Grid */}
-      <div className="mt-2 grid w-full grid-cols-2 gap-2">
-        <StatCell
-          label="Pol. Capital"
-          value={String(state.politicalCapital)}
-          color="#d4af37"
-        />
-        <StatCell
-          label="Legacy"
-          value={String(legacyScore)}
-          color="#22c55e"
-        />
-        <StatCell
-          label="Prestige"
-          value={prestige.tier}
-          color={prestige.color}
-        />
-        <StatCell label="Day" value={String(state.day)} color="#93c5fd" />
-      </div>
-
-      {/* Political Weather Badge */}
-      <div
-        className="mt-3 flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium"
-        style={{
-          backgroundColor: `${weather.color}15`,
-          border: `1px solid ${weather.color}40`,
-          color: weather.color,
-        }}
-      >
-        <span>{weatherIcon(weather.level)}</span>
-        <span>{weather.level}</span>
-        <span className="text-xs opacity-60">({weather.score})</span>
+        {/* Inline stats row */}
+        <div className="flex items-center gap-2 mt-1">
+          <StatPill label="PC" value={String(state.politicalCapital)} color="#d4af37" />
+          <StatPill label="Legacy" value={String(legacyScore)} color="#22c55e" />
+          <StatPill label={prestige.tier} value="" color={prestige.color} />
+          <StatPill label="Day" value={String(state.day)} color="#93c5fd" />
+          {/* Weather inline */}
+          <span
+            className="flex items-center gap-1 text-[10px] font-medium"
+            style={{ color: weather.color }}
+          >
+            {weatherIcon(weather.level)} {weather.level}
+          </span>
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── StatCell ───────────────────────────────────────────────────────────────
+// ─── StatPill ───────────────────────────────────────────────────────────────
 
-function StatCell({
+function StatPill({
   label,
   value,
   color,
@@ -123,16 +107,8 @@ function StatCell({
   color: string;
 }) {
   return (
-    <div
-      className="flex flex-col items-center rounded-lg px-2 py-2"
-      style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
-    >
-      <span className="text-[10px] uppercase tracking-wider text-gray-500">
-        {label}
-      </span>
-      <span className="mt-0.5 text-base font-bold" style={{ color }}>
-        {value}
-      </span>
-    </div>
+    <span className="text-[10px] font-medium" style={{ color }}>
+      {label}{value ? ` ${value}` : ""}
+    </span>
   );
 }

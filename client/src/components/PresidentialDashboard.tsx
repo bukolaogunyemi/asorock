@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ProfilePanel } from "./ProfilePanel";
 import { GovernanceIndicators } from "./GovernanceIndicators";
-import { CollapsedDashboard } from "./CollapsedDashboard";
 
 // RiskRadarPanel and IndicatorDetailPopup may not exist yet — lazy-import stubs
 let RiskRadarPanel: React.FC;
@@ -15,7 +14,7 @@ try {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   RiskRadarPanel = require("./RiskRadarPanel").RiskRadarPanel;
 } catch {
-  RiskRadarPanel = () => <div className="w-[250px]" />;
+  RiskRadarPanel = () => null;
 }
 
 try {
@@ -34,51 +33,35 @@ export function PresidentialDashboard({
   onNavigate,
   pulsingIndicators,
 }: PresidentialDashboardProps) {
-  const [expanded, setExpanded] = useState(false);
   const [selectedIndicator, setSelectedIndicator] = useState<string | null>(
     null,
   );
 
   return (
     <div
-      className="relative border-b transition-all duration-300 ease-in-out"
+      className="relative border-b"
       style={{
         backgroundColor: "#0a1f14",
         borderColor: "rgba(212,175,55,0.3)",
       }}
     >
-      {expanded ? (
-        <>
-          {/* Collapse toggle */}
-          <button
-            className="absolute right-3 top-2 z-10 text-xs opacity-60 hover:opacity-100"
-            style={{ color: "#d4af37" }}
-            onClick={() => setExpanded(false)}
-            aria-label="Collapse dashboard"
-          >
-            &#9660;
-          </button>
+      {/* Compact two-row layout: Profile row + Indicators row */}
+      <div className="flex flex-col">
+        {/* Row 1: Profile info */}
+        <ProfilePanel />
 
-          {/* Three-panel layout */}
-          <div className="flex">
-            <div className="w-[230px] shrink-0">
-              <ProfilePanel />
-            </div>
-            <div className="min-w-0 flex-1">
-              <GovernanceIndicators
-                onNavigate={onNavigate}
-                onShowDetail={setSelectedIndicator}
-                pulsingIndicators={pulsingIndicators}
-              />
-            </div>
-            <div className="w-[250px] shrink-0">
-              <RiskRadarPanel />
-            </div>
-          </div>
-        </>
-      ) : (
-        <CollapsedDashboard onExpand={() => setExpanded(true)} />
-      )}
+        {/* Row 2: Governance indicators grid */}
+        <div className="px-3 pb-2">
+          <GovernanceIndicators
+            onNavigate={onNavigate}
+            onShowDetail={setSelectedIndicator}
+            pulsingIndicators={pulsingIndicators}
+          />
+        </div>
+
+        {/* Risk radar (if available) */}
+        <RiskRadarPanel />
+      </div>
 
       {/* Indicator detail popup */}
       {selectedIndicator && (

@@ -204,7 +204,7 @@ function getCategoryIcon(category: string): string {
 interface CharacterProfileProps {
   characterKey: string;
   sourceTab: string;
-  onCharacterClick?: (key: string, label: string) => void;
+  onCharacterClick?: (characterKey: string, sourceTab: string, sourceLabel: string) => void;
 }
 
 // ── Component ─────────────────────────────────────────────

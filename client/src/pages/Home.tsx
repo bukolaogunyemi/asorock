@@ -1,17 +1,18 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import TopBar from "@/components/TopBar";
 import Sidebar from "@/components/Sidebar";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
+import { ProfileBreadcrumbNav } from "@/components/ProfileBreadcrumbNav";
 import { PerplexityAttribution } from "@/components/PerplexityAttribution";
 import InboxPanel from "@/components/InboxPanel";
 import { useGame } from "@/lib/GameContext";
 import DailyBrief from "@/components/DailyBrief";
-import NPCDetailDrawer from "@/components/NPCDetailDrawer";
-import type { CharacterState } from "@/lib/GameContext";
+import { ProfileNavigationProvider, useProfileNavigation } from "@/lib/ProfileNavigationContext";
 
+const CharacterProfile = lazy(() => import("@/components/CharacterProfile"));
 const LegacyTab = lazy(() => import("@/components/LegacyTab"));
 const CabinetTab = lazy(() => import("@/components/CabinetTab"));
 const PoliticsTab = lazy(() => import("@/components/PoliticsTab"));
@@ -80,19 +81,23 @@ const HUB_TABS: Record<string, { label: string; defaultSub: string; subTabs: { i
 };
 
 export default function Home({ dark, toggleDark }: HomeProps) {
+  return (
+    <ProfileNavigationProvider>
+      <HomeInner dark={dark} toggleDark={toggleDark} />
+    </ProfileNavigationProvider>
+  );
+}
+
+function HomeInner({ dark, toggleDark }: HomeProps) {
   const [activeTab, setActiveTab] = useState("villa");
   const [activeSubTab, setActiveSubTab] = useState<string | null>(null);
   const [inboxOpen, setInboxOpen] = useState(false);
   const { state, endDay, resolveCabalChoice } = useGame();
+  const { isProfileOpen, currentProfile, pushProfile, clearStack } = useProfileNavigation();
 
   const isPlaying = state.phase === "playing";
   const [lastBriefedDay, setLastBriefedDay] = useState(state.day);
   const showDailyBrief = isPlaying && state.day > 1 && state.day > lastBriefedDay;
-  const [npcDrawerChar, setNpcDrawerChar] = useState<CharacterState | null>(null);
-  const openNPCDetail = (name: string) => {
-    const char = state.characters[name];
-    if (char) setNpcDrawerChar(char);
-  };
   const hasPendingCritical = state.activeEvents.some((event) => event.severity === "critical");
   const activeCabalMeeting = state.cabalMeeting && state.cabalMeeting.day === state.day ? state.cabalMeeting : null;
   const hasPendingCabal = isPlaying && !!activeCabalMeeting && !activeCabalMeeting.resolved;
@@ -106,6 +111,9 @@ export default function Home({ dark, toggleDark }: HomeProps) {
   const unreadCount = state.inboxMessages.filter((message) => !message.read).length;
 
   const handleNavigate = (tab: string) => {
+    // Clear profile stack when switching tabs
+    clearStack();
+
     // Hub tabs go directly to their first sub-tab
     const hub = HUB_TABS[tab];
     if (hub) {
@@ -116,6 +124,23 @@ export default function Home({ dark, toggleDark }: HomeProps) {
     setActiveTab(tab);
     setActiveSubTab(null);
   };
+
+  const handleCharacterClick = useCallback((characterKey: string, sourceTab: string, sourceLabel: string) => {
+    const char = state.characters[characterKey];
+    if (char) {
+      pushProfile({ characterKey, label: char.name, sourceTab, sourceLabel });
+      return;
+    }
+    const gov = state.governors.find(g => g.name === characterKey);
+    if (gov) {
+      pushProfile({ characterKey, label: gov.name, sourceTab, sourceLabel });
+      return;
+    }
+    const officer = state.constitutionalOfficers.find(o => o.name === characterKey);
+    if (officer) {
+      pushProfile({ characterKey, label: officer.name, sourceTab, sourceLabel });
+    }
+  }, [state.characters, state.governors, state.constitutionalOfficers, pushProfile]);
 
   const canProceed = !proceedDisabled;
   const proceedDisabledReason = proceedReason ?? "Cannot proceed right now";
@@ -254,21 +279,35 @@ export default function Home({ dark, toggleDark }: HomeProps) {
             </div>
           )}
 
-          {/* BreadcrumbNav for hub sub-tabs */}
-          {currentHub && activeSubTab && (
-            <BreadcrumbNav
-              hubName={currentHub.label}
-              activeSubTab={activeSubTab}
-              subTabs={currentHub.subTabs}
-              onSelectSubTab={setActiveSubTab}
-              onBackToHub={() => setActiveSubTab(currentHub.defaultSub)}
-            />
+          {/* Breadcrumb navigation: profile breadcrumbs OR hub sub-tab breadcrumbs */}
+          {isProfileOpen ? (
+            <div className="px-4 pt-4">
+              <ProfileBreadcrumbNav />
+            </div>
+          ) : (
+            currentHub && activeSubTab && (
+              <BreadcrumbNav
+                hubName={currentHub.label}
+                activeSubTab={activeSubTab}
+                subTabs={currentHub.subTabs}
+                onSelectSubTab={setActiveSubTab}
+                onBackToHub={() => setActiveSubTab(currentHub.defaultSub)}
+              />
+            )
           )}
 
-          {/* Tab content */}
+          {/* Tab content or Character Profile */}
           <div className="flex-1 p-4">
             <Suspense fallback={<TabFallback />}>
-              {renderTabContent()}
+              {isProfileOpen && currentProfile ? (
+                <CharacterProfile
+                  characterKey={currentProfile.characterKey}
+                  sourceTab={currentProfile.sourceTab}
+                  onCharacterClick={handleCharacterClick}
+                />
+              ) : (
+                renderTabContent()
+              )}
             </Suspense>
           </div>
         </div>
@@ -290,11 +329,6 @@ export default function Home({ dark, toggleDark }: HomeProps) {
       {showDailyBrief && (
         <DailyBrief onDismiss={() => setLastBriefedDay(state.day)} />
       )}
-      <NPCDetailDrawer
-        open={!!npcDrawerChar}
-        onOpenChange={(open) => { if (!open) setNpcDrawerChar(null); }}
-        character={npcDrawerChar}
-      />
       <InboxPanel open={inboxOpen} onOpenChange={setInboxOpen} messages={state.inboxMessages} />
     </div>
   );

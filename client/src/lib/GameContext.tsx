@@ -60,6 +60,7 @@ import { neutralizeGodfather } from "./godfatherEngine";
 import { defaultPartyInternalsState, initiatePoaching, executeDefection, checkPoachingCooldown } from "./partyEngine";
 import type { GodfatherDeal } from "./godfatherTypes";
 import { seedLegislativeCalendar } from "./legislativeBills";
+import { defaultEconomicState } from "./economicEngine";
 
 // Register constitutional officer pools at module load time
 registerConstitutionalPools();
@@ -500,6 +501,7 @@ const defaultGameState: GameState = {
     maxConcurrentOps: 2,
   },
   partyInternals: defaultPartyInternalsState("ADU"),
+  economy: defaultEconomicState(),
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -573,6 +575,7 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
     lastActionAtDay: state.lastActionAtDay ?? {},
     cabalMeeting: state.cabalMeeting ?? null,
     policyLevers: state.policyLevers,
+    economy: state.economy ?? defaultEconomicState(),
   };
   const hydrated = syncStrategicState(hydratedBase);
   return {
@@ -688,6 +691,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
       maxConcurrentOps: 2,
     },
     partyInternals: defaultPartyInternalsState(config.party),
+    economy: defaultEconomicState(),
   };
 
   state = syncStrategicState(state);

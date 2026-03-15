@@ -1,6 +1,9 @@
 import { getChainById, getChainStep, getTriggeredChains } from "./eventChains";
+import { parseEntityId, slugify } from "./entityTypes";
+import { getZoneForState } from "./zones";
 import { getQuickActionById, getTriggeredActiveEvents } from "./gameContent";
 import { checkBetrayalRisk, getTraitEffect } from "./traits";
+import { migrateOldCompetencies, deriveBetrayalThreshold, averageProfessionalCompetence } from "./competencyUtils";
 import { checkDefeat, checkVictory } from "./victorySystem";
 import type { FailureState, VictoryPath } from "./victorySystem";
 import type {
@@ -120,8 +123,8 @@ const vicePresidentMood = (state: GameState, loyalty: number, ambition: number):
 
 const syncStrategicState = (state: GameState): GameState => {
   const vpCharacter = state.characters[state.vicePresident.name];
-  const loyalty = vpCharacter?.loyalty ?? state.vicePresident.loyalty;
-  const ambition = vpCharacter?.ambition ?? state.vicePresident.ambition;
+  const loyalty = vpCharacter?.competencies?.personal.loyalty ?? state.vicePresident.loyalty;
+  const ambition = vpCharacter?.competencies?.personal.ambition ?? state.vicePresident.ambition;
   const relationship = vpCharacter?.relationship ?? relationshipFromLoyalty(loyalty);
   const governingPhase = inferGoverningPhase(state.term.daysInOffice, state.term.daysUntilElection);
   const base = {
@@ -234,8 +237,16 @@ export function processConsequences(state: GameState, consequences: Consequence[
         case "character":
           if (effect.characterName && next.characters[effect.characterName]) {
             const current = next.characters[effect.characterName];
-            const loyalty = Math.round(clamp(current.loyalty + effect.delta, 0, 100));
-            next.characters[effect.characterName] = { ...current, loyalty, relationship: relationshipFromLoyalty(loyalty) };
+            const currentLoyalty = current.competencies.personal.loyalty;
+            const newLoyalty = Math.round(clamp(currentLoyalty + effect.delta, 0, 100));
+            next.characters[effect.characterName] = {
+              ...current,
+              competencies: {
+                ...current.competencies,
+                personal: { ...current.competencies.personal, loyalty: newLoyalty },
+              },
+              relationship: relationshipFromLoyalty(newLoyalty),
+            };
           }
           break;
         case "faction":
@@ -418,12 +429,16 @@ const primeHookInvestigation = (state: GameState, ownerName: string, hookId: str
 const setVicePresidentLoyalty = (state: GameState, delta: number): GameState => {
   const loyalty = Math.round(clamp(state.vicePresident.loyalty + delta, 0, 100));
   const relationship = relationshipFromLoyalty(loyalty);
-  const characters = state.characters[state.vicePresident.name]
+  const vpChar = state.characters[state.vicePresident.name];
+  const characters = vpChar
     ? {
         ...state.characters,
         [state.vicePresident.name]: {
-          ...state.characters[state.vicePresident.name],
-          loyalty,
+          ...vpChar,
+          competencies: {
+            ...vpChar.competencies,
+            personal: { ...vpChar.competencies.personal, loyalty },
+          },
           relationship,
         },
       }
@@ -1190,18 +1205,23 @@ export function resolveActiveEventChoice(state: GameState, eventId: string, choi
     const candidates = cabinetCandidates[portfolio];
     if (candidates && candidates[choiceIndex]) {
       const c = candidates[choiceIndex];
-      const newChar: CharacterState = {
-        name: c.name,
-        portfolio: `Minister of ${c.portfolio}`,
+      const competencies = migrateOldCompetencies({
         loyalty: c.loyalty,
         competence: c.competence,
         ambition: c.ambition,
+        portfolio: c.portfolio,
+      });
+      const newChar: CharacterState = {
+        name: c.name,
+        portfolio: `Minister of ${c.portfolio}`,
+        competencies,
         faction: c.faction,
         relationship: c.relationship as Relationship,
         avatar: c.avatar,
         traits: [],
-        betrayalThreshold: Math.max(15, 50 - c.ambition * 0.3),
         hooks: [],
+        careerHistory: [],
+        interactionLog: [],
         age: c.age,
         state: c.state,
         gender: c.gender,
@@ -1620,9 +1640,17 @@ const processTraitDrift = (state: GameState): { state: GameState; items: string[
     const drift = effect.loyaltyDrift + (state.stress > 70 ? -0.2 : 0);
     if (drift === 0) return [name, character];
     changed = true;
-    const loyalty = Math.round(clamp(character.loyalty + drift, 0, 100));
+    const currentLoyalty = character.competencies.personal.loyalty;
+    const newLoyalty = Math.round(clamp(currentLoyalty + drift, 0, 100));
     if (Math.abs(drift) >= 0.2) items.push(`${name} ${drift > 0 ? "steadied" : "frayed"}`);
-    return [name, { ...character, loyalty, relationship: relationshipFromLoyalty(loyalty) }];
+    return [name, {
+      ...character,
+      competencies: {
+        ...character.competencies,
+        personal: { ...character.competencies.personal, loyalty: newLoyalty },
+      },
+      relationship: relationshipFromLoyalty(newLoyalty),
+    }];
   }));
   return changed ? { state: { ...state, characters }, items } : { state, items: [] };
 };
@@ -2085,8 +2113,20 @@ const processHookInvestigations = (state: GameState): { state: GameState; items:
       return nextHook;
     });
 
-    const loyalty = loyaltyPenalty > 0 ? Math.round(clamp(character.loyalty - loyaltyPenalty, 0, 100)) : character.loyalty;
-    return [name, loyaltyPenalty > 0 ? { ...character, hooks, loyalty, relationship: relationshipFromLoyalty(loyalty) } : { ...character, hooks }];
+    if (loyaltyPenalty > 0) {
+      const currentLoyalty = character.competencies.personal.loyalty;
+      const newLoyalty = Math.round(clamp(currentLoyalty - loyaltyPenalty, 0, 100));
+      return [name, {
+        ...character,
+        hooks,
+        competencies: {
+          ...character.competencies,
+          personal: { ...character.competencies.personal, loyalty: newLoyalty },
+        },
+        relationship: relationshipFromLoyalty(newLoyalty),
+      }];
+    }
+    return [name, { ...character, hooks }];
   }));
 
   return changed ? { state: { ...state, characters }, items } : { state, items: [] };
@@ -2180,7 +2220,7 @@ function generateCabinetAppointmentEvent(state: GameState): ActiveEvent | null {
         description: `${c.name} appointed as Minister of ${portfolio}`,
         effects: [
           { target: "approval", delta: c.competence >= 80 ? 2 : -1, description: c.competence >= 80 ? "A credible appointment boosts confidence" : "Questions arise about the appointment" },
-          ...(c.faction ? [{ target: "faction" as const, factionName: c.faction, delta: c.loyalty >= 70 ? 5 : -3, description: c.loyalty >= 70 ? `${c.faction} approves of the appointment` : `${c.faction} is wary of this choice` }] : []),
+          ...(c.faction ? [{ target: "faction" as const, factionName: c.faction, delta: (c.loyalty ?? 50) >= 70 ? 5 : -3, description: (c.loyalty ?? 50) >= 70 ? `${c.faction} approves of the appointment` : `${c.faction} is wary of this choice` }] : []),
         ],
       },
     ],
@@ -2540,6 +2580,179 @@ export function processTurn(state: GameState): GameState {
   if (defeat) return finalizePresentation({ ...next, phase: "defeat", defeatState: defeat.id, cabalMeeting: null });
   if (victory) return finalizePresentation({ ...next, phase: "victory", victoryPath: victory.id, cabalMeeting: null });
   return next;
+}
+
+// ── Entity Action Executor ─────────────────────────────────────────────────────
+// Applies gameplay effects for entity-panel actions dispatched from the UI.
+
+export function executeEntityAction(state: GameState, entityId: string, actionId: string): GameState {
+  const parsed = parseEntityId(entityId);
+  if (!parsed) return state;
+
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  let newState = { ...state };
+
+  switch (actionId) {
+    // ── State actions ──────────────────────────────────────────────────────────
+    case "visit-state": {
+      const zone = getZoneForState(capitalize(parsed.slug));
+      if (zone) {
+        newState.governors = newState.governors.map((g) =>
+          g.zone === zone.name
+            ? { ...g, loyalty: Math.min(100, g.loyalty + 8), approval: Math.min(100, g.approval + 3) }
+            : g
+        );
+      }
+      newState.headlines = [...(newState.headlines ?? []), `President visits ${capitalize(parsed.slug)} State`];
+      break;
+    }
+    case "deploy-security": {
+      if (state.politicalCapital < 5) return state;
+      newState.politicalCapital -= 5;
+      newState.stability = Math.min(100, (newState.stability ?? 50) + 5);
+      newState.headlines = [...(newState.headlines ?? []), `Federal security deployed to ${capitalize(parsed.slug)}`];
+      break;
+    }
+    case "allocate-project": {
+      if (state.politicalCapital < 10) return state;
+      newState.politicalCapital -= 10;
+      newState.approval = Math.min(100, (newState.approval ?? 50) + 5);
+      newState.headlines = [...(newState.headlines ?? []), `Federal project allocated to ${capitalize(parsed.slug)}`];
+      break;
+    }
+    case "remove-governor": {
+      if (state.politicalCapital < 25) return state;
+      newState.politicalCapital -= 25;
+      const zone = getZoneForState(capitalize(parsed.slug));
+      if (zone) {
+        newState.governors = newState.governors.map((g) =>
+          g.zone === zone.name ? { ...g, loyalty: 0, approval: 0 } : g
+        );
+      }
+      newState.headlines = [...(newState.headlines ?? []), `State of emergency declared in ${capitalize(parsed.slug)}`];
+      break;
+    }
+    // ── Ministry actions ───────────────────────────────────────────────────────
+    case "inspect-ministry": {
+      newState.headlines = [...(newState.headlines ?? []), `Presidential inspection of Ministry of ${capitalize(parsed.slug)}`];
+      break;
+    }
+    case "issue-directive": {
+      newState.headlines = [...(newState.headlines ?? []), `New directive issued for Ministry of ${capitalize(parsed.slug)}`];
+      break;
+    }
+    // ── Agency actions ─────────────────────────────────────────────────────────
+    case "investigate-agency": {
+      newState.headlines = [...(newState.headlines ?? []), `Investigation launched into agency operations`];
+      break;
+    }
+    case "expand-mandate": {
+      if (state.politicalCapital < 8) return state;
+      newState.politicalCapital -= 8;
+      newState.headlines = [...(newState.headlines ?? []), `Agency mandate expanded by presidential order`];
+      break;
+    }
+    // ── Country actions ────────────────────────────────────────────────────────
+    case "send-delegation": {
+      newState.headlines = [...(newState.headlines ?? []), `Nigerian delegation sent to strengthen bilateral ties`];
+      break;
+    }
+    case "propose-trade-deal": {
+      newState.headlines = [...(newState.headlines ?? []), `New trade deal proposed with partner nation`];
+      break;
+    }
+    case "recall-ambassador": {
+      newState.headlines = [...(newState.headlines ?? []), `Nigerian ambassador recalled — diplomatic tensions rise`];
+      break;
+    }
+    // ── Constitutional office actions ──────────────────────────────────────────
+    case "meet-officer": {
+      newState.headlines = [...(newState.headlines ?? []), `President meets with constitutional officer`];
+      break;
+    }
+    case "apply-pressure": {
+      newState.headlines = [...(newState.headlines ?? []), `Presidential pressure applied on legislative agenda`];
+      break;
+    }
+    // ── Faction actions ────────────────────────────────────────────────────────
+    case "appease-faction": {
+      if (state.politicalCapital < 8) return state;
+      newState.politicalCapital -= 8;
+      const factionName = Object.keys(state.factions).find((f) => slugify(f) === parsed.slug);
+      if (factionName && newState.factions[factionName]) {
+        newState.factions = {
+          ...newState.factions,
+          [factionName]: {
+            ...newState.factions[factionName],
+            grievance: Math.max(0, newState.factions[factionName].grievance - 15),
+          },
+        };
+      }
+      break;
+    }
+    case "purge-faction": {
+      if (state.politicalCapital < 15) return state;
+      newState.politicalCapital -= 15;
+      const fName = Object.keys(state.factions).find((f) => slugify(f) === parsed.slug);
+      if (fName && newState.factions[fName]) {
+        newState.factions = {
+          ...newState.factions,
+          [fName]: {
+            ...newState.factions[fName],
+            loyalty: Math.max(0, newState.factions[fName].loyalty - 30),
+            influence: Math.max(0, newState.factions[fName].influence - 10),
+          },
+        };
+      }
+      newState.headlines = [...(newState.headlines ?? []), `President purges faction members from key positions`];
+      break;
+    }
+    case "negotiate-faction": {
+      if (state.politicalCapital < 5) return state;
+      newState.politicalCapital -= 5;
+      const fN = Object.keys(state.factions).find((f) => slugify(f) === parsed.slug);
+      if (fN && newState.factions[fN]) {
+        newState.factions = {
+          ...newState.factions,
+          [fN]: {
+            ...newState.factions[fN],
+            grievance: Math.max(0, newState.factions[fN].grievance - 8),
+            loyalty: Math.min(100, newState.factions[fN].loyalty + 5),
+          },
+        };
+      }
+      break;
+    }
+    case "empower-faction": {
+      const empName = Object.keys(state.factions).find((f) => slugify(f) === parsed.slug);
+      if (empName && newState.factions[empName]) {
+        const updatedFactions: typeof newState.factions = {
+          ...newState.factions,
+          [empName]: {
+            ...newState.factions[empName],
+            influence: Math.min(100, newState.factions[empName].influence + 10),
+          },
+        };
+        // Rival factions get grievance +5
+        for (const [fn, fd] of Object.entries(updatedFactions)) {
+          if (fn !== empName) {
+            updatedFactions[fn] = { ...fd, grievance: Math.min(100, fd.grievance + 5) };
+          }
+        }
+        newState.factions = updatedFactions;
+      }
+      break;
+    }
+    // ── Appointment actions are no-ops (handled by existing UI flows) ──────────
+    case "replace-minister":
+    case "appoint-head":
+    case "appoint-ambassador":
+      break;
+    default:
+      break;
+  }
+
+  return newState;
 }
 
 

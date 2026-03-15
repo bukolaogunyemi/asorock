@@ -3,6 +3,15 @@
 
 import { parseEntityId, slugify } from "./entityTypes";
 import type { EntityProfile, EntityPerson, EntityMetadata, EntityStat } from "./entityTypes";
+import {
+  getStateActions,
+  getMinistryActions,
+  getAgencyActions,
+  getCountryActions,
+  getConstitutionalOfficeActions,
+  getFactionActions,
+  getInternationalOrgActions,
+} from "./entityActions";
 import { getStateData } from "./stateDatabase";
 import { getCountryData, ECOWAS_DATA, COUNTRY_DATABASE } from "./countryDatabase";
 import { getMinistryData } from "./ministryDatabase";
@@ -83,7 +92,7 @@ export function adaptStateToProfile(
           stat("Governor Competence", governor.competence, 100),
         ]
       : [],
-    actions: [],
+    actions: getStateActions(data.name, gameState),
   };
 }
 
@@ -131,7 +140,7 @@ export function adaptMinistryToProfile(
       meta("Key Responsibilities", data.responsibilities.join("; ")),
     ],
     keyPersonnel,
-    actions: [],
+    actions: getMinistryActions(data.portfolio, gameState),
   };
 }
 
@@ -175,7 +184,7 @@ export function adaptAgencyToProfile(
       meta("Prestige Tier", data.prestigeTier),
     ],
     keyPersonnel,
-    actions: [],
+    actions: getAgencyActions(data.id, gameState),
   };
 }
 
@@ -225,7 +234,7 @@ export function adaptCountryToProfile(
         relValue >= 70 ? "green" : relValue >= 40 ? "yellow" : "red"
       ),
     ],
-    actions: [],
+    actions: getCountryActions(data.name, gameState),
   };
 }
 
@@ -252,7 +261,7 @@ export function adaptInternationalOrgToProfile(
       meta("Member States", data.memberStates.join(", ")),
     ],
     keyPersonnel: [],
-    actions: [],
+    actions: getInternationalOrgActions(),
   };
 }
 
@@ -298,7 +307,7 @@ export function adaptConstitutionalOfficeToProfile(
       meta("Key Powers", data.keyPowers.join("; ")),
     ],
     keyPersonnel,
-    actions: [],
+    actions: getConstitutionalOfficeActions(data.positionName, gameState),
   };
 }
 
@@ -348,7 +357,7 @@ export function adaptFactionToProfile(
     ],
     keyPersonnel,
     stats,
-    actions: [],
+    actions: getFactionActions(data.name, gameState),
   };
 }
 

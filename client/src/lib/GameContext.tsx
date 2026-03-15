@@ -8,6 +8,7 @@ import {
   type GameInboxMessage,
   type GameState,
   executeQuickAction,
+  executeEntityAction,
   handleInboxAction,
   markInboxMessageRead,
   processTurn,
@@ -49,6 +50,7 @@ import type {
   PolicyLeverState,
 } from "./gameTypes";
 import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidates } from "./gameData";
+import { migrateOldCompetencies, deriveBetrayalThreshold, averageProfessionalCompetence } from "./competencyUtils";
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
 import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis } from "./legislativeEngine";
@@ -308,16 +310,17 @@ const seedInitialHooks = (charactersMap: Record<string, CharacterState>): Record
     const hooks = [...character.hooks];
     const traits = new Set(character.traits);
     const seed = hashSeed(name);
-    const shouldSeed = character.ambition >= 68 || traits.has("corrupt") || traits.has("schemer") || /petroleum|finance|chairman|vice president|security/i.test(character.portfolio);
+    const ambition = character.competencies.personal.ambition;
+    const shouldSeed = ambition >= 68 || traits.has("corrupt") || traits.has("schemer") || /petroleum|finance|chairman|vice president|security/i.test(character.portfolio);
     if (shouldSeed) {
       const type: Hook["type"] = traits.has("corrupt") || /finance|petroleum/i.test(character.portfolio)
         ? "financial"
         : /security|defence|nsa/i.test(character.portfolio)
           ? "criminal"
-          : traits.has("schemer") || character.ambition >= 80
+          : traits.has("schemer") || ambition >= 80
             ? "political"
             : "personal";
-      const severity: Hook["severity"] = character.ambition >= 85 || traits.has("schemer") ? "devastating" : character.ambition >= 72 || traits.has("corrupt") ? "major" : "minor";
+      const severity: Hook["severity"] = ambition >= 85 || traits.has("schemer") ? "devastating" : ambition >= 72 || traits.has("corrupt") ? "major" : "minor";
       const evidence = 22 + (seed % 28);
       hooks.push({
         id: `hook-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
@@ -347,36 +350,46 @@ const buildCharacterMap = (vicePresident?: VicePresidentState): Record<string, C
   const map: Record<string, CharacterState> = {};
   // Cabinet characters are NOT added here — they are added when the player appoints them
   for (const character of characters) {
-    map[character.name] = {
-      name: character.name,
-      portfolio: character.portfolio,
+    const competencies = migrateOldCompetencies({
       loyalty: character.loyalty,
       competence: character.competence,
       ambition: character.ambition,
+      portfolio: character.portfolio,
+    });
+    map[character.name] = {
+      name: character.name,
+      portfolio: character.portfolio,
+      competencies,
       faction: character.faction,
       relationship: character.relationship,
       avatar: character.avatar,
       traits: [],
-      betrayalThreshold: Math.max(15, 50 - character.ambition * 0.3),
       hooks: [],
+      careerHistory: [],
+      interactionLog: [],
       age: character.age,
       state: character.state,
       gender: character.gender,
     };
   }
   if (vicePresident && !map[vicePresident.name]) {
-    map[vicePresident.name] = {
-      name: vicePresident.name,
-      portfolio: "Vice President",
+    const vpCompetencies = migrateOldCompetencies({
       loyalty: vicePresident.loyalty,
       competence: 74,
       ambition: vicePresident.ambition,
+      portfolio: "Vice President",
+    });
+    map[vicePresident.name] = {
+      name: vicePresident.name,
+      portfolio: "Vice President",
+      competencies: vpCompetencies,
       faction: "Presidential Ticket",
       relationship: vicePresident.relationship,
       avatar: vpAvatar(vicePresident.name),
       traits: vicePresident.ambition >= 78 ? ["ambitious", "pragmatic"] : ["loyal", "pragmatic"],
-      betrayalThreshold: Math.max(15, 55 - vicePresident.ambition * 0.25),
       hooks: [],
+      careerHistory: [],
+      interactionLog: [],
     };
   }
   return seedInitialHooks(assignInitialTraits(map));
@@ -403,8 +416,8 @@ const deriveVicePresidentMood = (state: GameStateShape, loyalty: number, ambitio
 
 const syncStrategicState = (state: GameStateShape): GameStateShape => {
   const vpCharacter = state.characters[state.vicePresident.name];
-  const loyalty = vpCharacter?.loyalty ?? state.vicePresident.loyalty;
-  const ambition = vpCharacter?.ambition ?? state.vicePresident.ambition;
+  const loyalty = vpCharacter?.competencies?.personal.loyalty ?? state.vicePresident.loyalty;
+  const ambition = vpCharacter?.competencies?.personal.ambition ?? state.vicePresident.ambition;
   const relationship = vpCharacter?.relationship ?? relationshipFromLoyalty(loyalty);
   const governingPhase = governingPhaseFromTerm(state.term.daysInOffice, state.term.daysUntilElection);
   const baseState = {
@@ -535,6 +548,27 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
       for (let i = 1; i < msg.day; i++) d = advanceDate(d);
       return { ...msg, date: d };
     });
+  }
+
+  // Migration: add competencies to characters if missing (for saves created before competency model)
+  if (state.characters) {
+    for (const key of Object.keys(state.characters)) {
+      const c = state.characters[key] as any;
+      if (!c.competencies) {
+        const competencies = migrateOldCompetencies({
+          loyalty: c.loyalty ?? 50,
+          competence: c.competence ?? 50,
+          ambition: c.ambition ?? 50,
+          portfolio: c.portfolio ?? "",
+        });
+        state.characters[key] = {
+          ...c,
+          competencies,
+          careerHistory: c.careerHistory ?? [],
+          interactionLog: c.interactionLog ?? [],
+        };
+      }
+    }
   }
 
   // Migration: backfill cabinetAppointments from existing characters for old saves
@@ -724,7 +758,8 @@ export type GameAction =
   | { type: "COMMISSION_OPERATION"; opType: string; targetId?: string; description: string }
   | { type: "SET_DNI"; dniId: string; dniCompetence: number; dniLoyalty: number }
   | { type: "POACH_LEGISLATORS"; fromParty: string; toParty: string; zone: string; seatType: "house" | "senate"; seatCount: number }
-  | { type: "ENDORSE_CONVENTION_CANDIDATE"; position: string; candidateId: string };
+  | { type: "ENDORSE_CONVENTION_CANDIDATE"; position: string; candidateId: string }
+  | { type: "EXECUTE_ENTITY_ACTION"; entityId: string; actionId: string };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -833,6 +868,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         },
       });
     }
+    case "EXECUTE_ENTITY_ACTION":
+      return withDerivedState(executeEntityAction(state, action.entityId, action.actionId));
     default:
       return state;
   }
@@ -867,6 +904,7 @@ interface GameContextValue {
   setDni: (dniId: string, dniCompetence: number, dniLoyalty: number) => void;
   poachLegislators: (fromParty: string, toParty: string, zone: string, seatType: "house" | "senate", seatCount: number) => void;
   endorseConventionCandidate: (position: string, candidateId: string) => void;
+  executeEntityAction: (entityId: string, actionId: string) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -903,6 +941,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setDni: (dniId, dniCompetence, dniLoyalty) => dispatch({ type: "SET_DNI", dniId, dniCompetence, dniLoyalty }),
     poachLegislators: (fromParty, toParty, zone, seatType, seatCount) => dispatch({ type: "POACH_LEGISLATORS", fromParty, toParty, zone, seatType, seatCount }),
     endorseConventionCandidate: (position, candidateId) => dispatch({ type: "ENDORSE_CONVENTION_CANDIDATE", position, candidateId }),
+    executeEntityAction: (entityId, actionId) => dispatch({ type: "EXECUTE_ENTITY_ACTION", entityId, actionId }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

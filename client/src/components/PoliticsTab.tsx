@@ -20,7 +20,8 @@ import { getChainById } from "@/lib/eventChains";
 import { checkBetrayalRisk } from "@/lib/traits";
 import type { Godfather } from "@/lib/godfatherTypes";
 import { getPatronageEffects } from "@/lib/godfatherEngine";
-import { AlertTriangle, Briefcase, Key, Search, Shield, Users, Crown, Megaphone } from "lucide-react";
+import { AlertTriangle, Briefcase, Eye, Key, Search, Shield, Users, Crown, Megaphone } from "lucide-react";
+import type { IntelOperationType } from "@/lib/intelligenceTypes";
 import {
   Bar,
   BarChart,
@@ -37,7 +38,35 @@ const POL_SUBTABS = [
   { id: "factions", label: "Factions" },
   { id: "intrigue", label: "Intrigue" },
   { id: "brokers", label: "Brokers" },
+  { id: "intel", label: "Intelligence" },
 ] as const;
+
+const OP_TYPE_META: Record<IntelOperationType, { label: string; blurb: string }> = {
+  "investigate-person": { label: "Investigate Person", blurb: "Deep background check on a cabinet member or political figure." },
+  "monitor-godfather": { label: "Monitor Godfather", blurb: "Sustained surveillance of a godfather network." },
+  "counter-intel": { label: "Counter-Intelligence", blurb: "Detect and neutralise leaks inside the system." },
+  "opposition-research": { label: "Opposition Research", blurb: "Gather strategic intelligence on opposition figures." },
+  "media-intel": { label: "Media Intelligence", blurb: "Identify media sources and narrative strategies." },
+  "security-assessment": { label: "Security Assessment", blurb: "Evaluate threat posture in a region or institution." },
+};
+
+const OP_COSTS: Record<IntelOperationType, number> = {
+  "investigate-person": 8,
+  "monitor-godfather": 12,
+  "counter-intel": 6,
+  "opposition-research": 10,
+  "media-intel": 4,
+  "security-assessment": 4,
+};
+
+const OP_DURATIONS: Record<IntelOperationType, number> = {
+  "investigate-person": 21,
+  "monitor-godfather": 30,
+  "counter-intel": 14,
+  "opposition-research": 21,
+  "media-intel": 10,
+  "security-assessment": 10,
+};
 
 const ACTIONS = [
   { id: "reshuffle-cabinet", label: "Reshuffle Power Centres", blurb: "Move pieces before rivals decide you are too weak to act." },
@@ -90,6 +119,7 @@ export default function PoliticsTab() {
   const {
     state,
     canResolveChoice,
+    commissionOperation,
     executeQuickAction,
     resolveChainChoice,
     resolveEventChoice,
@@ -759,6 +789,218 @@ export default function PoliticsTab() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+        );
+      })()}
+
+      {subTab === "intel" && (() => {
+        const intel = state.intelligence;
+        const dniCharacter = intel.dniId ? state.characters[intel.dniId] : null;
+        const dniName = dniCharacter?.name ?? (intel.dniId || "No DNI Appointed");
+        const activeOps = intel.activeOperations;
+        const recentResults = [...intel.completedOperations].slice(-5).reverse();
+        const canCommission = intel.dniId !== null && activeOps.length < intel.maxConcurrentOps;
+
+        return (
+          <div className="space-y-4">
+            {/* DNI Status Card */}
+            <Card className="border border-[#0A4D2C]/20" data-testid="intel-dni-status">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-4 w-4 text-[#C5A55A]" />
+                    <p className="text-sm font-semibold">Director of National Intelligence</p>
+                  </div>
+                  <Badge variant={intel.dniId ? "default" : "secondary"} className="text-xs">
+                    {intel.dniId ? "Active" : "Vacant"}
+                  </Badge>
+                </div>
+
+                <p className="text-base font-semibold">{dniName}</p>
+
+                {intel.dniId && (
+                  <div className="space-y-2">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-muted-foreground">Competence</span>
+                        <span className="text-[11px] tabular-nums text-muted-foreground">{intel.dniCompetence}</span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-[#0A4D2C]"
+                          style={{ width: `${clamp(intel.dniCompetence, 0, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-muted-foreground">Loyalty</span>
+                        <span className="text-[11px] tabular-nums text-muted-foreground">{intel.dniLoyalty}</span>
+                      </div>
+                      <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${clamp(intel.dniLoyalty, 0, 100)}%`,
+                            backgroundColor: intel.dniLoyalty >= 60 ? "#0A4D2C" : intel.dniLoyalty >= 35 ? "#eab308" : "#ef4444",
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                      <span>Active Ops: <strong className="text-foreground">{activeOps.length}/{intel.maxConcurrentOps}</strong></span>
+                      <span>Completed: <strong className="text-foreground">{intel.completedOperations.length}</strong></span>
+                    </div>
+                  </div>
+                )}
+
+                {!intel.dniId && (
+                  <p className="text-xs text-muted-foreground">
+                    No Director of National Intelligence has been appointed. Intelligence operations cannot be commissioned until a DNI is in place.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-4">
+              {/* Active Operations */}
+              <Card className="border border-[#0A4D2C]/20" data-testid="intel-active-operations">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-[#C5A55A]" /> Active Operations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-2">
+                  {activeOps.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">No intelligence operations are currently running.</p>
+                  ) : (
+                    activeOps.map((op) => {
+                      const elapsed = Math.max(0, state.day - op.startDay);
+                      const totalDuration = Math.max(1, op.estimatedEndDay - op.startDay);
+                      const progress = Math.min(100, Math.round((elapsed / totalDuration) * 100));
+                      const daysRemaining = Math.max(0, op.estimatedEndDay - state.day);
+                      return (
+                        <div key={op.id} className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-sm font-medium">{OP_TYPE_META[op.type]?.label ?? op.type}</p>
+                              <Badge
+                                variant={op.successProbability >= 70 ? "default" : op.successProbability >= 55 ? "outline" : "destructive"}
+                                className="text-[11px]"
+                              >
+                                {op.successProbability}% success
+                              </Badge>
+                            </div>
+                            <Badge variant="outline" className="text-[11px] tabular-nums">
+                              {daysRemaining}d remaining
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{op.targetDescription}</p>
+                          <div className="space-y-0.5">
+                            <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-[#C5A55A] transition-all duration-500"
+                                style={{ width: `${progress}%` }}
+                              />
+                            </div>
+                            <p className="text-[11px] text-muted-foreground text-right tabular-nums">{progress}% complete</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Commission New Operation */}
+              <Card className="border border-[#0A4D2C]/20" data-testid="intel-commission-panel">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Briefcase className="h-4 w-4 text-[#C5A55A]" /> Commission Operation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-2">
+                  {!canCommission && intel.dniId && (
+                    <p className="text-xs text-muted-foreground">All operation slots are in use. Wait for a current operation to conclude.</p>
+                  )}
+                  {!intel.dniId && (
+                    <p className="text-xs text-muted-foreground">Appoint a DNI before commissioning operations.</p>
+                  )}
+                  {(Object.keys(OP_TYPE_META) as IntelOperationType[]).map((opType) => {
+                    const meta = OP_TYPE_META[opType];
+                    const cost = OP_COSTS[opType];
+                    const duration = OP_DURATIONS[opType];
+                    return (
+                      <div key={opType} className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-medium">{meta.label}</p>
+                          <div className="flex items-center gap-1.5">
+                            <Badge variant="outline" className="text-[10px] tabular-nums">{cost} PC</Badge>
+                            <Badge variant="outline" className="text-[10px] tabular-nums">~{duration}d</Badge>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">{meta.blurb}</p>
+                        <Button
+                          data-testid={`intel-commission-${opType}`}
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-xs"
+                          disabled={!canCommission}
+                          onClick={() => {
+                            commissionOperation(opType, undefined, meta.label);
+                            toast({ title: `Operation Commissioned`, description: `${meta.label} has been authorised. The DNI will report when results are available.` });
+                          }}
+                        >
+                          Commission
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Results */}
+            {recentResults.length > 0 && (
+              <Card className="border border-[#0A4D2C]/20" data-testid="intel-recent-results">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Search className="h-4 w-4 text-[#C5A55A]" /> Recent Intelligence Results
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-2">
+                  {recentResults.map((result) => (
+                    <div key={result.operationId} className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <p className="text-sm font-medium">{OP_TYPE_META[result.type]?.label ?? result.type}</p>
+                        <Badge
+                          variant={result.success ? "default" : result.exposed ? "destructive" : "secondary"}
+                          className="text-[11px]"
+                        >
+                          {result.success ? "Success" : result.exposed ? "Exposed" : "Failed"}
+                        </Badge>
+                      </div>
+                      {result.findings.length > 0 ? (
+                        <div className="space-y-1">
+                          {result.findings.map((finding, i) => (
+                            <p key={i} className="text-xs text-muted-foreground">
+                              <Badge variant="outline" className="text-[10px] mr-1.5">{finding.type}</Badge>
+                              {finding.description}
+                            </p>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">
+                          {result.exposed
+                            ? "The operation was detected. Expect political fallout."
+                            : "No actionable intelligence was recovered."}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
           </div>
         );
       })()}

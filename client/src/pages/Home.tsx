@@ -205,34 +205,30 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Zone A — Persistent Dashboard */}
-        <PresidentialDashboard onNavigate={handleNavigate} pulsingIndicators={pulsingIndicators} />
+        <div className="shrink-0">
+          <PresidentialDashboard onNavigate={handleNavigate} pulsingIndicators={pulsingIndicators} />
+        </div>
 
         {/* Advisory Whisper */}
-        <AdvisoryWhisper activeTab={activeTab} />
+        <div className="shrink-0">
+          <AdvisoryWhisper activeTab={activeTab} />
+        </div>
 
         {/* Tab Navigation Bar */}
-        <TabNavBar
-          activeTab={activeTab}
-          activeSubTab={activeSubTab}
-          onNavigate={handleTabChange}
-          onSubNavigate={handleSubTabChange}
-        />
+        <div className="shrink-0">
+          <TabNavBar
+            activeTab={activeTab}
+            activeSubTab={activeSubTab}
+            onNavigate={handleTabChange}
+            onSubNavigate={handleSubTabChange}
+          />
+        </div>
 
-        {/* Profile breadcrumbs or hub sub-tab breadcrumbs */}
-        {isProfileOpen ? (
+        {/* Profile breadcrumbs (hub sub-tab breadcrumbs removed — TabNavBar handles sub-tabs) */}
+        {isProfileOpen && (
           <div className="px-4 pt-2 shrink-0">
             <ProfileBreadcrumbNav />
           </div>
-        ) : (
-          currentHub && activeSubTab && (
-            <BreadcrumbNav
-              hubName={currentHub.label}
-              activeSubTab={activeSubTab}
-              subTabs={currentHub.subTabs}
-              onSelectSubTab={setActiveSubTab}
-              onBackToHub={() => setActiveSubTab(currentHub.defaultSub)}
-            />
-          )
         )}
 
         {/* Zone B — Three-column layout */}

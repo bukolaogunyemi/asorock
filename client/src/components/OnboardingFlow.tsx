@@ -291,7 +291,7 @@ function NarrativeHeader({ step }: { step: number }) {
         text={narrative.title}
         speed={30}
         onComplete={() => setSubtitleVisible(true)}
-        className="text-lg font-semibold text-[hsl(42,70%,50%)]"
+        className="text-lg font-semibold text-[hsl(42,70%,35%)]"
       />
       {narrative.subtitle && (
         <motion.p
@@ -344,7 +344,7 @@ function DossierPanel({
 
   return (
     <div className="hidden lg:block w-64 shrink-0 relative">
-      <div className="rounded-lg border border-[hsl(42,70%,50%)]/30 bg-[#1a1a1a]/80 backdrop-blur-sm p-4 space-y-3 relative overflow-hidden">
+      <div className="rounded-lg border border-[hsl(42,70%,50%)]/30 bg-white/80 backdrop-blur-sm p-4 space-y-3 relative overflow-hidden">
         {/* Classified watermark */}
         <div className="stamp-classified-watermark">CLASSIFIED</div>
 
@@ -365,8 +365,8 @@ function DossierPanel({
                 {age} yrs · {stateOfOrigin} · {gender}
               </p>
               {education && <p className="text-[10px] text-muted-foreground">{education}</p>}
-              {ethnicity && <p className="text-[10px] text-gray-300">{ethnicity} · {religion}</p>}
-              {occupation && <p className="text-[10px] text-gray-300">{occupation}</p>}
+              {ethnicity && <p className="text-[10px] text-gray-600">{ethnicity} · {religion}</p>}
+              {occupation && <p className="text-[10px] text-gray-600">{occupation}</p>}
             </motion.div>
           )}
 
@@ -392,7 +392,7 @@ function DossierPanel({
                 {ERAS.find((e) => e.id === era)?.label}
               </p>
               {playerIdeologies.length > 0 && (
-                <p className="text-[10px] text-gray-300">
+                <p className="text-[10px] text-gray-600">
                   {playerIdeologies.map((id) => IDEOLOGIES.find((i) => i.id === id)?.label).filter(Boolean).join(", ")}
                 </p>
               )}
@@ -585,6 +585,55 @@ export default function OnboardingFlow() {
     toast({ title: `Welcome, ${gender === "Female" ? "Madam" : "Mr."} President`, description: "Your administration begins now." });
   };
 
+  const handleSkipOnboarding = () => {
+    // Set defaults for everything not yet chosen
+    if (!firstName) setFirstName("Emeka");
+    if (!lastName) setLastName("Okafor");
+    if (!age) setAge("55");
+    if (!gender) setGender("Male");
+    if (!stateOfOrigin) setStateOfOrigin("Lagos");
+    if (!ethnicity) setEthnicity("Yoruba");
+    if (!religion) setReligion("Christianity");
+    if (!occupation) setOccupation("Politician");
+    if (!education) setEducation("Law Degree (LLB/BL)");
+    if (title === "None") setTitle("Chief");
+    if (!era) setEra("2023");
+    if (playerTraits.length < 2) setPlayerTraits(["charismatic", "pragmatic"]);
+    if (!party) setParty("ADU");
+    if (playerIdeologies.length === 0) setPlayerIdeologies(["free_market", "reformist"]);
+    if (!vpName) setVpName(VP_CANDIDATES[0]?.name || "");
+    if (!personalAssistant) setPersonalAssistant(PA_CANDIDATES[0]?.name || "");
+    if (selectedPromises.length === 0) setSelectedPromises(["p1", "p3", "p11"]);
+    // Use setTimeout to let state settle, then finish
+    setTimeout(() => {
+      const skipConfig = {
+        firstName: firstName || "Emeka",
+        lastName: lastName || "Okafor",
+        age: Number(age) || 55,
+        gender: gender || "Male",
+        stateOfOrigin: stateOfOrigin || "Lagos",
+        education: education || "Law Degree (LLB/BL)",
+        party: party || "ADU",
+        era: (era || "2023") as "1999" | "2007" | "2015" | "2023",
+        vpName: vpName || VP_CANDIDATES[0]?.name || "",
+        vpState: VP_CANDIDATES.find((v) => v.name === (vpName || VP_CANDIDATES[0]?.name))?.state || "Lagos",
+        personalAssistant: personalAssistant || PA_CANDIDATES[0]?.name || "",
+        promises: selectedPromises.length > 0 ? selectedPromises : ["p1", "p3", "p11"],
+        appointments: appointments,
+        presidentName: `Chief ${firstName || "Emeka"} ${lastName || "Okafor"}`,
+        origin: stateOfOrigin || "Lagos",
+        traits: playerTraits.length >= 2 ? playerTraits : ["charismatic", "pragmatic"],
+        ideologies: playerIdeologies.length > 0 ? playerIdeologies : ["free_market", "reformist"],
+        title: title !== "None" ? title : "Chief",
+        ethnicity: ethnicity || "Yoruba",
+        religion: religion || "Christianity",
+        occupation: occupation || "Politician",
+      };
+      startCampaign(skipConfig);
+      toast({ title: "Welcome, Mr. President", description: "Your administration begins now. (Quick start)" });
+    }, 100);
+  };
+
   const togglePromise = (id: string) => {
     setSelectedPromises((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : prev.length < 10 ? [...prev, id] : prev
@@ -598,14 +647,17 @@ export default function OnboardingFlow() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-      style={{ background: "linear-gradient(135deg, #0a1f14 0%, #0d0d0d 100%)" }}
+      style={{ background: step === 0
+        ? "linear-gradient(135deg, #0a1f14 0%, #0d0d0d 100%)"
+        : "linear-gradient(135deg, #fdf8f0 0%, #f5efe6 100%)"
+      }}
     >
       {/* Nigeria map outline watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden="true">
         <img
           src="/nigeria-map.svg"
           alt=""
-          className="w-[600px] h-[600px] opacity-[0.04]"
+          className="w-[600px] h-[600px] opacity-[0.06]"
           draggable={false}
         />
       </div>
@@ -667,7 +719,7 @@ export default function OnboardingFlow() {
 
           {/* ── Page 1: Player Info ────────────────────── */}
           {step === 1 && (
-            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
               <CardContent className="p-4 space-y-4">
                 <NarrativeHeader step={1} />
                 <div className="space-y-3">
@@ -749,13 +801,23 @@ export default function OnboardingFlow() {
                 </div>
                 <div className="flex justify-between pt-2">
                   <Button variant="ghost" size="sm" onClick={prev}><ChevronLeft className="h-3.5 w-3.5 mr-1" /> Back</Button>
-                  <Button
-                    size="sm"
-                    onClick={next}
-                    disabled={!firstName || !lastName || !stateOfOrigin || !education || !ethnicity || !religion || !occupation || Number(age) < 35 || Number(age) > 80}
-                  >
-                    Continue <ChevronRight className="h-3.5 w-3.5 ml-1" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSkipOnboarding}
+                      className="text-amber-700 border-amber-400 hover:bg-amber-50"
+                    >
+                      ⚡ Skip to Game
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={next}
+                      disabled={!firstName || !lastName || !stateOfOrigin || !education || !ethnicity || !religion || !occupation || Number(age) < 35 || Number(age) > 80}
+                    >
+                      Continue <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -763,12 +825,12 @@ export default function OnboardingFlow() {
 
           {/* ── Page 2: Leadership Profile (Era + Traits) ────── */}
           {step === 2 && (
-            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
               <CardContent className="p-4 space-y-5">
                 <NarrativeHeader step={2} />
                 {/* Governing Era */}
                 <div>
-                  <p className="text-xs text-gray-300 mb-2">Governing Era</p>
+                  <p className="text-xs text-gray-600 mb-2">Governing Era</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     {ERAS.map((e) => (
                       <Card
@@ -778,7 +840,7 @@ export default function OnboardingFlow() {
                       >
                         <CardContent className="p-3 space-y-1">
                           <span className="text-sm font-semibold">{e.label}</span>
-                          <p className="text-xs text-gray-300">{e.description}</p>
+                          <p className="text-xs text-gray-600">{e.description}</p>
                           <Badge variant="outline" className="text-xs">{e.date}</Badge>
                         </CardContent>
                       </Card>
@@ -787,7 +849,7 @@ export default function OnboardingFlow() {
                 </div>
                 {/* Personality Traits */}
                 <div>
-                  <p className="text-xs text-gray-300 mb-1">Personality Traits <span className="text-muted-foreground">(pick 2–3)</span></p>
+                  <p className="text-xs text-gray-600 mb-1">Personality Traits <span className="text-muted-foreground">(pick 2–3)</span></p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {PLAYER_TRAITS.map((t) => {
                       const selected = playerTraits.includes(t.id);
@@ -809,7 +871,7 @@ export default function OnboardingFlow() {
                           }}
                         >
                           <span className="text-xs font-medium">{t.label}</span>
-                          <p className="text-xs text-gray-300 mt-0.5">{t.description}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">{t.description}</p>
                         </button>
                       );
                     })}
@@ -817,9 +879,19 @@ export default function OnboardingFlow() {
                 </div>
                 <div className="flex justify-between pt-2">
                   <Button variant="ghost" size="sm" onClick={prev}><ChevronLeft className="h-3.5 w-3.5 mr-1" /> Back</Button>
-                  <Button size="sm" onClick={next} disabled={!era || playerTraits.length < 2}>
-                    Continue <ChevronRight className="h-3.5 w-3.5 ml-1" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSkipOnboarding}
+                      className="text-amber-700 border-amber-400 hover:bg-amber-50"
+                    >
+                      ⚡ Skip to Game
+                    </Button>
+                    <Button size="sm" onClick={next} disabled={!era || playerTraits.length < 2}>
+                      Continue <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -827,12 +899,12 @@ export default function OnboardingFlow() {
 
           {/* ── Page 3: Political Platform (Party + Ideology) ────── */}
           {step === 3 && (
-            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
               <CardContent className="p-4 space-y-4">
                 <NarrativeHeader step={3} />
                 {/* Political Party */}
                 <div>
-                  <p className="text-xs text-gray-300 mb-2">Political Party</p>
+                  <p className="text-xs text-gray-600 mb-2">Political Party</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     {PARTIES.map((p) => (
                       <Card
@@ -845,9 +917,9 @@ export default function OnboardingFlow() {
                           <div className="flex items-center gap-2">
                             <div className="h-3 w-3 rounded-full" style={{ backgroundColor: p.color }} />
                             <span className="text-sm font-semibold">{p.id}</span>
-                            <span className="text-xs text-gray-300">— {p.name}</span>
+                            <span className="text-xs text-gray-600">— {p.name}</span>
                           </div>
-                          <p className="text-xs text-gray-300">{p.description}</p>
+                          <p className="text-xs text-gray-600">{p.description}</p>
                         </CardContent>
                       </Card>
                     ))}
@@ -855,7 +927,7 @@ export default function OnboardingFlow() {
                 </div>
                 {/* Political Ideology */}
                 <div>
-                  <p className="text-xs text-gray-300 mb-1">Political Ideology <span className="text-muted-foreground">(pick 1–2)</span></p>
+                  <p className="text-xs text-gray-600 mb-1">Political Ideology <span className="text-muted-foreground">(pick 1–2)</span></p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {IDEOLOGIES.map((ideo) => {
                       const selected = playerIdeologies.includes(ideo.id);
@@ -877,7 +949,7 @@ export default function OnboardingFlow() {
                           }}
                         >
                           <span className="text-xs font-medium">{ideo.label}</span>
-                          <p className="text-xs text-gray-300 mt-0.5">{ideo.description}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">{ideo.description}</p>
                         </button>
                       );
                     })}
@@ -897,7 +969,7 @@ export default function OnboardingFlow() {
           {step === 4 && (() => {
             const vp = VP_CANDIDATES[vpIndex];
             return (
-              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <NarrativeHeader step={4} />
@@ -939,8 +1011,8 @@ export default function OnboardingFlow() {
                                 <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
                               ))}
                             </div>
-                            <p className="text-xs text-gray-300">{vp.bio}</p>
-                            <p className="text-xs text-gray-300 italic">{vp.family}</p>
+                            <p className="text-xs text-gray-600">{vp.bio}</p>
+                            <p className="text-xs text-gray-600 italic">{vp.family}</p>
 
                             {/* 5-star competencies */}
                             <div className="border-t border-border pt-2 space-y-1">
@@ -998,7 +1070,7 @@ export default function OnboardingFlow() {
 
           {/* ── Page 4: Election ───────────────────────── */}
           {step === 5 && electionResults && (
-            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
               <CardContent className="p-4 space-y-4">
                 <NarrativeHeader step={5} />
 
@@ -1040,7 +1112,7 @@ export default function OnboardingFlow() {
                                 transition={{ duration: 0.5 }}
                               />
                             </div>
-                            <span className="text-[10px] tabular-nums w-16 text-right text-gray-300">{votes.toLocaleString()}</span>
+                            <span className="text-[10px] tabular-nums w-16 text-right text-gray-600">{votes.toLocaleString()}</span>
                           </div>
                         ))}
                       </motion.div>
@@ -1054,9 +1126,9 @@ export default function OnboardingFlow() {
                     <table className="w-full text-xs">
                       <thead>
                         <tr className="border-b border-border bg-muted/30">
-                          <th className="text-left p-2 font-medium text-gray-300">Candidate</th>
-                          <th className="text-right p-2 font-medium text-gray-300">Votes</th>
-                          <th className="text-right p-2 font-medium text-gray-300">States</th>
+                          <th className="text-left p-2 font-medium text-gray-600">Candidate</th>
+                          <th className="text-right p-2 font-medium text-gray-600">Votes</th>
+                          <th className="text-right p-2 font-medium text-gray-600">States</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1095,7 +1167,7 @@ export default function OnboardingFlow() {
                       <p className="text-sm font-semibold">
                         {honorific} President {fullName} is hereby declared the winner of the Presidential Election.
                       </p>
-                      <p className="text-xs text-gray-300">{electionResults.playerPct}% of valid votes cast · {electionResults.totalStatesWon[party]} of 37 states won</p>
+                      <p className="text-xs text-gray-600">{electionResults.playerPct}% of valid votes cast · {electionResults.totalStatesWon[party]} of 37 states won</p>
                     </div>
                   </motion.div>
                 )}
@@ -1114,7 +1186,7 @@ export default function OnboardingFlow() {
 
           {/* ── Step 6: Morning Headlines ────────────────── */}
           {step === 6 && (
-            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
               <CardContent className="p-4 space-y-3">
                 <NarrativeHeader step={6} />
                 {[
@@ -1236,7 +1308,7 @@ export default function OnboardingFlow() {
 
           {/* ── Step 8: Inauguration Promises ──────────── */}
           {step === 8 && (
-            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+            <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
               <CardContent className="p-4 space-y-4">
                 <NarrativeHeader step={8} />
                 <p className="text-xs text-muted-foreground">
@@ -1280,7 +1352,7 @@ export default function OnboardingFlow() {
           {step === 9 && (() => {
             const pa = PA_CANDIDATES[paIndex];
             return (
-              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <NarrativeHeader step={9} />
@@ -1316,7 +1388,7 @@ export default function OnboardingFlow() {
                                 <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
                               ))}
                             </div>
-                            <p className="text-xs text-gray-300">{pa.bio}</p>
+                            <p className="text-xs text-gray-600">{pa.bio}</p>
 
                             <div className="border-t border-border pt-2 space-y-1">
 
@@ -1368,7 +1440,7 @@ export default function OnboardingFlow() {
           {step === 10 && (() => {
             if (appointmentStep >= APPOINTMENT_POSITIONS.length) {
               return (
-                <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+                <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
                   <CardContent className="p-4 space-y-3">
                     <p className="text-sm font-semibold flex items-center gap-2">
                       <Briefcase className="h-4 w-4" /> First Appointments — Complete
@@ -1398,7 +1470,7 @@ export default function OnboardingFlow() {
             const candidate = pos.candidates[appointmentCandidateIndex];
 
             return (
-              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
                 <CardContent className="p-4 space-y-4">
                   <p className="text-[10px] font-bold tracking-[0.25em] text-[hsl(42,70%,50%)] uppercase text-center">
                     Federal Republic of Nigeria — Official Appointments
@@ -1435,7 +1507,7 @@ export default function OnboardingFlow() {
                         transition={{ duration: 0.2 }}
                         className="flex-1"
                       >
-                        <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
+                        <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm">
                           <CardContent className="p-4 space-y-3">
                             <div className="flex items-start gap-3">
                               <CharacterAvatar name={candidate.name} initials={candidate.avatar} size="lg" />
@@ -1452,8 +1524,8 @@ export default function OnboardingFlow() {
                                 ))}
                               </div>
                             )}
-                            <p className="text-xs text-gray-300">{candidate.bio}</p>
-                            <p className="text-xs text-gray-300 italic">{candidate.note}</p>
+                            <p className="text-xs text-gray-600">{candidate.bio}</p>
+                            <p className="text-xs text-gray-600 italic">{candidate.note}</p>
 
                             <div className="border-t border-border pt-2 space-y-1">
 
@@ -1503,7 +1575,7 @@ export default function OnboardingFlow() {
             const currentAction = intelActions[currentIntel.id];
 
             return (
-              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm relative overflow-hidden">
+              <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-white/90 backdrop-blur-sm relative overflow-hidden">
                 <div className="stamp-top-secret">TOP SECRET</div>
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-center justify-between">
@@ -1534,7 +1606,7 @@ export default function OnboardingFlow() {
                             </div>
                             {currentAction && <CheckCircle className="h-4 w-4 text-[hsl(153,60%,32%)] flex-shrink-0" />}
                           </div>
-                          <p className="text-xs text-gray-300 leading-relaxed">{currentIntel.body}</p>
+                          <p className="text-xs text-gray-600 leading-relaxed">{currentIntel.body}</p>
                           {currentAction ? (
                             <p className="text-xs text-[hsl(153,60%,32%)]">Action: {currentAction}</p>
                           ) : (
@@ -1687,7 +1759,7 @@ export default function OnboardingFlow() {
                       ? "w-4 bg-[hsl(42,70%,50%)]"
                       : i < step
                       ? "w-1.5 bg-[hsl(153,60%,32%)]"
-                      : "w-1.5 bg-white/20"
+                      : "w-1.5 bg-gray-400/30"
                   }`}
                 />
               ))}

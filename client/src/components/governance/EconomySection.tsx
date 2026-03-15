@@ -74,7 +74,7 @@ export function EconomySection({ onCharacterClick }: EconomySectionProps) {
       </div>
 
       {/* Four-quadrant grid */}
-      <div className="grid grid-cols-[280px_1fr] grid-rows-[1fr_1fr] gap-3 px-4 pb-4 flex-1 min-h-0">
+      <div className="grid grid-cols-[280px_1fr] grid-rows-[minmax(200px,1fr)_minmax(200px,1fr)] gap-3 px-4 pb-4 flex-1 min-h-0">
         {/* Q1: Team */}
         <div className="overflow-y-auto rounded-lg border border-amber-500/10 bg-black/20 p-3">
           <EconomyTeamPanel

@@ -34,7 +34,7 @@ export function PresidentialDashboard({
   onNavigate,
   pulsingIndicators,
 }: PresidentialDashboardProps) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [selectedIndicator, setSelectedIndicator] = useState<string | null>(
     null,
   );

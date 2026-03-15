@@ -4,6 +4,7 @@ import type { LegislativeState } from "./legislativeTypes";
 import type { PatronageState } from "./godfatherTypes";
 import type { FederalCharacterState } from "./federalCharacterTypes";
 import type { IntelligenceState } from "./intelligenceTypes";
+import type { PartyInternalsState } from "./partyTypes";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -425,6 +426,7 @@ export interface GameState {
   patronage: PatronageState;
   federalCharacter: FederalCharacterState;
   intelligence: IntelligenceState;
+  partyInternals: PartyInternalsState;
 }
 
 export interface SaveGameData {

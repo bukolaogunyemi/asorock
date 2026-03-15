@@ -498,6 +498,23 @@ const defaultGameState: GameState = {
     completedOperations: [],
     maxConcurrentOps: 2,
   },
+  partyInternals: {
+    parties: [],
+    rulingPartyId: "",
+    mainOppositionIds: [],
+    defections: {
+      atRiskLegislators: [],
+      recentDefections: [],
+      poachingCooldown: {},
+    },
+    convention: {
+      phase: "inactive",
+      conventionDay: 0,
+      races: [],
+      playerPCSpent: 0,
+    },
+    partyLoyaltyDrift: 0,
+  },
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -684,6 +701,23 @@ export function initializeGameState(config: CampaignConfig): GameState {
       activeOperations: [],
       completedOperations: [],
       maxConcurrentOps: 2,
+    },
+    partyInternals: {
+      parties: [],
+      rulingPartyId: "",
+      mainOppositionIds: [],
+      defections: {
+        atRiskLegislators: [],
+        recentDefections: [],
+        poachingCooldown: {},
+      },
+      convention: {
+        phase: "inactive",
+        conventionDay: 0,
+        races: [],
+        playerPCSpent: 0,
+      },
+      partyLoyaltyDrift: 0,
     },
   };
 

@@ -56,7 +56,7 @@ export default function DecisionDesk({
       <div className="flex items-center gap-2 w-full max-w-2xl mb-1">
         <h2 className="text-sm font-bold text-[#d4af37]">Decision Desk</h2>
         {totalCount > 0 && (
-          <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-red-500/20 text-red-400 font-semibold">
+          <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-red-500/10 text-red-500 font-semibold">
             {totalCount}
           </span>
         )}
@@ -66,17 +66,17 @@ export default function DecisionDesk({
             <button
               onClick={() => setCurrentIndex((p) => Math.max(0, p - 1))}
               disabled={safeIndex === 0}
-              className="text-[#d4af37] disabled:text-[#d4af37]/20 px-1"
+              className="text-[#d4af37] disabled:text-gray-300 px-1"
             >
               &#8592;
             </button>
-            <span className="text-[#e8dcc8]/50 text-[10px]">
+            <span className="text-gray-400 text-[10px]">
               {safeIndex + 1}/{totalCount}
             </span>
             <button
               onClick={() => setCurrentIndex((p) => Math.min(totalCount - 1, p + 1))}
               disabled={safeIndex === totalCount - 1}
-              className="text-[#d4af37] disabled:text-[#d4af37]/20 px-1"
+              className="text-[#d4af37] disabled:text-gray-300 px-1"
             >
               &#8594;
             </button>
@@ -86,7 +86,7 @@ export default function DecisionDesk({
 
       {totalCount === 0 ? (
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-[#e8dcc8]/40 text-xs italic">
+          <p className="text-gray-400 text-xs italic">
             No pending matters, Mr. President
           </p>
         </div>
@@ -100,15 +100,15 @@ export default function DecisionDesk({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -40 }}
               transition={{ duration: 0.2 }}
-              className="bg-[#0f2b1a] border border-[#d4af37]/20 rounded-lg px-4 py-3 h-full flex flex-col"
+              className="bg-white border border-gray-200 rounded-lg px-4 py-3 h-full flex flex-col shadow-sm"
             >
               {/* Title */}
-              <h3 className="text-sm font-bold text-[#e8dcc8] mb-1 leading-snug">
+              <h3 className="text-sm font-bold text-[#0a1f14] mb-1 leading-snug">
                 {title}
               </h3>
 
               {/* Description — compact */}
-              <p className="text-xs text-[#e8dcc8]/70 mb-2 leading-snug line-clamp-3">
+              <p className="text-xs text-gray-600 mb-2 leading-snug line-clamp-3">
                 {description}
               </p>
 
@@ -118,18 +118,18 @@ export default function DecisionDesk({
                   <button
                     key={choice.id}
                     onClick={() => handleChoice(ci)}
-                    className="w-full text-left px-2.5 py-1.5 rounded border border-[#d4af37]/20 hover:border-[#d4af37]/50 hover:bg-[#d4af37]/5 transition-colors"
+                    className="w-full text-left px-2.5 py-1.5 rounded border border-gray-200 hover:border-[#d4af37]/50 hover:bg-[#d4af37]/5 transition-colors"
                   >
-                    <span className="text-xs font-medium text-[#e8dcc8] leading-snug">
+                    <span className="text-xs font-medium text-[#0a1f14] leading-snug">
                       {choice.label}
                     </span>
                     {"context" in choice && (choice as { context?: string }).context && (
-                      <span className="block text-[10px] text-[#e8dcc8]/40 mt-0.5 line-clamp-1">
+                      <span className="block text-[10px] text-gray-400 mt-0.5 line-clamp-1">
                         {(choice as { context?: string }).context}
                       </span>
                     )}
                     {"summary" in choice && (choice as { summary?: string }).summary && (
-                      <span className="block text-[10px] text-[#e8dcc8]/40 mt-0.5 line-clamp-1">
+                      <span className="block text-[10px] text-gray-400 mt-0.5 line-clamp-1">
                         {(choice as { summary?: string }).summary}
                       </span>
                     )}
@@ -141,7 +141,7 @@ export default function DecisionDesk({
               {!isCabal && event && (
                 <button
                   onClick={() => delegateToVP(event.id)}
-                  className="mt-1.5 text-[10px] text-[#d4af37]/50 hover:text-[#d4af37] transition-colors text-left"
+                  className="mt-1.5 text-[10px] text-[#d4af37]/70 hover:text-[#d4af37] transition-colors text-left"
                 >
                   Delegate to VP &#8599;
                 </button>

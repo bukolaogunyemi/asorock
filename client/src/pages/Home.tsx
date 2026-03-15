@@ -212,6 +212,8 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
           <PresidentialDashboard onNavigate={handleNavigate} pulsingIndicators={pulsingIndicators} />
         </div>
 
+        {/* Zone B — light background area */}
+        <div className="flex-1 flex flex-col min-h-0 bg-[#faf8f5]">
         {/* Advisory Whisper */}
         <div className="shrink-0">
           <AdvisoryWhisper activeTab={activeTab} />
@@ -289,6 +291,7 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
             </Suspense>
           </div>
         )}
+        </div>{/* end Zone B light background */}
       </div>
 
       {/* Overlays */}

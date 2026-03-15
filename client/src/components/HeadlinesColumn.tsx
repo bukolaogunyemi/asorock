@@ -27,14 +27,14 @@ export default function HeadlinesColumn({ activeTab }: HeadlinesColumnProps) {
   const headlines = filterHeadlines(state.headlines ?? [], activeTab);
 
   return (
-    <div className="w-[220px] shrink-0 bg-[#0a1f14] border-l border-[#d4af37]/20 flex flex-col h-full">
+    <div className="w-[220px] shrink-0 bg-white border-l border-gray-200 flex flex-col h-full">
       <div className="px-3 py-2 text-sm font-semibold text-[#d4af37]">
         Headlines
       </div>
 
       <div className="flex-1 overflow-hidden px-2 pb-2 space-y-1">
         {headlines.length === 0 ? (
-          <p className="text-xs text-[#e8dcc8]/40 italic px-1">
+          <p className="text-xs text-gray-400 italic px-1">
             No headlines available
           </p>
         ) : (
@@ -46,7 +46,7 @@ export default function HeadlinesColumn({ activeTab }: HeadlinesColumnProps) {
                 className="border-l-2 pl-2 py-0.5"
                 style={{ borderColor: SENTIMENT_COLOR[sentiment] }}
               >
-                <span className="text-[11px] text-[#e8dcc8]/80 leading-tight line-clamp-2">
+                <span className="text-[11px] text-[#1a1a1a]/80 leading-tight line-clamp-2">
                   {headline}
                 </span>
               </div>

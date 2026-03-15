@@ -11,7 +11,7 @@ export function EconomyPolicyCorner({ levers }: Props) {
 
   return (
     <div className="flex flex-col h-full gap-3">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-400/60">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
         Policy Levers
       </h3>
 
@@ -31,14 +31,14 @@ export function EconomyPolicyCorner({ levers }: Props) {
           return (
             <div key={leverKey} className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-amber-200">{def.displayName}</span>
+                <span className="text-xs font-semibold text-[#0a1f14]">{def.displayName}</span>
                 {onCooldown && (
-                  <span className="text-[10px] text-amber-400/40 flex items-center gap-1">
+                  <span className="text-[10px] text-gray-400 flex items-center gap-1">
                     {cooldownDays}d cooldown
                   </span>
                 )}
                 {pendingPos && !onCooldown && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#d4af37]/10 text-[#d4af37]">
                     Pending: {def.positions.find(p => p.value === pendingPos)?.label ?? pendingPos}
                   </span>
                 )}
@@ -60,10 +60,10 @@ export function EconomyPolicyCorner({ levers }: Props) {
                       disabled={isDisabled || isCurrent}
                       className={`px-2 py-1 rounded-full text-[10px] font-medium transition-all ${
                         isCurrent
-                          ? "bg-amber-500 text-black shadow-sm shadow-amber-500/30"
+                          ? "bg-[#d4af37] text-white shadow-sm shadow-[#d4af37]/30"
                           : isDisabled
-                          ? "bg-gray-700/20 text-gray-600 cursor-not-allowed"
-                          : "bg-amber-500/10 text-amber-400/70 border border-amber-500/20 hover:bg-amber-500/20 hover:text-amber-400"
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-[#d4af37]/10 hover:text-[#d4af37]"
                       }`}
                     >
                       {pos.label}

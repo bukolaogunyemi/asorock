@@ -89,7 +89,7 @@ export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, 
 
   return (
     <div className="flex flex-col h-full gap-3">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-400/60">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
         Economic Team
       </h3>
 
@@ -98,8 +98,8 @@ export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, 
           if (!character || !name) {
             // Ghost card
             return (
-              <div key={config.role} className="rounded-lg border border-dashed border-amber-500/10 bg-black/10 p-2 opacity-50">
-                <p className="text-xs text-amber-400/40">Vacant — {config.role}</p>
+              <div key={config.role} className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-2 opacity-50">
+                <p className="text-xs text-gray-400">Vacant — {config.role}</p>
               </div>
             );
           }
@@ -115,34 +115,34 @@ export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, 
             <button
               key={name}
               onClick={() => onCharacterClick?.(name)}
-              className="w-full rounded-lg border border-amber-500/10 bg-black/30 p-2 text-left hover:bg-amber-500/5 transition-colors"
+              className="w-full rounded-lg border border-gray-200 bg-[#faf8f5] p-2 text-left hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-center gap-2">
                 {/* Avatar */}
-                <div className="w-9 h-9 rounded-full border-2 border-amber-500 bg-amber-500/10 flex items-center justify-center text-xs font-bold text-amber-400 shrink-0">
+                <div className="w-9 h-9 rounded-full border-2 border-[#d4af37] bg-[#d4af37]/10 flex items-center justify-center text-xs font-bold text-[#d4af37] shrink-0">
                   {avatar}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-amber-100 truncate">{name}</p>
-                  <p className="text-xs text-amber-400/50 truncate">{portfolio}</p>
+                  <p className="text-sm font-semibold text-[#0a1f14] truncate">{name}</p>
+                  <p className="text-xs text-gray-500 truncate">{portfolio}</p>
                 </div>
               </div>
 
               {/* Stats */}
               <div className="mt-2 space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-amber-400/40 w-14">Loyalty</span>
-                  <div className="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
+                  <span className="text-[10px] text-gray-400 w-14">Loyalty</span>
+                  <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                     <div className={`h-full rounded-full ${statColor(loyalty)}`} style={{ width: `${loyalty}%` }} />
                   </div>
-                  <span className="text-[10px] text-amber-400/60 w-6 text-right">{loyalty}</span>
+                  <span className="text-[10px] text-gray-500 w-6 text-right">{loyalty}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-amber-400/40 w-14">Competence</span>
-                  <div className="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
+                  <span className="text-[10px] text-gray-400 w-14">Competence</span>
+                  <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                     <div className={`h-full rounded-full ${statColor(competence)}`} style={{ width: `${competence}%` }} />
                   </div>
-                  <span className="text-[10px] text-amber-400/60 w-6 text-right">{competence}</span>
+                  <span className="text-[10px] text-gray-500 w-6 text-right">{competence}</span>
                 </div>
               </div>
 
@@ -163,10 +163,10 @@ export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, 
         disabled={!hasTeam || onCooldown}
         className={`w-full py-2 rounded-lg text-sm font-semibold transition-all ${
           !hasTeam
-            ? "bg-gray-700/30 text-gray-500 cursor-not-allowed"
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
             : onCooldown
-            ? "bg-gray-700/30 text-gray-400 cursor-not-allowed"
-            : "bg-gradient-to-r from-amber-600 to-amber-500 text-black hover:from-amber-500 hover:to-amber-400 shadow-lg shadow-amber-500/20"
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-[#d4af37] to-[#b8960c] text-white hover:from-[#b8960c] hover:to-[#d4af37] shadow-lg shadow-[#d4af37]/20"
         }`}
       >
         {!hasTeam

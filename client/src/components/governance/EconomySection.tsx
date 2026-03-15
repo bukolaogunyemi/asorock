@@ -35,21 +35,21 @@ export function EconomySection({ onCharacterClick }: EconomySectionProps) {
       <div className="flex items-center gap-2 px-4 pt-3 pb-2 text-sm">
         <button
           onClick={() => handleBreadcrumbClick("governance")}
-          className="text-amber-400/70 hover:text-amber-400 transition-colors"
+          className="text-gray-400 hover:text-[#0a1f14] transition-colors"
         >
           Governance
         </button>
-        <span className="text-amber-400/40">&rsaquo;</span>
+        <span className="text-gray-300">&rsaquo;</span>
         <button
           onClick={() => handleBreadcrumbClick("economy")}
-          className={`transition-colors ${activeSubsection ? "text-amber-400/70 hover:text-amber-400" : "text-amber-200 font-medium"}`}
+          className={`transition-colors ${activeSubsection ? "text-gray-400 hover:text-[#0a1f14]" : "text-[#0a1f14] font-medium"}`}
         >
           Economy
         </button>
         {activeSubsection && (
           <>
-            <span className="text-amber-400/40">&rsaquo;</span>
-            <span className="text-amber-200 font-medium">
+            <span className="text-gray-300">&rsaquo;</span>
+            <span className="text-[#0a1f14] font-medium">
               {config.subsections.find(s => s.id === activeSubsection)?.label}
             </span>
           </>
@@ -64,8 +64,8 @@ export function EconomySection({ onCharacterClick }: EconomySectionProps) {
             onClick={() => setActiveSubsection(activeSubsection === sub.id ? null : sub.id as Subsection)}
             className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
               activeSubsection === sub.id
-                ? "bg-amber-500 text-black"
-                : "bg-amber-500/10 text-amber-400/80 hover:bg-amber-500/20 border border-amber-500/20"
+                ? "bg-[#d4af37] text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200"
             }`}
           >
             {sub.label}
@@ -76,7 +76,7 @@ export function EconomySection({ onCharacterClick }: EconomySectionProps) {
       {/* Four-quadrant grid */}
       <div className="grid grid-cols-[280px_1fr] grid-rows-[minmax(200px,1fr)_minmax(200px,1fr)] gap-3 px-4 pb-4 flex-1 min-h-0">
         {/* Q1: Team */}
-        <div className="overflow-y-auto rounded-lg border border-amber-500/10 bg-black/20 p-3">
+        <div className="overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
           <EconomyTeamPanel
             teamConfig={team}
             briefingCooldownKey={briefingCooldownKey}
@@ -86,17 +86,17 @@ export function EconomySection({ onCharacterClick }: EconomySectionProps) {
         </div>
 
         {/* Q2: Indicators */}
-        <div className="overflow-y-auto rounded-lg border border-amber-500/10 bg-black/20 p-3">
+        <div className="overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
           <EconomyIndicators charts={charts} />
         </div>
 
         {/* Q3: Policy */}
-        <div className="overflow-y-auto rounded-lg border border-amber-500/10 bg-black/20 p-3">
+        <div className="overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
           <EconomyPolicyCorner levers={levers} />
         </div>
 
         {/* Q4: Stakeholders + Reforms */}
-        <div className="overflow-y-auto rounded-lg border border-amber-500/10 bg-black/20 p-3">
+        <div className="overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
           <EconomyStakeholders />
         </div>
       </div>

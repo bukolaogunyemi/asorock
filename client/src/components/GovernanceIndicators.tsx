@@ -80,7 +80,7 @@ export function GovernanceIndicators({
             onClick={() =>
               onNavigate(ind.navigateTo.tab, ind.navigateTo.subTab)
             }
-            className={`relative bg-[#0d2818] border border-[#1a3a2a] rounded px-2 py-1.5 text-left transition-colors hover:border-[#d4af37]/40 group
+            className={`relative bg-white border border-gray-200 rounded px-2 py-1.5 text-left transition-colors hover:border-[#d4af37]/40 shadow-sm group
               ${isPulsing ? "animate-pulse" : ""}`}
           >
             {/* Info icon */}
@@ -89,14 +89,14 @@ export function GovernanceIndicators({
                 e.stopPropagation();
                 onShowDetail(ind.key);
               }}
-              className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#1a3a2a] text-[#8ba89a] text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#d4af37] hover:text-[#0a1f14]"
+              className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-gray-100 text-gray-400 text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#d4af37] hover:text-white"
               title={`Details: ${ind.label}`}
             >
               i
             </button>
 
             {/* Label + Value inline */}
-            <p className="text-[9px] uppercase tracking-wider text-[#8ba89a]">
+            <p className="text-[9px] uppercase tracking-wider text-gray-500">
               {ind.label}
             </p>
             <div className="flex items-baseline gap-1">

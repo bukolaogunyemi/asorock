@@ -32,13 +32,13 @@ export function AdvisoryWhisper({ activeTab }: AdvisoryWhisperProps) {
 
   return (
     <div
-      className="flex items-center gap-2 px-4 py-1.5 text-sm italic transition-opacity duration-500"
+      className="flex items-center gap-2 px-4 py-1.5 text-sm italic transition-opacity duration-500 border-b border-gray-200"
       style={{
-        backgroundColor: "rgba(10,31,20,0.6)",
+        backgroundColor: "rgba(250,248,245,0.9)",
         opacity: visible ? 1 : 0,
       }}
     >
-      <span className="text-gray-300">{whisper.text}</span>
+      <span className="text-gray-600">{whisper.text}</span>
       <span className="ml-auto whitespace-nowrap text-xs font-semibold" style={{ color: "#d4af37" }}>
         &mdash; {whisper.adviserName}
       </span>

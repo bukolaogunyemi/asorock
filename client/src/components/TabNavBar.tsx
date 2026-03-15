@@ -49,7 +49,7 @@ export function TabNavBar({
   const subTabs = HUB_SUB_TABS[activeTab] ?? null;
 
   return (
-    <nav className="w-full bg-[#0a1f14] border-b border-[#1a3a2a]">
+    <nav className="w-full bg-white border-b border-gray-200">
       {/* Main tab row */}
       <div className="flex items-center overflow-x-auto scrollbar-thin">
         {MAIN_TABS.map((tab) => {
@@ -60,12 +60,12 @@ export function TabNavBar({
               key={tab.id}
               onClick={() => onNavigate(tab.id)}
               className={`relative flex items-center gap-1.5 px-3 py-2.5 text-sm whitespace-nowrap transition-colors
-                ${isActive ? "text-[#d4af37] border-b-2 border-[#d4af37]" : "text-[#8ba89a] hover:text-[#c5d4cb] border-b-2 border-transparent"}`}
+                ${isActive ? "text-[#d4af37] border-b-2 border-[#d4af37]" : "text-gray-500 hover:text-[#0a1f14] border-b-2 border-transparent"}`}
             >
               <span className="text-base">{tab.icon}</span>
               <span className="font-medium">{tab.label}</span>
               {count != null && count > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-[#d4af37] text-[#0a1f14] leading-none">
+                <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-[#d4af37] text-white leading-none">
                   {count}
                 </span>
               )}
@@ -76,7 +76,7 @@ export function TabNavBar({
 
       {/* Sub-tab pill row */}
       {subTabs && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-[#0d2818] border-t border-[#1a3a2a]">
+        <div className="flex items-center gap-2 px-4 py-2 bg-[#faf8f5] border-t border-gray-200">
           {subTabs.map((sub) => {
             const isActive = activeSubTab === sub;
             return (
@@ -85,8 +85,8 @@ export function TabNavBar({
                 onClick={() => onSubNavigate(sub)}
                 className={`px-3 py-1 text-xs font-medium rounded-full transition-colors
                   ${isActive
-                    ? "bg-[#d4af37] text-[#0a1f14]"
-                    : "text-[#8ba89a] hover:text-[#c5d4cb] bg-[#1a3a2a] hover:bg-[#234a34]"
+                    ? "bg-[#d4af37] text-white"
+                    : "text-gray-500 hover:text-[#0a1f14] bg-gray-100 hover:bg-gray-200"
                   }`}
               >
                 {capitalize(sub)}

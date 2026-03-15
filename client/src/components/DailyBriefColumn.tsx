@@ -50,7 +50,7 @@ export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBr
   const items = filtered.length > 0 ? filtered : PLACEHOLDER_INTEL;
 
   return (
-    <div className="w-[220px] shrink-0 bg-[#0a1f14] border-r border-[#d4af37]/20 flex flex-col h-full">
+    <div className="w-[220px] shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
       <button
         onClick={onOpenFullBrief}
         className="w-full px-3 py-2 text-left text-sm font-semibold text-[#d4af37] hover:bg-[#d4af37]/10 transition-colors"
@@ -64,13 +64,13 @@ export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBr
             key={i}
             className={`border-l-2 ${severityBorder[item.severity] ?? "border-gray-500"} pl-2 py-0.5`}
           >
-            <span className="text-[11px] text-[#e8dcc8]/80 leading-tight line-clamp-2">
+            <span className="text-[11px] text-[#1a1a1a]/80 leading-tight line-clamp-2">
               {item.text}
             </span>
           </div>
         ))}
         {items.length > 8 && (
-          <p className="text-[10px] text-[#d4af37]/50 px-1 pt-1">
+          <p className="text-[10px] text-gray-400 px-1 pt-1">
             +{items.length - 8} more — click above to view all
           </p>
         )}

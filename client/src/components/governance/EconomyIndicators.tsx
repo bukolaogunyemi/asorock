@@ -67,19 +67,19 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
     return (
       <div className="flex flex-col h-full">
         <div className="flex items-baseline justify-between mb-1">
-          <h4 className="text-[10px] font-semibold uppercase tracking-wider text-amber-400/60">{config.title}</h4>
+          <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{config.title}</h4>
         </div>
         <div className="flex-1 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(245,158,11,0.05)" />
-              <XAxis type="number" tick={{ fontSize: 9, fill: "rgba(245,158,11,0.4)" }} />
-              <YAxis dataKey="name" type="category" tick={{ fontSize: 9, fill: "rgba(245,158,11,0.4)" }} width={55} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+              <XAxis type="number" tick={{ fontSize: 9, fill: "#6b7280" }} />
+              <YAxis dataKey="name" type="category" tick={{ fontSize: 9, fill: "#6b7280" }} width={55} />
               <Tooltip
-                contentStyle={{ background: "#0a1f14", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 8, fontSize: 11 }}
-                labelStyle={{ color: "rgba(245,158,11,0.7)" }}
+                contentStyle={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 11 }}
+                labelStyle={{ color: "#374151" }}
               />
-              <Bar dataKey="value" fill="rgba(245,158,11,0.6)" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="value" fill="rgba(212,175,55,0.7)" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -100,17 +100,17 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
     return (
       <div className="flex flex-col h-full">
         <div className="flex items-baseline justify-between mb-1">
-          <h4 className="text-[10px] font-semibold uppercase tracking-wider text-amber-400/60">{config.title}</h4>
-          <span className="text-xs font-mono text-amber-200">N{rev.toFixed(1)}T / N{exp.toFixed(1)}T</span>
+          <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{config.title}</h4>
+          <span className="text-xs font-mono text-[#0a1f14]">N{rev.toFixed(1)}T / N{exp.toFixed(1)}T</span>
         </div>
         <div className="flex-1 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} margin={{ top: 0, right: 8, bottom: 0, left: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(245,158,11,0.05)" />
-              <XAxis dataKey="name" tick={{ fontSize: 9, fill: "rgba(245,158,11,0.4)" }} />
-              <YAxis tick={{ fontSize: 9, fill: "rgba(245,158,11,0.4)" }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+              <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#6b7280" }} />
+              <YAxis tick={{ fontSize: 9, fill: "#6b7280" }} />
               <Tooltip
-                contentStyle={{ background: "#0a1f14", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 8, fontSize: 11 }}
+                contentStyle={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 11 }}
               />
               <Bar dataKey="value" fill={deficit ? "rgba(239,68,68,0.6)" : "rgba(34,197,94,0.6)"} radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -129,18 +129,18 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-baseline justify-between mb-1">
-        <h4 className="text-[10px] font-semibold uppercase tracking-wider text-amber-400/60">{config.title}</h4>
-        <span className="text-xs font-mono text-amber-200">{formatValue(currentValue, config.format)}</span>
+        <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{config.title}</h4>
+        <span className="text-xs font-mono text-[#0a1f14]">{formatValue(currentValue, config.format)}</span>
       </div>
       {data.length > 1 ? (
         <div className="flex-1 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(245,158,11,0.05)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
               <XAxis dataKey="idx" tick={false} />
-              <YAxis tick={{ fontSize: 9, fill: "rgba(245,158,11,0.3)" }} width={35} />
+              <YAxis tick={{ fontSize: 9, fill: "#6b7280" }} width={35} />
               <Tooltip
-                contentStyle={{ background: "#0a1f14", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 8, fontSize: 11 }}
+                contentStyle={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 11 }}
                 labelFormatter={() => ""}
               />
               <Line type="monotone" dataKey="value" stroke={lineColor} strokeWidth={2} dot={false} />
@@ -148,11 +148,11 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="flex-1 flex items-center justify-center text-amber-400/20 text-xs">
+        <div className="flex-1 flex items-center justify-center text-gray-300 text-xs">
           Awaiting data...
         </div>
       )}
-      {warning && <p className="text-[10px] text-amber-400 mt-1">{warning}</p>}
+      {warning && <p className="text-[10px] text-amber-600 mt-1">{warning}</p>}
     </div>
   );
 }
@@ -166,7 +166,7 @@ export function EconomyIndicators({ charts }: Props) {
 
   return (
     <div className="flex flex-col h-full gap-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-400/60">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
         Key Indicators
       </h3>
       <div className={`grid ${cols} gap-2 flex-1 min-h-0`}>

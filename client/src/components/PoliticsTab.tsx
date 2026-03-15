@@ -20,8 +20,9 @@ import { getChainById } from "@/lib/eventChains";
 import { checkBetrayalRisk } from "@/lib/traits";
 import type { Godfather } from "@/lib/godfatherTypes";
 import { getPatronageEffects } from "@/lib/godfatherEngine";
-import { AlertTriangle, Briefcase, Eye, Key, Search, Shield, Users, Crown, Megaphone } from "lucide-react";
+import { AlertTriangle, Briefcase, Eye, Key, Search, Shield, Users, Crown, Megaphone, Vote, ArrowRightLeft, Landmark } from "lucide-react";
 import type { IntelOperationType } from "@/lib/intelligenceTypes";
+import type { PartyState, NWCMember, AtRiskEntry, Defection, ConventionRace } from "@/lib/partyTypes";
 import {
   Bar,
   BarChart,
@@ -39,7 +40,31 @@ const POL_SUBTABS = [
   { id: "intrigue", label: "Intrigue" },
   { id: "brokers", label: "Brokers" },
   { id: "intel", label: "Intelligence" },
+  { id: "party", label: "Party" },
 ] as const;
+
+const DISPOSITION_COLORS: Record<NWCMember["disposition"], { variant: "default" | "outline" | "destructive"; label: string }> = {
+  supportive: { variant: "default", label: "Supportive" },
+  neutral: { variant: "outline", label: "Neutral" },
+  hostile: { variant: "destructive", label: "Hostile" },
+};
+
+const NWC_POSITION_LABELS: Record<string, string> = {
+  "national-chairman": "National Chairman",
+  "vice-chairman": "Vice Chairman",
+  "national-secretary": "National Secretary",
+  "national-treasurer": "National Treasurer",
+  "publicity-secretary": "Publicity Secretary",
+  "organising-secretary": "Organising Secretary",
+  "legal-adviser": "Legal Adviser",
+  "youth-women-leader": "Youth/Women Leader",
+};
+
+const STRATEGY_COLORS: Record<string, "default" | "outline" | "destructive"> = {
+  obstruct: "destructive",
+  negotiate: "outline",
+  attack: "destructive",
+};
 
 const OP_TYPE_META: Record<IntelOperationType, { label: string; blurb: string }> = {
   "investigate-person": { label: "Investigate Person", blurb: "Deep background check on a cabinet member or political figure." },
@@ -125,6 +150,8 @@ export default function PoliticsTab() {
     resolveEventChoice,
     startHookInvestigation,
     useHook,
+    poachLegislators,
+    endorseConventionCandidate,
   } = useGame();
   const [subTab, setSubTab] = useState<(typeof POL_SUBTABS)[number]["id"]>("overview");
   const [selectedGodfatherId, setSelectedGodfatherId] = useState<string | null>(null);
@@ -996,6 +1023,358 @@ export default function PoliticsTab() {
                             : "No actionable intelligence was recovered."}
                         </p>
                       )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+      })()}
+
+      {subTab === "party" && (() => {
+        if (!state.partyInternals) {
+          return <p className="text-sm text-muted-foreground">Party data is not yet available.</p>;
+        }
+
+        const pi = state.partyInternals;
+        const rulingParty = pi.parties.find((p) => p.id === pi.rulingPartyId);
+        const oppositionParties = pi.parties.filter((p) => pi.mainOppositionIds.includes(p.id));
+        const atRisk = pi.defections.atRiskLegislators;
+        const recentDefections = pi.defections.recentDefections;
+        const convention = pi.convention;
+
+        const partyControlScore = rulingParty?.partyControlScore ??
+          (rulingParty?.nwc.length
+            ? Math.round(rulingParty.nwc.reduce((sum, m) => sum + m.loyalty, 0) / rulingParty.nwc.length)
+            : 0);
+
+        const defectionWarnings = atRisk.filter((e) => e.currentParty === pi.rulingPartyId);
+
+        return (
+          <div className="space-y-4">
+            {/* ── Ruling Party Panel ── */}
+            <Card className="border border-[#C5A55A]/30" data-testid="party-ruling-panel">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Crown className="h-4 w-4 text-[#C5A55A]" /> Ruling Party
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 space-y-4">
+                {rulingParty ? (
+                  <>
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div>
+                        <p className="text-base font-semibold">{rulingParty.name}</p>
+                        <p className="text-xs text-muted-foreground">{rulingParty.abbreviation}</p>
+                      </div>
+                      <div className="flex gap-3 text-xs">
+                        <span>House: <strong className="text-foreground">{rulingParty.legislativeSeats.house}</strong></span>
+                        <span>Senate: <strong className="text-foreground">{rulingParty.legislativeSeats.senate}</strong></span>
+                      </div>
+                    </div>
+
+                    {/* Party Control Score */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Party Control Score</span>
+                        <span className="text-xs tabular-nums font-medium">{partyControlScore}/100</span>
+                      </div>
+                      <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${clamp(partyControlScore, 0, 100)}%`,
+                            backgroundColor: partyControlScore >= 60 ? "#0A4D2C" : partyControlScore >= 35 ? "#eab308" : "#ef4444",
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Defection Warnings */}
+                    {defectionWarnings.length > 0 && (
+                      <Alert variant="destructive" className="border-red-500/30" data-testid="party-defection-warnings">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle className="text-xs font-semibold">Defection Risk</AlertTitle>
+                        <AlertDescription className="text-xs">
+                          {defectionWarnings.length} bloc{defectionWarnings.length > 1 ? "s" : ""} at risk of defection from the ruling party.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
+                    {/* NWC Members Grid */}
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">National Working Committee</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2" data-testid="party-nwc-grid">
+                        {rulingParty.nwc.map((member) => (
+                          <div
+                            key={member.characterId}
+                            className="rounded-md border border-border bg-gradient-to-br from-[#0A4D2C]/10 to-transparent p-3 space-y-2"
+                          >
+                            <div className="flex items-center justify-between gap-1">
+                              <p className="text-sm font-medium truncate">{member.name}</p>
+                              <Badge
+                                variant={DISPOSITION_COLORS[member.disposition].variant}
+                                className="text-[10px] shrink-0"
+                              >
+                                {DISPOSITION_COLORS[member.disposition].label}
+                              </Badge>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground">{NWC_POSITION_LABELS[member.position] ?? member.position}</p>
+                            <p className="text-[11px] text-muted-foreground">{member.zone} &middot; {member.state}</p>
+                            <div className="space-y-1">
+                              <div className="space-y-0.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] text-muted-foreground">Competence</span>
+                                  <span className="text-[10px] tabular-nums text-muted-foreground">{member.competence}</span>
+                                </div>
+                                <CompetencyBar value={member.competence} />
+                              </div>
+                              <div className="space-y-0.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] text-muted-foreground">Loyalty</span>
+                                  <span className="text-[10px] tabular-nums text-muted-foreground">{member.loyalty}</span>
+                                </div>
+                                <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full transition-all"
+                                    style={{
+                                      width: `${clamp(member.loyalty, 0, 100)}%`,
+                                      backgroundColor: member.loyalty >= 60 ? "#0A4D2C" : member.loyalty >= 35 ? "#eab308" : "#ef4444",
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-xs text-muted-foreground">No ruling party data available.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* ── Opposition Panel ── */}
+            {oppositionParties.length > 0 && (
+              <Card className="border border-[#0A4D2C]/20" data-testid="party-opposition-panel">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Megaphone className="h-4 w-4 text-[#C5A55A]" /> Opposition Parties
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-3">
+                  {oppositionParties.map((opp) => {
+                    const chairman = opp.nwc.find((m) => m.position === "national-chairman");
+                    return (
+                      <div
+                        key={opp.id}
+                        className="rounded-md border border-border bg-muted/20 p-3 space-y-2"
+                        data-testid={`opposition-party-${opp.id}`}
+                      >
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <div>
+                            <p className="text-sm font-semibold">{opp.name}</p>
+                            <p className="text-[11px] text-muted-foreground">{opp.abbreviation}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {opp.oppositionStrategy && (
+                              <Badge
+                                variant={STRATEGY_COLORS[opp.oppositionStrategy] ?? "outline"}
+                                className="text-[10px] capitalize"
+                              >
+                                {opp.oppositionStrategy}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                          <span>House: <strong className="text-foreground">{opp.legislativeSeats.house}</strong></span>
+                          <span>Senate: <strong className="text-foreground">{opp.legislativeSeats.senate}</strong></span>
+                          {chairman && (
+                            <span>Chairman: <strong className="text-foreground">{chairman.name}</strong></span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Defection Panel ── */}
+            <Card className="border border-[#0A4D2C]/20" data-testid="party-defection-panel">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <ArrowRightLeft className="h-4 w-4 text-[#C5A55A]" /> Defections
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 space-y-4">
+                {/* At-Risk Blocs */}
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">At-Risk Blocs</p>
+                  {atRisk.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">No at-risk legislative blocs detected.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {atRisk.map((entry) => {
+                        const fromPartyObj = pi.parties.find((p) => p.id === entry.currentParty);
+                        return (
+                          <div
+                            key={entry.id}
+                            className="rounded-md border border-border bg-muted/20 p-3 space-y-2"
+                            data-testid={`at-risk-${entry.id}`}
+                          >
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-medium">{entry.zone}</p>
+                                <Badge variant="outline" className="text-[10px] capitalize">{entry.seatType}</Badge>
+                                <Badge variant="outline" className="text-[10px] tabular-nums">{entry.seatCount} seat{entry.seatCount > 1 ? "s" : ""}</Badge>
+                              </div>
+                              <Badge
+                                variant={entry.defectionProbability >= 60 ? "destructive" : entry.defectionProbability >= 30 ? "outline" : "secondary"}
+                                className="text-[10px] tabular-nums"
+                              >
+                                {Math.round(entry.defectionProbability)}% risk
+                              </Badge>
+                            </div>
+                            <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                              <span>From: <strong className="text-foreground">{fromPartyObj?.abbreviation ?? entry.currentParty}</strong></span>
+                              <span>Party Loyalty: <strong className="text-foreground">{entry.partyLoyalty}</strong></span>
+                            </div>
+                            {/* Poach button — only if this bloc is NOT already in the ruling party */}
+                            {entry.currentParty !== pi.rulingPartyId && rulingParty && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full text-xs"
+                                data-testid={`poach-${entry.id}`}
+                                onClick={() => {
+                                  poachLegislators(entry.currentParty, pi.rulingPartyId, entry.zone, entry.seatType, entry.seatCount);
+                                  toast({
+                                    title: "Poaching Initiated",
+                                    description: `Attempting to pull ${entry.seatCount} ${entry.seatType} seat${entry.seatCount > 1 ? "s" : ""} from ${fromPartyObj?.abbreviation ?? entry.currentParty} in ${entry.zone}.`,
+                                  });
+                                }}
+                              >
+                                Poach to {rulingParty.abbreviation}
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Recent Defection History */}
+                {recentDefections.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground mb-2">Recent Defections</p>
+                    <div className="space-y-2">
+                      {recentDefections.slice(-5).reverse().map((d) => {
+                        const fromObj = pi.parties.find((p) => p.id === d.fromParty);
+                        const toObj = pi.parties.find((p) => p.id === d.toParty);
+                        return (
+                          <div key={d.id} className="rounded-md border border-border bg-muted/20 p-3 space-y-1" data-testid={`defection-${d.id}`}>
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <p className="text-xs font-medium">
+                                {fromObj?.abbreviation ?? d.fromParty} → {toObj?.abbreviation ?? d.toParty}
+                              </p>
+                              <div className="flex items-center gap-1.5">
+                                <Badge variant="outline" className="text-[10px] capitalize">{d.seatType}</Badge>
+                                <Badge variant="outline" className="text-[10px] tabular-nums">{d.seatCount} seat{d.seatCount > 1 ? "s" : ""}</Badge>
+                                <Badge variant="secondary" className="text-[10px] tabular-nums">Day {d.day}</Badge>
+                              </div>
+                            </div>
+                            <p className="text-[11px] text-muted-foreground">{d.description}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* ── Convention Panel (only if active) ── */}
+            {convention.phase !== "inactive" && (
+              <Card className="border border-[#C5A55A]/30" data-testid="party-convention-panel">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Vote className="h-4 w-4 text-[#C5A55A]" /> Party Convention
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-4">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge
+                      variant={convention.phase === "voting" ? "default" : "outline"}
+                      className="text-xs capitalize"
+                    >
+                      {convention.phase.replace("-", " ")}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">Day {convention.conventionDay}</span>
+                    <span className="text-xs text-muted-foreground">PC spent: <strong className="text-foreground">{convention.playerPCSpent}</strong></span>
+                  </div>
+
+                  {/* Convention Races */}
+                  {convention.races.map((race) => (
+                    <div key={race.position} className="rounded-md border border-border bg-muted/20 p-3 space-y-2" data-testid={`convention-race-${race.position}`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold">{NWC_POSITION_LABELS[race.position] ?? race.position}</p>
+                        {race.winner && (
+                          <Badge variant="default" className="text-[10px]">
+                            Winner: {race.candidates.find((c) => c.characterId === race.winner)?.name ?? race.winner}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="space-y-1.5">
+                        {race.candidates
+                          .slice()
+                          .sort((a, b) => b.supportScore - a.supportScore)
+                          .map((candidate) => {
+                            const isPlayerBacked = race.playerBacked === candidate.characterId;
+                            return (
+                              <div
+                                key={candidate.characterId}
+                                className={`flex items-center justify-between gap-2 rounded-md p-2 ${
+                                  isPlayerBacked ? "bg-[#0A4D2C]/10 border border-[#C5A55A]/30" : "bg-muted/30"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <p className="text-xs font-medium truncate">{candidate.name}</p>
+                                  {isPlayerBacked && (
+                                    <Badge variant="default" className="text-[10px] shrink-0 bg-[#C5A55A] text-black">
+                                      Endorsed
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="text-xs tabular-nums text-muted-foreground">{candidate.supportScore}%</span>
+                                  {!race.winner && !isPlayerBacked && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="text-[11px] h-6 px-2"
+                                      data-testid={`endorse-${race.position}-${candidate.characterId}`}
+                                      onClick={() => {
+                                        endorseConventionCandidate(race.position, candidate.characterId);
+                                        toast({
+                                          title: "Candidate Endorsed",
+                                          description: `You have backed ${candidate.name} for ${NWC_POSITION_LABELS[race.position] ?? race.position}.`,
+                                        });
+                                      }}
+                                    >
+                                      Endorse
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
                   ))}
                 </CardContent>

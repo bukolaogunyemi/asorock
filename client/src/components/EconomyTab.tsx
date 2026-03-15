@@ -781,7 +781,7 @@ export default function EconomyTab() {
                 <Card key={person.name} className="border border-border bg-muted/20">
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
-                      <CharacterAvatar name={person.name} initials={person.avatar} size="md" gender={person.gender} role={person.portfolio} />
+                      <CharacterAvatar name={person.name} initials={person.avatar} size="md" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold">{person.name}</p>
                         <p className="text-xs text-muted-foreground">{person.portfolio}</p>

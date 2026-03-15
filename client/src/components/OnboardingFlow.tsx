@@ -925,7 +925,7 @@ export default function OnboardingFlow() {
                           <CardContent className="p-4 space-y-3">
                             <div className="flex items-start gap-3">
                               <div className={`rounded-full flex-shrink-0 ${vpName === vp.name ? "ring-2 ring-[hsl(42,70%,50%)]" : ""}`}>
-                                <CharacterAvatar name={vp.name} initials={vp.avatar} size="lg" gender={vp.gender} role="Vice President" />
+                                <CharacterAvatar name={vp.name} initials={vp.avatar} size="lg" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold">{vp.name}</p>
@@ -1305,7 +1305,7 @@ export default function OnboardingFlow() {
                         <Card className={`border transition-all ${personalAssistant === pa.name ? "ring-2 ring-[hsl(42,70%,50%)] border-[hsl(42,70%,50%)]" : "border-border"}`}>
                           <CardContent className="p-4 space-y-3">
                             <div className="flex items-start gap-3">
-                              <CharacterAvatar name={pa.name} initials={pa.avatar} size="lg" gender={pa.gender} role="Personal Assistant" />
+                              <CharacterAvatar name={pa.name} initials={pa.avatar} size="lg" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold">{pa.name}</p>
                                 <p className="text-xs text-muted-foreground">Age {pa.age} · {pa.state}</p>
@@ -1438,7 +1438,7 @@ export default function OnboardingFlow() {
                         <Card className="border border-border border-l-[3px] border-l-[hsl(42,70%,50%)] bg-[#1a1a1a]/90 backdrop-blur-sm">
                           <CardContent className="p-4 space-y-3">
                             <div className="flex items-start gap-3">
-                              <CharacterAvatar name={candidate.name} initials={candidate.avatar} size="lg" gender={candidate.gender} role={pos.position} />
+                              <CharacterAvatar name={candidate.name} initials={candidate.avatar} size="lg" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold">{candidate.name}</p>
                                 <p className="text-xs text-muted-foreground">Age {candidate.age} · {candidate.state}</p>

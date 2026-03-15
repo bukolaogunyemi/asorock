@@ -35,6 +35,7 @@ import { processLegislativeTurn, generateAdviserBriefing } from "./legislativeEn
 import { processGodfatherTurn, getPatronageEffects } from "./godfatherEngine";
 import { calculateComplianceScore, calculateZoneBalances, getConsequences } from "./federalCharacter";
 import { processIntelligenceTurn } from "./intelligenceEngine";
+import { processEconomicTurn } from "./economicEngine";
 
 export type {
   ActiveEvent,
@@ -2251,6 +2252,29 @@ export function processTurn(state: GameState): GameState {
   next.treasury = roundMetric(next.treasury + macro.policyTreasury);
   next.trust = clamp(next.trust + macro.policyTrust, 0, 100);
   summaryItems.push(...macro.items.slice(0, 2));
+
+  // Process new economic engine
+  const fuelSubsidyPos = state.policyLevers?.fuelSubsidy?.position ?? "partial";
+  const updatedEconomy = processEconomicTurn(next.economy, {
+    policyLevers: state.policyLevers,
+    currentDay: next.day,
+    fuelSubsidyPosition: fuelSubsidyPos,
+  });
+  next = { ...next, economy: updatedEconomy };
+
+  // Sync macroEconomy from new economy state (backward compatibility)
+  next = {
+    ...next,
+    macroEconomy: {
+      ...next.macroEconomy,
+      inflation: updatedEconomy.inflation,
+      fxRate: updatedEconomy.fxRate,
+      reserves: updatedEconomy.reserves,
+      debtToGdp: updatedEconomy.debtToGdp,
+      oilOutput: updatedEconomy.oilOutput,
+      subsidyPressure: updatedEconomy.subsidyPressure,
+    },
+  };
 
   const hookProgress = processHookInvestigations(next);
   next = hookProgress.state;

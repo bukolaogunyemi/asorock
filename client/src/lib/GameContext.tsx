@@ -489,6 +489,14 @@ const defaultGameState: GameState = {
   legislature: defaultLegislativeState(),
   patronage: defaultPatronageState(),
   federalCharacter: defaultFederalCharacterState(),
+  intelligence: {
+    dniId: null,
+    dniCompetence: 50,
+    dniLoyalty: 50,
+    activeOperations: [],
+    completedOperations: [],
+    maxConcurrentOps: 2,
+  },
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -668,6 +676,14 @@ export function initializeGameState(config: CampaignConfig): GameState {
     },
     patronage: defaultPatronageState(),
     federalCharacter: defaultFederalCharacterState(),
+    intelligence: {
+      dniId: null,
+      dniCompetence: 50,
+      dniLoyalty: 50,
+      activeOperations: [],
+      completedOperations: [],
+      maxConcurrentOps: 2,
+    },
   };
 
   state = syncStrategicState(state);

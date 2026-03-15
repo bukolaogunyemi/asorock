@@ -5,7 +5,7 @@
 export const VP_CANDIDATES = [
   {
     name: "Sen. Balarabe Dikko", age: 52, state: "Adamawa", faction: "Northern Establishment",
-    gender: "Male" as const, party: "ADU",
+    gender: "Male" as const, party: "ADU", religion: "Islam", ethnicity: "Fulani",
     traits: ["Dealmaker", "Wealthy", "Cunning", "Charismatic"], avatar: "BD",
     bio: "Seasoned political operator with deep connections across the North. Former Chairman of the Senate Committee on Finance. Known for brokering impossible deals between warring factions. His political networks span Adamawa, Taraba, and Gombe.",
     education: "ABU Zaria (LLB), Georgetown (MBA)",
@@ -14,7 +14,7 @@ export const VP_CANDIDATES = [
   },
   {
     name: "Prof. Adeniyi Ogundare", age: 61, state: "Ogun", faction: "Yoruba Intelligentsia",
-    gender: "Male" as const, party: "NDM",
+    gender: "Male" as const, party: "NDM", religion: "Christianity", ethnicity: "Yoruba",
     traits: ["Academic", "Technocrat", "Meticulous", "Reserved"], avatar: "AO",
     bio: "Former university vice-chancellor and World Bank consultant. Led Nigeria's first comprehensive education reform white paper. Speaks 4 languages. Lacks grassroots clout but carries immense credibility in international policy circles.",
     education: "UI Ibadan (PhD Economics), Harvard (Post-doc)",
@@ -23,7 +23,7 @@ export const VP_CANDIDATES = [
   },
   {
     name: "Chief Adaeze Mbah", age: 48, state: "Anambra", faction: "South-East Business",
-    gender: "Female" as const, party: "TLA",
+    gender: "Female" as const, party: "TLA", religion: "Christianity", ethnicity: "Igbo",
     traits: ["Entrepreneur", "Pragmatist", "Resilient", "Visionary"], avatar: "AM",
     bio: "Industrialist who built a manufacturing empire spanning cement, textiles, and agro-processing. Would be the first female VP. Former President of the Manufacturers Association. Philanthropist with schools in 12 states.",
     education: "UNN Nsukka (Eng), LSE (MSc Finance)",
@@ -32,7 +32,7 @@ export const VP_CANDIDATES = [
   },
   {
     name: "Alh. Garba Ringim", age: 57, state: "Kano", faction: "Northern Populist",
-    gender: "Male" as const, party: "NSF",
+    gender: "Male" as const, party: "NSF", religion: "Islam", ethnicity: "Hausa",
     traits: ["Populist", "Islamic Scholar", "Fiery Orator", "Loyal"], avatar: "GR",
     bio: "Popular cleric-turned-politician who commands massive grassroots following in the North-West. Established 200+ free schools and clinics across Kano. His endorsement alone can swing 3 million votes.",
     education: "Islamic University of Medina, Bayero University Kano (MA)",
@@ -41,7 +41,7 @@ export const VP_CANDIDATES = [
   },
   {
     name: "Dr. Dakoru Sekibo", age: 45, state: "Rivers", faction: "Niger Delta",
-    gender: "Male" as const, party: "PAP",
+    gender: "Male" as const, party: "PAP", religion: "Christianity", ethnicity: "Ijaw",
     traits: ["Oil Expert", "Reformist", "Ambitious", "Polarising"], avatar: "DS",
     bio: "Former NNPC director who exposed a major crude oil swap scandal. Youngest ever Group Executive Director. Young, ambitious, and polarising — loved by reformists, feared by the old guard.",
     education: "UNIPORT (Petroleum Eng), MIT (PhD Energy Policy)",
@@ -50,7 +50,7 @@ export const VP_CANDIDATES = [
   },
   {
     name: "Gen. Bukar Monguno (Rtd.)", age: 64, state: "Borno", faction: "Military-Security",
-    gender: "Male" as const, party: "HDP",
+    gender: "Male" as const, party: "HDP", religion: "Islam", ethnicity: "Kanuri",
     traits: ["Disciplined", "Hawkish", "Stoic", "Commanding"], avatar: "BM",
     bio: "Retired army general and hero of the North-East counter-insurgency campaign. Carries military establishment support. Known for iron discipline and zero tolerance for corruption within his ranks.",
     education: "NDA Kaduna, NDC Abuja, Royal Military Academy Sandhurst",
@@ -59,7 +59,7 @@ export const VP_CANDIDATES = [
   },
   {
     name: "Barr. Folake Bakare", age: 50, state: "Lagos", faction: "Lagos Elite",
-    gender: "Female" as const, party: "UPA",
+    gender: "Female" as const, party: "UPA", religion: "Christianity", ethnicity: "Yoruba",
     traits: ["Legal Mind", "Networker", "Shrewd", "Articulate"], avatar: "FB",
     bio: "Senior Advocate of Nigeria with 25 years of corporate law practice. Well-connected in Lagos business circles and the judiciary. Her firm handled the largest M&A deal in West African history.",
     education: "UNILAG (LLB/BL), Oxford (BCL)",
@@ -68,7 +68,7 @@ export const VP_CANDIDATES = [
   },
   {
     name: "Hajiya Salamatu Tafawa", age: 46, state: "Sokoto", faction: "Northern Caucus",
-    gender: "Female" as const, party: "PFC",
+    gender: "Female" as const, party: "PFC", religion: "Islam", ethnicity: "Hausa",
     traits: ["Bridge-Builder", "Grassroots", "Pragmatic", "Resilient"], avatar: "ST",
     bio: "Former Commissioner for Women's Affairs who built a network of women's political groups across 19 northern states. Bridges gender and regional gaps. First woman to chair a northern state's party congress.",
     education: "UDUS Sokoto (Public Admin), Ahmadu Bello University (MSc)",
@@ -81,31 +81,31 @@ export const VP_CANDIDATES = [
 
 export const PA_CANDIDATES = [
   {
-    name: "Somto Igwe", age: 29, state: "Enugu", gender: "Female" as const,
+    name: "Somto Igwe", age: 29, state: "Enugu", gender: "Female" as const, religion: "Christianity", ethnicity: "Igbo",
     traits: ["Digital Native", "Energetic", "Creative", "Impatient"], avatar: "SI",
     bio: "Gen-Z political strategist. Masters in Public Policy from LSE. Managed social media campaigns that reached 40M Nigerians. Fluent in Igbo, English, and French.",
     competencies: { communication: 5, discretion: 3, organisation: 4, networks: 3, crisis: 3 },
   },
   {
-    name: "Tanko Haruna", age: 42, state: "Kaduna", gender: "Male" as const,
+    name: "Tanko Haruna", age: 42, state: "Kaduna", gender: "Male" as const, religion: "Islam", ethnicity: "Hausa",
     traits: ["Protocol Expert", "Meticulous", "Discreet", "Old Guard"], avatar: "TH",
     bio: "Former State House protocol officer under three presidents. Knows every corridor, every back channel, and every contact worth knowing in Aso Rock. 18 years of service.",
     competencies: { communication: 3, discretion: 5, organisation: 5, networks: 5, crisis: 3 },
   },
   {
-    name: "Kelechi Nnadi", age: 35, state: "Lagos", gender: "Female" as const,
+    name: "Kelechi Nnadi", age: 35, state: "Lagos", gender: "Female" as const, religion: "Christianity", ethnicity: "Igbo",
     traits: ["Crisis Manager", "Cool-Headed", "Resourceful", "Private"], avatar: "KN",
     bio: "Ex-corporate communications head at a Big Four firm. Managed crises for Fortune 500 companies operating in Nigeria. Calm under pressure, gets things done quietly.",
     competencies: { communication: 4, discretion: 4, organisation: 4, networks: 3, crisis: 5 },
   },
   {
-    name: "Kabiru Fagge", age: 38, state: "Kano", gender: "Male" as const,
+    name: "Kabiru Fagge", age: 38, state: "Kano", gender: "Male" as const, religion: "Islam", ethnicity: "Hausa",
     traits: ["Intelligence Background", "Watchful", "Loyal", "Calculating"], avatar: "KF",
     bio: "Former DSS operative with 12 years in counterintelligence. Understands the security apparatus from inside. Discreet, loyal, and reads people like open books.",
     competencies: { communication: 2, discretion: 5, organisation: 4, networks: 4, crisis: 4 },
   },
   {
-    name: "Tejiri Okumagba", age: 33, state: "Delta", gender: "Female" as const,
+    name: "Tejiri Okumagba", age: 33, state: "Delta", gender: "Female" as const, religion: "Christianity", ethnicity: "Urhobo",
     traits: ["Policy Wonk", "Analytical", "Detail-Oriented", "Idealistic"], avatar: "TO",
     bio: "Former aide to the Finance Minister. Fluent in economic policy and government budgeting. PhD candidate at Oxford. Built the ministry's first real-time budget tracking dashboard.",
     competencies: { communication: 4, discretion: 3, organisation: 5, networks: 2, crisis: 3 },
@@ -120,7 +120,7 @@ export const APPOINTMENT_POSITIONS = [
     candidates: [
       {
         name: "Alh. Aminu Gwarzo", avatar: "AG", loyalty: 80, competence: 65,
-        age: 62, state: "Kano", gender: "Male" as const,
+        age: 62, state: "Kano", gender: "Male" as const, religion: "Islam", ethnicity: "Hausa",
         traits: ["Loyalist", "Gatekeeper", "Old Guard"],
         note: "Loyalist. Will guard your gate fiercely. 30 years in party politics.",
         bio: "Old-school political operator from Kano. Ran the party machinery during 3 election cycles. His loyalty is absolute but he tends to block access to the President.",
@@ -128,7 +128,7 @@ export const APPOINTMENT_POSITIONS = [
       },
       {
         name: "Dr. Chiamaka Ezekwesili", avatar: "CE", loyalty: 55, competence: 85,
-        age: 47, state: "Enugu", gender: "Female" as const,
+        age: 47, state: "Enugu", gender: "Female" as const, religion: "Christianity", ethnicity: "Igbo",
         traits: ["Technocrat", "Independent", "Efficient", "Reformist"],
         note: "Technocrat. Efficient but independent-minded. Former McKinsey partner.",
         bio: "Returned from a stellar career at McKinsey to serve. Restructured 3 federal agencies. Independent thinker who will push back on bad policy.",
@@ -141,7 +141,7 @@ export const APPOINTMENT_POSITIONS = [
     candidates: [
       {
         name: "Sen. Kolawole Afolabi", avatar: "KA", loyalty: 70, competence: 72,
-        age: 58, state: "Kwara", gender: "Male" as const,
+        age: 58, state: "Kwara", gender: "Male" as const, religion: "Islam", ethnicity: "Yoruba",
         traits: ["Veteran", "Bureaucrat", "Connected", "Patient"],
         note: "Political veteran. Knows the bureaucracy inside out. 4 terms in the Senate.",
         bio: "Served 4 terms in the Senate and chaired the Appropriations Committee. Understands federal machinery intimately.",
@@ -149,7 +149,7 @@ export const APPOINTMENT_POSITIONS = [
       },
       {
         name: "Barr. Obiageli Arinze", avatar: "OA", loyalty: 60, competence: 78,
-        age: 44, state: "Anambra", gender: "Female" as const,
+        age: 44, state: "Anambra", gender: "Female" as const, religion: "Christianity", ethnicity: "Igbo",
         traits: ["Legal Scholar", "Moderniser", "Anti-Corruption", "Stubborn"],
         note: "Legal scholar. Will modernise governance processes. Anti-corruption crusader.",
         bio: "Constitutional law expert who redesigned the Anambra State governance framework. Will digitise government processes but may clash with old-guard civil servants.",
@@ -162,7 +162,7 @@ export const APPOINTMENT_POSITIONS = [
     candidates: [
       {
         name: "Gen. Kashim Damboa (Rtd.)", avatar: "KD", loyalty: 65, competence: 80,
-        age: 59, state: "Borno", gender: "Male" as const,
+        age: 59, state: "Borno", gender: "Male" as const, religion: "Islam", ethnicity: "Kanuri",
         traits: ["Counter-Terrorism", "Hawkish", "Connected", "Methodical"],
         note: "Counter-terrorism specialist. Respected by the military brass.",
         bio: "Led counter-insurgency operations in the North-East. Trained at Sandhurst and the US War College. Deep relationships with Western intelligence agencies.",
@@ -170,7 +170,7 @@ export const APPOINTMENT_POSITIONS = [
       },
       {
         name: "AIG Isoken Aigbokhan (Rtd.)", avatar: "IA", loyalty: 58, competence: 76,
-        age: 53, state: "Edo", gender: "Female" as const,
+        age: 53, state: "Edo", gender: "Female" as const, religion: "Christianity", ethnicity: "Edo",
         traits: ["Intelligence Expert", "Community-Focused", "Diplomatic", "Tenacious"],
         note: "Former police intelligence chief. Focus on internal security and community policing.",
         bio: "Rose through the police ranks to lead the Force Intelligence Bureau. Pioneered community-police liaison programmes that reduced crime 30% in pilot states.",
@@ -183,7 +183,7 @@ export const APPOINTMENT_POSITIONS = [
     candidates: [
       {
         name: "Prof. Nduka Okafor", avatar: "NO", loyalty: 45, competence: 90,
-        age: 55, state: "Anambra", gender: "Male" as const,
+        age: 55, state: "Anambra", gender: "Male" as const, religion: "Christianity", ethnicity: "Igbo",
         traits: ["Brilliant", "Ambitious", "Globally Connected", "Outspoken"],
         note: "Former CBN Deputy Gov. IMF will love this pick. May overshadow you.",
         bio: "Former Deputy Governor of the Central Bank. UN veteran. Author of 4 books on economic policy. The IMF and World Bank trust him implicitly.",
@@ -191,7 +191,7 @@ export const APPOINTMENT_POSITIONS = [
       },
       {
         name: "Dr. Hadiza Balarabe", avatar: "HB", loyalty: 70, competence: 74,
-        age: 51, state: "Kaduna", gender: "Female" as const,
+        age: 51, state: "Kaduna", gender: "Female" as const, religion: "Islam", ethnicity: "Hausa",
         traits: ["Steady Hand", "Fiscal Conservative", "Loyal", "Cautious"],
         note: "Continuity pick. Knows where the money is buried. Former Finance Minister.",
         bio: "Served as Finance Minister under the previous administration. Intimate knowledge of Nigeria's fiscal structure, debt obligations, and revenue pipelines.",
@@ -204,7 +204,7 @@ export const APPOINTMENT_POSITIONS = [
     candidates: [
       {
         name: "Chief Rotimi Balogun", avatar: "RB", loyalty: 75, competence: 60,
-        age: 67, state: "Lagos", gender: "Male" as const,
+        age: 67, state: "Lagos", gender: "Male" as const, religion: "Christianity", ethnicity: "Yoruba",
         traits: ["Old Guard", "Grassroots", "Controversial", "Shrewd"],
         note: "Old guard. Controls South-West political machinery. Controversial past.",
         bio: "Party chieftain who has controlled South-West political machinery for 20 years. His grassroots network is unmatched. Controversial corruption case (later overturned) remains a liability.",
@@ -212,7 +212,7 @@ export const APPOINTMENT_POSITIONS = [
       },
       {
         name: "Hajiya Rahma Tsafe", avatar: "RT", loyalty: 68, competence: 67,
-        age: 45, state: "Zamfara", gender: "Female" as const,
+        age: 45, state: "Zamfara", gender: "Female" as const, religion: "Islam", ethnicity: "Hausa",
         traits: ["Mobiliser", "Bridge-Builder", "Pragmatic", "Well-Connected"],
         note: "Northern women's mobiliser. Bridges gender and regional gaps.",
         bio: "Former Minister of Humanitarian Affairs. Built a network of women's political groups across 19 northern states. Pragmatic and well-connected.",
@@ -221,11 +221,32 @@ export const APPOINTMENT_POSITIONS = [
     ],
   },
   {
+    position: "Budget Director", abbrev: "BD",
+    candidates: [
+      {
+        name: "Alh. Ibrahim Dankwambo", avatar: "ID", loyalty: 75, competence: 80,
+        age: 57, state: "Gombe", gender: "Male" as const, religion: "Islam", ethnicity: "Fulani",
+        traits: ["Fiscal Conservative", "Disciplined", "Process-Oriented", "Loyal"],
+        note: "Strict fiscal disciplinarian. Will enforce zero-based budgeting but may slow reforms.",
+        bio: "Former Accountant General of the Federation. Known for blocking dubious expenditure claims. His insistence on process frustrates politicians but reassures donors.",
+        competencies: { loyalty: 4, administration: 5, political: 2, discretion: 4, networks: 3 },
+      },
+      {
+        name: "Mrs. Ngozi Ibe", avatar: "NI", loyalty: 60, competence: 86,
+        age: 48, state: "Enugu", gender: "Female" as const, religion: "Christianity", ethnicity: "Igbo",
+        traits: ["Technocrat", "Reformist", "Performance-Driven", "Independent"],
+        note: "Performance-based budgeting evangelist. Efficient but politically detached.",
+        bio: "Led budget reform at the World Bank's Africa division. Designed performance-based budgeting frameworks adopted by 3 African countries. Will push for transparency.",
+        competencies: { loyalty: 3, administration: 5, political: 2, discretion: 3, networks: 4 },
+      },
+    ],
+  },
+  {
     position: "Media Adviser", abbrev: "MA",
     candidates: [
       {
         name: "Segun Ogundare", avatar: "SO", loyalty: 82, competence: 58,
-        age: 56, state: "Ondo", gender: "Male" as const,
+        age: 56, state: "Ondo", gender: "Male" as const, religion: "Christianity", ethnicity: "Yoruba",
         traits: ["Attack Dog", "Combative", "Loyal", "Aggressive"],
         note: "Attack dog. Will defend you no matter what. Journalists despise him.",
         bio: "Former managing director of a major newspaper turned presidential spokesman. Known for combative press relations. Will defend the administration aggressively — but credibility with the press corps is near zero.",
@@ -233,7 +254,7 @@ export const APPOINTMENT_POSITIONS = [
       },
       {
         name: "Elohor Okumagba", avatar: "EO", loyalty: 50, competence: 85,
-        age: 49, state: "Delta", gender: "Female" as const,
+        age: 49, state: "Delta", gender: "Female" as const, religion: "Christianity", ethnicity: "Urhobo",
         traits: ["Credible", "Principled", "Respected", "Transparent"],
         note: "Respected journalist. Brings credibility but may push back on spin.",
         bio: "Award-winning journalist and moderator of the presidential debate. Immense credibility with Nigerian and international media. Will insist on transparency.",
@@ -406,13 +427,14 @@ export const JOURNALISTS: {
 // ── Cabinet Roster (7 ministers) ───────────────────────
 
 export const cabinetRoster = [
-  { name: "Alh. Aminu Kazeem", portfolio: "Finance", loyalty: 78, competence: 85, ambition: 62, faction: "Northern Caucus", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "AK", age: 61, state: "Kano", gender: "Male" },
-  { name: "Chief Adaeze Okonkwo", portfolio: "Petroleum", loyalty: 65, competence: 72, ambition: 88, faction: "South-East Bloc", scandalRisk: "High" as const, relationship: "Wary" as const, avatar: "AO", age: 54, state: "Anambra", gender: "Female" },
-  { name: "Barr. Yetunde Akinwale", portfolio: "Justice", loyalty: 91, competence: 80, ambition: 45, faction: "Presidential Guard", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "YA", age: 49, state: "Lagos", gender: "Female" },
-  { name: "Gen. Garba Tsafe (Rtd)", portfolio: "Defence", loyalty: 82, competence: 78, ambition: 55, faction: "Military Circle", scandalRisk: "Medium" as const, relationship: "Friendly" as const, avatar: "GT", age: 64, state: "Kaduna", gender: "Male" },
-  { name: "Dr. Mwuese Agber", portfolio: "Health", loyalty: 70, competence: 90, ambition: 50, faction: "Technocrats", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "MA", age: 47, state: "Benue", gender: "Female" },
-  { name: "Engr. Chinedu Nnadi", portfolio: "Works & Housing", loyalty: 60, competence: 68, ambition: 75, faction: "South-East Bloc", scandalRisk: "Medium" as const, relationship: "Wary" as const, avatar: "CN", age: 56, state: "Imo", gender: "Male" },
-  { name: "Hon. Haruna Zurmi", portfolio: "Education", loyalty: 85, competence: 62, ambition: 70, faction: "Northern Caucus", scandalRisk: "Medium" as const, relationship: "Friendly" as const, avatar: "HZ", age: 52, state: "Zamfara", gender: "Male" },
+  { name: "Alh. Aminu Kazeem", portfolio: "Finance", loyalty: 78, competence: 85, ambition: 62, faction: "Northern Caucus", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "AK", age: 61, state: "Kano", gender: "Male", religion: "Islam", ethnicity: "Hausa" },
+  { name: "Chief Adaeze Okonkwo", portfolio: "Petroleum", loyalty: 65, competence: 72, ambition: 88, faction: "South-East Bloc", scandalRisk: "High" as const, relationship: "Wary" as const, avatar: "AO", age: 54, state: "Anambra", gender: "Female", religion: "Christianity", ethnicity: "Igbo" },
+  { name: "Barr. Yetunde Akinwale", portfolio: "Justice", loyalty: 91, competence: 80, ambition: 45, faction: "Presidential Guard", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "YA", age: 49, state: "Lagos", gender: "Female", religion: "Christianity", ethnicity: "Yoruba" },
+  { name: "Gen. Garba Tsafe (Rtd)", portfolio: "Defence", loyalty: 82, competence: 78, ambition: 55, faction: "Military Circle", scandalRisk: "Medium" as const, relationship: "Friendly" as const, avatar: "GT", age: 64, state: "Kaduna", gender: "Male", religion: "Islam", ethnicity: "Hausa" },
+  { name: "Dr. Mwuese Agber", portfolio: "Health", loyalty: 70, competence: 90, ambition: 50, faction: "Technocrats", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "MA", age: 47, state: "Benue", gender: "Female", religion: "Christianity", ethnicity: "Tiv" },
+  { name: "Engr. Chinedu Nnadi", portfolio: "Works & Housing", loyalty: 60, competence: 68, ambition: 75, faction: "South-East Bloc", scandalRisk: "Medium" as const, relationship: "Wary" as const, avatar: "CN", age: 56, state: "Imo", gender: "Male", religion: "Christianity", ethnicity: "Igbo" },
+  { name: "Hon. Haruna Zurmi", portfolio: "Education", loyalty: 85, competence: 62, ambition: 70, faction: "Northern Caucus", scandalRisk: "Medium" as const, relationship: "Friendly" as const, avatar: "HZ", age: 52, state: "Zamfara", gender: "Male", religion: "Islam", ethnicity: "Hausa" },
+  { name: "Alh. Bello Maitama", portfolio: "Trade & Investment", loyalty: 68, competence: 74, ambition: 60, faction: "Northern Caucus", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "BM", age: 55, state: "Nassarawa", gender: "Male", religion: "Islam", ethnicity: "Hausa" },
 ];
 
 // ── Cabinet Candidates (2 per portfolio) ─────────────
@@ -420,43 +442,49 @@ export const cabinetRoster = [
 export const cabinetCandidates = {
   Finance: [
     { ...cabinetRoster[0], tradeOff: "Trusted by northern elites but will demand patronage spending." },
-    { name: "Dr. Chiamaka Iweala", portfolio: "Finance", loyalty: 55, competence: 92, ambition: 70, faction: "Technocrats", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "CI", age: 48, state: "Enugu", gender: "Female", tradeOff: "IMF-credible reformer but lacks party loyalty." },
+    { name: "Dr. Chiamaka Iweala", portfolio: "Finance", loyalty: 55, competence: 92, ambition: 70, faction: "Technocrats", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "CI", age: 48, state: "Enugu", gender: "Female", religion: "Christianity", ethnicity: "Igbo", tradeOff: "IMF-credible reformer but lacks party loyalty." },
   ],
   Petroleum: [
     { ...cabinetRoster[1], tradeOff: "Strong industry contacts but high ambition and scandal exposure." },
-    { name: "Alh. Salisu Argungu", portfolio: "Petroleum", loyalty: 80, competence: 65, ambition: 50, faction: "Northern Caucus", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "SA", age: 58, state: "Kebbi", gender: "Male", tradeOff: "Loyal party man but lacks technical depth." },
+    { name: "Alh. Salisu Argungu", portfolio: "Petroleum", loyalty: 80, competence: 65, ambition: 50, faction: "Northern Caucus", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "SA", age: 58, state: "Kebbi", gender: "Male", religion: "Islam", ethnicity: "Hausa", tradeOff: "Loyal party man but lacks technical depth." },
   ],
   Justice: [
     { ...cabinetRoster[2], tradeOff: "Deeply loyal and competent but will resist executive overreach." },
-    { name: "Prof. Olumide Oyelaran", portfolio: "Justice", loyalty: 60, competence: 88, ambition: 72, faction: "South-West Alliance", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "OO", age: 55, state: "Ogun", gender: "Male", tradeOff: "Legal heavyweight but ambitious — may use the post as a platform." },
+    { name: "Prof. Olumide Oyelaran", portfolio: "Justice", loyalty: 60, competence: 88, ambition: 72, faction: "South-West Alliance", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "OO", age: 55, state: "Ogun", gender: "Male", religion: "Christianity", ethnicity: "Yoruba", tradeOff: "Legal heavyweight but ambitious — may use the post as a platform." },
   ],
   Defence: [
     { ...cabinetRoster[3], tradeOff: "Military credibility and loyalty but comes with old-guard baggage." },
-    { name: "Brig. Falmata Ngala (Rtd)", portfolio: "Defence", loyalty: 72, competence: 82, ambition: 60, faction: "Military Circle", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "FN", age: 52, state: "Borno", gender: "Female", tradeOff: "Counter-insurgency specialist. Reform-minded but untested in politics." },
+    { name: "Brig. Falmata Ngala (Rtd)", portfolio: "Defence", loyalty: 72, competence: 82, ambition: 60, faction: "Military Circle", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "FN", age: 52, state: "Borno", gender: "Female", religion: "Islam", ethnicity: "Kanuri", tradeOff: "Counter-insurgency specialist. Reform-minded but untested in politics." },
   ],
   Health: [
     { ...cabinetRoster[4], tradeOff: "Top-tier competence but politically detached — won't fight for you." },
-    { name: "Dr. Babatunde Ogundare", portfolio: "Health", loyalty: 82, competence: 72, ambition: 55, faction: "Presidential Guard", scandalRisk: "Medium" as const, relationship: "Friendly" as const, avatar: "BO", age: 50, state: "Osun", gender: "Male", tradeOff: "Loyal and experienced but lacks the technocratic edge." },
+    { name: "Dr. Babatunde Ogundare", portfolio: "Health", loyalty: 82, competence: 72, ambition: 55, faction: "Presidential Guard", scandalRisk: "Medium" as const, relationship: "Friendly" as const, avatar: "BO", age: 50, state: "Osun", gender: "Male", religion: "Christianity", ethnicity: "Yoruba", tradeOff: "Loyal and experienced but lacks the technocratic edge." },
   ],
   "Works & Housing": [
     { ...cabinetRoster[5], tradeOff: "Engineering credentials but ambitious and ethically flexible." },
-    { name: "Arc. Sadiya Ndayako", portfolio: "Works & Housing", loyalty: 75, competence: 78, ambition: 45, faction: "Northern Caucus", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "SN", age: 44, state: "Niger", gender: "Female", tradeOff: "Competent and loyal but appointing her may anger South-East bloc." },
+    { name: "Arc. Sadiya Ndayako", portfolio: "Works & Housing", loyalty: 75, competence: 78, ambition: 45, faction: "Northern Caucus", scandalRisk: "Low" as const, relationship: "Friendly" as const, avatar: "SN", age: 44, state: "Niger", gender: "Female", religion: "Islam", ethnicity: "Nupe", tradeOff: "Competent and loyal but appointing her may anger South-East bloc." },
   ],
   Education: [
     { ...cabinetRoster[6], tradeOff: "Party loyalist but mediocre track record on implementation." },
-    { name: "Prof. Tolani Adeleke", portfolio: "Education", loyalty: 58, competence: 85, ambition: 60, faction: "South-West Alliance", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "TA", age: 51, state: "Ekiti", gender: "Female", tradeOff: "Academic heavyweight but weak party ties — faction balance shifts." },
+    { name: "Prof. Tolani Adeleke", portfolio: "Education", loyalty: 58, competence: 85, ambition: 60, faction: "South-West Alliance", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "TA", age: 51, state: "Ekiti", gender: "Female", religion: "Christianity", ethnicity: "Yoruba", tradeOff: "Academic heavyweight but weak party ties — faction balance shifts." },
+  ],
+  "Trade & Investment": [
+    { ...cabinetRoster.find(c => c.portfolio === "Trade & Investment")!, tradeOff: "Reliable but lacks international trade experience." },
+    { name: "Chief Emeka Obi", portfolio: "Trade & Investment", loyalty: 55, competence: 82, ambition: 70, faction: "South-East Bloc", scandalRisk: "Low" as const, relationship: "Neutral" as const, avatar: "EO", age: 52, state: "Delta", gender: "Male", religion: "Christianity", ethnicity: "Igbo", tradeOff: "Connected exporter but politically independent." },
   ],
 };
 
 // ── Key Characters (NPCs) ─────────────────────────────
 
 export const keyCharacters = [
-  { name: "Sen. Rotimi Balogun", portfolio: "Senate President", agenda: "Push constitutional reform to strengthen Senate powers over budget.", opinion: "Cautiously supportive — expects patronage.", loyalty: 62, competence: 74, ambition: 90, faction: "South-West Alliance", relationship: "Wary" as const, avatar: "RB", age: 67, state: "Ogun", gender: "Male" },
-  { name: "Gov. Sani Lapai", portfolio: "Governors Forum Chair", agenda: "Leverage state allocations to build independent power base.", opinion: "Transactional — will cooperate for fiscal concessions.", loyalty: 50, competence: 70, ambition: 82, faction: "Northern Caucus", relationship: "Neutral" as const, avatar: "SL", age: 58, state: "Niger", gender: "Male" },
-  { name: "Brig. Kashim Konduga (Rtd)", portfolio: "NSA", agenda: "Expand security apparatus under presidential mandate.", opinion: "Loyal but hawkish — pushing for emergency powers.", loyalty: 88, competence: 76, ambition: 60, faction: "Military Circle", relationship: "Friendly" as const, avatar: "KK", age: 62, state: "Borno", gender: "Male" },
-  { name: "Hajia Hadiza Bichi", portfolio: "CBN Governor", agenda: "Maintain tight monetary policy despite political pressure.", opinion: "Technocratic independence — resists intervention.", loyalty: 55, competence: 92, ambition: 40, faction: "Technocrats", relationship: "Neutral" as const, avatar: "HB", age: 51, state: "Kano", gender: "Female" },
-  { name: "Chief Ugochukwu Mbah", portfolio: "Party Chairman", agenda: "Control candidate selection for next election cycle.", opinion: "Publicly loyal; privately building alternative.", loyalty: 42, competence: 65, ambition: 95, faction: "South-East Bloc", relationship: "Hostile" as const, avatar: "UM", age: 63, state: "Enugu", gender: "Male" },
-  { name: "Comrade Mwuese Tarka", portfolio: "Labour Leader", agenda: "Block fuel subsidy removal; mobilize street protests.", opinion: "Adversarial — will escalate without concessions.", loyalty: 20, competence: 80, ambition: 72, faction: "Youth Movement", relationship: "Hostile" as const, avatar: "MT", age: 38, state: "Benue", gender: "Female" },
+  { name: "Sen. Rotimi Balogun", portfolio: "Senate President", agenda: "Push constitutional reform to strengthen Senate powers over budget.", opinion: "Cautiously supportive — expects patronage.", loyalty: 62, competence: 74, ambition: 90, faction: "South-West Alliance", relationship: "Wary" as const, avatar: "RB", age: 67, state: "Ogun", gender: "Male", religion: "Christianity", ethnicity: "Yoruba" },
+  { name: "Gov. Sani Lapai", portfolio: "Governors Forum Chair", agenda: "Leverage state allocations to build independent power base.", opinion: "Transactional — will cooperate for fiscal concessions.", loyalty: 50, competence: 70, ambition: 82, faction: "Northern Caucus", relationship: "Neutral" as const, avatar: "SL", age: 58, state: "Niger", gender: "Male", religion: "Islam", ethnicity: "Nupe" },
+  { name: "Brig. Kashim Konduga (Rtd)", portfolio: "NSA", agenda: "Expand security apparatus under presidential mandate.", opinion: "Loyal but hawkish — pushing for emergency powers.", loyalty: 88, competence: 76, ambition: 60, faction: "Military Circle", relationship: "Friendly" as const, avatar: "KK", age: 62, state: "Borno", gender: "Male", religion: "Islam", ethnicity: "Kanuri" },
+  { name: "Hajia Hadiza Bichi", portfolio: "CBN Governor", agenda: "Maintain tight monetary policy despite political pressure.", opinion: "Technocratic independence — resists intervention.", loyalty: 55, competence: 92, ambition: 40, faction: "Technocrats", relationship: "Neutral" as const, avatar: "HB", age: 51, state: "Kano", gender: "Female", religion: "Islam", ethnicity: "Hausa" },
+  { name: "Chief Ugochukwu Mbah", portfolio: "Party Chairman", agenda: "Control candidate selection for next election cycle.", opinion: "Publicly loyal; privately building alternative.", loyalty: 42, competence: 65, ambition: 95, faction: "South-East Bloc", relationship: "Hostile" as const, avatar: "UM", age: 63, state: "Enugu", gender: "Male", religion: "Christianity", ethnicity: "Igbo" },
+  { name: "Comrade Mwuese Tarka", portfolio: "Labour Leader", agenda: "Block fuel subsidy removal; mobilize street protests.", opinion: "Adversarial — will escalate without concessions.", loyalty: 20, competence: 80, ambition: 72, faction: "Youth Movement", relationship: "Hostile" as const, avatar: "MT", age: 38, state: "Benue", gender: "Female", religion: "Christianity", ethnicity: "Tiv" },
+  { name: "Alh. Mustapha Gambo", portfolio: "FIRS Chairman", agenda: "Expand tax net and digitise collections.", opinion: "Technocratic — focused on revenue targets.", loyalty: 65, competence: 82, ambition: 50, faction: "Technocrats", relationship: "Neutral" as const, avatar: "MG", age: 53, state: "Adamawa", gender: "Male", religion: "Islam", ethnicity: "Fulani" },
+  { name: "Comptroller Amaka Eze", portfolio: "Customs Comptroller", agenda: "Modernise ports and reduce smuggling.", opinion: "Efficient but politically cautious.", loyalty: 70, competence: 76, ambition: 55, faction: "South-East Bloc", relationship: "Neutral" as const, avatar: "AE", age: 49, state: "Abia", gender: "Female", religion: "Christianity", ethnicity: "Igbo" },
 ];
 
 // ── Intel Items (updated to remove real party references) ──

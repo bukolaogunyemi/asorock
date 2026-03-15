@@ -128,17 +128,17 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
   const handleCharacterClick = useCallback((characterKey: string, sourceTab: string, sourceLabel: string) => {
     const char = state.characters[characterKey];
     if (char) {
-      pushProfile({ characterKey, label: char.name, sourceTab, sourceLabel });
+      pushProfile({ key: characterKey, type: "character", label: char.name, sourceTab, sourceLabel });
       return;
     }
     const gov = state.governors.find(g => g.name === characterKey);
     if (gov) {
-      pushProfile({ characterKey, label: gov.name, sourceTab, sourceLabel });
+      pushProfile({ key: characterKey, type: "character", label: gov.name, sourceTab, sourceLabel });
       return;
     }
     const officer = state.constitutionalOfficers.find(o => o.name === characterKey);
     if (officer) {
-      pushProfile({ characterKey, label: officer.name, sourceTab, sourceLabel });
+      pushProfile({ key: characterKey, type: "character", label: officer.name, sourceTab, sourceLabel });
     }
   }, [state.characters, state.governors, state.constitutionalOfficers, pushProfile]);
 
@@ -146,28 +146,32 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
   const proceedDisabledReason = proceedReason ?? "Cannot proceed right now";
   const handleProceed = endDay;
 
+  const charClick = useCallback((sourceTab: string, sourceLabel: string) =>
+    (characterKey: string) => handleCharacterClick(characterKey, sourceTab, sourceLabel),
+    [handleCharacterClick]);
+
   function renderTabContent() {
     switch (activeTab) {
       case "villa": return <DecisionsTab />;
-      case "cabinet": return <CabinetTab />;
+      case "cabinet": return <CabinetTab onCharacterClick={charClick("cabinet", "Cabinet")} />;
       case "politics":
-        return <PoliticsTab />;
+        return <PoliticsTab onCharacterClick={charClick("politics", "Politics")} />;
       case "governance":
-        if (activeSubTab === "economy") return <EconomyTab />;
+        if (activeSubTab === "economy") return <EconomyTab onCharacterClick={charClick("governance", "Economy")} />;
         if (activeSubTab === "infrastructure") return <InfrastructureTab />;
         if (activeSubTab === "health") return <HealthTab />;
         if (activeSubTab === "education") return <EducationTab />;
-        return <EconomyTab />;
+        return <EconomyTab onCharacterClick={charClick("governance", "Economy")} />;
       case "security":
-        return <SecurityTab view={(activeSubTab as "intel" | "military" | "police") ?? "intel"} />;
-      case "legislature": return <LegislatureTab />;
-      case "judiciary": return <JudiciaryTab />;
-      case "diplomacy": return <DiplomacyTab />;
+        return <SecurityTab view={(activeSubTab as "intel" | "military" | "police") ?? "intel"} onCharacterClick={charClick("security", "Security")} />;
+      case "legislature": return <LegislatureTab onCharacterClick={charClick("legislature", "Legislature")} />;
+      case "judiciary": return <JudiciaryTab onCharacterClick={charClick("judiciary", "Judiciary")} />;
+      case "diplomacy": return <DiplomacyTab onCharacterClick={charClick("diplomacy", "Diplomacy")} />;
       case "media":
-        if (activeSubTab === "news") return <MediaTab />;
-        if (activeSubTab === "public-affairs") return <PublicAffairsTab />;
+        if (activeSubTab === "news") return <MediaTab onCharacterClick={charClick("media", "Media")} />;
+        if (activeSubTab === "public-affairs") return <PublicAffairsTab onCharacterClick={charClick("media", "Public Affairs")} />;
         if (activeSubTab === "social-media") return <SocialMediaTab />;
-        return <MediaTab />;
+        return <MediaTab onCharacterClick={charClick("media", "Media")} />;
       case "legacy": return <LegacyTab />;
       default: return <DecisionsTab />;
     }
@@ -301,7 +305,7 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
             <Suspense fallback={<TabFallback />}>
               {isProfileOpen && currentProfile ? (
                 <CharacterProfile
-                  characterKey={currentProfile.characterKey}
+                  characterKey={currentProfile.key}
                   sourceTab={currentProfile.sourceTab}
                   onCharacterClick={handleCharacterClick}
                 />

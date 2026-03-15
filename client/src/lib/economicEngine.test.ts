@@ -4,6 +4,14 @@ import {
   advanceSectors,
   calculateUnemployment,
   applyPolicyToSectors,
+  calculateRevenue,
+  calculateExpenditure,
+  updateTreasury,
+  calculateMonthsOfCover,
+  evaluateCrisisIndicators,
+  detectNewCascades,
+  advanceCascade,
+  checkCascadeResolution,
 } from "./economicEngine";
 
 describe("defaultEconomicState", () => {
@@ -250,5 +258,225 @@ describe("applyPolicyToSectors", () => {
   it("returns empty array for unmatched policy/position combos", () => {
     const effects = applyPolicyToSectors("fuelSubsidy", "partial");
     expect(effects).toEqual([]);
+  });
+});
+
+// ── Task 4: Fiscal Pipeline Tests ──
+
+describe("calculateRevenue", () => {
+  it("calculates oil revenue from oil sector GDP", () => {
+    const state = defaultEconomicState();
+    const revenue = calculateRevenue(state);
+    // oil = 190 * 0.15 - 30 * 0.1 = 28.5 - 3 = 25.5
+    expect(revenue.oil).toBeCloseTo(25.5, 2);
+  });
+
+  it("calculates tax revenue from non-oil GDP", () => {
+    const state = defaultEconomicState();
+    const revenue = calculateRevenue(state);
+    // nonOilGDP = 120 + 75 + 80 + 35 = 310
+    // tax = 310 * 0.06 * 0.6 = 11.16
+    expect(revenue.tax).toBeCloseTo(11.16, 2);
+  });
+
+  it("total equals sum of all streams", () => {
+    const state = defaultEconomicState();
+    const revenue = calculateRevenue(state);
+    const sum = revenue.oil + revenue.tax + revenue.igr + revenue.trade + revenue.borrowing;
+    expect(revenue.total).toBeCloseTo(sum, 6);
+  });
+});
+
+describe("updateTreasury", () => {
+  it("decreases liquidity when expenditure > revenue", () => {
+    const state = defaultEconomicState();
+    state.revenue = { total: 10, oil: 5, tax: 3, igr: 1, trade: 1, borrowing: 0 };
+    state.expenditure = { total: 20, recurrent: 12, capital: 5, debtServicing: 2, transfers: 1 };
+    state.treasuryLiquidity = 100;
+
+    const updated = updateTreasury(state);
+    expect(updated.treasuryLiquidity).toBe(90); // 100 + 10 - 20
+  });
+
+  it("auto-borrows when treasury hits zero", () => {
+    const state = defaultEconomicState();
+    state.revenue = { total: 5, oil: 3, tax: 1, igr: 0.5, trade: 0.5, borrowing: 0 };
+    state.expenditure = { total: 30, recurrent: 15, capital: 5, debtServicing: 5, transfers: 5 };
+    state.treasuryLiquidity = 10;
+    // newLiquidity = 10 + 5 - 30 = -15
+
+    const updated = updateTreasury(state);
+    expect(updated.treasuryLiquidity).toBe(0); // should not go negative
+    expect(updated.revenue.borrowing).toBeCloseTo(15 * 1.1, 6); // punitive premium
+    expect(updated.debtToGdp).toBeGreaterThan(state.debtToGdp);
+  });
+});
+
+describe("calculateMonthsOfCover", () => {
+  it("returns correct ratio", () => {
+    // 120 liquidity / (24/12) = 120 / 2 = 60 months
+    expect(calculateMonthsOfCover(120, 24)).toBeCloseTo(60, 4);
+  });
+
+  it("returns 0 when expenditure is 0", () => {
+    expect(calculateMonthsOfCover(100, 0)).toBe(0);
+  });
+});
+
+// ── Task 5: Crisis System Tests ──
+
+describe("evaluateCrisisIndicators", () => {
+  it("returns green for healthy metrics", () => {
+    const indicators = evaluateCrisisIndicators({
+      inflation: 10,
+      unemploymentRate: 20,
+      fxRate: 1100,
+      fxRateBaseline: 1000,
+      debtToGdp: 30,
+      treasuryMonthsOfCover: 5,
+      oilOutput: 2.5,
+    });
+    expect(indicators.inflationZone).toBe("green");
+    expect(indicators.unemploymentZone).toBe("green");
+    expect(indicators.fxZone).toBe("green");
+    expect(indicators.debtZone).toBe("green");
+    expect(indicators.treasuryZone).toBe("green");
+    expect(indicators.oilOutputZone).toBe("green");
+  });
+
+  it("returns yellow for moderate stress", () => {
+    const indicators = evaluateCrisisIndicators({
+      inflation: 25,
+      unemploymentRate: 30,
+      fxRate: 1400,
+      fxRateBaseline: 1000,
+      debtToGdp: 45,
+      treasuryMonthsOfCover: 2,
+      oilOutput: 1.7,
+    });
+    expect(indicators.inflationZone).toBe("yellow");
+    expect(indicators.unemploymentZone).toBe("yellow");
+    expect(indicators.fxZone).toBe("yellow");
+    expect(indicators.debtZone).toBe("yellow");
+    expect(indicators.treasuryZone).toBe("yellow");
+    expect(indicators.oilOutputZone).toBe("yellow");
+  });
+
+  it("returns red for crisis conditions", () => {
+    const indicators = evaluateCrisisIndicators({
+      inflation: 35,
+      unemploymentRate: 40,
+      fxRate: 1600,
+      fxRateBaseline: 1000,
+      debtToGdp: 60,
+      treasuryMonthsOfCover: 0.5,
+      oilOutput: 1.0,
+    });
+    expect(indicators.inflationZone).toBe("red");
+    expect(indicators.unemploymentZone).toBe("red");
+    expect(indicators.fxZone).toBe("red");
+    expect(indicators.debtZone).toBe("red");
+    expect(indicators.treasuryZone).toBe("red");
+    expect(indicators.oilOutputZone).toBe("red");
+  });
+});
+
+describe("detectNewCascades", () => {
+  it("creates cascade when metric enters red", () => {
+    const indicators = evaluateCrisisIndicators({
+      inflation: 35,
+      unemploymentRate: 20,
+      fxRate: 1100,
+      fxRateBaseline: 1000,
+      debtToGdp: 30,
+      treasuryMonthsOfCover: 5,
+      oilOutput: 2.5,
+    });
+    const cascades = detectNewCascades(indicators, []);
+    expect(cascades).toHaveLength(1);
+    expect(cascades[0].type).toBe("inflation-fx-spiral");
+    expect(cascades[0].severity).toBe(1);
+    expect(cascades[0].turnsActive).toBe(0);
+    expect(cascades[0].resolved).toBe(false);
+  });
+
+  it("does not duplicate existing active cascade", () => {
+    const indicators = evaluateCrisisIndicators({
+      inflation: 35,
+      unemploymentRate: 20,
+      fxRate: 1100,
+      fxRateBaseline: 1000,
+      debtToGdp: 30,
+      treasuryMonthsOfCover: 5,
+      oilOutput: 2.5,
+    });
+    const existing = [{
+      id: "cascade-inflation-fx-spiral-123",
+      type: "inflation-fx-spiral" as const,
+      triggerMetric: "inflation",
+      affectedMetrics: ["fxRate"],
+      turnsActive: 2,
+      severity: 3,
+      resolved: false,
+    }];
+    const cascades = detectNewCascades(indicators, existing);
+    expect(cascades).toHaveLength(0);
+  });
+});
+
+describe("advanceCascade", () => {
+  it("increments turnsActive and severity", () => {
+    const cascade = {
+      id: "cascade-test-1",
+      type: "inflation-fx-spiral" as const,
+      triggerMetric: "inflation",
+      affectedMetrics: ["fxRate"],
+      turnsActive: 2,
+      severity: 3,
+      resolved: false,
+    };
+    const advanced = advanceCascade(cascade);
+    expect(advanced.turnsActive).toBe(3);
+    expect(advanced.severity).toBe(4);
+  });
+
+  it("caps severity at 10", () => {
+    const cascade = {
+      id: "cascade-test-1",
+      type: "inflation-fx-spiral" as const,
+      triggerMetric: "inflation",
+      affectedMetrics: ["fxRate"],
+      turnsActive: 9,
+      severity: 10,
+      resolved: false,
+    };
+    const advanced = advanceCascade(cascade);
+    expect(advanced.severity).toBe(10);
+    expect(advanced.turnsActive).toBe(10);
+  });
+});
+
+describe("checkCascadeResolution", () => {
+  it("resolves when trigger returns to yellow", () => {
+    const cascade = {
+      id: "cascade-test-1",
+      type: "inflation-fx-spiral" as const,
+      triggerMetric: "inflation",
+      affectedMetrics: ["fxRate"],
+      turnsActive: 3,
+      severity: 4,
+      resolved: false,
+    };
+    const indicators = evaluateCrisisIndicators({
+      inflation: 25, // yellow, not red
+      unemploymentRate: 20,
+      fxRate: 1100,
+      fxRateBaseline: 1000,
+      debtToGdp: 30,
+      treasuryMonthsOfCover: 5,
+      oilOutput: 2.5,
+    });
+    const resolved = checkCascadeResolution(cascade, indicators);
+    expect(resolved.resolved).toBe(true);
   });
 });

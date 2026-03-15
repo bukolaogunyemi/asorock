@@ -21,6 +21,18 @@ const severityDot: Record<string, string> = {
   memo: "bg-gray-500",
 };
 
+/** Placeholder intel items shown when no real brief data exists yet */
+const PLACEHOLDER_INTEL: BriefItem[] = [
+  { severity: "critical", text: "Inflation surged to 28.1% — CBN under pressure to raise rates" },
+  { severity: "warning", text: "NNPC reports 12% drop in crude output from Forcados terminal" },
+  { severity: "intel", text: "Labour unions signal coordinated strike over fuel subsidy removal" },
+  { severity: "warning", text: "Northern governors demand emergency security summit at Aso Rock" },
+  { severity: "intel", text: "IMF delegation arriving Thursday to discuss standby facility terms" },
+  { severity: "memo", text: "Senate committee schedules Petroleum Industry Bill markup session" },
+  { severity: "critical", text: "FX reserves slip below five months of import cover" },
+  { severity: "intel", text: "ECOWAS capitals divided over Nigeria's preferred Niger strategy" },
+];
+
 export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBriefColumnProps) {
   const { state } = useGame();
   const brief = state.lastBriefData;
@@ -34,7 +46,8 @@ export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBr
       ]
     : [];
 
-  const items = filterBriefItems(allItems, activeTab);
+  const filtered = filterBriefItems(allItems, activeTab);
+  const items = filtered.length > 0 ? filtered : PLACEHOLDER_INTEL;
 
   return (
     <div className="w-[220px] shrink-0 bg-[#0a1f14] border-r border-[#d4af37]/20 flex flex-col h-full">
@@ -42,31 +55,20 @@ export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBr
         onClick={onOpenFullBrief}
         className="w-full px-3 py-2 text-left text-sm font-semibold text-[#d4af37] hover:bg-[#d4af37]/10 transition-colors"
       >
-        Daily Brief &middot; View Full &#8599;
+        Intel Brief &middot; View Full &#8599;
       </button>
 
       <div className="flex-1 overflow-hidden px-2 pb-2 space-y-1">
-        {items.length === 0 ? (
-          <p className="text-xs text-[#e8dcc8]/40 italic px-1 pt-2">
-            No briefing available
-          </p>
-        ) : (
-          items.slice(0, 8).map((item, i) => (
-            <div
-              key={i}
-              className={`border-l-2 ${severityBorder[item.severity] ?? "border-gray-500"} pl-2 py-1`}
-            >
-              <div className="flex items-start gap-1.5">
-                <span
-                  className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${severityDot[item.severity] ?? "bg-gray-500"}`}
-                />
-                <span className="text-xs text-[#e8dcc8]/80 leading-tight line-clamp-2">
-                  {item.text}
-                </span>
-              </div>
-            </div>
-          ))
-        )}
+        {items.slice(0, 8).map((item, i) => (
+          <div
+            key={i}
+            className={`border-l-2 ${severityBorder[item.severity] ?? "border-gray-500"} pl-2 py-0.5`}
+          >
+            <span className="text-[11px] text-[#e8dcc8]/80 leading-tight line-clamp-2">
+              {item.text}
+            </span>
+          </div>
+        ))}
         {items.length > 8 && (
           <p className="text-[10px] text-[#d4af37]/50 px-1 pt-1">
             +{items.length - 8} more — click above to view all

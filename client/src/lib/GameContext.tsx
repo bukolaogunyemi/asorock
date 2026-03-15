@@ -66,6 +66,7 @@ import { defaultPartyInternalsState, initiatePoaching, executeDefection, checkPo
 import type { GodfatherDeal } from "./godfatherTypes";
 import { seedLegislativeCalendar } from "./legislativeBills";
 import { defaultEconomicState } from "./economicEngine";
+import { tickReforms } from "./reformTracker";
 
 // Register constitutional officer pools at module load time
 registerConstitutionalPools();
@@ -519,6 +520,7 @@ const defaultGameState: GameState = {
   partyInternals: defaultPartyInternalsState("ADU"),
   economy: defaultEconomicState(),
   lastBriefData: null,
+  reforms: [],
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -731,6 +733,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
     partyInternals: defaultPartyInternalsState(config.party),
     economy: defaultEconomicState(),
     lastBriefData: null,
+    reforms: [],
   };
 
   state = syncStrategicState(state);
@@ -767,7 +770,8 @@ export type GameAction =
   | { type: "DELEGATE_TO_VP"; eventId: string }
   | { type: "DISMISS_BRIEF" }
   | { type: "REOPEN_BRIEF" }
-  | { type: "EXECUTE_ENTITY_ACTION"; entityId: string; actionId: string };
+  | { type: "EXECUTE_ENTITY_ACTION"; entityId: string; actionId: string }
+  | { type: "SUMMON_BRIEFING"; event: ActiveEvent; cooldownKey: string };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -779,10 +783,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const newState = processTurn(state);
       const brief = generateBrief(prevState, newState);
       const milestones = checkMilestones(prevState, newState);
+      const updatedReforms = tickReforms(newState.reforms ?? [], newState.policyLevers);
       return withDerivedState({
         ...newState,
         lastBriefData: brief,
         legacyMilestones: [...newState.legacyMilestones, ...milestones],
+        reforms: updatedReforms,
       });
     }
     case "RESOLVE_EVENT":
@@ -898,6 +904,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return state.lastBriefData
         ? { ...state, lastBriefData: { ...state.lastBriefData, dismissed: false } }
         : state;
+    case "SUMMON_BRIEFING": {
+      const s = { ...state };
+      s.activeEvents = [...s.activeEvents, action.event];
+      if (action.cooldownKey) {
+        s.lastActionAtDay = { ...s.lastActionAtDay, [action.cooldownKey]: s.day };
+      }
+      return s;
+    }
     default:
       return state;
   }
@@ -936,6 +950,7 @@ interface GameContextValue {
   delegateToVP: (eventId: string) => void;
   dismissBrief: () => void;
   reopenBrief: () => void;
+  summonBriefing: (event: ActiveEvent, cooldownKey: string) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -976,6 +991,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     delegateToVP: (eventId) => dispatch({ type: "DELEGATE_TO_VP", eventId }),
     dismissBrief: () => dispatch({ type: "DISMISS_BRIEF" }),
     reopenBrief: () => dispatch({ type: "REOPEN_BRIEF" }),
+    summonBriefing: (event, cooldownKey) => dispatch({ type: "SUMMON_BRIEFING", event, cooldownKey }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

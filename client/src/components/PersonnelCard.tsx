@@ -3,6 +3,9 @@ import { Badge } from "@/components/ui/badge";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { CompetencyBar } from "@/components/CompetencyBar";
 import { RelationshipIndicator, type Rel } from "@/components/RelationshipIndicator";
+import { getTopN } from "@/lib/competencyUtils";
+import { PROFESSIONAL_LABELS, PERSONAL_LABELS } from "@/lib/competencyTypes";
+import type { CharacterCompetencies } from "@/lib/competencyTypes";
 import type { ReactNode } from "react";
 
 export interface PersonnelCardProps {
@@ -13,14 +16,13 @@ export interface PersonnelCardProps {
   state?: string;
   gender?: string;
   traits?: string[];
-  loyalty: number;
-  competence: number;
-  ambition?: number;
+  competencies: CharacterCompetencies;
   relationship: Rel;
   faction?: string;
   note?: string;
   actions?: ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
 /**
@@ -35,31 +37,33 @@ export function PersonnelCard({
   state,
   gender,
   traits,
-  loyalty,
-  competence,
-  ambition,
+  competencies,
   relationship,
   faction,
   note,
   actions,
   className,
+  onClick,
 }: PersonnelCardProps) {
   // Build demographic subtitle: "54, Anambra, Female"
   const demographics = [age, state].filter(Boolean).join(", ");
 
-  // Derive influence (avg of loyalty + competence) and reliability (loyalty - ambition/2, floored at 0)
-  const influence = Math.round((loyalty + competence) / 2);
-  const reliability = Math.round(Math.max(0, loyalty - (ambition ?? 0) / 2));
+  // Top-3 professional and personal competencies
+  const topProfessional = getTopN(competencies.professional as unknown as Record<string, number>, 3);
+  const topPersonal = getTopN(competencies.personal as unknown as Record<string, number>, 3);
 
   return (
-    <Card className={className}>
+    <Card
+      className={`${className ?? ""} group ${onClick ? "cursor-pointer hover:border-primary/50 hover:shadow-md transition-all" : ""}`}
+      onClick={onClick}
+    >
       <CardContent className="p-4 space-y-3">
         {/* Header: Avatar + Name + Demographics */}
         <div className="flex items-start gap-3">
           <CharacterAvatar name={name} initials={avatar} size="md" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="text-sm font-semibold truncate">{name}</p>
+              <p className={`text-sm font-semibold truncate ${onClick ? "group-hover:underline" : ""}`}>{name}</p>
               {faction && (
                 <Badge variant="outline" className="text-[10px]">{faction}</Badge>
               )}
@@ -83,13 +87,22 @@ export function PersonnelCard({
           </div>
         )}
 
-        {/* Competency bars */}
+        {/* Competency bars — top 3 professional + top 3 personal */}
         <div className="space-y-1">
-          <CompetencyBar label="Loyalty" value={loyalty} />
-          <CompetencyBar label="Competence" value={competence} />
-          {ambition !== undefined && <CompetencyBar label="Ambition" value={ambition} />}
-          <CompetencyBar label="Influence" value={influence} />
-          <CompetencyBar label="Reliability" value={reliability} />
+          {topProfessional.map(({ key, value }) => (
+            <CompetencyBar
+              key={key}
+              label={PROFESSIONAL_LABELS[key as keyof typeof PROFESSIONAL_LABELS] ?? key}
+              value={value}
+            />
+          ))}
+          {topPersonal.map(({ key, value }) => (
+            <CompetencyBar
+              key={key}
+              label={PERSONAL_LABELS[key as keyof typeof PERSONAL_LABELS] ?? key}
+              value={value}
+            />
+          ))}
         </div>
 
         {/* Note */}

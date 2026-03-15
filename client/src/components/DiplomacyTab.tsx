@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Info, AlertTriangle, Globe, Handshake, Users, Building2 } from "lucide-react";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { PersonnelCard } from "@/components/PersonnelCard";
+import { migrateOldCompetencies } from "@/lib/competencyUtils";
 import {
   BarChart,
   Bar,
@@ -103,8 +104,7 @@ export default function DiplomacyTab() {
                 age={p.age}
                 state={p.state}
                 gender={p.gender}
-                loyalty={p.loyalty}
-                competence={p.competence}
+                competencies={migrateOldCompetencies({ loyalty: p.loyalty, competence: p.competence, ambition: 50, portfolio: p.title })}
                 relationship={p.relationship}
                 faction={p.shortTitle}
                 note={`${p.tenure}. ${p.note}`}

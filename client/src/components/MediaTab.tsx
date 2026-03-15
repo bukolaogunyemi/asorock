@@ -265,9 +265,7 @@ export default function MediaTab() {
                 age={person.age}
                 state={person.state}
                 gender={person.gender}
-                loyalty={person.loyalty}
-                competence={person.competence}
-                ambition={person.ambition}
+                competencies={person.competencies}
                 relationship={person.relationship}
                 faction={person.faction}
                 traits={person.traits}

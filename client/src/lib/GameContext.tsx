@@ -20,6 +20,7 @@ import {
   startHookInvestigation,
   useHook,
   delegateToVP,
+  delegateToCOS,
 } from "./gameEngine";
 import { generateBrief } from "./intelligenceBrief";
 import { checkMilestones } from "./legacyScore";
@@ -768,10 +769,12 @@ export type GameAction =
   | { type: "POACH_LEGISLATORS"; fromParty: string; toParty: string; zone: string; seatType: "house" | "senate"; seatCount: number }
   | { type: "ENDORSE_CONVENTION_CANDIDATE"; position: string; candidateId: string }
   | { type: "DELEGATE_TO_VP"; eventId: string }
+  | { type: "DELEGATE_TO_COS"; eventId: string }
   | { type: "DISMISS_BRIEF" }
   | { type: "REOPEN_BRIEF" }
   | { type: "EXECUTE_ENTITY_ACTION"; entityId: string; actionId: string }
-  | { type: "SUMMON_BRIEFING"; event: ActiveEvent; cooldownKey: string };
+  | { type: "SUMMON_BRIEFING"; event: ActiveEvent; cooldownKey: string }
+  | { type: "MAKE_APPOINTMENT"; office: string; appointeeName: string; character: CharacterState };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -896,6 +899,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return withDerivedState(executeEntityAction(state, action.entityId, action.actionId));
     case "DELEGATE_TO_VP":
       return withDerivedState(delegateToVP(state, action.eventId));
+    case "DELEGATE_TO_COS":
+      return withDerivedState(delegateToCOS(state, action.eventId));
     case "DISMISS_BRIEF":
       return state.lastBriefData
         ? { ...state, lastBriefData: { ...state.lastBriefData, dismissed: true } }
@@ -911,6 +916,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         s.lastActionAtDay = { ...s.lastActionAtDay, [action.cooldownKey]: s.day };
       }
       return s;
+    }
+    case "MAKE_APPOINTMENT": {
+      const newAppointments = [
+        ...state.appointments.filter(a => a.office !== action.office),
+        { office: action.office, appointee: action.appointeeName, confirmed: true },
+      ];
+      const newCharacters = { ...state.characters, [action.appointeeName]: action.character };
+      return withDerivedState({ ...state, appointments: newAppointments, characters: newCharacters });
     }
     default:
       return state;
@@ -948,9 +961,11 @@ interface GameContextValue {
   endorseConventionCandidate: (position: string, candidateId: string) => void;
   executeEntityAction: (entityId: string, actionId: string) => void;
   delegateToVP: (eventId: string) => void;
+  delegateToCOS: (eventId: string) => void;
   dismissBrief: () => void;
   reopenBrief: () => void;
   summonBriefing: (event: ActiveEvent, cooldownKey: string) => void;
+  makeAppointment: (office: string, appointeeName: string, character: CharacterState) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -989,9 +1004,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     endorseConventionCandidate: (position, candidateId) => dispatch({ type: "ENDORSE_CONVENTION_CANDIDATE", position, candidateId }),
     executeEntityAction: (entityId, actionId) => dispatch({ type: "EXECUTE_ENTITY_ACTION", entityId, actionId }),
     delegateToVP: (eventId) => dispatch({ type: "DELEGATE_TO_VP", eventId }),
+    delegateToCOS: (eventId) => dispatch({ type: "DELEGATE_TO_COS", eventId }),
     dismissBrief: () => dispatch({ type: "DISMISS_BRIEF" }),
     reopenBrief: () => dispatch({ type: "REOPEN_BRIEF" }),
     summonBriefing: (event, cooldownKey) => dispatch({ type: "SUMMON_BRIEFING", event, cooldownKey }),
+    makeAppointment: (office, appointeeName, character) => dispatch({ type: "MAKE_APPOINTMENT", office, appointeeName, character }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

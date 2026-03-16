@@ -30,6 +30,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { cabinetRoster, factions } from "@/lib/gameData";
+import { slugify } from "@/lib/entityTypes";
 import { traitDefinitions } from "@/lib/traits";
 import { getConsequences } from "@/lib/federalCharacter";
 
@@ -40,7 +41,7 @@ const traitBadgeVariant = (category: string) => {
   return "default" as const;
 };
 
-export default function CabinetTab() {
+export default function CabinetTab({ onCharacterClick, onEntityClick }: { onCharacterClick?: (characterKey: string) => void; onEntityClick?: (entityId: string) => void }) {
   const { toast } = useToast();
   const { state } = useGame();
   const action = (title: string) => (msg: string) => () =>
@@ -60,24 +61,33 @@ export default function CabinetTab() {
             {cabinetRoster.map((m) => {
               // Get live character data from GameContext if playing
               const charData = isPlaying ? state.characters[m.name] : null;
-              const loyalty = charData?.loyalty ?? m.loyalty;
-              const competence = charData?.competence ?? m.competence;
-              const ambition = charData?.ambition ?? m.ambition;
+              const loyalty = charData?.competencies?.personal.loyalty ?? m.loyalty;
+              const competence = charData ? Math.round(Object.values(charData.competencies.professional).reduce((a, b) => a + b, 0) / 7) : m.competence;
+              const ambition = charData?.competencies?.personal.ambition ?? m.ambition;
               const relationship = charData?.relationship ?? m.relationship;
               const faction = charData?.faction ?? m.faction;
               const traits = charData?.traits ?? [];
               const hooks = charData?.hooks ?? [];
 
               return (
-                <Card key={m.name} className="border border-border bg-muted/30">
+                <Card
+                  key={m.name}
+                  className={`group border border-border bg-muted/30 ${onCharacterClick ? "cursor-pointer hover:border-primary/50 hover:shadow-md transition-all" : ""}`}
+                  onClick={onCharacterClick ? () => onCharacterClick(m.name) : undefined}
+                >
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
                       <CharacterAvatar name={m.name} initials={m.avatar} size="md" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-semibold">{m.name}</p>
-                            <p className="text-xs text-muted-foreground">{m.portfolio}</p>
+                            <p className={`text-sm font-semibold ${onCharacterClick ? "group-hover:underline" : ""}`}>{m.name}</p>
+                            <p
+                              className={`text-xs text-muted-foreground ${onEntityClick ? "cursor-pointer hover:underline hover:text-primary/80" : ""}`}
+                              onClick={onEntityClick ? (e) => { e.stopPropagation(); onEntityClick("ministry:" + slugify(m.portfolio)); } : undefined}
+                            >
+                              {m.portfolio}
+                            </p>
                           </div>
                           {hooks.length > 0 && (
                             <Key

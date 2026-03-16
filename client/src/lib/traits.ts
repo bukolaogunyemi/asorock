@@ -2,6 +2,7 @@
 // 12 traits that modify character behavior, loyalty drift, and betrayal risk
 
 import type { CharacterState, GameState } from "./gameTypes";
+import { deriveBetrayalThreshold } from "./competencyUtils";
 
 // ── Types ───────────────────────────────────────────────
 
@@ -164,11 +165,15 @@ export function assignInitialTraits(
     const traits: string[] = [];
 
     // Primary trait: based on dominant stat
-    if (char.ambition > 75) {
+    const personal = char.competencies.personal;
+    const avgProfessional = Math.round(
+      Object.values(char.competencies.professional).reduce((a, b) => a + b, 0) / 7,
+    );
+    if (personal.ambition > 75) {
       traits.push("ambitious");
-    } else if (char.loyalty > 75) {
+    } else if (personal.loyalty > 75) {
       traits.push("loyal");
-    } else if (char.competence > 80) {
+    } else if (avgProfessional > 80) {
       traits.push("competent");
     }
 
@@ -233,24 +238,26 @@ export function checkBetrayalRisk(
 
   for (const [name, char] of Object.entries(state.characters)) {
     const effect = getTraitEffect(char);
-    const adjustedThreshold = char.betrayalThreshold + effect.betrayalModifier;
+    const personal = char.competencies.personal;
+    const baseThreshold = deriveBetrayalThreshold(personal);
+    const adjustedThreshold = baseThreshold + effect.betrayalModifier;
 
     // Risk is higher when loyalty is below threshold and ambition is high
-    const loyaltyGap = adjustedThreshold - char.loyalty;
-    const ambitionFactor = char.ambition / 100;
+    const loyaltyGap = adjustedThreshold - personal.loyalty;
+    const ambitionFactor = personal.ambition / 100;
     const stressFactor = state.stress > 50 ? 1.2 : 1.0;
 
     const risk = Math.max(0, Math.min(100,
       loyaltyGap * ambitionFactor * stressFactor * 2
     ));
 
-    const isAtRisk = char.loyalty < adjustedThreshold && char.ambition > 70;
+    const isAtRisk = personal.loyalty < adjustedThreshold && personal.ambition > 70;
 
     risks.push({
       characterName: name,
       risk: Math.round(risk),
       threshold: Math.round(adjustedThreshold),
-      loyalty: char.loyalty,
+      loyalty: personal.loyalty,
       isAtRisk,
       traits: char.traits,
     });

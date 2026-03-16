@@ -13,6 +13,7 @@ import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { CompetencyBar } from "@/components/CompetencyBar";
 import { RelationshipIndicator } from "@/components/RelationshipIndicator";
 import { Scale, Gavel, ShieldAlert, UserCheck, Ban } from "lucide-react";
+import { slugify } from "@/lib/entityTypes";
 
 
 const independenceColor = (v: number) => {
@@ -44,7 +45,7 @@ const stakesColor = (s: string) => {
 
 const statusSteps = ["Filed", "Hearing", "Deliberation", "Decided"];
 
-export default function JudiciaryTab() {
+export default function JudiciaryTab({ onCharacterClick, onEntityClick }: { onCharacterClick?: (characterKey: string) => void; onEntityClick?: (entityId: string) => void } = {}) {
   const { toast } = useToast();
   const { state } = useGame();
   const cjnOfficer = state.constitutionalOfficers.find(
@@ -162,15 +163,20 @@ export default function JudiciaryTab() {
           <CardContent className="p-4 pt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {judiciaryPersonnel.map((p) => (
-                <Card key={p.name} className="border border-border bg-muted/30">
+                <Card key={p.name} className="border border-border bg-muted/30 cursor-pointer hover:border-primary/50 transition-all" onClick={() => onCharacterClick?.(p.name)}>
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
                       <CharacterAvatar name={p.name} initials={p.avatar} size="md" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-semibold">{p.name}</p>
-                            <p className="text-xs text-muted-foreground">{p.title}</p>
+                            <p className="text-sm font-semibold hover:underline">{p.name}</p>
+                            <p
+                              className={`text-xs text-muted-foreground ${onEntityClick ? "cursor-pointer hover:underline hover:text-primary/80" : ""}`}
+                              onClick={onEntityClick ? (e) => { e.stopPropagation(); onEntityClick("constitutional-office:" + slugify(p.title)); } : undefined}
+                            >
+                              {p.title}
+                            </p>
                           </div>
                           <Badge variant="outline" className="text-xs flex-shrink-0">{p.shortTitle}</Badge>
                         </div>

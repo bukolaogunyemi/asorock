@@ -27,26 +27,28 @@ export default function HeadlinesColumn({ activeTab }: HeadlinesColumnProps) {
   const headlines = filterHeadlines(state.headlines ?? [], activeTab);
 
   return (
-    <div className="w-[220px] shrink-0 bg-white border-l border-gray-200 flex flex-col h-full">
-      <div className="px-3 py-2 text-sm font-semibold text-[#d4af37]">
-        Headlines
+    <div className="w-[260px] shrink-0 bg-white border-l border-gray-200 flex flex-col h-full">
+      <div className="px-3 py-2">
+        <span className="text-[11px] font-bold text-[#d4af37] uppercase tracking-wider">
+          Headlines
+        </span>
       </div>
 
-      <div className="flex-1 overflow-hidden px-2 pb-2 space-y-1">
+      <div className="flex-1 overflow-hidden px-2 pb-2 space-y-2">
         {headlines.length === 0 ? (
-          <p className="text-xs text-gray-400 italic px-1">
+          <p className="text-[11px] text-gray-400 italic px-1">
             No headlines available
           </p>
         ) : (
-          headlines.slice(0, 10).map((headline, i) => {
+          headlines.slice(0, 5).map((headline, i) => {
             const sentiment = getSentiment(headline);
             return (
               <div
                 key={i}
-                className="border-l-2 pl-2 py-0.5"
+                className="border-l-2 pl-2 py-1"
                 style={{ borderColor: SENTIMENT_COLOR[sentiment] }}
               >
-                <span className="text-[11px] text-[#1a1a1a]/80 leading-tight line-clamp-2">
+                <span className="text-[11px] text-[#1a1a1a]/80 leading-tight line-clamp-2 block">
                   {headline}
                 </span>
               </div>

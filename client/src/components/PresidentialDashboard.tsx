@@ -39,29 +39,30 @@ export function PresidentialDashboard({
 
   return (
     <div
-      className="relative border-b"
+      className="relative border-b border-gray-200"
       style={{
-        backgroundColor: "#0a1f14",
-        borderColor: "rgba(212,175,55,0.3)",
+        backgroundColor: "#faf8f5",
       }}
     >
-      {/* Compact two-row layout: Profile row + Indicators row */}
-      <div className="flex flex-col">
-        {/* Row 1: Profile info */}
-        <ProfilePanel />
+      {/* Single-row layout: Profile card left + Indicators grid right */}
+      <div className="flex items-start gap-3 px-3 py-2">
+        {/* Profile card */}
+        <div className="shrink-0">
+          <ProfilePanel />
+        </div>
 
-        {/* Row 2: Governance indicators grid */}
-        <div className="px-3 pb-2">
+        {/* Indicators — fills remaining space */}
+        <div className="flex-1 min-w-0">
           <GovernanceIndicators
             onNavigate={onNavigate}
             onShowDetail={setSelectedIndicator}
             pulsingIndicators={pulsingIndicators}
           />
         </div>
-
-        {/* Risk radar (if available) */}
-        <RiskRadarPanel />
       </div>
+
+      {/* Risk radar (if available) */}
+      <RiskRadarPanel />
 
       {/* Indicator detail popup */}
       {selectedIndicator && (

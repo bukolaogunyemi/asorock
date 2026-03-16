@@ -500,6 +500,8 @@ describe("processEconomicTurn", () => {
       day: i, gdp: 100, sectorGdpValues: { oil: 38, agriculture: 24, manufacturing: 15, services: 16, tourism: 7 },
       unemploymentRate: 25, inflation: 15, fxRate: 1200,
       treasuryLiquidity: 100, debtToGdp: 30, oilOutput: 2,
+      revenueTotal: 0, revenueOil: 0, revenueTax: 0, revenueIgr: 0, revenueTrade: 0, revenueBorrowing: 0,
+      expenditureTotal: 0, reserves: 0,
     }));
     const result = processEconomicTurn(state, { policyLevers: {}, currentDay: 13 });
     expect(result.history.length).toBe(12);

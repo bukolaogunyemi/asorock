@@ -161,7 +161,7 @@ function BillCard({ bill }: { bill: Bill }) {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export default function LegislatureTab() {
+export default function LegislatureTab({ onCharacterClick: _onCharacterClick, onEntityClick: _onEntityClick }: { onCharacterClick?: (characterKey: string) => void; onEntityClick?: (entityId: string) => void } = {}) {
   const { state, signBill, vetoBill, resolveCrisis } = useGame();
   const legislature = state.legislature;
 

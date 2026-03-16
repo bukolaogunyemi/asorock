@@ -46,6 +46,8 @@ import type { ActiveEvent } from "@/lib/gameTypes";
 
 interface SecurityTabProps {
   view?: "intel" | "military" | "police";
+  onCharacterClick?: (characterKey: string) => void;
+  onEntityClick?: (entityId: string) => void;
 }
 
 const ACTIONS = [
@@ -80,7 +82,7 @@ const formatRequirements = (requirements?: { metric: string; min?: number; max?:
     .join(" | ");
 };
 
-export default function SecurityTab({ view = "intel" }: SecurityTabProps) {
+export default function SecurityTab({ view = "intel", onCharacterClick, onEntityClick }: SecurityTabProps) {
   const { toast } = useToast();
   const {
     state,
@@ -488,6 +490,7 @@ export default function SecurityTab({ view = "intel" }: SecurityTabProps) {
                   traits={person.traits}
                   note={person.brief}
                   className="bg-muted/20"
+                  onClick={() => onCharacterClick?.(person.name)}
                 />
               ))}
             </CardContent>
@@ -501,8 +504,11 @@ export default function SecurityTab({ view = "intel" }: SecurityTabProps) {
               {state.governors.map((governor) => (
                 <div key={governor.name} className="rounded-md border border-border bg-muted/20 p-3 space-y-1.5">
                   <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className="text-sm font-medium">{governor.name}</p>
+                    <div
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => onCharacterClick?.(governor.name)}
+                    >
+                      <p className="text-sm font-medium hover:underline">{governor.name}</p>
                       <p className="text-xs text-muted-foreground">{governor.zone}</p>
                     </div>
                     <Badge variant={statusBadge(governor.loyalty)} className="text-xs">{governor.relationship}</Badge>

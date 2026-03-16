@@ -279,7 +279,7 @@ export function adaptConstitutionalOfficeToProfile(
   // Some mock/runtime objects may use a `position` field instead.
   const resolvedOfficer =
     gameState.constitutionalOfficers.find((o) => {
-      const asAny = o as Record<string, unknown>;
+      const asAny = o as unknown as Record<string, unknown>;
       const posField = (asAny["position"] as string | undefined)?.toLowerCase();
       const portfolioField = (asAny["portfolio"] as string | undefined)?.toLowerCase();
       const target = data.positionName.toLowerCase();

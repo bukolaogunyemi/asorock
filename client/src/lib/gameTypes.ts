@@ -6,6 +6,7 @@ import type { FederalCharacterState } from "./federalCharacterTypes";
 import type { IntelligenceState } from "./intelligenceTypes";
 import type { PartyInternalsState } from "./partyTypes";
 import type { EconomicState } from "./economicTypes";
+import type { CharacterCompetencies, CareerEntry, InteractionEntry } from "./competencyTypes";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -73,6 +74,13 @@ export interface PolicyLeverState {
   importTariffs: SingleLeverState;
   minimumWage: SingleLeverState;
   publicSectorHiring: SingleLeverState;
+}
+
+export interface ReformProgress {
+  id: string;
+  progress: number; // 0-100
+  turnsActive: number;
+  status: "active" | "stalled" | "not-started" | "complete";
 }
 
 export interface Effect {
@@ -146,7 +154,7 @@ export interface ActiveEvent {
   severity: EventSeverity;
   description: string;
   category: "economy" | "security" | "governance" | "politics" | "diplomacy" | "media";
-  source: "opening" | "contextual" | "chain" | "policy" | "faction-demand" | "cabinet-appointment";
+  source: "opening" | "contextual" | "chain" | "policy" | "faction-demand" | "cabinet-appointment" | "team-briefing";
   choices: EventChoice[];
   factionKey?: string;
   createdDay: number;
@@ -187,19 +195,31 @@ export interface Hook {
 export interface CharacterState {
   name: string;
   portfolio: string;
-  loyalty: number;
-  competence: number;
-  ambition: number;
+  competencies: CharacterCompetencies;
   faction: string;
   relationship: Relationship;
   avatar: string;
   traits: string[];
-  betrayalThreshold: number;
   hooks: Hook[];
+  biography?: string;
+  education?: string;
+  religion?: string;
+  ethnicity?: string;
+  party?: string;
+  careerHistory: CareerEntry[];
+  interactionLog: InteractionEntry[];
   age?: number;
   state?: string;
   gender?: string;
   title?: string;
+  /** @deprecated Use competencies.personal.loyalty */
+  loyalty?: number;
+  /** @deprecated Use relevant professional competency */
+  competence?: number;
+  /** @deprecated Use competencies.personal.ambition */
+  ambition?: number;
+  /** @deprecated Use deriveBetrayalThreshold(competencies.personal) */
+  betrayalThreshold?: number;
 }
 
 export interface FactionState {
@@ -365,6 +385,25 @@ export interface CabalMeetingState {
   choices: CabalChoice[];
 }
 
+export interface BriefItem {
+  severity: "critical" | "warning" | "intel" | "memo";
+  text: string;
+  relatedEventId?: string;
+}
+
+export interface IntelligenceBriefData {
+  day: number;
+  executiveSummary: string;
+  sections: {
+    political: BriefItem[];
+    economic: BriefItem[];
+    security: BriefItem[];
+    diplomatic: BriefItem[];
+  };
+  metricChanges: { label: string; from: number; to: number }[];
+  dismissed: boolean;
+}
+
 export interface GameState {
   day: number;
   date: string;
@@ -429,6 +468,8 @@ export interface GameState {
   intelligence: IntelligenceState;
   partyInternals: PartyInternalsState;
   economy: EconomicState;
+  lastBriefData: IntelligenceBriefData | null;
+  reforms: ReformProgress[];
 }
 
 export interface SaveGameData {

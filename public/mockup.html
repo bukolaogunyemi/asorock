@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presidential Dashboard Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a1f15; color: #e8e0d0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  /* Top Bar */
+  .topbar { background: #071510; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d4af3733; }
+  .topbar-brand { color: #d4af37; font-weight: 800; font-size: 15px; letter-spacing: 2px; }
+  .topbar-info { color: #666; font-size: 11px; display: flex; gap: 12px; align-items: center; }
+  .topbar-badge { background: #d4af3722; color: #d4af37; padding: 2px 8px; border-radius: 10px; font-size: 10px; }
+
+  /* Zone A: Persistent Dashboard */
+  .zone-a { padding: 10px 14px; background: #0f2b1e; border-bottom: 1px solid #1a4a2e; }
+  .zone-a-grid { display: grid; grid-template-columns: 230px 1fr 250px; gap: 10px; }
+
+  /* Profile Panel */
+  .profile-panel { background: #163822; border: 1px solid #1a4a2e; border-radius: 8px; padding: 10px; }
+  .profile-header { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .profile-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #1a4a2e, #2a6a3e); border: 2px solid #d4af3744; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .profile-name { font-size: 13px; font-weight: 700; color: #e8e0d0; }
+  .profile-sub { font-size: 10px; color: #778; }
+  .profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .profile-stat { background: #0a1f15; padding: 5px 7px; border-radius: 4px; }
+  .profile-stat-label { font-size: 9px; color: #667; text-transform: uppercase; letter-spacing: 0.5px; }
+  .profile-stat-value { font-size: 11px; color: #d4af37; font-weight: 600; margin-top: 1px; }
+
+  /* Governance Indicators */
+  .indicators-panel { background: #163822; border: 1px solid #1a4a2e; border-radius: 8px; padding: 10px; }
+  .panel-title { color: #d4af37; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 600; }
+  .indicators-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .indicator { background: #0a1f15; padding: 7px 8px; border-radius: 5px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+  .indicator:hover { border-color: #d4af3766; background: #0f2b1e; }
+  .indicator-label { font-size: 9px; color: #667; margin-bottom: 2px; }
+  .indicator-value { font-size: 17px; font-weight: 700; line-height: 1.2; }
+  .indicator-trend { font-size: 9px; margin-top: 1px; }
+  .trend-up { color: #4ade80; }
+  .trend-down { color: #f87171; }
+  .trend-flat { color: #888; }
+  .val-green { color: #4ade80; }
+  .val-yellow { color: #fbbf24; }
+  .val-red { color: #f87171; }
+  .val-white { color: #e8e0d0; }
+
+  /* Risk Radar */
+  .radar-panel { background: #163822; border: 1px solid #1a4a2e; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+  .radar-panel .panel-title { align-self: flex-start; }
+  .radar-summary { font-size: 9px; color: #f87171; text-align: center; margin-top: 4px; }
+
+  /* Tab Navigation */
+  .tab-nav { display: flex; gap: 0; padding: 0 14px; background: #0a1f15; border-bottom: 1px solid #1a4a2e; }
+  .tab-item { padding: 8px 14px; font-size: 11px; color: #667; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; font-weight: 500; }
+  .tab-item:hover { color: #aaa; }
+  .tab-item.active { color: #d4af37; border-bottom-color: #d4af37; font-weight: 600; }
+
+  /* Zone B: Three Column */
+  .zone-b { padding: 10px 14px; display: grid; grid-template-columns: 220px 1fr 220px; gap: 10px; min-height: 380px; }
+
+  /* Inbox Column */
+  .inbox-panel { background: #163822; border: 1px solid #1a4a2e; border-radius: 8px; padding: 10px; }
+  .inbox-item { background: #0a1f15; padding: 7px 8px; border-radius: 4px; margin-bottom: 6px; border-left: 3px solid; }
+  .inbox-item.critical { border-left-color: #f87171; }
+  .inbox-item.warning { border-left-color: #fbbf24; }
+  .inbox-item.info { border-left-color: #60a5fa; }
+  .inbox-severity { font-size: 9px; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+  .inbox-severity.critical { color: #f87171; }
+  .inbox-severity.warning { color: #fbbf24; }
+  .inbox-severity.info { color: #60a5fa; }
+  .inbox-text { font-size: 11px; color: #ccc; line-height: 1.3; }
+  .inbox-time { font-size: 9px; color: #556; margin-top: 3px; }
+
+  /* Decision Desk */
+  .decision-panel { background: #163822; border: 1px solid #d4af3733; border-radius: 8px; padding: 14px; position: relative; }
+  .decision-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .decision-pending { font-size: 10px; color: #888; }
+  .decision-dots { display: flex; gap: 5px; }
+  .decision-dot { width: 8px; height: 8px; border-radius: 50%; background: #1a4a2e; }
+  .decision-dot.active { background: #d4af37; }
+  .decision-card { background: #0a1f15; border: 1px solid #1a4a2e; border-radius: 8px; padding: 14px; }
+  .decision-severity { font-size: 9px; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.5px; }
+  .decision-severity.critical { color: #f87171; }
+  .decision-severity.warning { color: #fbbf24; }
+  .decision-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+  .decision-desc { font-size: 11px; color: #999; line-height: 1.5; margin-bottom: 14px; }
+  .decision-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .choice-card { background: #163822; border: 1px solid #1a4a2e; border-radius: 6px; padding: 10px; cursor: pointer; transition: all 0.2s; }
+  .choice-card:hover { border-color: #d4af37; }
+  .choice-label { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+  .choice-label.approve { color: #4ade80; }
+  .choice-label.reject { color: #f87171; }
+  .choice-label.compromise { color: #fbbf24; }
+  .choice-cost { font-size: 9px; color: #778; line-height: 1.4; }
+  .decision-delegate { text-align: center; margin-top: 10px; }
+  .decision-delegate a { font-size: 10px; color: #667; cursor: pointer; text-decoration: underline; transition: color 0.2s; }
+  .decision-delegate a:hover { color: #d4af37; }
+  .decision-nav { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 12px; }
+  .nav-arrow { width: 30px; height: 30px; border-radius: 50%; background: #1a4a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; color: #888; transition: all 0.2s; border: 1px solid #2a5a3a; }
+  .nav-arrow:hover { background: #2a5a3a; color: #d4af37; border-color: #d4af37; }
+  .nav-counter { font-size: 11px; color: #667; }
+
+  /* Headlines Column */
+  .headlines-panel { background: #163822; border: 1px solid #1a4a2e; border-radius: 8px; padding: 10px; }
+  .headline-item { background: #0a1f15; padding: 7px 8px; border-radius: 4px; margin-bottom: 6px; }
+  .headline-source { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .headline-text { font-size: 11px; color: #ccc; line-height: 1.3; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <span class="topbar-brand">ASO ROCK</span>
+  <div class="topbar-info">
+    <span class="topbar-badge">Term 1</span>
+    <span>Day 45 · May 14, 2027</span>
+  </div>
+</div>
+
+<!-- ZONE A: Persistent Presidential Dashboard -->
+<div class="zone-a">
+  <div class="zone-a-grid">
+
+    <!-- Player Profile -->
+    <div class="profile-panel">
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <div>
+          <div class="profile-name">President Okafor</div>
+          <div class="profile-sub">Age 58 · Ogun State · PDP</div>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-label">Traits</div>
+          <div class="profile-stat-value" style="font-size:10px;">Reformist, Pragmatic</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-label">Pol. Capital</div>
+          <div class="profile-stat-value">62</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-label">Legacy Score</div>
+          <div class="profile-stat-value">34</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-label">Prestige</div>
+          <div class="profile-stat-value">High</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Governance Indicators -->
+    <div class="indicators-panel">
+      <div class="panel-title">Governance Indicators</div>
+      <div class="indicators-grid">
+        <div class="indicator">
+          <div class="indicator-label">Approval</div>
+          <div class="indicator-value val-green">48%</div>
+          <div class="indicator-trend trend-down">↓ 2 pts</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-label">Security</div>
+          <div class="indicator-value val-yellow">Elevated</div>
+          <div class="indicator-trend trend-down">↓ NW spike</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-label">Treasury</div>
+          <div class="indicator-value val-white">₦1.2T</div>
+          <div class="indicator-trend trend-flat">Debt: ₦540B</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-label">GDP Growth</div>
+          <div class="indicator-value val-green">3.2%</div>
+          <div class="indicator-trend trend-up">↑ 0.4</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-label">Inflation</div>
+          <div class="indicator-value val-red">18.2%</div>
+          <div class="indicator-trend trend-down">↑ 1.1</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-label">Oil Output</div>
+          <div class="indicator-value val-white">1.8M</div>
+          <div class="indicator-trend trend-up">↑ bpd</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-label">FX Rate</div>
+          <div class="indicator-value val-yellow">₦890/$</div>
+          <div class="indicator-trend trend-down">↓ 12</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-label">Stability</div>
+          <div class="indicator-value val-green">67</div>
+          <div class="indicator-trend trend-up">↑ 3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk Radar -->
+    <div class="radar-panel">
+      <div class="panel-title">Risk Radar</div>
+      <svg viewBox="0 0 220 190" style="width: 210px; height: 160px;">
+        <!-- Outer grid -->
+        <polygon points="110,15 180,45 200,110 160,170 60,170 20,110 40,45" fill="none" stroke="#1a4a2e" stroke-width="1"/>
+        <polygon points="110,40 160,60 175,110 145,155 75,155 45,110 60,60" fill="none" stroke="#1a4a2e" stroke-width="0.5"/>
+        <polygon points="110,65 140,78 150,110 130,138 90,138 70,110 80,78" fill="none" stroke="#1a4a2e" stroke-width="0.5"/>
+        <!-- Data fill -->
+        <polygon points="110,22 175,50 190,125 140,162 70,155 28,108 55,48" fill="rgba(248,113,113,0.15)" stroke="#f87171" stroke-width="1.5"/>
+        <!-- Labels -->
+        <text x="110" y="10" text-anchor="middle" fill="#778" font-size="8" font-weight="500">Inflation</text>
+        <text x="205" y="48" text-anchor="start" fill="#778" font-size="8">FX Stability</text>
+        <text x="210" y="115" text-anchor="start" fill="#778" font-size="8">Security</text>
+        <text x="165" y="182" text-anchor="middle" fill="#778" font-size="8">Trust</text>
+        <text x="55" y="182" text-anchor="middle" fill="#778" font-size="8">Coalition</text>
+        <text x="3" y="115" text-anchor="start" fill="#778" font-size="8">Judicial</text>
+        <text x="18" y="48" text-anchor="start" fill="#778" font-size="8">States</text>
+      </svg>
+      <div class="radar-summary">Inflation (8.5) and FX (7.8) are top risks</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Tab Navigation (Option C: between Zone A and Zone B) -->
+<div class="tab-nav">
+  <div class="tab-item active">🏛 Villa</div>
+  <div class="tab-item">👔 Cabinet</div>
+  <div class="tab-item">⚔ Politics</div>
+  <div class="tab-item">📊 Economy</div>
+  <div class="tab-item">🛡 Security</div>
+  <div class="tab-item">📜 Legislature</div>
+  <div class="tab-item">⚖ Judiciary</div>
+  <div class="tab-item">🌍 Diplomacy</div>
+  <div class="tab-item">📺 Media</div>
+  <div class="tab-item">🏆 Legacy</div>
+</div>
+
+<!-- ZONE B: Contextual Three-Column Area -->
+<div class="zone-b">
+
+  <!-- Left: Inbox / Daily Briefing -->
+  <div class="inbox-panel">
+    <div class="panel-title">📬 Daily Briefing</div>
+    <div class="inbox-item critical">
+      <div class="inbox-severity critical">Urgent</div>
+      <div class="inbox-text">Security breach at Abuja refinery — NNPC requests emergency response</div>
+      <div class="inbox-time">2 hours ago</div>
+    </div>
+    <div class="inbox-item warning">
+      <div class="inbox-severity warning">Warning</div>
+      <div class="inbox-text">Labour union threatens nationwide strike over fuel subsidy removal</div>
+      <div class="inbox-time">6 hours ago</div>
+    </div>
+    <div class="inbox-item info">
+      <div class="inbox-severity info">Intel</div>
+      <div class="inbox-text">IMF delegation confirms arrival Thursday — debt restructuring on agenda</div>
+      <div class="inbox-time">This morning</div>
+    </div>
+    <div class="inbox-item info">
+      <div class="inbox-severity info">Memo</div>
+      <div class="inbox-text">VP requests audience regarding party congress preparations</div>
+      <div class="inbox-time">Yesterday</div>
+    </div>
+  </div>
+
+  <!-- Center: Decision Desk -->
+  <div class="decision-panel">
+    <div class="decision-header">
+      <div>
+        <div class="panel-title" style="margin-bottom:2px;">⚖️ Decision Desk</div>
+        <div class="decision-pending">3 decisions pending this turn</div>
+      </div>
+      <div class="decision-dots">
+        <div class="decision-dot active"></div>
+        <div class="decision-dot"></div>
+        <div class="decision-dot"></div>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="decision-severity critical">Critical Decision</div>
+      <div class="decision-title">Niger Delta Militants Demand Amnesty Extension</div>
+      <div class="decision-desc">MEND leaders threaten to resume pipeline attacks unless the amnesty programme is extended and funding increased by 40%. Oil output at risk.</div>
+
+      <div class="decision-choices">
+        <div class="choice-card">
+          <div class="choice-label approve">✓ Extend Amnesty</div>
+          <div class="choice-cost">-8 Political Capital<br>+12 Stability<br>Oil Output +0.3M bpd</div>
+        </div>
+        <div class="choice-card">
+          <div class="choice-label reject">✗ Reject Demands</div>
+          <div class="choice-cost">+5 Political Capital<br>-15 Stability<br>Oil output at risk</div>
+        </div>
+      </div>
+
+      <div class="decision-delegate">
+        <a>Delegate to Vice President ↗</a>
+      </div>
+    </div>
+
+    <div class="decision-nav">
+      <div class="nav-arrow">←</div>
+      <div class="nav-counter">1 / 3</div>
+      <div class="nav-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- Right: Headlines -->
+  <div class="headlines-panel">
+    <div class="panel-title">📰 Headlines</div>
+    <div class="headline-item">
+      <div class="headline-source" style="color: #f87171;">Punch</div>
+      <div class="headline-text">"President faces mounting pressure on fuel subsidy removal"</div>
+    </div>
+    <div class="headline-item">
+      <div class="headline-source" style="color: #60a5fa;">ThisDay</div>
+      <div class="headline-text">"Economy shows fragile signs of recovery amid reform push"</div>
+    </div>
+    <div class="headline-item">
+      <div class="headline-source" style="color: #4ade80;">Vanguard</div>
+      <div class="headline-text">"Niger Delta amnesty talks stall as militants issue ultimatum"</div>
+    </div>
+    <div class="headline-item">
+      <div class="headline-source" style="color: #fbbf24;">Guardian</div>
+      <div class="headline-text">"Opposition coalition gains ground in South-West stronghold"</div>
+    </div>
+    <div class="headline-item">
+      <div class="headline-source" style="color: #c084fc;">Daily Trust</div>
+      <div class="headline-text">"Northern governors demand review of revenue allocation formula"</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

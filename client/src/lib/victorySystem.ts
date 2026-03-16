@@ -29,7 +29,7 @@ export interface VictoryCheckState {
   day: number;
   health: number;
   judicialIndependence: number;
-  characters: Record<string, { loyalty: number; relationship: string }>;
+  characters: Record<string, { competencies: { personal: { loyalty: number } }; relationship: string }>;
   factions: Record<string, { loyalty: number; influence: number }>;
   governors: { loyalty: number; relationship: string }[];
   activeCases: { status: string }[];
@@ -154,7 +154,7 @@ export const failureStates: FailureState[] = [
     riskFn: (s) => {
       const stabilityRisk = Math.max(0, ((100 - s.stability) / 100) * 40);
       const cds = s.characters["Maj. Gen. Christopher Musa"];
-      const loyaltyRisk = cds ? Math.max(0, ((100 - cds.loyalty) / 100) * 35) : 15;
+      const loyaltyRisk = cds ? Math.max(0, ((100 - cds.competencies.personal.loyalty) / 100) * 35) : 15;
       const approvalRisk = Math.max(0, ((100 - s.approval) / 100) * 25);
       return Math.round(Math.min(100, stabilityRisk + loyaltyRisk + approvalRisk));
     },
@@ -180,7 +180,7 @@ export const failureStates: FailureState[] = [
     color: "hsl(280, 60%, 45%)",
     riskFn: (s) => {
       const chairman = s.characters["Chief Chidubem Okafor"];
-      const chairmanRisk = chairman ? Math.max(0, ((100 - chairman.loyalty) / 100) * 40) : 20;
+      const chairmanRisk = chairman ? Math.max(0, ((100 - chairman.competencies.personal.loyalty) / 100) * 40) : 20;
       const factionRisk = Math.max(0, ((100 - averageFactionLoyalty(s)) / 100) * 35);
       const pcDeficit = Math.max(0, ((100 - s.politicalCapital) / 100) * 25);
       return Math.round(Math.min(100, chairmanRisk + factionRisk + pcDeficit));

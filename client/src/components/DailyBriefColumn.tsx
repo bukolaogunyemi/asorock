@@ -7,18 +7,11 @@ interface DailyBriefColumnProps {
   onOpenFullBrief: () => void;
 }
 
-const severityBorder: Record<string, string> = {
-  critical: "border-red-500",
-  warning: "border-amber-500",
-  intel: "border-blue-500",
-  memo: "border-gray-500",
-};
-
-const severityDot: Record<string, string> = {
-  critical: "bg-red-500",
-  warning: "bg-amber-500",
-  intel: "bg-blue-500",
-  memo: "bg-gray-500",
+const severityColor: Record<string, string> = {
+  critical: "#ef4444",
+  warning: "#f59e0b",
+  intel: "#3b82f6",
+  memo: "#9ca3af",
 };
 
 /** Placeholder intel items shown when no real brief data exists yet */
@@ -50,30 +43,35 @@ export default function DailyBriefColumn({ activeTab, onOpenFullBrief }: DailyBr
   const items = filtered.length > 0 ? filtered : PLACEHOLDER_INTEL;
 
   return (
-    <div className="w-[220px] shrink-0 bg-white border-r border-gray-200 flex flex-col h-full">
-      <button
-        onClick={onOpenFullBrief}
-        className="w-full px-3 py-2 text-left text-sm font-semibold text-[#d4af37] hover:bg-[#d4af37]/10 transition-colors"
-      >
-        Intel Brief &middot; View Full &#8599;
-      </button>
+    <div
+      className="w-[260px] shrink-0 bg-white border-r border-gray-200 flex flex-col h-full cursor-pointer group"
+      onClick={onOpenFullBrief}
+      title="Click to open full Intel Brief"
+    >
+      <div className="px-3 py-2 flex items-center justify-between shrink-0">
+        <span className="text-[11px] font-bold text-[#d4af37] uppercase tracking-wider">
+          Daily Briefing
+        </span>
+        <span className="text-[10px] text-gray-400 group-hover:text-[#d4af37] transition-colors">
+          &#9654;
+        </span>
+      </div>
 
-      <div className="flex-1 overflow-hidden px-2 pb-2 space-y-1">
-        {items.slice(0, 8).map((item, i) => (
+      <div className="flex-1 overflow-hidden px-2 pb-2 flex flex-col justify-between">
+        {items.slice(0, 5).map((item, i) => (
           <div
             key={i}
-            className={`border-l-2 ${severityBorder[item.severity] ?? "border-gray-500"} pl-2 py-0.5`}
+            className="flex gap-2 items-start"
           >
-            <span className="text-[11px] text-[#1a1a1a]/80 leading-tight line-clamp-2">
+            <div
+              className="w-0.5 shrink-0 self-stretch rounded-full"
+              style={{ backgroundColor: severityColor[item.severity] ?? "#9ca3af" }}
+            />
+            <span className="text-[11px] text-[#1a1a1a]/80 leading-snug py-0.5">
               {item.text}
             </span>
           </div>
         ))}
-        {items.length > 8 && (
-          <p className="text-[10px] text-gray-400 px-1 pt-1">
-            +{items.length - 8} more — click above to view all
-          </p>
-        )}
       </div>
     </div>
   );

@@ -509,6 +509,19 @@ const createStrategicEvent = (state: GameState, kind: "media-chat" | "faction-re
             ]),
           ],
         },
+        {
+          id: `scheduled-${suffix}-policy`,
+          label: "Use the chat to announce a policy pivot",
+          context: "Turn the media chat into a major policy moment. High risk, high reward.",
+          consequences: [
+            strategicConsequence(`scheduled-${suffix}-policy-now`, suffix, "A surprise policy pivot dominates the conversation", [
+              { target: "trust", delta: 2, description: "The presidency looks reform-minded" },
+              { target: "approval", delta: 2, description: "The announcement feels consequential" },
+              { target: "politicalCapital", delta: -3, description: "Surprise announcements alarm coalition allies" },
+              { target: "stress", delta: 1, description: "The pivot creates implementation pressure" },
+            ]),
+          ],
+        },
       ],
     };
   }
@@ -542,6 +555,30 @@ const createStrategicEvent = (state: GameState, kind: "media-chat" | "faction-re
             strategicConsequence(`scheduled-${suffix}-hold-line-now`, suffix, "The line holds for now but some allies feel slighted", [
               { target: "politicalCapital", delta: 2, description: "You preserve leverage" },
               { target: "approval", delta: -1, description: "The coalition grumbling leaks out" },
+            ]),
+          ],
+        },
+        {
+          id: `scheduled-${suffix}-reshuffle`,
+          label: "Announce a surprise reshuffle",
+          context: "Change the conversation entirely by moving the pieces before anyone expects it.",
+          consequences: [
+            strategicConsequence(`scheduled-${suffix}-reshuffle-now`, suffix, "A surprise reshuffle dominates the news cycle", [
+              { target: "politicalCapital", delta: -2, description: "Reshuffles burn political oxygen" },
+              { target: "trust", delta: 2, description: "The presidency looks decisive" },
+              { target: "stress", delta: 1, description: "The machinery scrambles to adapt" },
+            ]),
+          ],
+        },
+        {
+          id: `scheduled-${suffix}-delegate`,
+          label: "Send the VP to broker peace",
+          context: "Let the vice president take the heat and broker a compromise on your behalf.",
+          consequences: [
+            strategicConsequence(`scheduled-${suffix}-delegate-now`, suffix, "The VP takes the coalition temperature down", [
+              { target: "approval", delta: 1, description: "The party reads the move as inclusion" },
+              { target: "politicalCapital", delta: -1, description: "Delegation costs some authority" },
+              { target: "trust", delta: 1, description: "Institutional confidence holds" },
             ]),
           ],
         },
@@ -582,6 +619,30 @@ const createStrategicEvent = (state: GameState, kind: "media-chat" | "faction-re
             { target: "approval", delta: 2, description: "Relief spending lands quickly" },
             { target: "treasury", delta: -0.06, description: "Fiscal room narrows" },
             { target: "stability", delta: 1, description: "The street settles for now" },
+          ]),
+        ],
+      },
+      {
+        id: `scheduled-${suffix}-narrative`,
+        label: "Control the narrative, delay action",
+        context: "Shape the public conversation with a carefully worded address while buying time for a fuller plan.",
+        consequences: [
+          strategicConsequence(`scheduled-${suffix}-narrative-now`, suffix, "A presidential address buys time but changes nothing", [
+            { target: "trust", delta: -1, description: "Markets see rhetoric without substance" },
+            { target: "approval", delta: 1, description: "The public hears reassurance" },
+            { target: "stress", delta: -1, description: "Less immediate pressure on the centre" },
+          ]),
+        ],
+      },
+      {
+        id: `scheduled-${suffix}-external`,
+        label: "Seek emergency IMF consultation",
+        context: "Invite external credibility and accept the conditions that come with it.",
+        consequences: [
+          strategicConsequence(`scheduled-${suffix}-external-now`, suffix, "An IMF engagement strengthens macro credibility", [
+            { target: "trust", delta: 3, description: "International institutions approve the signal" },
+            { target: "approval", delta: -2, description: "The public sees foreign dictation" },
+            { target: "macro", macroKey: "reserves", delta: 1.2, description: "Standby facilities bolster reserves" },
           ]),
         ],
       },
@@ -699,6 +760,19 @@ export function createDailyCabalMeeting(state: GameState): CabalMeetingState {
             ]),
           ],
         },
+        {
+          id: "cabal-security-intelligence",
+          label: "Invest in intelligence over force",
+          summary: "Redirect resources from kinetic operations to intelligence gathering and infiltration.",
+          consequences: [
+            strategicConsequence(`cabal-security-intelligence-${state.day}`, "cabal-security", "The villa pivots from force to intelligence-led operations", [
+              { target: "stability", delta: 2, description: "Better intel prevents future escalations" },
+              { target: "trust", delta: 2, description: "Security professionals approve the shift" },
+              { target: "treasury", delta: -0.03, description: "Intelligence operations need funding" },
+              { target: "stress", delta: -1, description: "Reducing visible operations lowers immediate pressure" },
+            ]),
+          ],
+        },
       ],
     };
   }
@@ -751,6 +825,19 @@ export function createDailyCabalMeeting(state: GameState): CabalMeetingState {
               { target: "trust", delta: 2, description: "Reformers sense a more disciplined core" },
               { target: "politicalCapital", delta: -2, description: "Investigative attention has a cost" },
               ...maybeFactionEffect(weakestFaction, 2, "Suspicion alone can calm the most unruly bloc"),
+            ]),
+          ],
+        },
+        {
+          id: "cabal-politics-public-appeal",
+          label: "Go directly to the public",
+          summary: "Bypass the coalition entirely and make a televised appeal for popular support.",
+          consequences: [
+            strategicConsequence(`cabal-politics-public-appeal-${state.day}`, "cabal-politics", "The president bypasses the party and speaks directly to the nation", [
+              { target: "approval", delta: 3, description: "The public responds to direct engagement" },
+              { target: "politicalCapital", delta: -3, description: "Party insiders feel sidelined" },
+              { target: "trust", delta: -1, description: "Institutional channels feel bypassed" },
+              ...maybeFactionEffect(weakestFaction, -4, "The weakest faction reads the public appeal as a threat"),
             ]),
           ],
         },
@@ -812,6 +899,19 @@ export function createDailyCabalMeeting(state: GameState): CabalMeetingState {
             { target: "politicalCapital", delta: 1, description: "Insider channels now owe the villa" },
             { target: "macro", macroKey: "fxRate", delta: -35, description: "FX pressure eases for a moment" },
             { target: "macro", macroKey: "reserves", delta: -1.5, description: "Temporary cover burns scarce buffers" },
+          ]),
+        ],
+      },
+      {
+        id: "cabal-economy-diversify",
+        label: "Pivot to non-oil revenue push",
+        summary: "Announce an aggressive diversification agenda to shift the narrative away from oil dependency.",
+        consequences: [
+          strategicConsequence(`cabal-economy-diversify-${state.day}`, "cabal-economy", "The villa announces a non-oil revenue diversification push", [
+            { target: "trust", delta: 2, description: "The long-term vision impresses observers" },
+            { target: "approval", delta: -1, description: "Tax enforcement worries the informal sector" },
+            { target: "treasury", delta: 0.03, description: "New revenue streams begin trickling in" },
+            { target: "macro", macroKey: "inflation", delta: -0.5, description: "Broader fiscal base eases monetary pressure" },
           ]),
         ],
       },
@@ -1119,17 +1219,56 @@ const maybeRecordMilestone = (state: GameState, title: string, description: stri
 };
 
 const buildHeadlines = (state: GameState): string[] => {
-  const strategicState = syncStrategicState(state);
-  const critical = strategicState.activeEvents.filter((event) => event.severity === "critical").map((event) => `URGENT: ${event.title}`);
-  const recent = [...strategicState.turnLog].slice(-4).reverse().map((entry) => entry.event);
-  const metrics = [
-    `Approval ${strategicState.approval}% as the presidency enters Day ${strategicState.day}`,
-    `Term ${strategicState.term.current} is in the ${strategicState.term.governingPhase.replace(/-/g, " ")} phase with ${strategicState.term.daysUntilElection} days to election day`,
-    `Vice President ${strategicState.vicePresident.name} is ${strategicState.vicePresident.mood.toLowerCase()} at loyalty ${strategicState.vicePresident.loyalty}%`,
-    `Treasury now at ₦${strategicState.treasury.toFixed(2)}T with stability ${strategicState.stability}`,
-    `Trust ${strategicState.trust}% and outrage ${strategicState.outrage}% define the public mood`,
-  ];
-  return [...critical, ...recent, ...metrics].slice(0, 8);
+  const s = syncStrategicState(state);
+  const headlines: string[] = [];
+
+  // Preserve any faction/narrative headlines already in state
+  const existing = (state.headlines ?? []).filter(h =>
+    !h.startsWith("Approval ") && !h.startsWith("Term ") && !h.startsWith("Vice President ") &&
+    !h.startsWith("Treasury ") && !h.startsWith("Trust ")
+  );
+  headlines.push(...existing);
+
+  // Critical active events as breaking news
+  for (const event of s.activeEvents) {
+    if (event.severity === "critical" && !event.source.includes("appointment")) {
+      headlines.push(`BREAKING: ${event.title}`);
+    }
+  }
+
+  // Generate contextual newspaper headlines from metrics
+  if (s.approval < 30) headlines.push("Public confidence in presidency hits record low");
+  else if (s.approval > 75) headlines.push("President rides wave of public support — approval at " + s.approval + "%");
+  else if (s.approval > 60) headlines.push("President maintains strong approval rating");
+
+  if (s.economy.inflation > 30) headlines.push("Cost of living crisis deepens as inflation surges past " + s.economy.inflation.toFixed(0) + "%");
+  else if (s.economy.inflation > 20) headlines.push("Economists warn of persistent inflationary pressure");
+
+  if (s.economy.fxRate > 1500) headlines.push("Naira under siege — exchange rate breaches ₦" + s.economy.fxRate.toFixed(0) + "/$");
+  else if (s.economy.fxRate < 800) headlines.push("Naira strengthens as forex reforms take hold");
+
+  if (s.stability < 30) headlines.push("Security situation deteriorates across multiple states");
+  else if (s.stability > 80) headlines.push("National security outlook stable, says NSA");
+
+  if (s.outrage > 70) headlines.push("Street protests escalate as public anger boils over");
+  else if (s.outrage > 50) headlines.push("Growing discontent in major cities over government policies");
+
+  if (s.trust < 25) headlines.push("\"We don't trust this government\" — civil society coalition statement");
+  else if (s.trust > 75) headlines.push("Citizens express confidence in reform agenda");
+
+  if (s.treasury < 2) headlines.push("Federal coffers run dangerously low — fiscal crisis looms");
+  if (s.economy.reserves < 20) headlines.push("Foreign reserves dip below critical threshold");
+
+  if (s.term.daysUntilElection < 90 && s.term.daysUntilElection > 0) {
+    headlines.push("Election countdown: " + s.term.daysUntilElection + " days to the polls");
+  }
+
+  if (s.vicePresident.loyalty < 30) headlines.push("Rift between President and VP widens — sources");
+  else if (s.vicePresident.mood === "Plotting") headlines.push("Vice President breaks ranks with presidential agenda");
+
+  // Deduplicate and limit
+  const unique = Array.from(new Set(headlines));
+  return unique.slice(0, 8);
 };
 
 const finalizePresentation = (state: GameState): GameState => {
@@ -2788,6 +2927,36 @@ export function vpChoose(choices: EventChoice[], loyalty: number): EventChoice {
   }
 
   return scored[0].choice;
+}
+
+export function delegateToCOS(state: GameState, eventId: string): GameState {
+  const event = state.activeEvents.find((e) => e.id === eventId);
+  if (!event) return state;
+
+  const chosenOption = vpChoose(event.choices, 70);
+  const newPending = [...state.pendingConsequences, ...chosenOption.consequences];
+  const newEvents = state.activeEvents.filter((e) => e.id !== eventId);
+
+  const inboxMessage: GameInboxMessage = {
+    id: `cos-delegation-${state.day}-${eventId}`,
+    sender: "Chief of Staff",
+    role: "Chief of Staff",
+    initials: "CS",
+    subject: `COS Decision Report: ${event.title}`,
+    preview: `Handled: ${chosenOption.label}`,
+    fullText: `Mr. President,\n\nRegarding "${event.title}", I have taken the decision to proceed with "${chosenOption.label}". ${chosenOption.context ?? ""}\n\nI will monitor the situation and keep you informed.\n\nYour Chief of Staff`,
+    day: state.day,
+    priority: "Normal",
+    read: false,
+    source: "system",
+  };
+
+  return {
+    ...state,
+    activeEvents: newEvents,
+    pendingConsequences: newPending,
+    inboxMessages: [inboxMessage, ...state.inboxMessages],
+  };
 }
 
 export function delegateToVP(state: GameState, eventId: string): GameState {

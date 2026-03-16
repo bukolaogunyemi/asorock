@@ -236,7 +236,7 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
           </div>
         )}
 
-        {/* Zone B */}
+        {/* Scrollable content area: Zone B + Zone C */}
         {isProfileOpen && currentProfile ? (
           /* Profile view — full width, scrollable */
           <div className="flex-1 overflow-y-auto p-4">
@@ -258,30 +258,37 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
             </Suspense>
           </div>
         ) : THREE_COLUMN_TABS.includes(activeTab) ? (
-          /* Three-column fixed layout — no scrollbars */
-          <div className="flex-1 flex min-h-0 overflow-hidden">
-            {/* Left: Daily Brief Column */}
-            <Suspense fallback={<div className="w-[220px] shrink-0" />}>
-              <DailyBriefColumn activeTab={activeTab} onOpenFullBrief={handleReopenBrief} />
-            </Suspense>
+          /* Scrollable area containing Zone B (fixed-height) + Zone C (tab content) */
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {/* Zone B — Three-column fixed-height layout */}
+            <div className="h-[280px] flex m-2 rounded-lg border border-gray-200 shadow-sm overflow-hidden" style={{ backgroundColor: "#f5f3ef" }}>
+              {/* Left: Intel Brief Column */}
+              <Suspense fallback={<div className="w-[260px] shrink-0" />}>
+                <DailyBriefColumn activeTab={activeTab} onOpenFullBrief={handleReopenBrief} />
+              </Suspense>
 
-            {/* Center: Decision Desk only — fixed, no scroll */}
-            <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-              <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
-                <DecisionDesk
-                  activeTab={activeTab}
-                  onProceed={handleProceed}
-                  canProceed={canProceed}
-                  proceedDisabledReason={proceedDisabledReason}
-                  onNavigateToTab={handleTabChange}
-                />
+              {/* Center: Decision Desk — constrained to avoid dominating */}
+              <div className="flex-1 flex flex-col min-h-0 overflow-hidden border-x border-gray-200 max-w-[480px]">
+                <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
+                  <DecisionDesk
+                    activeTab={activeTab}
+                    onNavigateToTab={handleTabChange}
+                  />
+                </Suspense>
+              </div>
+
+              {/* Right: Headlines Column */}
+              <Suspense fallback={<div className="w-[260px] shrink-0" />}>
+                <HeadlinesColumn activeTab={activeTab} />
               </Suspense>
             </div>
 
-            {/* Right: Headlines Column */}
-            <Suspense fallback={<div className="w-[220px] shrink-0" />}>
-              <HeadlinesColumn activeTab={activeTab} />
-            </Suspense>
+            {/* Zone C — Tab-specific content below Zone B */}
+            <div className="px-4 py-3">
+              <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
+                {renderTabContent()}
+              </Suspense>
+            </div>
           </div>
         ) : (
           /* Full-page tab content (Cabinet, Legislature, Judiciary, Media, Legacy) */
@@ -291,7 +298,7 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
             </Suspense>
           </div>
         )}
-        </div>{/* end Zone B light background */}
+        </div>{/* end light background area */}
       </div>
 
       {/* Overlays */}

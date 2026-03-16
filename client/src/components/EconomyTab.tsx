@@ -97,7 +97,7 @@ const FIELD_LABELS: Record<string, string> = {
   reserves: "Reserves", debtToGdp: "Debt/GDP", fxRate: "FX Rate",
 };
 
-export default function EconomyTab() {
+export default function EconomyTab({ onCharacterClick, onEntityClick: _onEntityClick }: { onCharacterClick?: (characterKey: string) => void; onEntityClick?: (entityId: string) => void } = {}) {
   const { toast } = useToast();
   const { state, canResolveChoice, executeQuickAction, resolveEventChoice, proposePolicyChange } = useGame();
   const [subTab, setSubTab] = useState<(typeof ECON_SUBTABS)[number]["id"]>("overview");
@@ -778,19 +778,23 @@ export default function EconomyTab() {
             </CardHeader>
             <CardContent className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-3">
               {economyTeam.map((person) => (
-                <Card key={person.name} className="border border-border bg-muted/20">
+                <Card
+                  key={person.name}
+                  className="group border border-border bg-muted/20 cursor-pointer hover:border-primary/50 hover:shadow-md transition-all"
+                  onClick={() => onCharacterClick?.(person.name)}
+                >
                   <CardContent className="p-3 space-y-2">
                     <div className="flex items-start gap-3">
                       <CharacterAvatar name={person.name} initials={person.avatar} size="md" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold">{person.name}</p>
+                        <p className="text-sm font-semibold group-hover:underline">{person.name}</p>
                         <p className="text-xs text-muted-foreground">{person.portfolio}</p>
                       </div>
                     </div>
                     <div className="space-y-0.5">
-                      <CompetencyBar value={person.loyalty} label="Loyalty" />
-                      <CompetencyBar value={person.competence} label="Competence" />
-                      <CompetencyBar value={person.ambition} label="Ambition" />
+                      <CompetencyBar value={person.competencies.personal.loyalty} label="Loyalty" />
+                      <CompetencyBar value={Math.round(Object.values(person.competencies.professional).reduce((a, b) => a + b, 0) / 7)} label="Competence" />
+                      <CompetencyBar value={person.competencies.personal.ambition} label="Ambition" />
                     </div>
                     <RelationshipIndicator relationship={person.relationship} />
                     <p className="text-xs text-muted-foreground">{person.mandate}</p>

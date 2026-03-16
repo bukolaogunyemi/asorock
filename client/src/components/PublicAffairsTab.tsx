@@ -63,7 +63,12 @@ const recentPolls = [
   { pollster: "Afrobarometer", topic: "Trust in INEC", result: "22% Trust", date: "Day 33", trend: "down" as const },
 ];
 
-export default function PublicAffairsTab() {
+interface PublicAffairsTabProps {
+  onCharacterClick?: (characterKey: string) => void;
+  onEntityClick?: (entityId: string) => void;
+}
+
+export default function PublicAffairsTab({ onCharacterClick: _onCharacterClick, onEntityClick: _onEntityClick }: PublicAffairsTabProps = {}) {
   const { toast } = useToast();
   const { state } = useGame();
   const action = (title: string, msg: string) => () =>

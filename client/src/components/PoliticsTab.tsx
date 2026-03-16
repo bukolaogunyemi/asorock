@@ -20,6 +20,7 @@ import { getChainById } from "@/lib/eventChains";
 import { checkBetrayalRisk } from "@/lib/traits";
 import type { Godfather } from "@/lib/godfatherTypes";
 import { getPatronageEffects } from "@/lib/godfatherEngine";
+import { slugify } from "@/lib/entityTypes";
 import { AlertTriangle, Briefcase, Eye, Key, Search, Shield, Users, Crown, Megaphone, Vote, ArrowRightLeft, Landmark } from "lucide-react";
 import type { IntelOperationType } from "@/lib/intelligenceTypes";
 import type { PartyState, NWCMember, AtRiskEntry, Defection, ConventionRace } from "@/lib/partyTypes";
@@ -139,7 +140,7 @@ const formatRequirements = (requirements?: { metric: string; min?: number; max?:
     .join(" | ");
 };
 
-export default function PoliticsTab() {
+export default function PoliticsTab({ onCharacterClick, onEntityClick }: { onCharacterClick?: (characterKey: string) => void; onEntityClick?: (entityId: string) => void }) {
   const { toast } = useToast();
   const {
     state,
@@ -408,6 +409,20 @@ export default function PoliticsTab() {
                   <Bar dataKey="influence" name="Influence" fill="hsl(42, 70%, 50%)" radius={[0, 6, 6, 0]} isAnimationActive={false} />
                 </BarChart>
               </ResponsiveContainer>
+              {onEntityClick && factionRows.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-border mt-2">
+                  {factionRows.map((faction) => (
+                    <Badge
+                      key={faction.name}
+                      variant="outline"
+                      className="text-xs cursor-pointer hover:underline hover:text-primary/80"
+                      onClick={() => onEntityClick("faction:" + slugify(faction.name))}
+                    >
+                      {faction.name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -456,10 +471,10 @@ export default function PoliticsTab() {
                 <p className="text-xs text-muted-foreground">No hook dossiers exist in this run yet.</p>
               ) : (
                 allHooks.map((hook) => (
-                  <div key={hook.id} className="rounded-md border border-border bg-muted/20 p-3 space-y-2">
+                  <div key={hook.id} className={`group rounded-md border border-border bg-muted/20 p-3 space-y-2 ${onCharacterClick ? "cursor-pointer hover:border-primary/50 hover:shadow-md transition-all" : ""}`} onClick={onCharacterClick ? () => onCharacterClick(hook.ownerName) : undefined}>
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-sm font-medium">{hook.target}</p>
+                        <p className={`text-sm font-medium ${onCharacterClick ? "group-hover:underline" : ""}`}>{hook.target}</p>
                         <Badge variant={hookBadge(hook)} className="text-[11px]">{hookStatus(hook)}</Badge>
                         <Badge variant={hook.evidence >= 70 ? "default" : hook.evidence >= 40 ? "outline" : "secondary"} className="text-[11px]">evidence {hook.evidence}%</Badge>
                         <Badge variant="outline" className="text-[11px]">{hook.severity}</Badge>
@@ -1109,10 +1124,11 @@ export default function PoliticsTab() {
                         {rulingParty.nwc.map((member) => (
                           <div
                             key={member.characterId}
-                            className="rounded-md border border-border bg-gradient-to-br from-[#0A4D2C]/10 to-transparent p-3 space-y-2"
+                            className={`group rounded-md border border-border bg-gradient-to-br from-[#0A4D2C]/10 to-transparent p-3 space-y-2 ${onCharacterClick ? "cursor-pointer hover:border-primary/50 hover:shadow-md transition-all" : ""}`}
+                            onClick={onCharacterClick ? () => onCharacterClick(member.characterId) : undefined}
                           >
                             <div className="flex items-center justify-between gap-1">
-                              <p className="text-sm font-medium truncate">{member.name}</p>
+                              <p className={`text-sm font-medium truncate ${onCharacterClick ? "group-hover:underline" : ""}`}>{member.name}</p>
                               <Badge
                                 variant={DISPOSITION_COLORS[member.disposition].variant}
                                 className="text-[10px] shrink-0"

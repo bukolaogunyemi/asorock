@@ -215,6 +215,22 @@ export const openingEventTemplates: ActiveEventTemplate[] = [
           ], 4),
         ],
       },
+      {
+        id: "pipeline-delegate-governors",
+        label: "Empower State Governors",
+        context: "Hand the Delta crisis to the governors and hold them accountable for results.",
+        consequences: [
+          mkC("pipeline-delegate-now", "ae-pipeline-crisis", "Governors take ownership of the pipeline corridor", [
+            { target: "politicalCapital", delta: 2, description: "The presidency avoids direct blame" },
+            { target: "stability", delta: 1, description: "Local actors know the terrain better" },
+            { target: "trust", delta: -2, description: "Critics call it a failure of federal leadership" },
+          ]),
+          mkC("pipeline-delegate-later", "ae-pipeline-crisis", "Mixed results across the states", [
+            { target: "approval", delta: -1, description: "Some governors fail publicly" },
+            { target: "stability", delta: 2, description: "Others deliver partial recovery" },
+          ], 3),
+        ],
+      },
     ],
   },
   {
@@ -275,6 +291,22 @@ export const openingEventTemplates: ActiveEventTemplate[] = [
           ], 3),
         ],
       },
+      {
+        id: "imf-quiet-channel",
+        label: "Negotiate Quietly",
+        context: "Keep public channels silent while back-channelling modified terms privately.",
+        consequences: [
+          mkC("imf-quiet-now", "ae-imf-loan", "Quiet diplomacy opens a discreet channel", [
+            { target: "treasury", delta: 0.08, description: "Some early disbursement unlocked" },
+            { target: "trust", delta: 1, description: "Insiders sense pragmatism" },
+            { target: "approval", delta: 0, description: "The public doesn't know yet" },
+          ]),
+          mkC("imf-quiet-later", "ae-imf-loan", "The secret talks eventually leak", [
+            { target: "trust", delta: -2, description: "Transparency concerns surface" },
+            { target: "outrage", delta: 2, description: "Opposition cries foul" },
+          ], 3),
+        ],
+      },
     ],
   },
   {
@@ -330,6 +362,21 @@ export const openingEventTemplates: ActiveEventTemplate[] = [
             { target: "approval", delta: -2, description: "Urban voters turn away" },
             { target: "outrage", delta: 3, description: "Student groups join the backlash" },
           ], 3),
+        ],
+      },
+      {
+        id: "elections-compromise-candidate",
+        label: "Broker a Consensus Candidate",
+        context: "Privately push for a unity candidate that both factions can accept.",
+        consequences: [
+          mkC("elections-consensus-now", "ae-governorship-elections", "A consensus candidate emerges from backroom talks", [
+            { target: "politicalCapital", delta: -3, description: "Brokering costs political chits" },
+            { target: "trust", delta: 2, description: "The move looks pragmatic" },
+            { target: "stability", delta: 2, description: "Factional tension eases" },
+          ]),
+          mkC("elections-consensus-later", "ae-governorship-elections", "The compromise holds in two states", [
+            { target: "approval", delta: 1, description: "Party unity reassures supporters" },
+          ], 2),
         ],
       },
     ],
@@ -388,6 +435,19 @@ export const contextualEventTemplates: ActiveEventTemplate[] = [
           ]),
         ],
       },
+      {
+        id: "labour-split-unions",
+        label: "Divide the Union Leadership",
+        context: "Offer private deals to moderate union heads while isolating the hardliners.",
+        consequences: [
+          mkC("labour-split-now", "ctx-labour-strike", "Selective outreach fractures union solidarity", [
+            { target: "politicalCapital", delta: -3, description: "Side deals consume political capital" },
+            { target: "outrage", delta: -4, description: "The strike loses momentum" },
+            { target: "trust", delta: -2, description: "The tactic looks manipulative when exposed" },
+            { target: "stability", delta: 2, description: "Key sectors stay operational" },
+          ]),
+        ],
+      },
     ],
   },
   {
@@ -438,6 +498,18 @@ export const contextualEventTemplates: ActiveEventTemplate[] = [
           ]),
         ],
       },
+      {
+        id: "fx-summon-cbn",
+        label: "Summon CBN Governor",
+        context: "Demand a public joint statement with the Central Bank to project unity and calm.",
+        consequences: [
+          mkC("fx-summon-now", "ctx-market-panic", "A joint presidential-CBN statement steadies nerves", [
+            { target: "stability", delta: 2, description: "Markets read coordination" },
+            { target: "trust", delta: 1, description: "The institutional signal helps" },
+            { target: "politicalCapital", delta: -1, description: "CBN independence purists object" },
+          ]),
+        ],
+      },
     ],
   },
   {
@@ -484,6 +556,19 @@ export const contextualEventTemplates: ActiveEventTemplate[] = [
           mkC("judicial-delay-now", "ctx-judicial-showdown", "The legal fight drags on", [
             { target: "stability", delta: -1, description: "Uncertainty lingers" },
             { target: "trust", delta: -2, description: "The public sees institutional games" },
+          ]),
+        ],
+      },
+      {
+        id: "judicial-reform-commission",
+        label: "Announce Judicial Reforms",
+        context: "Use the crisis to announce a broader judicial reform commission, reframing the conflict.",
+        consequences: [
+          mkC("judicial-reform-now", "ctx-judicial-showdown", "A reform commission announcement changes the narrative", [
+            { target: "judicialIndependence", delta: 3, description: "The judiciary sees good faith" },
+            { target: "trust", delta: 2, description: "The reform signal impresses observers" },
+            { target: "politicalCapital", delta: -2, description: "Allies who wanted a quick fix are frustrated" },
+            { target: "approval", delta: 1, description: "The public appreciates institution-building" },
           ]),
         ],
       },

@@ -42,13 +42,15 @@ function checkWarning(config: ChartConfig, value: number): string | null {
   return null;
 }
 
+/** Chart fills available space in its cell */
+const CHART_HEIGHT = 100;
+
 function SingleChart({ config, economy }: { config: ChartConfig; economy: EconomicState }) {
   const econRecord = economy as unknown as Record<string, unknown>;
   const history = economy.history ?? [];
   const currentValue = getNestedValue(econRecord, config.currentKey);
   const warning = checkWarning(config, currentValue);
 
-  // Build chart data from history
   const data = useMemo(() => {
     if (!config.historyKey) return [];
     return history.map((snap: EconomicSnapshot, i: number) => ({
@@ -57,7 +59,7 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
     }));
   }, [history, config.historyKey]);
 
-  // Bar chart special case
+  // Bar chart
   if (config.type === "bar" && config.bars) {
     const barData = config.bars.map(b => ({
       name: b.label,
@@ -66,20 +68,15 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
 
     return (
       <div className="flex flex-col h-full">
-        <div className="flex items-baseline justify-between mb-1">
-          <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{config.title}</h4>
-        </div>
+        <h4 className="text-[11px] font-semibold text-gray-700 mb-1 shrink-0">{config.title}</h4>
         <div className="flex-1 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} layout="vertical" margin={{ top: 0, right: 8, bottom: 0, left: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+            <BarChart data={barData} layout="vertical" margin={{ top: 0, right: 4, bottom: 0, left: 50 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
               <XAxis type="number" tick={{ fontSize: 9, fill: "#6b7280" }} />
-              <YAxis dataKey="name" type="category" tick={{ fontSize: 9, fill: "#6b7280" }} width={55} />
-              <Tooltip
-                contentStyle={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 11 }}
-                labelStyle={{ color: "#374151" }}
-              />
-              <Bar dataKey="value" fill="rgba(212,175,55,0.7)" radius={[0, 4, 4, 0]} />
+              <YAxis dataKey="name" type="category" tick={{ fontSize: 9, fill: "#6b7280" }} width={48} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 10 }} />
+              <Bar dataKey="value" fill="rgba(212,175,55,0.7)" radius={[0, 3, 3, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -87,72 +84,65 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
     );
   }
 
-  // Revenue vs Expenditure (stacked-area with current values only)
+  // Revenue vs Expenditure
   if (config.type === "stacked-area") {
     const rev = getNestedValue(econRecord, "revenue.total");
     const exp = getNestedValue(econRecord, "expenditure.total");
     const deficit = exp > rev;
     const barData = [
-      { name: "Revenue", value: rev },
-      { name: "Expenditure", value: exp },
+      { name: "Rev", value: rev },
+      { name: "Exp", value: exp },
     ];
 
     return (
       <div className="flex flex-col h-full">
-        <div className="flex items-baseline justify-between mb-1">
-          <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{config.title}</h4>
-          <span className="text-xs font-mono text-[#0a1f14]">N{rev.toFixed(1)}T / N{exp.toFixed(1)}T</span>
+        <div className="flex items-center justify-between mb-1 shrink-0">
+          <h4 className="text-[11px] font-semibold text-gray-700">{config.title}</h4>
+          <span className="text-[10px] font-mono text-[#0a1f14]">₦{rev.toFixed(1)}T / ₦{exp.toFixed(1)}T</span>
         </div>
         <div className="flex-1 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} margin={{ top: 0, right: 8, bottom: 0, left: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+            <BarChart data={barData} margin={{ top: 0, right: 4, bottom: 0, left: 4 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
               <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#6b7280" }} />
               <YAxis tick={{ fontSize: 9, fill: "#6b7280" }} />
-              <Tooltip
-                contentStyle={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 11 }}
-              />
-              <Bar dataKey="value" fill={deficit ? "rgba(239,68,68,0.6)" : "rgba(34,197,94,0.6)"} radius={[4, 4, 0, 0]} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 10 }} />
+              <Bar dataKey="value" fill={deficit ? "rgba(239,68,68,0.6)" : "rgba(34,197,94,0.6)"} radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
-        {deficit && <p className="text-[10px] text-red-400 mt-1">Fiscal deficit — borrowing required</p>}
+        {deficit && <p className="text-[10px] text-red-500 font-medium mt-0.5 shrink-0">⚠ Fiscal deficit</p>}
       </div>
     );
   }
 
-  // Line/area charts
+  // Line charts
   const lineColor = config.id.includes("fx") || config.id.includes("inflation") || config.id.includes("unemployment") || config.id.includes("debt")
-    ? "rgba(239,68,68,0.8)" // red for negative metrics
-    : "rgba(34,197,94,0.8)"; // green for positive
+    ? "#ef4444" : "#22c55e";
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-baseline justify-between mb-1">
-        <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{config.title}</h4>
-        <span className="text-xs font-mono text-[#0a1f14]">{formatValue(currentValue, config.format)}</span>
+      <div className="flex items-center justify-between mb-1 shrink-0">
+        <h4 className="text-[11px] font-semibold text-gray-700">{config.title}</h4>
+        <span className="text-xs font-bold" style={{ color: lineColor }}>
+          {formatValue(currentValue, config.format)}
+        </span>
       </div>
-      {data.length > 1 ? (
-        <div className="flex-1 min-h-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-              <XAxis dataKey="idx" tick={false} />
-              <YAxis tick={{ fontSize: 9, fill: "#6b7280" }} width={35} />
-              <Tooltip
-                contentStyle={{ background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 11 }}
-                labelFormatter={() => ""}
-              />
-              <Line type="monotone" dataKey="value" stroke={lineColor} strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      ) : (
-        <div className="flex-1 flex items-center justify-center text-gray-300 text-xs">
-          Awaiting data...
-        </div>
-      )}
-      {warning && <p className="text-[10px] text-amber-600 mt-1">{warning}</p>}
+      <div className="flex-1 min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data.length > 0 ? data : [{ idx: 0, value: currentValue }]} margin={{ top: 2, right: 4, bottom: 0, left: 4 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+            <XAxis dataKey="idx" tick={false} />
+            <YAxis tick={{ fontSize: 9, fill: "#6b7280" }} width={30} domain={["auto", "auto"]} />
+            <Tooltip
+              contentStyle={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, fontSize: 10 }}
+              labelFormatter={() => ""}
+            />
+            <Line type="monotone" dataKey="value" stroke={lineColor} strokeWidth={2} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      {warning && <p className="text-[10px] text-amber-600 font-medium mt-0.5 shrink-0">{warning}</p>}
     </div>
   );
 }
@@ -161,17 +151,14 @@ export function EconomyIndicators({ charts }: Props) {
   const { state } = useGame();
   const economy = state.economy;
 
-  // Responsive grid: 2 columns for 4 charts, 3 columns for 6
-  const cols = charts.length <= 4 ? "grid-cols-2" : "grid-cols-3";
-
   return (
-    <div className="flex flex-col h-full gap-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
+    <div className="flex flex-col h-full gap-1.5">
+      <h3 className="text-xs font-bold uppercase tracking-wider text-[#d4af37]">
         Key Indicators
       </h3>
-      <div className={`grid ${cols} gap-2 flex-1 min-h-0`}>
+      <div className="grid grid-cols-3 gap-2 flex-1 min-h-0 overflow-y-auto" style={{ gridAutoRows: "minmax(160px, 1fr)" }}>
         {charts.map(config => (
-          <div key={config.id} className="min-h-[120px]">
+          <div key={config.id} className="rounded-md border border-gray-100 bg-[#faf8f5] p-2 flex flex-col min-h-0">
             <SingleChart config={config} economy={economy} />
           </div>
         ))}

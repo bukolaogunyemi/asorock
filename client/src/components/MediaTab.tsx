@@ -62,7 +62,12 @@ const socialSentimentBadge = (sentiment: string) => {
   return "secondary" as const;
 };
 
-export default function MediaTab() {
+interface MediaTabProps {
+  onCharacterClick?: (characterKey: string) => void;
+  onEntityClick?: (entityId: string) => void;
+}
+
+export default function MediaTab({ onCharacterClick, onEntityClick: _onEntityClick }: MediaTabProps = {}) {
   const { toast } = useToast();
   const { state, executeQuickAction } = useGame();
 
@@ -271,6 +276,7 @@ export default function MediaTab() {
                 traits={person.traits}
                 note={person.note}
                 className="bg-muted/20"
+                onClick={() => onCharacterClick?.(person.name)}
               />
             ))}
           </CardContent>

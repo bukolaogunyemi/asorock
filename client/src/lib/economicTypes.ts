@@ -71,6 +71,15 @@ export interface EconomicSnapshot {
   treasuryLiquidity: number;
   debtToGdp: number;
   oilOutput: number;
+  // New fields for governance charts:
+  revenueTotal: number;
+  revenueOil: number;
+  revenueTax: number;
+  revenueIgr: number;
+  revenueTrade: number;
+  revenueBorrowing: number;
+  expenditureTotal: number;
+  reserves: number;
 }
 
 export interface EconomicState {

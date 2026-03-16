@@ -60,8 +60,25 @@ export function defaultEconomicState(): EconomicState {
       oilOutputZone: "green",
     },
     activeCascades: [],
-    history: [],
+    history: seedHistoricalData(),
   };
+}
+
+/** Pre-populate 8 historical snapshots representing the prior administration's last 8 quarters */
+function seedHistoricalData(): EconomicSnapshot[] {
+  const base = {
+    sectorGdpValues: { oil: 175, agriculture: 110, manufacturing: 68, services: 72, tourism: 30 } as Record<SectorId, number>,
+  };
+  return [
+    { day: -56, gdp: 470, ...base, unemploymentRate: 28, inflation: 18.5, fxRate: 950, treasuryLiquidity: 120, debtToGdp: 32, oilOutput: 1.85, revenueTotal: 22, revenueOil: 9, revenueTax: 7, revenueIgr: 1.8, revenueTrade: 2.5, revenueBorrowing: 1.7, expenditureTotal: 21, reserves: 35 },
+    { day: -49, gdp: 475, ...base, unemploymentRate: 27.5, inflation: 17.8, fxRate: 980, treasuryLiquidity: 125, debtToGdp: 32.5, oilOutput: 1.88, revenueTotal: 22.5, revenueOil: 9.2, revenueTax: 7.2, revenueIgr: 1.8, revenueTrade: 2.6, revenueBorrowing: 1.7, expenditureTotal: 21.5, reserves: 34.5 },
+    { day: -42, gdp: 478, ...base, unemploymentRate: 27, inflation: 17.2, fxRate: 1020, treasuryLiquidity: 130, debtToGdp: 33, oilOutput: 1.90, revenueTotal: 23, revenueOil: 9.5, revenueTax: 7.3, revenueIgr: 1.9, revenueTrade: 2.6, revenueBorrowing: 1.7, expenditureTotal: 22, reserves: 34 },
+    { day: -35, gdp: 482, ...base, unemploymentRate: 26.5, inflation: 16.5, fxRate: 1060, treasuryLiquidity: 135, debtToGdp: 33.5, oilOutput: 1.92, revenueTotal: 23.5, revenueOil: 9.6, revenueTax: 7.5, revenueIgr: 1.9, revenueTrade: 2.7, revenueBorrowing: 1.8, expenditureTotal: 22, reserves: 33.5 },
+    { day: -28, gdp: 488, ...base, unemploymentRate: 26, inflation: 16.0, fxRate: 1100, treasuryLiquidity: 140, debtToGdp: 34, oilOutput: 1.95, revenueTotal: 24, revenueOil: 9.8, revenueTax: 7.6, revenueIgr: 1.9, revenueTrade: 2.8, revenueBorrowing: 1.9, expenditureTotal: 22.5, reserves: 33 },
+    { day: -21, gdp: 492, ...base, unemploymentRate: 25.8, inflation: 15.6, fxRate: 1130, treasuryLiquidity: 142, debtToGdp: 34.5, oilOutput: 1.97, revenueTotal: 24.5, revenueOil: 9.9, revenueTax: 7.7, revenueIgr: 2.0, revenueTrade: 2.9, revenueBorrowing: 2.0, expenditureTotal: 22.5, reserves: 32.5 },
+    { day: -14, gdp: 496, ...base, unemploymentRate: 25.5, inflation: 15.3, fxRate: 1160, treasuryLiquidity: 145, debtToGdp: 34.8, oilOutput: 1.98, revenueTotal: 24.8, revenueOil: 10, revenueTax: 7.8, revenueIgr: 2.0, revenueTrade: 3.0, revenueBorrowing: 2.0, expenditureTotal: 22.8, reserves: 32.2 },
+    { day: -7, gdp: 500, ...base, unemploymentRate: 25, inflation: 15.0, fxRate: 1200, treasuryLiquidity: 150, debtToGdp: 35, oilOutput: 2.0, revenueTotal: 25, revenueOil: 10, revenueTax: 8, revenueIgr: 2.0, revenueTrade: 3.0, revenueBorrowing: 2.0, expenditureTotal: 23, reserves: 32 },
+  ];
 }
 
 /**
@@ -537,6 +554,15 @@ export function processEconomicTurn(
     treasuryLiquidity: state.treasuryLiquidity,
     debtToGdp: state.debtToGdp,
     oilOutput: state.oilOutput,
+    // New governance chart fields:
+    revenueTotal: state.revenue.total,
+    revenueOil: state.revenue.oil,
+    revenueTax: state.revenue.tax,
+    revenueIgr: state.revenue.igr,
+    revenueTrade: state.revenue.trade,
+    revenueBorrowing: state.revenue.borrowing,
+    expenditureTotal: state.expenditure.total,
+    reserves: state.reserves,
   };
   const history = [...state.history, snapshot].slice(-12);
   state = { ...state, history };

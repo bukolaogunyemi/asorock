@@ -1,114 +1,57 @@
 import { useGame } from "../lib/GameContext";
-import { computeLegacyScore, computePrestigeTier } from "../lib/legacyScore";
-import { computePoliticalWeather } from "../lib/politicalWeather";
-
-// ─── Weather icon helper ────────────────────────────────────────────────────
-
-function weatherIcon(level: string): string {
-  switch (level) {
-    case "Calm":
-      return "\u2600"; // sun
-    case "Brewing":
-      return "\u2601"; // cloud
-    case "Stormy":
-      return "\u26C8"; // storm
-    case "Crisis":
-      return "\uD83D\uDD25"; // fire
-    default:
-      return "\u2601";
-  }
-}
-
-// ─── Initials helper ────────────────────────────────────────────────────────
-
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
-
-// ─── ProfilePanel (compact horizontal layout) ───────────────────────────────
+import { computeLegacyScore } from "../lib/legacyScore";
+import { CharacterAvatar } from "./CharacterAvatar";
 
 export function ProfilePanel() {
   const { state } = useGame();
-
   const legacyScore = computeLegacyScore(state.legacyMilestones);
-  const prestige = computePrestigeTier(state.approval, state.legacyMilestones);
-  const weather = computePoliticalWeather(
-    state.factions,
-    state.vicePresident,
-    state.activeEvents,
-  );
-
-  const initials = getInitials(state.presidentName);
 
   return (
-    <div className="flex items-center gap-3 px-4 py-2">
-      {/* Avatar — smaller */}
-      <div
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold"
-        style={{
-          borderColor: "#d4af37",
-          background: "linear-gradient(135deg, #0a1f14 0%, #14382a 100%)",
-          color: "#d4af37",
-        }}
-      >
-        {initials}
-      </div>
-
-      {/* Name + bio + stats in a compact column */}
-      <div className="min-w-0 flex-1">
-        {/* Name */}
-        <h2
-          className="text-sm font-semibold tracking-wide truncate"
-          style={{ color: "#d4af37" }}
-        >
+    <div className="border border-gray-300 rounded-lg overflow-hidden bg-white" style={{ width: 240 }}>
+      {/* Dark header bar with name */}
+      <div className="px-3 py-2" style={{ backgroundColor: "#0a1f14" }}>
+        <h2 className="text-sm font-bold tracking-wide text-center uppercase" style={{ color: "#d4af37" }}>
           {state.presidentName}
         </h2>
+      </div>
 
-        {/* Biodata line */}
-        <p className="text-[10px] text-gray-400 truncate">
-          {state.presidentAge} yrs &middot; {state.presidentState} &middot;{" "}
-          {state.presidentParty}
-        </p>
+      {/* Body: avatar left + info right */}
+      <div className="flex gap-3 px-3 py-2.5">
+        {/* Avatar — emoji-based presidential portrait */}
+        <div
+          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md shadow-inner"
+          style={{
+            border: "2px solid #d4af37",
+            background: "linear-gradient(160deg, #2d4a3e 0%, #0a1f14 60%, #1a3a2a 100%)",
+          }}
+        >
+          <CharacterAvatar
+            name={state.presidentName}
+            initials={state.presidentName.split(" ").map(w => w[0]).join("").slice(0, 2)}
+            size="lg"
+            gender={state.presidentGender ?? "Male"}
+            role="President"
+          />
+        </div>
 
-        {/* Inline stats row */}
-        <div className="flex items-center gap-2 mt-1">
-          <StatPill label="PC" value={String(state.politicalCapital)} color="#d4af37" />
-          <StatPill label="Legacy" value={String(legacyScore)} color="#22c55e" />
-          <StatPill label={prestige.tier} value="" color={prestige.color} />
-          <StatPill label="Day" value={String(state.day)} color="#93c5fd" />
-          {/* Weather inline */}
-          <span
-            className="flex items-center gap-1 text-[10px] font-medium"
-            style={{ color: weather.color }}
-          >
-            {weatherIcon(weather.level)} {weather.level}
-          </span>
+        {/* Bio details — readable sizes */}
+        <div className="min-w-0 flex-1 space-y-1">
+          <p className="text-xs text-gray-700">
+            {state.presidentAge} years &ndash; {state.presidentState} - {state.presidentParty}
+          </p>
+          <p className="text-xs text-gray-600">
+            President since May 1999
+          </p>
+          <p className="text-xs">
+            <span className="text-gray-500">Political Capital:</span>{" "}
+            <span className="font-bold" style={{ color: "#d4af37" }}>{state.politicalCapital}</span>
+          </p>
+          <p className="text-xs">
+            <span className="text-gray-500">Legacy Score:</span>{" "}
+            <span className="font-bold" style={{ color: "#22c55e" }}>{legacyScore}</span>
+          </p>
         </div>
       </div>
     </div>
-  );
-}
-
-// ─── StatPill ───────────────────────────────────────────────────────────────
-
-function StatPill({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <span className="text-[10px] font-medium" style={{ color }}>
-      {label}{value ? ` ${value}` : ""}
-    </span>
   );
 }

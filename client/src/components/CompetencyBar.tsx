@@ -1,23 +1,23 @@
 // Color-coded horizontal mini-bar replacement for stars
-// 90+ = Expert (green), 70-89 = Excellent (blue), 50-69 = Good (gold), 30-49 = Fair (amber), <30 = Weak (red)
+// 91-100 = Expert (green), 71-90 = Excellent (blue), 51-70 = Good (gold), 31-50 = Fair (amber), 0-30 = Weak (red)
 
 function getBarColor(value: number): string {
-  if (value >= 90) return "bg-emerald-500";
-  if (value >= 70) return "bg-blue-500";
-  if (value >= 50) return "bg-[hsl(42,70%,50%)]";
-  if (value >= 30) return "bg-amber-500";
+  if (value >= 91) return "bg-emerald-500";
+  if (value >= 71) return "bg-blue-500";
+  if (value >= 51) return "bg-[hsl(42,70%,50%)]";
+  if (value >= 31) return "bg-amber-500";
   return "bg-red-500";
 }
 
 function getBarLabel(value: number): string {
-  if (value >= 90) return "Expert";
-  if (value >= 70) return "Excellent";
-  if (value >= 50) return "Good";
-  if (value >= 30) return "Fair";
+  if (value >= 91) return "Expert";
+  if (value >= 71) return "Excellent";
+  if (value >= 51) return "Good";
+  if (value >= 31) return "Fair";
   return "Weak";
 }
 
-/** Replaces StarRating — shows a color-coded horizontal mini-bar with value 0–100 */
+/** Replaces StarRating — shows a color-coded horizontal mini-bar. 0–100 scale */
 export function CompetencyBar({ value, label }: { value: number; label: string }) {
   const clamped = Math.max(0, Math.min(100, value));
   return (

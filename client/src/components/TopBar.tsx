@@ -133,7 +133,7 @@ export default function TopBar({ dark, toggleDark, onProceed, canProceed, procee
               title={!canProceed ? proceedDisabledReason : "Advance to the next day"}
               onClick={onProceed}
             >
-              Next Day <ChevronRight className="h-3.5 w-3.5" />
+              Proceed <ChevronRight className="h-3.5 w-3.5" />
             </Button>
           )}
         </div>

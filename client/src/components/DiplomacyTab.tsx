@@ -32,6 +32,7 @@ import {
   Cell,
 } from "recharts";
 import { diplomacyRelations, tradePipeline, ecowasStability, diplomacyPersonnel } from "@/lib/gameData";
+import { slugify } from "@/lib/entityTypes";
 
 interface AmbassadorPost {
   country: string;
@@ -68,7 +69,12 @@ const stabilityColor = (val: number) => {
   return "hsl(0, 60%, 50%)";
 };
 
-export default function DiplomacyTab() {
+interface DiplomacyTabProps {
+  onCharacterClick?: (characterKey: string) => void;
+  onEntityClick?: (entityId: string) => void;
+}
+
+export default function DiplomacyTab({ onCharacterClick, onEntityClick }: DiplomacyTabProps = {}) {
   const { toast } = useToast();
   const [posts, setPosts] = useState<AmbassadorPost[]>(initialPosts);
   const action = (title: string, msg: string) => () =>
@@ -109,6 +115,7 @@ export default function DiplomacyTab() {
                 faction={p.shortTitle}
                 note={`${p.tenure}. ${p.note}`}
                 className="bg-muted/30"
+                onClick={() => onCharacterClick?.(p.name)}
                 actions={
                   <Button
                     data-testid={`summon-${p.shortTitle.toLowerCase()}`}
@@ -178,7 +185,12 @@ export default function DiplomacyTab() {
               <TableBody>
                 {diplomacyRelations.map((d) => (
                   <TableRow key={d.partner}>
-                    <TableCell className="text-sm font-medium">{d.partner}</TableCell>
+                    <TableCell
+                      className={`text-sm font-medium ${onEntityClick ? "cursor-pointer hover:underline hover:text-primary/80" : ""}`}
+                      onClick={onEntityClick ? () => onEntityClick("country:" + slugify(d.partner)) : undefined}
+                    >
+                      {d.partner}
+                    </TableCell>
                     <TableCell>
                       <Badge variant={relationBadge(d.relation)} className="text-xs">
                         {d.relation}
@@ -354,7 +366,15 @@ export default function DiplomacyTab() {
               <Card key={post.country} className="border border-border bg-muted/30">
                 <CardContent className="p-3 space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold">Ambassador to {post.country}</p>
+                    <p className="text-sm font-semibold">
+                      Ambassador to{" "}
+                      <span
+                        className={onEntityClick ? "cursor-pointer hover:underline hover:text-primary/80" : ""}
+                        onClick={onEntityClick ? () => onEntityClick("country:" + slugify(post.country)) : undefined}
+                      >
+                        {post.country}
+                      </span>
+                    </p>
                     <Badge
                       variant={post.status === "Appointed" ? "default" : "outline"}
                       className="text-xs"

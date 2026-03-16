@@ -21,6 +21,7 @@ import {
   useHook,
   delegateToVP,
   delegateToCOS,
+  applyBriefingConsequences,
 } from "./gameEngine";
 import { generateBrief } from "./intelligenceBrief";
 import { checkMilestones } from "./legacyScore";
@@ -57,7 +58,7 @@ import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidat
 import { migrateOldCompetencies, deriveBetrayalThreshold, averageProfessionalCompetence } from "./competencyUtils";
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
-import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis } from "./legislativeEngine";
+import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis, proposeExecutiveBill, lobbyCommittee, applyInfluenceLevers } from "./legislativeEngine";
 import { defaultPatronageState } from "./godfatherEngine";
 import { defaultFederalCharacterState } from "./federalCharacter";
 import { commissionOperation } from "./intelligenceEngine";
@@ -68,6 +69,17 @@ import type { GodfatherDeal } from "./godfatherTypes";
 import { seedLegislativeCalendar } from "./legislativeBills";
 import { defaultEconomicState } from "./economicEngine";
 import { tickReforms } from "./reformTracker";
+import {
+  defaultInfrastructureState,
+  defaultHealthState,
+  defaultEducationState,
+  defaultAgricultureState,
+  defaultInteriorState,
+  defaultEnvironmentState,
+  defaultYouthEmploymentState,
+  defaultBudgetAllocation,
+  buildCrossSectorEffects,
+} from "./sectorTypes";
 
 // Register constitutional officer pools at module load time
 registerConstitutionalPools();
@@ -147,6 +159,22 @@ export const eraPolicyPresets: Record<string, PolicyLeverState> = {
     importTariffs: mkLever("restrictive"),
     minimumWage: mkLever("frozen"),
     publicSectorHiring: mkLever("expansion"),
+    powerPrivatization: mkLever("state-run"),
+    oilSectorReform: mkLever("status-quo"),
+    transportPriority: mkLever("roads"),
+    digitalInvestment: mkLever("minimal"),
+    healthcareFunding: mkLever("basic"),
+    drugProcurement: mkLever("open-tender"),
+    universityAutonomy: mkLever("centralized"),
+    educationBudgetSplit: mkLever("tertiary-heavy"),
+    landReform: mkLever("communal"),
+    agricSubsidies: mkLever("none"),
+    borderPolicy: mkLever("standard"),
+    nationalIdPush: mkLever("voluntary"),
+    gasFlarePolicy: mkLever("tolerance"),
+    climateAdaptation: mkLever("minimal"),
+    nyscReform: mkLever("status-quo"),
+    youthEnterprise: mkLever("minimal"),
   },
   "2007": {
     fuelSubsidy: mkLever("full"),
@@ -158,6 +186,22 @@ export const eraPolicyPresets: Record<string, PolicyLeverState> = {
     importTariffs: mkLever("protective"),
     minimumWage: mkLever("modest"),
     publicSectorHiring: mkLever("normal"),
+    powerPrivatization: mkLever("state-run"),
+    oilSectorReform: mkLever("status-quo"),
+    transportPriority: mkLever("roads"),
+    digitalInvestment: mkLever("minimal"),
+    healthcareFunding: mkLever("basic"),
+    drugProcurement: mkLever("open-tender"),
+    universityAutonomy: mkLever("centralized"),
+    educationBudgetSplit: mkLever("tertiary-heavy"),
+    landReform: mkLever("communal"),
+    agricSubsidies: mkLever("none"),
+    borderPolicy: mkLever("standard"),
+    nationalIdPush: mkLever("voluntary"),
+    gasFlarePolicy: mkLever("tolerance"),
+    climateAdaptation: mkLever("minimal"),
+    nyscReform: mkLever("status-quo"),
+    youthEnterprise: mkLever("minimal"),
   },
   "2015": {
     fuelSubsidy: mkLever("partial"),
@@ -169,6 +213,22 @@ export const eraPolicyPresets: Record<string, PolicyLeverState> = {
     importTariffs: mkLever("protective"),
     minimumWage: mkLever("modest"),
     publicSectorHiring: mkLever("essential-only"),
+    powerPrivatization: mkLever("state-run"),
+    oilSectorReform: mkLever("status-quo"),
+    transportPriority: mkLever("roads"),
+    digitalInvestment: mkLever("minimal"),
+    healthcareFunding: mkLever("basic"),
+    drugProcurement: mkLever("open-tender"),
+    universityAutonomy: mkLever("centralized"),
+    educationBudgetSplit: mkLever("tertiary-heavy"),
+    landReform: mkLever("communal"),
+    agricSubsidies: mkLever("none"),
+    borderPolicy: mkLever("standard"),
+    nationalIdPush: mkLever("voluntary"),
+    gasFlarePolicy: mkLever("tolerance"),
+    climateAdaptation: mkLever("minimal"),
+    nyscReform: mkLever("status-quo"),
+    youthEnterprise: mkLever("minimal"),
   },
   "2023": {
     fuelSubsidy: mkLever("partial"),
@@ -180,6 +240,22 @@ export const eraPolicyPresets: Record<string, PolicyLeverState> = {
     importTariffs: mkLever("protective"),
     minimumWage: mkLever("modest"),
     publicSectorHiring: mkLever("normal"),
+    powerPrivatization: mkLever("state-run"),
+    oilSectorReform: mkLever("status-quo"),
+    transportPriority: mkLever("roads"),
+    digitalInvestment: mkLever("minimal"),
+    healthcareFunding: mkLever("basic"),
+    drugProcurement: mkLever("open-tender"),
+    universityAutonomy: mkLever("centralized"),
+    educationBudgetSplit: mkLever("tertiary-heavy"),
+    landReform: mkLever("communal"),
+    agricSubsidies: mkLever("none"),
+    borderPolicy: mkLever("standard"),
+    nationalIdPush: mkLever("voluntary"),
+    gasFlarePolicy: mkLever("tolerance"),
+    climateAdaptation: mkLever("minimal"),
+    nyscReform: mkLever("status-quo"),
+    youthEnterprise: mkLever("minimal"),
   },
 };
 
@@ -522,6 +598,40 @@ const defaultGameState: GameState = {
   economy: defaultEconomicState(),
   lastBriefData: null,
   reforms: [],
+  infrastructure: defaultInfrastructureState(),
+  healthSector: defaultHealthState(),
+  education: defaultEducationState(),
+  agriculture: defaultAgricultureState(),
+  interior: defaultInteriorState(),
+  environment: defaultEnvironmentState(),
+  youthEmployment: defaultYouthEmploymentState(),
+  budgetAllocation: defaultBudgetAllocation(),
+  internationalReputation: 45,
+  crossSectorEffects: buildCrossSectorEffects({
+    economy: defaultEconomicState(),
+    stability: 60,
+    infrastructure: defaultInfrastructureState(),
+    agriculture: defaultAgricultureState(),
+    health: defaultHealthState(),
+    education: defaultEducationState(),
+    youthEmployment: defaultYouthEmploymentState(),
+    environment: defaultEnvironmentState(),
+    interior: defaultInteriorState(),
+  }),
+  crossSectorCascades: [],
+  defeatVictoryCounters: {
+    famineTurns: 0,
+    blackoutTurns: 0,
+    governanceCrisisTurns: 0,
+    gdpGrowthPositiveTurns: 0,
+  },
+  ministerStatuses: {},
+  cabinetRetreats: {
+    lastRetreatDay: 0,
+    priorities: [],
+    lastFECDay: 0,
+    fecCooldownUntil: 0,
+  },
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -532,6 +642,64 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
   // Migration: add default policy levers if missing (for saves created before policyLevers existed)
   if (!state.policyLevers) {
     state.policyLevers = eraPolicyPresets[era] || eraPolicyPresets["2023"];
+  }
+
+  // Migration: add governance sector levers if missing
+  const govLevers = state.policyLevers as any;
+  if (!govLevers.powerPrivatization) {
+    govLevers.powerPrivatization = mkLever("state-run");
+    govLevers.oilSectorReform = mkLever("status-quo");
+    govLevers.transportPriority = mkLever("roads");
+    govLevers.digitalInvestment = mkLever("minimal");
+    govLevers.healthcareFunding = mkLever("basic");
+    govLevers.drugProcurement = mkLever("open-tender");
+    govLevers.universityAutonomy = mkLever("centralized");
+    govLevers.educationBudgetSplit = mkLever("tertiary-heavy");
+    govLevers.landReform = mkLever("communal");
+    govLevers.agricSubsidies = mkLever("none");
+    govLevers.borderPolicy = mkLever("standard");
+    govLevers.nationalIdPush = mkLever("voluntary");
+    govLevers.gasFlarePolicy = mkLever("tolerance");
+    govLevers.climateAdaptation = mkLever("minimal");
+    govLevers.nyscReform = mkLever("status-quo");
+    govLevers.youthEnterprise = mkLever("minimal");
+  }
+
+  // Migration: add governance sector states if missing
+  if (!(state as any).infrastructure) {
+    (state as any).infrastructure = defaultInfrastructureState();
+    (state as any).healthSector = defaultHealthState();
+    (state as any).education = defaultEducationState();
+    (state as any).agriculture = defaultAgricultureState();
+    (state as any).interior = defaultInteriorState();
+    (state as any).environment = defaultEnvironmentState();
+    (state as any).youthEmployment = defaultYouthEmploymentState();
+    (state as any).budgetAllocation = defaultBudgetAllocation();
+    (state as any).internationalReputation = 45;
+    (state as any).crossSectorCascades = [];
+  }
+  if (!(state as any).crossSectorEffects) {
+    (state as any).crossSectorEffects = buildCrossSectorEffects({
+      economy: state.economy ?? defaultEconomicState(),
+      stability: (state as any).stability ?? 60,
+      infrastructure: (state as any).infrastructure,
+      agriculture: (state as any).agriculture,
+      health: (state as any).healthSector,
+      education: (state as any).education,
+      youthEmployment: (state as any).youthEmployment,
+      environment: (state as any).environment,
+      interior: (state as any).interior,
+    });
+  }
+
+  // Migration: add defeatVictoryCounters if missing (for saves created before this was added)
+  if (!(state as any).defeatVictoryCounters) {
+    (state as any).defeatVictoryCounters = {
+      famineTurns: 0,
+      blackoutTurns: 0,
+      governanceCrisisTurns: 0,
+      gdpGrowthPositiveTurns: 0,
+    };
   }
 
   // Migration: add grievance fields to factions if missing (for saves created before faction drift)
@@ -597,6 +765,28 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
       }
     }
     state.cabinetAppointments = appointments;
+  }
+
+  // Migration: add ministerStatuses if missing (for saves created before cabinet redesign)
+  if (!state.ministerStatuses) {
+    state.ministerStatuses = {};
+  }
+
+  // Migration: add cabinetRetreats if missing
+  if (!state.cabinetRetreats) {
+    state.cabinetRetreats = {
+      lastRetreatDay: 0,
+      priorities: [],
+      lastFECDay: 0,
+      fecCooldownUntil: 0,
+    };
+  }
+
+  // Backfill any new portfolios into cabinetAppointments
+  for (const pos of ministryPositions) {
+    if (!(pos in state.cabinetAppointments)) {
+      state.cabinetAppointments[pos] = null;
+    }
   }
 
   const hydratedBase: GameState = {
@@ -735,10 +925,46 @@ export function initializeGameState(config: CampaignConfig): GameState {
     economy: defaultEconomicState(),
     lastBriefData: null,
     reforms: [],
+    infrastructure: defaultInfrastructureState(),
+    healthSector: defaultHealthState(),
+    education: defaultEducationState(),
+    agriculture: defaultAgricultureState(),
+    interior: defaultInteriorState(),
+    environment: defaultEnvironmentState(),
+    youthEmployment: defaultYouthEmploymentState(),
+    budgetAllocation: defaultBudgetAllocation(),
+    internationalReputation: 45,
+    crossSectorEffects: buildCrossSectorEffects({
+      economy: defaultEconomicState(),
+      stability: Math.round(47 + origin.stability),
+      infrastructure: defaultInfrastructureState(),
+      agriculture: defaultAgricultureState(),
+      health: defaultHealthState(),
+      education: defaultEducationState(),
+      youthEmployment: defaultYouthEmploymentState(),
+      environment: defaultEnvironmentState(),
+      interior: defaultInteriorState(),
+    }),
+    crossSectorCascades: [],
+    defeatVictoryCounters: {
+      famineTurns: 0,
+      blackoutTurns: 0,
+      governanceCrisisTurns: 0,
+      gdpGrowthPositiveTurns: 0,
+    },
+    ministerStatuses: {},
+    cabinetRetreats: {
+      lastRetreatDay: 0,
+      priorities: [],
+      lastFECDay: 0,
+      fecCooldownUntil: 0,
+    },
   };
 
   state = syncStrategicState(state);
   state = { ...state, cabalMeeting: createDailyCabalMeeting(state) };
+  // Generate inaugural brief so "View full brief" works on Day 1
+  state = { ...state, lastBriefData: generateBrief(state, state) };
   return withDerivedState(state);
 }
 
@@ -760,6 +986,9 @@ export type GameAction =
   | { type: "SIGN_BILL"; billId: string }
   | { type: "VETO_BILL"; billId: string }
   | { type: "RESOLVE_CRISIS"; billId: string; leverIds: string[] }
+  | { type: "PROPOSE_EXECUTIVE_BILL"; templateId: string; sponsorTier?: "chair" | "senior" | "junior" }
+  | { type: "LOBBY_COMMITTEE"; billId: string }
+  | { type: "WHIP_VOTES"; billId: string; leverIds: string[]; chamber: "house" | "senate" }
   | { type: "ACCEPT_DEAL"; godfatherId: string; deal: GodfatherDeal }
   | { type: "REJECT_DEAL"; godfatherId: string }
   | { type: "RESPOND_TO_FAVOUR"; godfatherId: string; demand: string }
@@ -774,7 +1003,9 @@ export type GameAction =
   | { type: "REOPEN_BRIEF" }
   | { type: "EXECUTE_ENTITY_ACTION"; entityId: string; actionId: string }
   | { type: "SUMMON_BRIEFING"; event: ActiveEvent; cooldownKey: string }
-  | { type: "MAKE_APPOINTMENT"; office: string; appointeeName: string; character: CharacterState };
+  | { type: "MAKE_APPOINTMENT"; office: string; appointeeName: string; character: CharacterState }
+  | { type: "SET_BRIEFING_COOLDOWN"; cooldownKey: string }
+  | { type: "PROCESS_BRIEFING_CHOICE"; event: ActiveEvent; choiceIndex: number };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -836,6 +1067,24 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return withDerivedState(vetoBill(state, action.billId));
     case "RESOLVE_CRISIS":
       return withDerivedState(resolveLegislativeCrisis(state, action.billId, action.leverIds));
+    case "PROPOSE_EXECUTIVE_BILL":
+      return withDerivedState(proposeExecutiveBill(state, action.templateId, action.sponsorTier));
+    case "LOBBY_COMMITTEE":
+      return withDerivedState(lobbyCommittee(state, action.billId));
+    case "WHIP_VOTES": {
+      if (!state.legislature) return state;
+      const whipBill = state.legislature.activeBills.find(b => b.id === action.billId);
+      if (!whipBill) return state;
+      const newProjection = applyInfluenceLevers(state, whipBill, action.leverIds, action.chamber);
+      const supportKey = action.chamber === "house" ? "houseSupport" : "senateSupport";
+      const updatedBills = state.legislature.activeBills.map(b =>
+        b.id === action.billId ? { ...b, [supportKey]: newProjection } : b,
+      );
+      return withDerivedState({
+        ...state,
+        legislature: { ...state.legislature, activeBills: updatedBills },
+      });
+    }
     case "ACCEPT_DEAL":
       return withDerivedState({ ...state, patronage: acceptDeal(state.patronage, action.godfatherId, action.deal) });
     case "REJECT_DEAL":
@@ -925,6 +1174,25 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const newCharacters = { ...state.characters, [action.appointeeName]: action.character };
       return withDerivedState({ ...state, appointments: newAppointments, characters: newCharacters });
     }
+    case "SET_BRIEFING_COOLDOWN":
+      return {
+        ...state,
+        lastActionAtDay: { ...state.lastActionAtDay, [action.cooldownKey]: state.day },
+      };
+    case "PROCESS_BRIEFING_CHOICE": {
+      const briefEvent = action.event;
+      const briefChoice = briefEvent.choices[action.choiceIndex];
+      if (!briefChoice) return state;
+      return withDerivedState(
+        applyBriefingConsequences(
+          state,
+          `${briefEvent.title}: ${briefChoice.label}`,
+          briefChoice.context,
+          briefChoice.consequences,
+          "decision",
+        ),
+      );
+    }
     default:
       return state;
   }
@@ -951,6 +1219,9 @@ interface GameContextValue {
   signBill: (billId: string) => void;
   vetoBill: (billId: string) => void;
   resolveCrisis: (billId: string, leverIds: string[]) => void;
+  proposeExecutiveBill: (templateId: string, sponsorTier?: "chair" | "senior" | "junior") => void;
+  lobbyCommittee: (billId: string) => void;
+  whipVotes: (billId: string, leverIds: string[], chamber: "house" | "senate") => void;
   acceptDeal: (godfatherId: string, deal: GodfatherDeal) => void;
   rejectDeal: (godfatherId: string) => void;
   respondToFavour: (godfatherId: string, demand: string) => void;
@@ -966,6 +1237,8 @@ interface GameContextValue {
   reopenBrief: () => void;
   summonBriefing: (event: ActiveEvent, cooldownKey: string) => void;
   makeAppointment: (office: string, appointeeName: string, character: CharacterState) => void;
+  setBriefingCooldown: (cooldownKey: string) => void;
+  processBriefingChoice: (event: ActiveEvent, choiceIndex: number) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -994,6 +1267,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     signBill: (billId) => dispatch({ type: "SIGN_BILL", billId }),
     vetoBill: (billId) => dispatch({ type: "VETO_BILL", billId }),
     resolveCrisis: (billId, leverIds) => dispatch({ type: "RESOLVE_CRISIS", billId, leverIds }),
+    proposeExecutiveBill: (templateId, sponsorTier) => dispatch({ type: "PROPOSE_EXECUTIVE_BILL", templateId, sponsorTier }),
+    lobbyCommittee: (billId) => dispatch({ type: "LOBBY_COMMITTEE", billId }),
+    whipVotes: (billId, leverIds, chamber) => dispatch({ type: "WHIP_VOTES", billId, leverIds, chamber }),
     acceptDeal: (godfatherId, deal) => dispatch({ type: "ACCEPT_DEAL", godfatherId, deal }),
     rejectDeal: (godfatherId) => dispatch({ type: "REJECT_DEAL", godfatherId }),
     respondToFavour: (godfatherId, demand) => dispatch({ type: "RESPOND_TO_FAVOUR", godfatherId, demand }),
@@ -1009,6 +1285,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     reopenBrief: () => dispatch({ type: "REOPEN_BRIEF" }),
     summonBriefing: (event, cooldownKey) => dispatch({ type: "SUMMON_BRIEFING", event, cooldownKey }),
     makeAppointment: (office, appointeeName, character) => dispatch({ type: "MAKE_APPOINTMENT", office, appointeeName, character }),
+    setBriefingCooldown: (cooldownKey) => dispatch({ type: "SET_BRIEFING_COOLDOWN", cooldownKey }),
+    processBriefingChoice: (event, choiceIndex) => dispatch({ type: "PROCESS_BRIEFING_CHOICE", event, choiceIndex }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

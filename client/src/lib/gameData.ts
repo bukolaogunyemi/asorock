@@ -79,7 +79,11 @@ export const cabinetRoster: Minister[] = hcCabinetRoster;
 
 // ── Ministry Positions & Candidates ─────────────────────
 export const ministryPositions = [
-  "Finance", "Petroleum", "Justice", "Defence", "Health", "Works & Housing", "Education",
+  "Finance", "Petroleum", "Trade & Investment",
+  "Health", "Education", "Youth Development", "Labour & Employment",
+  "Works & Housing", "Power", "Communications & Digital Economy",
+  "Defence", "Justice", "Interior", "Foreign Affairs",
+  "Agriculture & Rural Development", "Environment",
 ] as const;
 
 export type MinistryPosition = (typeof ministryPositions)[number];
@@ -89,7 +93,7 @@ export interface CabinetCandidate extends Minister {
 }
 
 /** Each portfolio has 2-3 candidates. The first matches the original cabinetRoster entry. */
-export const cabinetCandidates: Record<MinistryPosition, CabinetCandidate[]> = hcCabinetCandidates;
+export const cabinetCandidates: Partial<Record<MinistryPosition, CabinetCandidate[]>> = hcCabinetCandidates;
 
 // ── Factions ─────────────────────────────────────────────
 export const factions: { name: string; influence: number }[] = [
@@ -336,6 +340,230 @@ export const POLICY_LEVER_DEFS: Record<PolicyLeverKey, PolicyLeverDef> = {
       "essential-only": { inflation: 0, fxRate: 0, reserves: 0.03, debtToGdp: -0.03, subsidyPressure: 0, approval: -1, treasury: 0.02, trust: 0 },
       normal:           { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
       expansion:        { inflation: 0.2, fxRate: 0, reserves: -0.1, debtToGdp: 0.15, subsidyPressure: 0, approval: 2, treasury: -0.06, trust: -1 },
+    },
+  },
+  powerPrivatization: {
+    displayName: "Power Sector Privatisation",
+    positions: [
+      { value: "state-run", label: "State-run" },
+      { value: "partial-private", label: "Partial private" },
+      { value: "full-private", label: "Full privatisation" },
+    ],
+    zeroImpactPosition: "partial-private",
+    modifiers: {
+      "state-run":      { inflation: 0.1, fxRate: 0, reserves: -0.1, debtToGdp: 0.2, subsidyPressure: 2.0, approval: 1, treasury: -0.06, trust: 0 },
+      "partial-private":{ inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "full-private":   { inflation: -0.2, fxRate: 0, reserves: 0.1, debtToGdp: -0.15, subsidyPressure: -1.5, approval: -3, treasury: 0.05, trust: 1 },
+    },
+  },
+  oilSectorReform: {
+    displayName: "Oil Sector Reform",
+    positions: [
+      { value: "status-quo", label: "Status quo" },
+      { value: "pib-enforcement", label: "PIB enforcement" },
+      { value: "full-deregulation", label: "Full deregulation" },
+    ],
+    zeroImpactPosition: "pib-enforcement",
+    modifiers: {
+      "status-quo":        { inflation: 0, fxRate: 0, reserves: -0.2, debtToGdp: 0.1, subsidyPressure: 1.5, approval: 1, treasury: -0.05, trust: -1 },
+      "pib-enforcement":   { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "full-deregulation": { inflation: 0.2, fxRate: 10, reserves: 0.2, debtToGdp: -0.2, subsidyPressure: -2.0, approval: -4, treasury: 0.08, trust: 2 },
+    },
+  },
+  transportPriority: {
+    displayName: "Transport Priority",
+    positions: [
+      { value: "roads", label: "Roads focus" },
+      { value: "rail", label: "Rail focus" },
+      { value: "multimodal", label: "Multimodal" },
+    ],
+    zeroImpactPosition: "multimodal",
+    modifiers: {
+      roads:       { inflation: -0.1, fxRate: 0, reserves: -0.05, debtToGdp: 0.1, subsidyPressure: 0, approval: 2, treasury: -0.04, trust: 0 },
+      rail:        { inflation: -0.1, fxRate: 0, reserves: -0.1, debtToGdp: 0.15, subsidyPressure: 0, approval: 1, treasury: -0.06, trust: 1 },
+      multimodal:  { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+    },
+  },
+  digitalInvestment: {
+    displayName: "Digital Investment",
+    positions: [
+      { value: "minimal", label: "Minimal" },
+      { value: "moderate", label: "Moderate" },
+      { value: "aggressive", label: "Aggressive" },
+    ],
+    zeroImpactPosition: "moderate",
+    modifiers: {
+      minimal:    { inflation: 0, fxRate: 0, reserves: 0.05, debtToGdp: -0.05, subsidyPressure: 0, approval: -1, treasury: 0.03, trust: -1 },
+      moderate:   { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      aggressive: { inflation: 0.1, fxRate: 0, reserves: -0.1, debtToGdp: 0.1, subsidyPressure: 0, approval: 2, treasury: -0.05, trust: 1 },
+    },
+  },
+  healthcareFunding: {
+    displayName: "Healthcare Funding",
+    positions: [
+      { value: "underfunded", label: "Underfunded" },
+      { value: "basic", label: "Basic provision" },
+      { value: "universal-push", label: "Universal push" },
+    ],
+    zeroImpactPosition: "basic",
+    modifiers: {
+      underfunded:      { inflation: 0, fxRate: 0, reserves: 0.1, debtToGdp: -0.1, subsidyPressure: 0, approval: -4, treasury: 0.05, trust: -1 },
+      basic:            { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "universal-push": { inflation: 0.2, fxRate: 0, reserves: -0.1, debtToGdp: 0.2, subsidyPressure: 1.0, approval: 4, treasury: -0.07, trust: 1 },
+    },
+  },
+  drugProcurement: {
+    displayName: "Drug Procurement",
+    positions: [
+      { value: "local-preference", label: "Local preference" },
+      { value: "open-tender", label: "Open tender" },
+      { value: "international-partnership", label: "International partnership" },
+    ],
+    zeroImpactPosition: "open-tender",
+    modifiers: {
+      "local-preference":           { inflation: 0.1, fxRate: 0, reserves: 0, debtToGdp: 0.05, subsidyPressure: 0.5, approval: 1, treasury: -0.02, trust: 0 },
+      "open-tender":                { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "international-partnership":  { inflation: -0.1, fxRate: 0, reserves: -0.05, debtToGdp: 0, subsidyPressure: -0.5, approval: 1, treasury: -0.01, trust: 1 },
+    },
+  },
+  universityAutonomy: {
+    displayName: "University Autonomy",
+    positions: [
+      { value: "centralized", label: "Centralised" },
+      { value: "partial-autonomy", label: "Partial autonomy" },
+      { value: "full-autonomy", label: "Full autonomy" },
+    ],
+    zeroImpactPosition: "partial-autonomy",
+    modifiers: {
+      centralized:       { inflation: 0, fxRate: 0, reserves: 0.05, debtToGdp: -0.05, subsidyPressure: 0.5, approval: -1, treasury: 0.02, trust: -1 },
+      "partial-autonomy":{ inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "full-autonomy":   { inflation: 0, fxRate: 0, reserves: -0.05, debtToGdp: 0.05, subsidyPressure: -0.5, approval: 1, treasury: -0.02, trust: 1 },
+    },
+  },
+  educationBudgetSplit: {
+    displayName: "Education Budget Split",
+    positions: [
+      { value: "tertiary-heavy", label: "Tertiary-heavy" },
+      { value: "balanced", label: "Balanced" },
+      { value: "basic-heavy", label: "Basic-heavy" },
+    ],
+    zeroImpactPosition: "balanced",
+    modifiers: {
+      "tertiary-heavy": { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      balanced:         { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "basic-heavy":    { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 1, treasury: 0, trust: 0 },
+    },
+  },
+  landReform: {
+    displayName: "Land Reform",
+    positions: [
+      { value: "communal", label: "Communal tenure" },
+      { value: "mixed", label: "Mixed system" },
+      { value: "titling-program", label: "Titling programme" },
+    ],
+    zeroImpactPosition: "mixed",
+    modifiers: {
+      communal:          { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 1, treasury: 0, trust: 0 },
+      mixed:             { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "titling-program": { inflation: -0.1, fxRate: 0, reserves: 0.05, debtToGdp: -0.05, subsidyPressure: 0, approval: 1, treasury: -0.02, trust: 1 },
+    },
+  },
+  agricSubsidies: {
+    displayName: "Agricultural Subsidies",
+    positions: [
+      { value: "none", label: "None" },
+      { value: "input-subsidies", label: "Input subsidies" },
+      { value: "full-mechanization", label: "Full mechanisation" },
+    ],
+    zeroImpactPosition: "input-subsidies",
+    modifiers: {
+      none:                { inflation: 0.2, fxRate: 0, reserves: 0.05, debtToGdp: -0.05, subsidyPressure: -1.0, approval: -3, treasury: 0.04, trust: -1 },
+      "input-subsidies":   { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "full-mechanization":{ inflation: -0.2, fxRate: 0, reserves: -0.1, debtToGdp: 0.15, subsidyPressure: 1.0, approval: 3, treasury: -0.06, trust: 1 },
+    },
+  },
+  borderPolicy: {
+    displayName: "Border Policy",
+    positions: [
+      { value: "porous", label: "Porous" },
+      { value: "standard", label: "Standard" },
+      { value: "fortress", label: "Fortress" },
+    ],
+    zeroImpactPosition: "standard",
+    modifiers: {
+      porous:   { inflation: 0.1, fxRate: 5, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: -1, treasury: -0.01, trust: -1 },
+      standard: { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      fortress: { inflation: -0.1, fxRate: -5, reserves: 0.05, debtToGdp: 0, subsidyPressure: 0, approval: 1, treasury: 0.02, trust: 1 },
+    },
+  },
+  nationalIdPush: {
+    displayName: "National ID Push",
+    positions: [
+      { value: "voluntary", label: "Voluntary" },
+      { value: "incentivized", label: "Incentivised" },
+      { value: "mandatory", label: "Mandatory" },
+    ],
+    zeroImpactPosition: "incentivized",
+    modifiers: {
+      voluntary:    { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      incentivized: { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      mandatory:    { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: -1, treasury: -0.01, trust: -1 },
+    },
+  },
+  gasFlarePolicy: {
+    displayName: "Gas Flare Policy",
+    positions: [
+      { value: "tolerance", label: "Tolerance" },
+      { value: "penalties", label: "Penalties" },
+      { value: "zero-flare", label: "Zero-flare mandate" },
+    ],
+    zeroImpactPosition: "penalties",
+    modifiers: {
+      tolerance:   { inflation: 0, fxRate: 0, reserves: 0.05, debtToGdp: 0, subsidyPressure: 0, approval: -1, treasury: 0.02, trust: -1 },
+      penalties:   { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "zero-flare":{ inflation: 0, fxRate: 0, reserves: -0.05, debtToGdp: 0.05, subsidyPressure: 0, approval: 1, treasury: -0.02, trust: 1 },
+    },
+  },
+  climateAdaptation: {
+    displayName: "Climate Adaptation",
+    positions: [
+      { value: "minimal", label: "Minimal" },
+      { value: "moderate", label: "Moderate" },
+      { value: "aggressive", label: "Aggressive" },
+    ],
+    zeroImpactPosition: "moderate",
+    modifiers: {
+      minimal:    { inflation: 0, fxRate: 0, reserves: 0.05, debtToGdp: -0.05, subsidyPressure: 0, approval: -1, treasury: 0.02, trust: -1 },
+      moderate:   { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      aggressive: { inflation: 0, fxRate: 0, reserves: -0.1, debtToGdp: 0.1, subsidyPressure: 0, approval: 2, treasury: -0.04, trust: 1 },
+    },
+  },
+  nyscReform: {
+    displayName: "NYSC Reform",
+    positions: [
+      { value: "status-quo", label: "Status quo" },
+      { value: "reformed", label: "Reformed scheme" },
+      { value: "scrapped", label: "Scrapped" },
+    ],
+    zeroImpactPosition: "reformed",
+    modifiers: {
+      "status-quo": { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      reformed:     { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 1, treasury: -0.01, trust: 1 },
+      scrapped:     { inflation: 0, fxRate: 0, reserves: 0.02, debtToGdp: -0.02, subsidyPressure: -0.5, approval: -2, treasury: 0.02, trust: -1 },
+    },
+  },
+  youthEnterprise: {
+    displayName: "Youth Enterprise",
+    positions: [
+      { value: "minimal", label: "Minimal support" },
+      { value: "startup-ecosystem", label: "Startup ecosystem" },
+      { value: "public-works", label: "Public works" },
+    ],
+    zeroImpactPosition: "startup-ecosystem",
+    modifiers: {
+      minimal:             { inflation: 0, fxRate: 0, reserves: 0.05, debtToGdp: -0.05, subsidyPressure: 0, approval: -2, treasury: 0.03, trust: -1 },
+      "startup-ecosystem": { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
+      "public-works":      { inflation: 0.1, fxRate: 0, reserves: -0.05, debtToGdp: 0.1, subsidyPressure: 0.5, approval: 3, treasury: -0.04, trust: 0 },
     },
   },
 };

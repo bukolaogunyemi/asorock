@@ -7,6 +7,7 @@ import type { IntelligenceState } from "./intelligenceTypes";
 import type { PartyInternalsState } from "./partyTypes";
 import type { EconomicState } from "./economicTypes";
 import type { CharacterCompetencies, CareerEntry, InteractionEntry } from "./competencyTypes";
+import type { GovernanceSectorState, BudgetAllocation, CrossSectorEffects, CrossSectorCascade } from "./sectorTypes";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -36,6 +37,24 @@ export type ImportTariffPosition = "open" | "moderate" | "protective" | "restric
 export type MinimumWagePosition = "frozen" | "modest" | "union-demand" | "populist";
 export type PublicSectorHiringPosition = "freeze" | "essential-only" | "normal" | "expansion";
 
+// ── Governance Sector Lever Positions ──
+export type PowerPrivatizationPosition = "state-run" | "partial-private" | "full-private";
+export type OilSectorReformPosition = "status-quo" | "pib-enforcement" | "full-deregulation";
+export type TransportPriorityPosition = "roads" | "rail" | "multimodal";
+export type DigitalInvestmentPosition = "minimal" | "moderate" | "aggressive";
+export type HealthcareFundingPosition = "underfunded" | "basic" | "universal-push";
+export type DrugProcurementPosition = "local-preference" | "open-tender" | "international-partnership";
+export type UniversityAutonomyPosition = "centralized" | "partial-autonomy" | "full-autonomy";
+export type EducationBudgetSplitPosition = "tertiary-heavy" | "balanced" | "basic-heavy";
+export type LandReformPosition = "communal" | "mixed" | "titling-program";
+export type AgricSubsidiesPosition = "none" | "input-subsidies" | "full-mechanization";
+export type BorderPolicyPosition = "porous" | "standard" | "fortress";
+export type NationalIdPushPosition = "voluntary" | "incentivized" | "mandatory";
+export type GasFlarePolicyPosition = "tolerance" | "penalties" | "zero-flare";
+export type ClimateAdaptationPosition = "minimal" | "moderate" | "aggressive";
+export type NyscReformPosition = "status-quo" | "reformed" | "scrapped";
+export type YouthEnterprisePosition = "minimal" | "startup-ecosystem" | "public-works";
+
 export type PolicyLeverKey =
   | "fuelSubsidy"
   | "electricityTariff"
@@ -45,7 +64,23 @@ export type PolicyLeverKey =
   | "cashTransfers"
   | "importTariffs"
   | "minimumWage"
-  | "publicSectorHiring";
+  | "publicSectorHiring"
+  | "powerPrivatization"
+  | "oilSectorReform"
+  | "transportPriority"
+  | "digitalInvestment"
+  | "healthcareFunding"
+  | "drugProcurement"
+  | "universityAutonomy"
+  | "educationBudgetSplit"
+  | "landReform"
+  | "agricSubsidies"
+  | "borderPolicy"
+  | "nationalIdPush"
+  | "gasFlarePolicy"
+  | "climateAdaptation"
+  | "nyscReform"
+  | "youthEnterprise";
 
 export type AnyPolicyPosition =
   | FuelSubsidyPosition
@@ -56,7 +91,23 @@ export type AnyPolicyPosition =
   | CashTransferPosition
   | ImportTariffPosition
   | MinimumWagePosition
-  | PublicSectorHiringPosition;
+  | PublicSectorHiringPosition
+  | PowerPrivatizationPosition
+  | OilSectorReformPosition
+  | TransportPriorityPosition
+  | DigitalInvestmentPosition
+  | HealthcareFundingPosition
+  | DrugProcurementPosition
+  | UniversityAutonomyPosition
+  | EducationBudgetSplitPosition
+  | LandReformPosition
+  | AgricSubsidiesPosition
+  | BorderPolicyPosition
+  | NationalIdPushPosition
+  | GasFlarePolicyPosition
+  | ClimateAdaptationPosition
+  | NyscReformPosition
+  | YouthEnterprisePosition;
 
 export interface SingleLeverState {
   position: AnyPolicyPosition;
@@ -74,6 +125,22 @@ export interface PolicyLeverState {
   importTariffs: SingleLeverState;
   minimumWage: SingleLeverState;
   publicSectorHiring: SingleLeverState;
+  powerPrivatization: SingleLeverState;
+  oilSectorReform: SingleLeverState;
+  transportPriority: SingleLeverState;
+  digitalInvestment: SingleLeverState;
+  healthcareFunding: SingleLeverState;
+  drugProcurement: SingleLeverState;
+  universityAutonomy: SingleLeverState;
+  educationBudgetSplit: SingleLeverState;
+  landReform: SingleLeverState;
+  agricSubsidies: SingleLeverState;
+  borderPolicy: SingleLeverState;
+  nationalIdPush: SingleLeverState;
+  gasFlarePolicy: SingleLeverState;
+  climateAdaptation: SingleLeverState;
+  nyscReform: SingleLeverState;
+  youthEnterprise: SingleLeverState;
 }
 
 export interface ReformProgress {
@@ -154,7 +221,7 @@ export interface ActiveEvent {
   severity: EventSeverity;
   description: string;
   category: "economy" | "security" | "governance" | "politics" | "diplomacy" | "media";
-  source: "opening" | "contextual" | "chain" | "policy" | "faction-demand" | "cabinet-appointment" | "team-briefing";
+  source: "opening" | "contextual" | "chain" | "policy" | "faction-demand" | "cabinet-appointment" | "team-briefing" | "fec-memo" | "minister-summons";
   choices: EventChoice[];
   factionKey?: string;
   createdDay: number;
@@ -190,6 +257,26 @@ export interface Hook {
   tradeRecipient?: string;
   blackmailDesperation?: number;
   sourceOperation?: string;
+}
+
+export interface FECMemo {
+  id: string;
+  ministerKey: string;
+  portfolio: string;
+  title: string;
+  description: string;
+  urgency: "routine" | "important" | "urgent";
+  choices: EventChoice[];
+  sectorAffected: string;
+}
+
+export interface MinisterStatus {
+  lastSummonedDay: number;
+  lastDirectiveDay: number;
+  onProbation: boolean;
+  probationStartDay: number;
+  appointmentDay: number;
+  pendingMemos: FECMemo[];
 }
 
 export interface CharacterState {
@@ -285,6 +372,15 @@ export interface GameInboxMessage {
   relatedEventId?: string;
   responseOptions?: { label: string; actionId: string }[];
   source: "seed" | "system" | "decision" | "chain" | "court" | "random" | "faction-demand";
+  // --- New fields for master-detail redesign ---
+  respondedAction?: string;
+  respondedLabel?: string;
+  contextData?: {
+    senderLoyalty?: number;
+    relatedEventTitle?: string;
+    relevantMetrics?: { label: string; value: string; color: string }[];
+    factionName?: string;
+  };
 }
 
 export interface DaySummary {
@@ -458,6 +554,13 @@ export interface GameState {
   approvalHistory: ApprovalHistoryPoint[];
   legacyMilestones: LegacyMilestoneRecord[];
   cabinetAppointments: Record<string, string | null>;
+  ministerStatuses: Record<string, MinisterStatus>;
+  cabinetRetreats: {
+    lastRetreatDay: number;
+    priorities: string[];
+    lastFECDay: number;
+    fecCooldownUntil: number;
+  };
   lastActionAtDay: Record<string, number>;
   victoryPath?: string;
   defeatState?: string;
@@ -470,6 +573,34 @@ export interface GameState {
   economy: EconomicState;
   lastBriefData: IntelligenceBriefData | null;
   reforms: ReformProgress[];
+  // Governance sector states
+  infrastructure: GovernanceSectorState;
+  healthSector: GovernanceSectorState;
+  education: GovernanceSectorState;
+  agriculture: GovernanceSectorState;
+  interior: GovernanceSectorState;
+  environment: GovernanceSectorState;
+  youthEmployment: GovernanceSectorState;
+  budgetAllocation: BudgetAllocation;
+  internationalReputation: number;
+  crossSectorEffects: CrossSectorEffects;
+  crossSectorCascades: CrossSectorCascade[];
+  defeatVictoryCounters: DefeatVictoryCounters;
+}
+
+/**
+ * Consecutive-turn counters used by defeat/victory condition checks.
+ * These are incremented each turn the relevant condition is met, and reset when not.
+ */
+export interface DefeatVictoryCounters {
+  /** Turns where agriculture.indicators.foodPriceIndex > 95 (defeat: famine at 3+) */
+  famineTurns: number;
+  /** Turns where infrastructure.indicators.powerGenerationGW < 2.0 (defeat: blackout at 5+) */
+  blackoutTurns: number;
+  /** Turns where 3+ sectors have crisisZone "red" (defeat: governance crisis at 4+) */
+  governanceCrisisTurns: number;
+  /** Turns where economy.gdpGrowthRate > 0 (victory: economic titan at 12+) */
+  gdpGrowthPositiveTurns: number;
 }
 
 export interface SaveGameData {

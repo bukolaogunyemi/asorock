@@ -13,6 +13,7 @@ import type { DiplomatSystemState, AmbassadorAppointment } from "./diplomatTypes
 import type { MilitarySystemState } from "./militaryTypes";
 import type { PatronageState, Godfather } from "./godfatherTypes";
 import { ALL_DIPLOMAT_POSTS } from "./diplomatPosts";
+import { cabinetCandidates } from "./handcraftedCharacters";
 
 // ══════════════════════════════════════════════════════════════
 // Types
@@ -436,6 +437,167 @@ function processAideDismissal(
   applyGodfatherEscalation(state, "aide", positionId, result);
 
   return result;
+}
+
+// ══════════════════════════════════════════════════════════════
+// Main entry point
+// ══════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════
+// Dismissal Preview (Task 4)
+// ══════════════════════════════════════════════════════════════
+
+export interface DismissalPreview {
+  characterName: string;
+  positionTitle: string;
+  approvalCost: number;
+  stabilityCost: number;
+  affectedFactions: string[];
+  interestedGodfathers: string[];
+  replacementPoolAvailable: boolean;
+}
+
+/** Cost constants per system type: [approvalCost, stabilityCost] */
+const DISMISSAL_COSTS: Record<DismissableSystem, [number, number]> = {
+  minister:  [-3, -2],
+  director:  [-1,  0],
+  diplomat:  [-2,  0], // default for bilateral; minor overridden below
+  military:  [-4, -3],
+  aide:      [-2,  0],
+};
+
+function resolveCharacterName(
+  state: GameState,
+  systemType: DismissableSystem,
+  positionId: string,
+): string | null {
+  switch (systemType) {
+    case "minister":
+      return state.cabinetAppointments[positionId] ?? null;
+    case "director": {
+      const appt = state.directors.appointments.find(a => a.positionId === positionId);
+      return appt?.characterName ?? null;
+    }
+    case "diplomat": {
+      const appt = state.diplomats.appointments.find(a => a.postId === positionId);
+      return appt?.characterName ?? null;
+    }
+    case "military": {
+      const appt = state.military.appointments.find(a => a.positionId === positionId);
+      return appt?.characterName ?? null;
+    }
+    case "aide": {
+      const appt = state.appointments.find(a => a.office === positionId);
+      return appt?.appointee ?? null;
+    }
+    default:
+      return null;
+  }
+}
+
+function resolvePositionTitle(
+  systemType: DismissableSystem,
+  positionId: string,
+): string {
+  switch (systemType) {
+    case "minister":
+      return `Minister of ${titleCase(positionId)}`;
+    case "diplomat": {
+      const post = ALL_DIPLOMAT_POSTS.find(p => p.id === positionId);
+      return post?.title ?? titleCase(positionId);
+    }
+    default:
+      return titleCase(positionId);
+  }
+}
+
+function checkReplacementPool(
+  state: GameState,
+  systemType: DismissableSystem,
+  positionId: string,
+): boolean {
+  if (systemType !== "minister") return false;
+
+  // cabinetCandidates keys are titleCase (e.g., "Finance")
+  // cabinetAppointments keys are lowercase (e.g., "finance")
+  const portfolioKey = titleCase(positionId);
+  const candidates = (cabinetCandidates as Record<string, any[]>)[portfolioKey];
+  if (!candidates || candidates.length === 0) return false;
+
+  // Check if there are candidates not currently appointed to any position
+  const currentlyAppointed = new Set(
+    Object.values(state.cabinetAppointments).filter(Boolean) as string[],
+  );
+
+  return candidates.some((c: { name: string }) => !currentlyAppointed.has(c.name));
+}
+
+/**
+ * Pure read-only preview of what a dismissal would cost.
+ * Does NOT mutate state. Used by the confirmation UI.
+ */
+export function computeDismissalPreview(
+  state: GameState,
+  systemType: DismissableSystem,
+  positionId: string,
+): DismissalPreview {
+  const characterName = resolveCharacterName(state, systemType, positionId);
+
+  if (!characterName) {
+    return {
+      characterName: "",
+      positionTitle: resolvePositionTitle(systemType, positionId),
+      approvalCost: 0,
+      stabilityCost: 0,
+      affectedFactions: [],
+      interestedGodfathers: [],
+      replacementPoolAvailable: false,
+    };
+  }
+
+  // Costs
+  let [approvalCost, stabilityCost] = DISMISSAL_COSTS[systemType];
+
+  // Diplomat minor posts get reduced approval penalty
+  if (systemType === "diplomat") {
+    const category = getDiplomatPostCategory(positionId);
+    if (category === "minor") approvalCost = -1;
+  }
+
+  // Affected factions
+  const affectedFactions: string[] = [];
+  const character = state.characters[characterName];
+  if (character?.faction) {
+    affectedFactions.push(character.faction);
+  }
+
+  // Interested godfathers
+  const interestedGodfathers: string[] = [];
+  if (state.patronage?.godfathers?.length) {
+    for (const gf of state.patronage.godfathers) {
+      let hasInterest = false;
+      if (systemType === "minister") {
+        hasInterest = gf.stable.cabinetCandidates.includes(positionId);
+      }
+      // Future: militaryInterests, diplomaticInterests, directorInterests
+      if (hasInterest) {
+        interestedGodfathers.push(gf.name);
+      }
+    }
+  }
+
+  // Replacement pool
+  const replacementPoolAvailable = checkReplacementPool(state, systemType, positionId);
+
+  return {
+    characterName,
+    positionTitle: resolvePositionTitle(systemType, positionId),
+    approvalCost,
+    stabilityCost,
+    affectedFactions,
+    interestedGodfathers,
+    replacementPoolAvailable,
+  };
 }
 
 // ══════════════════════════════════════════════════════════════

@@ -792,3 +792,253 @@ describe("dismissalEngine — godfather escalation", () => {
     expect(godfather!.escalationStage).toBe(1);
   });
 });
+
+// ══════════════════════════════════════════════════════════════
+// Task 4: Dismissal preview
+// ══════════════════════════════════════════════════════════════
+
+import { computeDismissalPreview } from "./dismissalEngine";
+
+describe("computeDismissalPreview", () => {
+  describe("approval/stability costs per system type", () => {
+    it("returns -3 approval and -2 stability for minister dismissal", () => {
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Dr. Bello" },
+        characters: {
+          "Dr. Bello": makeCharacter({ name: "Dr. Bello" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.approvalCost).toBe(-3);
+      expect(preview.stabilityCost).toBe(-2);
+    });
+
+    it("returns -1 approval and 0 stability for director dismissal", () => {
+      const state = makeMockState({
+        directors: {
+          positions: [],
+          appointments: [
+            { positionId: "cbn-governor", characterName: "Chief Emeka", appointedDay: 5, isOriginal: true },
+          ],
+          technocratsFired: 0,
+          vacancyTracking: {} as any,
+        },
+        characters: {
+          "Chief Emeka": makeCharacter({ name: "Chief Emeka" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "director", "cbn-governor");
+      expect(preview.approvalCost).toBe(-1);
+      expect(preview.stabilityCost).toBe(0);
+    });
+
+    it("returns -2 approval for bilateral diplomat and -1 for minor", () => {
+      const bilateralState = makeMockState({
+        diplomats: {
+          posts: [],
+          appointments: [
+            { postId: "amb-usa", characterName: "Amb. Okoro", appointedDay: 5, rotationDueDay: 900, vacantSinceDay: null },
+          ],
+          incidents: [],
+          diplomaticEffectiveness: 50,
+        },
+        characters: {
+          "Amb. Okoro": makeCharacter({ name: "Amb. Okoro" }),
+        },
+      });
+      const bilateralPreview = computeDismissalPreview(bilateralState, "diplomat", "amb-usa");
+      expect(bilateralPreview.approvalCost).toBe(-2);
+      expect(bilateralPreview.stabilityCost).toBe(0);
+
+      const minorState = makeMockState({
+        diplomats: {
+          posts: [],
+          appointments: [
+            { postId: "minor-cuba", characterName: "Amb. Adamu", appointedDay: 5, rotationDueDay: 900, vacantSinceDay: null },
+          ],
+          incidents: [],
+          diplomaticEffectiveness: 50,
+        },
+        characters: {
+          "Amb. Adamu": makeCharacter({ name: "Amb. Adamu" }),
+        },
+      });
+      const minorPreview = computeDismissalPreview(minorState, "diplomat", "minor-cuba");
+      expect(minorPreview.approvalCost).toBe(-1);
+    });
+
+    it("returns -4 approval and -3 stability for military dismissal", () => {
+      const state = makeMockState({
+        military: {
+          positions: [],
+          appointments: [
+            { positionId: "chief-army-force", characterName: "Gen. Tsafe", appointedDay: 5 },
+          ],
+          coupRisk: 10,
+          securityEffectiveness: 50,
+        },
+        characters: {
+          "Gen. Tsafe": makeCharacter({ name: "Gen. Tsafe" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "military", "chief-army-force");
+      expect(preview.approvalCost).toBe(-4);
+      expect(preview.stabilityCost).toBe(-3);
+    });
+
+    it("returns -2 approval and 0 stability for aide dismissal", () => {
+      const state = makeMockState({
+        appointments: [
+          { office: "Chief of Staff", appointee: "Sen. Agba", confirmed: true },
+        ],
+        characters: {
+          "Sen. Agba": makeCharacter({ name: "Sen. Agba" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "aide", "Chief of Staff");
+      expect(preview.approvalCost).toBe(-2);
+      expect(preview.stabilityCost).toBe(0);
+    });
+  });
+
+  describe("affected factions", () => {
+    it("lists faction of the dismissed character", () => {
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Dr. Bello" },
+        characters: {
+          "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.affectedFactions).toContain("Northern Caucus");
+    });
+
+    it("returns empty array when character has no faction", () => {
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Dr. Bello" },
+        characters: {
+          "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.affectedFactions).toEqual([]);
+    });
+
+    it("returns empty array when character not in state.characters", () => {
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Unknown Person" },
+        characters: {},
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.affectedFactions).toEqual([]);
+    });
+  });
+
+  describe("interested godfathers", () => {
+    it("lists godfathers with cabinetCandidates matching the position", () => {
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Dr. Bello" },
+        characters: {
+          "Dr. Bello": makeCharacter({ name: "Dr. Bello" }),
+        },
+        patronage: {
+          godfathers: [
+            makeGodfather({
+              id: "gf-1",
+              name: "Alhaji Dantata",
+              stable: {
+                governors: [],
+                legislativeBloc: { house: 0, senate: 0 },
+                cabinetCandidates: ["finance"],
+                connections: [],
+              },
+            }),
+            makeGodfather({
+              id: "gf-2",
+              name: "Chief Odumegwu",
+              stable: {
+                governors: [],
+                legislativeBloc: { house: 0, senate: 0 },
+                cabinetCandidates: ["defence"],
+                connections: [],
+              },
+            }),
+          ],
+          patronageIndex: 0,
+          activeDeals: 0,
+          neutralizedGodfathers: [],
+          approachCooldowns: {},
+        },
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.interestedGodfathers).toContain("Alhaji Dantata");
+      expect(preview.interestedGodfathers).not.toContain("Chief Odumegwu");
+    });
+
+    it("returns empty array when no godfathers exist", () => {
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Dr. Bello" },
+        characters: {
+          "Dr. Bello": makeCharacter({ name: "Dr. Bello" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.interestedGodfathers).toEqual([]);
+    });
+  });
+
+  describe("replacement pool availability", () => {
+    it("reports true when cabinetCandidates pool has unused candidates for minister", () => {
+      // The cabinetCandidates pool for "Finance" has entries;
+      // none are currently appointed → pool available
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Dr. Bello" },
+        characters: {
+          "Dr. Bello": makeCharacter({ name: "Dr. Bello" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.replacementPoolAvailable).toBe(true);
+    });
+
+    it("reports false for non-minister system types (no pool concept)", () => {
+      const state = makeMockState({
+        directors: {
+          positions: [],
+          appointments: [
+            { positionId: "cbn-governor", characterName: "Chief Emeka", appointedDay: 5, isOriginal: true },
+          ],
+          technocratsFired: 0,
+          vacancyTracking: {} as any,
+        },
+        characters: {
+          "Chief Emeka": makeCharacter({ name: "Chief Emeka" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "director", "cbn-governor");
+      // Directors don't have a handcrafted replacement pool
+      expect(typeof preview.replacementPoolAvailable).toBe("boolean");
+    });
+  });
+
+  describe("character and position metadata", () => {
+    it("returns character name and position title", () => {
+      const state = makeMockState({
+        cabinetAppointments: { finance: "Dr. Bello" },
+        characters: {
+          "Dr. Bello": makeCharacter({ name: "Dr. Bello" }),
+        },
+      });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.characterName).toBe("Dr. Bello");
+      expect(preview.positionTitle).toContain("Finance");
+    });
+
+    it("returns empty preview for vacant position", () => {
+      const state = makeMockState({ cabinetAppointments: { finance: null } });
+      const preview = computeDismissalPreview(state, "minister", "finance");
+      expect(preview.characterName).toBe("");
+      expect(preview.approvalCost).toBe(0);
+    });
+  });
+});

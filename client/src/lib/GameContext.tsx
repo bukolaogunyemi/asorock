@@ -89,6 +89,7 @@ import { seedDiplomatSystem } from "./diplomatEngine";
 import { seedMilitarySystem } from "./militaryEngine";
 import { seedTraditionalRulers, processStateVisit } from "./traditionalRulerEngine";
 import { seedReligiousLeaders, processInterfaithSummit } from "./religiousLeaderEngine";
+import { seedNPCLinks } from "./affinityRegistry";
 import {
   defaultInfrastructureState,
   defaultHealthState,
@@ -1220,6 +1221,9 @@ export function initializeGameState(config: CampaignConfig): GameState {
     religiousLeaders: relLeaderSeed.state,
     npcLinks: [],
   };
+
+  // Seed inter-NPC relationship links (depends on all systems being populated)
+  state = { ...state, npcLinks: seedNPCLinks(state) };
 
   state = syncStrategicState(state);
   state = { ...state, cabalMeeting: createDailyCabalMeeting(state) };

@@ -2808,6 +2808,9 @@ export function processTurn(state: GameState): GameState {
   if (lifecycleResult.consequences.length > 0) {
     next = processConsequences(next, lifecycleResult.consequences);
   }
+  if (lifecycleResult.updatedNPCLinks) {
+    next = { ...next, npcLinks: lifecycleResult.updatedNPCLinks };
+  }
 
   const hookProgress = processHookInvestigations(next);
   next = hookProgress.state;

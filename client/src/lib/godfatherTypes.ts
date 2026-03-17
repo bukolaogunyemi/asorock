@@ -30,6 +30,11 @@ export interface GodfatherStable {
   legislativeBloc: { house: number; senate: number };
   cabinetCandidates: string[];
   connections: GodfatherConnection[];
+  militaryInterests?: string[];
+  diplomaticInterests?: string[];
+  directorInterests?: string[];
+  traditionalRulerAllies?: string[];
+  religiousLeaderAllies?: string[];
 }
 
 export interface GodfatherContract {

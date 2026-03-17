@@ -36,6 +36,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Nasarawa", "Niger"],
       legislativeBloc: { house: 12, senate: 4 },
       cabinetCandidates: ["Works Minister nominee", "FCT Minister nominee"],
+      directorInterests: ["director-public-works", "director-housing-authority"],
+      traditionalRulerAllies: ["etsu-nupe"],
       connections: [
         {
           entityType: "business",
@@ -95,6 +97,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: [],
       legislativeBloc: { house: 5, senate: 1 },
       cabinetCandidates: ["Labour Minister nominee"],
+      directorInterests: ["director-industrial-relations", "director-pensions"],
+      traditionalRulerAllies: ["tor-tiv"],
       connections: [
         {
           entityType: "street",
@@ -154,6 +158,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Plateau"],
       legislativeBloc: { house: 4, senate: 2 },
       cabinetCandidates: ["Defence Minister nominee"],
+      militaryInterests: ["chief-defence-force", "chief-army-force"],
+      directorInterests: ["director-defence-industries", "director-state-security"],
+      traditionalRulerAllies: ["gbong-gwom-jos"],
       connections: [
         {
           entityType: "cabinet",
@@ -213,6 +220,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Kogi"],
       legislativeBloc: { house: 6, senate: 2 },
       cabinetCandidates: [],
+      traditionalRulerAllies: ["atta-igala"],
+      religiousLeaderAllies: ["pres-christian-society"],
       connections: [
         {
           entityType: "street",
@@ -276,6 +285,10 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Kano", "Jigawa"],
       legislativeBloc: { house: 15, senate: 5 },
       cabinetCandidates: ["Trade Minister nominee", "Industry Minister nominee"],
+      diplomaticInterests: ["amb-saudi", "amb-uae"],
+      directorInterests: ["director-customs-services", "director-standards-organisation"],
+      traditionalRulerAllies: ["emir-kano"],
+      religiousLeaderAllies: ["pres-muslim-society"],
       connections: [
         {
           entityType: "business",
@@ -335,6 +348,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Kaduna"],
       legislativeBloc: { house: 8, senate: 3 },
       cabinetCandidates: [],
+      diplomaticInterests: ["amb-saudi"],
+      traditionalRulerAllies: ["sultan-sokoto", "emir-zazzau"],
+      religiousLeaderAllies: ["pres-muslim-society"],
       connections: [
         {
           entityType: "street",
@@ -394,6 +410,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Katsina", "Zamfara"],
       legislativeBloc: { house: 10, senate: 4 },
       cabinetCandidates: ["NSA nominee", "Defence Minister nominee"],
+      militaryInterests: ["chief-defence-force", "chief-army-force", "chief-air-force"],
+      directorInterests: ["director-defence-industries", "director-state-security", "director-police-commission"],
+      traditionalRulerAllies: ["sultan-sokoto", "emir-katsina"],
       connections: [
         {
           entityType: "cabinet",
@@ -453,6 +472,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Sokoto"],
       legislativeBloc: { house: 8, senate: 3 },
       cabinetCandidates: ["Party Affairs Minister nominee"],
+      directorInterests: ["director-revenue-service", "director-electoral-commission"],
+      traditionalRulerAllies: ["sultan-sokoto"],
       connections: [
         {
           entityType: "legislator-bloc",
@@ -516,6 +537,11 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Borno"],
       legislativeBloc: { house: 7, senate: 2 },
       cabinetCandidates: ["Humanitarian Affairs Minister nominee"],
+      militaryInterests: ["chief-army-force"],
+      diplomaticInterests: ["amb-saudi", "amb-uae"],
+      directorInterests: ["director-customs-services"],
+      traditionalRulerAllies: ["shehu-borno"],
+      religiousLeaderAllies: ["pres-muslim-society"],
       connections: [
         {
           entityType: "business",
@@ -575,6 +601,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Adamawa", "Gombe"],
       legislativeBloc: { house: 9, senate: 3 },
       cabinetCandidates: ["Water Resources Minister nominee"],
+      militaryInterests: ["chief-police-force"],
+      traditionalRulerAllies: ["emir-adamawa", "shehu-borno"],
+      diplomaticInterests: ["amb-cameroon"],
       connections: [
         {
           entityType: "governor",
@@ -634,6 +663,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Yobe"],
       legislativeBloc: { house: 4, senate: 1 },
       cabinetCandidates: [],
+      diplomaticInterests: ["amb-saudi"],
+      traditionalRulerAllies: ["shehu-borno"],
+      religiousLeaderAllies: ["pres-muslim-society"],
       connections: [
         {
           entityType: "street",
@@ -693,6 +725,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Bauchi"],
       legislativeBloc: { house: 6, senate: 2 },
       cabinetCandidates: ["Women Affairs Minister nominee"],
+      directorInterests: ["director-youth-employment", "director-social-investment"],
+      traditionalRulerAllies: ["emir-bauchi"],
       connections: [
         {
           entityType: "street",
@@ -756,6 +790,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Oyo"],
       legislativeBloc: { house: 7, senate: 2 },
       cabinetCandidates: ["Information Minister nominee"],
+      directorInterests: ["director-broadcasting-commission", "director-communications-commission"],
+      diplomaticInterests: ["amb-usa", "amb-uk"],
+      traditionalRulerAllies: ["alaafin-oyo"],
       connections: [
         {
           entityType: "media",
@@ -815,6 +852,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Lagos"],
       legislativeBloc: { house: 10, senate: 3 },
       cabinetCandidates: ["Petroleum Minister nominee"],
+      diplomaticInterests: ["amb-usa", "amb-uk"],
+      directorInterests: ["director-petroleum-corporation", "director-ports-authority"],
+      traditionalRulerAllies: ["oba-lagos"],
       connections: [
         {
           entityType: "business",
@@ -874,6 +914,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Ogun", "Osun"],
       legislativeBloc: { house: 12, senate: 4 },
       cabinetCandidates: ["Finance Minister nominee", "SGF nominee"],
+      militaryInterests: ["chief-police-force"],
+      traditionalRulerAllies: ["ooni-ife", "alake-abeokuta", "oba-lagos"],
+      directorInterests: ["governor-central-bank"],
       connections: [
         {
           entityType: "governor",
@@ -933,6 +976,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Ekiti"],
       legislativeBloc: { house: 5, senate: 2 },
       cabinetCandidates: ["Youth Minister nominee"],
+      directorInterests: ["director-youth-service-corps", "director-social-investment"],
+      traditionalRulerAllies: ["ewi-ado-ekiti"],
+      religiousLeaderAllies: ["pres-christian-society"],
       connections: [
         {
           entityType: "street",
@@ -996,6 +1042,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Enugu", "Ebonyi"],
       legislativeBloc: { house: 11, senate: 4 },
       cabinetCandidates: ["Works Minister nominee", "Science Minister nominee"],
+      directorInterests: ["director-revenue-service", "director-electoral-commission"],
+      traditionalRulerAllies: ["obi-onitsha", "igwe-enugu"],
       connections: [
         {
           entityType: "governor",
@@ -1055,6 +1103,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Anambra"],
       legislativeBloc: { house: 6, senate: 2 },
       cabinetCandidates: ["Trade Minister nominee"],
+      diplomaticInterests: ["amb-china", "amb-india"],
+      directorInterests: ["director-standards-organisation", "director-export-promotion"],
+      traditionalRulerAllies: ["obi-onitsha", "igwe-nnewi"],
       connections: [
         {
           entityType: "business",
@@ -1114,6 +1165,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Imo"],
       legislativeBloc: { house: 8, senate: 3 },
       cabinetCandidates: [],
+      militaryInterests: ["chief-police-force"],
+      traditionalRulerAllies: ["obi-onitsha", "igwe-orlu"],
       connections: [
         {
           entityType: "street",
@@ -1173,6 +1226,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: [],
       legislativeBloc: { house: 3, senate: 1 },
       cabinetCandidates: ["Communication Minister nominee"],
+      directorInterests: ["director-communications-commission", "director-it-development"],
+      diplomaticInterests: ["amb-usa", "amb-uk"],
       connections: [
         {
           entityType: "media",
@@ -1236,6 +1291,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Rivers"],
       legislativeBloc: { house: 8, senate: 3 },
       cabinetCandidates: ["Niger Delta Minister nominee"],
+      militaryInterests: ["chief-police-force", "chief-naval-force"],
+      directorInterests: ["director-petroleum-corporation"],
+      traditionalRulerAllies: ["amanyanabo-bonny", "pere-gbaramatu"],
       connections: [
         {
           entityType: "street",
@@ -1295,6 +1353,8 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Edo"],
       legislativeBloc: { house: 4, senate: 1 },
       cabinetCandidates: ["Environment Minister nominee"],
+      directorInterests: ["director-environmental-standards", "director-petroleum-corporation"],
+      traditionalRulerAllies: ["oba-benin"],
       connections: [
         {
           entityType: "street",
@@ -1354,6 +1414,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: ["Delta"],
       legislativeBloc: { house: 4, senate: 1 },
       cabinetCandidates: ["Information Minister nominee"],
+      directorInterests: ["director-broadcasting-commission"],
+      diplomaticInterests: ["amb-south-africa", "amb-ghana"],
+      traditionalRulerAllies: ["olu-warri"],
       connections: [
         {
           entityType: "media",
@@ -1417,6 +1480,9 @@ export const GODFATHER_PROFILES: Godfather[] = [
       governors: [],
       legislativeBloc: { house: 3, senate: 1 },
       cabinetCandidates: ["Defence Minister nominee"],
+      militaryInterests: ["chief-army-force", "chief-defence-force"],
+      directorInterests: ["director-defence-industries"],
+      traditionalRulerAllies: ["emir-bauchi"],
       connections: [
         {
           entityType: "cabinet",

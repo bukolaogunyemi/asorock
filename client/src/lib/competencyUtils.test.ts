@@ -40,7 +40,7 @@ describe("migrateHandcraftedCompetencies", () => {
     expect(result.personal.leadership).toBe(80);
     expect(result.personal.loyalty).toBe(70);
     expect(result.personal.ambition).toBe(50);
-    expect(result.professional.media).toBeGreaterThan(0);
+    expect(result.professional.communications).toBeGreaterThan(0);
     expect(result.personal.integrity).toBeGreaterThan(0);
   });
 });

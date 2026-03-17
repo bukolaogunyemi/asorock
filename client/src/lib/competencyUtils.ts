@@ -13,10 +13,12 @@ const PORTFOLIO_COMPETENCY_MAP: Record<string, keyof ProfessionalCompetencies> =
   security: "security", intelligence: "security", army: "security", navy: "security",
   justice: "legal", attorney: "legal", law: "legal", court: "legal", judicial: "legal",
   foreign: "diplomacy", ambassador: "diplomacy", diplomatic: "diplomacy", ecowas: "diplomacy",
-  information: "media", communication: "media", media: "media", press: "media", broadcast: "media",
+  information: "communications", communication: "communications", media: "communications", press: "communications", broadcast: "communications",
   technology: "technology", digital: "technology", ict: "technology", cyber: "technology", science: "technology",
   admin: "administration", civil: "administration", establishment: "administration",
   secretary: "administration", governance: "administration", affairs: "administration",
+  politics: "politics", political: "politics", party: "politics", coalition: "politics",
+  management: "management", operations: "management", execution: "management", delivery: "management",
   education: "administration", health: "administration", works: "administration",
   transport: "administration", agriculture: "administration", power: "administration",
   housing: "administration", environment: "administration", labour: "administration",
@@ -39,7 +41,7 @@ const FACTION_TENDENCIES: Record<string, Partial<Record<keyof ProfessionalCompet
   "South-East Bloc": { economics: [5, 15], technology: [5, 10] },
   "Military Circle": { security: [10, 20], resilience: [10, 15] },
   "Technocrats": { technology: [5, 15], economics: [5, 10] },
-  "Youth Movement": { media: [5, 15], technology: [5, 15] },
+  "Youth Movement": { communications: [5, 15], technology: [5, 15] },
 };
 
 export function migrateOldCompetencies(old: {
@@ -55,10 +57,12 @@ export function migrateOldCompetencies(old: {
     economics: randRange(rng, 20, 50),
     diplomacy: randRange(rng, 20, 50),
     security: randRange(rng, 20, 50),
-    media: randRange(rng, 20, 50),
+    communications: randRange(rng, 20, 50),
     legal: randRange(rng, 20, 50),
     administration: randRange(rng, 20, 50),
+    management: randRange(rng, 20, 50),
     technology: randRange(rng, 20, 50),
+    politics: randRange(rng, 20, 50),
   };
   professional[primary] = Math.max(professional[primary], old.competence);
 
@@ -70,6 +74,7 @@ export function migrateOldCompetencies(old: {
     integrity: randRange(rng, 25, 65),
     resilience: randRange(rng, 25, 65),
     intrigue: randRange(rng, 25, 65),
+    discretion: randRange(rng, 25, 65),
   };
 
   return { professional, personal };
@@ -86,10 +91,12 @@ export function migrateHandcraftedCompetencies(
     economics: old.economics * 20,
     diplomacy: old.diplomacy * 20,
     security: old.military * 20,
-    media: randRange(rng, 20, 50),
+    communications: randRange(rng, 20, 50),
     legal: randRange(rng, 20, 50),
     administration: randRange(rng, 20, 50),
+    management: randRange(rng, 20, 50),
     technology: randRange(rng, 20, 50),
+    politics: randRange(rng, 20, 50),
   };
 
   const personal: PersonalCompetencies = {
@@ -100,6 +107,7 @@ export function migrateHandcraftedCompetencies(
     integrity: randRange(rng, 25, 65),
     resilience: randRange(rng, 25, 65),
     intrigue: randRange(rng, 25, 65),
+    discretion: randRange(rng, 25, 65),
   };
 
   return { professional, personal };
@@ -118,10 +126,12 @@ export function generateProceduralCompetencies(opts: {
     economics: randRange(rng, 15, 50),
     diplomacy: randRange(rng, 15, 50),
     security: randRange(rng, 15, 50),
-    media: randRange(rng, 15, 50),
+    communications: randRange(rng, 15, 50),
     legal: randRange(rng, 15, 50),
     administration: randRange(rng, 15, 50),
+    management: randRange(rng, 15, 50),
     technology: randRange(rng, 15, 50),
+    politics: randRange(rng, 15, 50),
   };
   professional[primary] = randRange(rng, 60, 85);
   if (opts.age > 50) professional.administration = Math.min(100, professional.administration + randRange(rng, 5, 15));
@@ -134,6 +144,7 @@ export function generateProceduralCompetencies(opts: {
     integrity: randRange(rng, 25, 65),
     resilience: randRange(rng, 25, 65),
     intrigue: randRange(rng, 15, 55),
+    discretion: randRange(rng, 20, 60),
   };
   if (opts.age > 50) personal.leadership = Math.min(100, personal.leadership + randRange(rng, 3, 10));
 
@@ -172,10 +183,12 @@ export function migratePACompetencies(
     economics: randRange(rng, 20, 45),
     diplomacy: old.networks * 20,
     security: randRange(rng, 20, 45),
-    media: old.communication * 20,
+    communications: old.communication * 20,
     legal: randRange(rng, 20, 45),
     administration: old.organisation * 20,
+    management: randRange(rng, 20, 45),
     technology: randRange(rng, 20, 45),
+    politics: randRange(rng, 20, 45),
   };
 
   const personal: PersonalCompetencies = {
@@ -186,6 +199,7 @@ export function migratePACompetencies(
     integrity: randRange(rng, 30, 65),
     resilience: randRange(rng, 30, 65),
     intrigue: old.discretion * 20,
+    discretion: randRange(rng, 30, 65),
   };
 
   return { professional, personal };
@@ -202,10 +216,12 @@ export function migrateKeyCharCompetencies(
     economics: randRange(rng, 20, 50),
     diplomacy: old.networks * 20,
     security: randRange(rng, 20, 50),
-    media: randRange(rng, 20, 50),
+    communications: randRange(rng, 20, 50),
     legal: randRange(rng, 20, 50),
     administration: old.administration * 20,
+    management: randRange(rng, 20, 50),
     technology: randRange(rng, 20, 50),
+    politics: old.political * 20,
   };
 
   const personal: PersonalCompetencies = {
@@ -216,6 +232,7 @@ export function migrateKeyCharCompetencies(
     integrity: randRange(rng, 25, 65),
     resilience: randRange(rng, 25, 65),
     intrigue: old.discretion * 20,
+    discretion: randRange(rng, 25, 65),
   };
 
   return { professional, personal };
@@ -224,7 +241,7 @@ export function migrateKeyCharCompetencies(
 export function averageProfessionalCompetence(competencies: CharacterCompetencies): number {
   const prof = competencies.professional;
   return Math.round(
-    (prof.economics + prof.diplomacy + prof.security + prof.media + prof.legal + prof.administration + prof.technology) / 7,
+    (prof.economics + prof.diplomacy + prof.security + prof.communications + prof.legal + prof.administration + prof.management + prof.technology + prof.politics) / 9,
   );
 }
 

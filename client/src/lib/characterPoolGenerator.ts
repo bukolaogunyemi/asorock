@@ -236,10 +236,12 @@ export function generateCharacterPool(config: PoolGenerationConfig): GeneratedCh
       economics: randRange(rng, 30, 90),
       diplomacy: randRange(rng, 30, 90),
       security: randRange(rng, 30, 90),
-      media: randRange(rng, 30, 85),
+      communications: randRange(rng, 30, 85),
       legal: randRange(rng, 30, 85),
       administration: randRange(rng, 40, 90),
+      management: randRange(rng, 30, 85),
       technology: randRange(rng, 25, 80),
+      politics: randRange(rng, 25, 80),
     };
     // Bias one field higher
     if (biasField && biasField in professional) {
@@ -254,6 +256,7 @@ export function generateCharacterPool(config: PoolGenerationConfig): GeneratedCh
       integrity: randRange(rng, 25, 90),
       resilience: randRange(rng, 30, 85),
       intrigue: randRange(rng, 15, 80),
+      discretion: randRange(rng, 20, 80),
     };
 
     const competencies: CharacterCompetencies = { professional, personal };

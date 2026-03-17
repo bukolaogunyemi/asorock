@@ -76,7 +76,8 @@ describe("getTopN", () => {
   it("returns top 3 keys by value from professional competencies", () => {
     const comp = {
       economics: 90, diplomacy: 30, security: 70,
-      media: 50, legal: 60, administration: 40, technology: 80,
+      communications: 50, legal: 60, administration: 40, technology: 80,
+      management: 55, politics: 60,
     };
     const top3 = getTopN(comp, 3);
     expect(top3.map(t => t.key)).toEqual(["economics", "technology", "security"]);

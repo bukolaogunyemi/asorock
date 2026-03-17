@@ -17,13 +17,13 @@ function makeCompetencies(
 ): CharacterCompetencies {
   return {
     professional: {
-      economics: 60, diplomacy: 60, security: 60, media: 60,
-      legal: 60, administration: 60, technology: 60,
+      economics: 60, diplomacy: 60, security: 60, communications: 60,
+      legal: 60, administration: 60, technology: 60, management: 60, politics: 60,
       ...overrides.professional,
     },
     personal: {
       loyalty: 60, charisma: 60, leadership: 60, ambition: 60,
-      integrity: 60, resilience: 60, intrigue: 60,
+      integrity: 60, resilience: 60, intrigue: 60, discretion: 60,
       ...overrides.personal,
     },
   };

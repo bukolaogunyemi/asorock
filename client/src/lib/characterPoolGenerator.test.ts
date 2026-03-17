@@ -27,10 +27,12 @@ describe("generateCharacterPool — required fields", () => {
       expect(typeof prof.economics).toBe("number");
       expect(typeof prof.diplomacy).toBe("number");
       expect(typeof prof.security).toBe("number");
-      expect(typeof prof.media).toBe("number");
+      expect(typeof prof.communications).toBe("number");
       expect(typeof prof.legal).toBe("number");
       expect(typeof prof.administration).toBe("number");
+      expect(typeof prof.management).toBe("number");
       expect(typeof prof.technology).toBe("number");
+      expect(typeof prof.politics).toBe("number");
 
       // Competencies — personal
       const pers = char.competencies.personal;
@@ -41,6 +43,7 @@ describe("generateCharacterPool — required fields", () => {
       expect(typeof pers.integrity).toBe("number");
       expect(typeof pers.resilience).toBe("number");
       expect(typeof pers.intrigue).toBe("number");
+      expect(typeof pers.discretion).toBe("number");
 
       // Career history
       expect(Array.isArray(char.careerHistory), "careerHistory is array").toBe(true);

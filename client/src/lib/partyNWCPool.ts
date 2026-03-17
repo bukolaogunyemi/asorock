@@ -133,7 +133,7 @@ function assignQualifiedPositions(
   if (prof.diplomacy > 60) positions.push("vice-chairman");
   if (prof.administration > 60) positions.push("national-secretary");
   if (prof.economics > 65) positions.push("national-treasurer");
-  if (prof.media > 60) positions.push("publicity-secretary");
+  if (prof.communications > 60) positions.push("publicity-secretary");
   if (pers.charisma > 65) positions.push("organising-secretary");
   if (prof.legal > 65) positions.push("legal-adviser");
   if (char.age < 50 || char.gender === "Female")

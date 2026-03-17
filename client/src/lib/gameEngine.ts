@@ -11,6 +11,12 @@ import { processUnionPressure } from "./unionEngine";
 import { processGovernors } from "./governorEngine";
 import { processLegislatureLeadership } from "./legislativeElections";
 import { processJudiciary } from "./judiciaryEngine";
+import { processElectionCycle } from "./electionCycle";
+import { processDiplomats } from "./diplomatEngine";
+import { processMilitary } from "./militaryEngine";
+import { processTraditionalRulers } from "./traditionalRulerEngine";
+import { processReligiousLeaders } from "./religiousLeaderEngine";
+import { processLifecycle, ageCharacters } from "./lifecycleEngine";
 import { seededRandom } from "./seededRandom";
 import type { FailureState, VictoryPath } from "./victorySystem";
 import type {
@@ -47,6 +53,7 @@ import { calculateComplianceScore, calculateZoneBalances, getConsequences } from
 import { processIntelligenceTurn } from "./intelligenceEngine";
 import { processEconomicTurn } from "./economicEngine";
 import { processSectorTurns } from "./sectorTurnProcessor";
+import { computeMinisterialEffectiveness, generateMinisterEvents } from "./cabinetSystem";
 import { isFECMeetingDay, generateFECMemos } from "./fecMeetings";
 
 export type {
@@ -2587,6 +2594,15 @@ export function processTurn(state: GameState): GameState {
   // Apply sector approval modifier
   next.approval = clamp(next.approval + sectorResult.approvalModifier, 0, 100);
 
+  // Apply security cluster ministerial effectiveness to stability drift
+  const ministerEffectiveness = computeMinisterialEffectiveness(next);
+  const securityMultiplier = ministerEffectiveness["stability"];
+  if (securityMultiplier !== undefined) {
+    // Band 1.15 → +0.5, 1.0 → 0, 0.85 → −0.5, 0.70 → −0.5
+    const stabilityDrift = securityMultiplier >= 1.15 ? 0.5 : securityMultiplier >= 1.0 ? 0 : -0.5;
+    next.stability = Math.round(clamp(next.stability + stabilityDrift, 0, 100));
+  }
+
   // Process director system — competence modifiers, departures, vacancies
   const directorResult = processDirectors(next, seededRandom(next.day * 7919));
   next = {
@@ -2626,6 +2642,19 @@ export function processTurn(state: GameState): GameState {
     next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
   }
   summaryItems.push(`Director system processed (${Object.keys(directorResult.sectorModifiers).length} sectors influenced)`);
+
+  // Process minister initiative, sabotage, and clash events
+  const ministerEventResult = generateMinisterEvents(next, seededRandom(next.day * 17011));
+  if (ministerEventResult.newEvents.length > 0) {
+    next = {
+      ...next,
+      activeEvents: [...next.activeEvents, ...ministerEventResult.newEvents],
+    };
+    summaryItems.push(`Minister events generated (${ministerEventResult.newEvents.length} events)`);
+  }
+  if (ministerEventResult.consequences.length > 0) {
+    next = processConsequences(next, ministerEventResult.consequences);
+  }
 
   // Process union leader system
   const unionResult = processUnionPressure(next, seededRandom(next.day * 8731));
@@ -2672,6 +2701,77 @@ export function processTurn(state: GameState): GameState {
   };
   if (judiciaryResult.consequences.length > 0) {
     next = processConsequences(next, judiciaryResult.consequences);
+  }
+
+  // Process diplomat/ambassador system — rotations, diplomatic effects, vacancy escalation
+  const diplomatResult = processDiplomats(next, seededRandom(next.day * 12007));
+  next = {
+    ...next,
+    diplomats: diplomatResult.updatedDiplomats,
+    activeEvents: [...next.activeEvents, ...diplomatResult.newEvents],
+    inbox: [...(next.inbox ?? []), ...(diplomatResult.inboxMessages ?? [])],
+    internationalReputation: clamp(
+      next.internationalReputation + diplomatResult.internationalModifier,
+      0,
+      100,
+    ),
+  };
+  if (diplomatResult.consequences.length > 0) {
+    next = processConsequences(next, diplomatResult.consequences);
+  }
+  summaryItems.push(`Diplomat system processed (intl: ${diplomatResult.internationalModifier > 0 ? "+" : ""}${diplomatResult.internationalModifier.toFixed(2)}, trade: ${diplomatResult.tradeModifier > 0 ? "+" : ""}${diplomatResult.tradeModifier.toFixed(2)})`);
+
+  // Process military leadership system — security effectiveness, coup risk
+  const militaryResult = processMilitary(next, seededRandom(next.day * 13001));
+  next = {
+    ...next,
+    military: militaryResult.updatedMilitary,
+    activeEvents: [...next.activeEvents, ...militaryResult.newEvents],
+    inbox: [...(next.inbox ?? []), ...(militaryResult.inboxMessages ?? [])],
+  };
+  if (militaryResult.consequences.length > 0) {
+    next = processConsequences(next, militaryResult.consequences);
+  }
+  summaryItems.push(`Military system processed (security: ${militaryResult.securityModifier > 0 ? "+" : ""}${militaryResult.securityModifier.toFixed(2)}, coup risk: ${militaryResult.coupRiskLevel}%)`);
+
+  // Process traditional rulers — auto-filled, player interacts but doesn't appoint
+  const tradRulerResult = processTraditionalRulers(next, seededRandom(next.day * 14003));
+  next = {
+    ...next,
+    traditionalRulers: tradRulerResult.updatedTraditionalRulers,
+    activeEvents: [...next.activeEvents, ...tradRulerResult.newEvents],
+    inbox: [...(next.inbox ?? []), ...(tradRulerResult.inboxMessages ?? [])],
+  };
+  if (tradRulerResult.consequences.length > 0) {
+    next = processConsequences(next, tradRulerResult.consequences);
+  }
+
+  // Process religious leaders — auto-filled, player interacts but doesn't appoint
+  const relLeaderResult = processReligiousLeaders(next, seededRandom(next.day * 15007));
+  next = {
+    ...next,
+    religiousLeaders: relLeaderResult.updatedReligiousLeaders,
+    activeEvents: [...next.activeEvents, ...relLeaderResult.newEvents],
+    inbox: [...(next.inbox ?? []), ...(relLeaderResult.inboxMessages ?? [])],
+  };
+  if (relLeaderResult.consequences.length > 0) {
+    next = processConsequences(next, relLeaderResult.consequences);
+  }
+
+  // Process lifecycle — aging, retirement, death, career mobility
+  const lifecycleResult = processLifecycle(next, seededRandom(next.day * 16001));
+  if (lifecycleResult.agedCharacters.length > 0) {
+    next = { ...next, characters: ageCharacters(next.characters) };
+  }
+  if (lifecycleResult.exits.length > 0 || lifecycleResult.newEvents.length > 0) {
+    next = {
+      ...next,
+      activeEvents: [...next.activeEvents, ...lifecycleResult.newEvents],
+      inbox: [...(next.inbox ?? []), ...(lifecycleResult.inboxMessages ?? [])],
+    };
+  }
+  if (lifecycleResult.consequences.length > 0) {
+    next = processConsequences(next, lifecycleResult.consequences);
   }
 
   const hookProgress = processHookInvestigations(next);
@@ -2721,6 +2821,13 @@ export function processTurn(state: GameState): GameState {
       };
       summaryItems.push(`FEC meeting convened — ${fecMemos.length} memo(s) on the agenda`);
     }
+  }
+
+  // Process election cycle (governor elections + post-election reset)
+  const electionCycleResult = processElectionCycle(next, seededRandom(next.day * 7919));
+  next = electionCycleResult.updatedState;
+  if (electionCycleResult.isElectionDay) {
+    summaryItems.push("General elections concluded — new governors elected across 36 states");
   }
 
   const election = resolveElectionCycle(next);

@@ -59,12 +59,12 @@ import type {
   Relationship,
 } from "./gameTypes";
 import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidates } from "./gameData";
-import { APPOINTMENT_POSITIONS, AGENCY_HEAD_POSITIONS } from "./handcraftedCharacters";
+import { APPOINTMENT_POSITIONS } from "./handcraftedCharacters";
 import { migrateOldCompetencies, deriveBetrayalThreshold, averageProfessionalCompetence } from "./competencyUtils";
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
 import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis, proposeExecutiveBill, lobbyCommittee, applyInfluenceLevers } from "./legislativeEngine";
-import { defaultPatronageState } from "./godfatherEngine";
+import { defaultPatronageState, seededPatronageState } from "./godfatherEngine";
 import { defaultFederalCharacterState, calculateZoneBalances, calculateComplianceScore } from "./federalCharacter";
 import { getZoneForState } from "./zones";
 import { seededRandom } from "./seededRandom";
@@ -81,9 +81,14 @@ import { seedLegislativeCalendar } from "./legislativeBills";
 import { defaultEconomicState } from "./economicEngine";
 import { tickReforms } from "./reformTracker";
 import { seedUnionLeaders } from "./unionEngine";
+import { processDismissal, type DismissableSystem } from "./dismissalEngine";
 import { seedGovernorSystem } from "./governorEngine";
 import { seedLegislature } from "./legislativeElections";
 import { seatJudiciary } from "./judiciaryEngine";
+import { seedDiplomatSystem } from "./diplomatEngine";
+import { seedMilitarySystem } from "./militaryEngine";
+import { seedTraditionalRulers } from "./traditionalRulerEngine";
+import { seedReligiousLeaders } from "./religiousLeaderEngine";
 import {
   defaultInfrastructureState,
   defaultHealthState,
@@ -451,17 +456,6 @@ const seedInitialHooks = (charactersMap: Record<string, CharacterState>): Record
   return updated;
 };
 
-/** Seed default agency head appointments from NPC characters already in the character map */
-const seedAgencyHeadAppointments = (charMap: Record<string, CharacterState>): AppointmentState[] => {
-  const appointments: AppointmentState[] = [];
-  for (const office of AGENCY_HEAD_POSITIONS) {
-    const char = Object.values(charMap).find(c => c.portfolio === office);
-    if (char) {
-      appointments.push({ office, appointee: char.name, confirmed: true });
-    }
-  }
-  return appointments;
-};
 
 function directorCandidateToCharacter(candidate: DirectorCandidate, position: DirectorPosition): CharacterState {
   return {
@@ -830,6 +824,10 @@ const defaultGameState: GameState = {
     forumChairElectedDay: null,
     nextElectionDay: 1460,
   },
+  diplomats: {
+    posts: [],
+    appointments: [],
+  },
 };
 
 export const hydrateLoadedGameState = (state: GameState): GameState => {
@@ -1077,6 +1075,22 @@ export function initializeGameState(config: CampaignConfig): GameState {
   const judiciarySeed = seatJudiciary(eraStart.day * 11003);
   Object.assign(charMap, judiciarySeed.characters);
 
+  // Seed diplomat/ambassador system — populate all 80 posts (40 bilateral + 10 institution + 30 minor)
+  const diplomatSeed = seedDiplomatSystem(eraStart.day * 12007);
+  Object.assign(charMap, diplomatSeed.characters);
+
+  // Seed military leadership — 6 positions auto-filled at game start
+  const militarySeed = seedMilitarySystem(eraStart.day * 13001);
+  Object.assign(charMap, militarySeed.characters);
+
+  // Seed traditional rulers — 50 positions auto-filled, player interacts but doesn't appoint
+  const tradRulerSeed = seedTraditionalRulers(eraStart.day * 14003);
+  Object.assign(charMap, tradRulerSeed.characters);
+
+  // Seed religious leaders — 2 positions auto-filled, player interacts but doesn't appoint
+  const relLeaderSeed = seedReligiousLeaders(eraStart.day * 15007);
+  Object.assign(charMap, relLeaderSeed.characters);
+
   let state: GameState = {
     day: eraStart.day,
     date: eraStart.date,
@@ -1105,11 +1119,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
     constitutionalOfficers,
     personalAssistant: config.personalAssistant,
     campaignPromises: createCampaignPromises(config.promises),
-    appointments: [
-      ...createAppointments(config.appointments),
-      // Seed default agency heads from key NPC characters
-      ...seedAgencyHeadAppointments(charMap),
-    ],
+    appointments: createAppointments(config.appointments),
     term: createTermState(config.era),
     health: 85,
     healthCrisis: createHealthCrisisState(),
@@ -1151,7 +1161,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
       legislativeCalendar: seedLegislativeCalendar(),
       leadership: legislatureSeed.leadership,
     },
-    patronage: defaultPatronageState(),
+    patronage: seededPatronageState(eraStart.day * 16001),
     federalCharacter: defaultFederalCharacterState(),
     intelligence: {
       dniId: null,
@@ -1204,6 +1214,10 @@ export function initializeGameState(config: CampaignConfig): GameState {
     judiciary: judiciarySeed.state,
     unionLeaders: unionSeed.state,
     governorSystem: governorSeed.state,
+    diplomats: diplomatSeed.state,
+    military: militarySeed.state,
+    traditionalRulers: tradRulerSeed.state,
+    religiousLeaders: relLeaderSeed.state,
   };
 
   state = syncStrategicState(state);
@@ -1257,6 +1271,7 @@ export type GameAction =
   | { type: "REVIEW_MINISTER"; name: string; action: "commend" | "warn" | "probation" }
   | { type: "REASSIGN_MINISTER"; name: string; newPortfolio: string }
   | { type: "DISMISS_MINISTER"; name: string }
+  | { type: "DISMISS_OFFICIAL"; systemType: DismissableSystem; positionId: string; reason?: string }
   | { type: "APPLY_RETREAT"; priorities: string[] }
   | { type: "SUBMIT_BUDGET"; allocation: BudgetAllocation };
 
@@ -1571,29 +1586,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       });
     }
     case "DISMISS_MINISTER": {
-      const { name } = action;
-      const portfolio = Object.entries(state.cabinetAppointments).find(([, n]) => n === name)?.[0];
+      const portfolio = Object.entries(state.cabinetAppointments).find(([, n]) => n === action.name)?.[0];
       if (!portfolio) return state;
-      const updatedAppts = { ...state.cabinetAppointments, [portfolio]: null };
-      const char = state.characters[name];
-      const faction = char?.faction;
-      const updatedChars = { ...state.characters };
-      if (faction) {
-        for (const [cName, cState] of Object.entries(updatedChars)) {
-          if (cState.faction === faction && cName !== name) {
-            updatedChars[cName] = { ...cState, loyalty: Math.max(0, (cState.loyalty ?? 50) - 5) };
-          }
-        }
-      }
-      const newStatuses = { ...state.ministerStatuses };
-      delete newStatuses[name];
-      return withDerivedState({
+      return gameReducer(state, { type: "DISMISS_OFFICIAL", systemType: "minister", positionId: portfolio });
+    }
+    case "DISMISS_OFFICIAL": {
+      const dismissalResult = processDismissal(state, action.systemType, action.positionId, action.reason);
+      const merged = {
         ...state,
-        cabinetAppointments: updatedAppts,
-        characters: updatedChars,
-        ministerStatuses: newStatuses,
-        approval: Math.max(0, state.approval - 2),
-      });
+        ...dismissalResult.updatedState,
+        activeEvents: [...state.activeEvents, ...dismissalResult.events],
+        pendingConsequences: [...state.pendingConsequences, ...dismissalResult.consequences],
+        inboxMessages: [...state.inboxMessages, ...dismissalResult.inboxMessages],
+      };
+      return withDerivedState(merged);
     }
     case "APPLY_RETREAT": {
       const next = { ...state };
@@ -1658,6 +1664,7 @@ interface GameContextValue {
   reviewMinister: (name: string, action: "commend" | "warn" | "probation") => void;
   reassignMinister: (name: string, newPortfolio: string) => void;
   dismissMinister: (name: string) => void;
+  dismissOfficial: (systemType: DismissableSystem, positionId: string, reason?: string) => void;
   applyRetreat: (priorities: string[]) => void;
   submitBudget: (allocation: BudgetAllocation) => void;
 }
@@ -1714,6 +1721,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     reviewMinister: (name, action) => dispatch({ type: "REVIEW_MINISTER", name, action }),
     reassignMinister: (name, newPortfolio) => dispatch({ type: "REASSIGN_MINISTER", name, newPortfolio }),
     dismissMinister: (name) => dispatch({ type: "DISMISS_MINISTER", name }),
+    dismissOfficial: (systemType, positionId, reason) => dispatch({ type: "DISMISS_OFFICIAL", systemType, positionId, reason }),
     applyRetreat: (priorities) => dispatch({ type: "APPLY_RETREAT", priorities }),
     submitBudget: (allocation) => dispatch({ type: "SUBMIT_BUDGET", allocation }),
   };

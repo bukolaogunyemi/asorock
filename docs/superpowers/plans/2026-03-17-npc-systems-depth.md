@@ -690,7 +690,7 @@ git add client/src/lib/traditionalRulerEngine.ts client/src/lib/traditionalRuler
 git commit -m "feat: traditional ruler state visits and public statement cycle"
 ```
 
-### Task 11: Religious Leader — Festival Events and Interfaith Summit
+### Task 12: Religious Leader — Festival Events and Interfaith Summit
 
 **Files:**
 - Modify: `client/src/lib/religiousLeaderEngine.ts`
@@ -747,7 +747,7 @@ git add client/src/lib/religiousLeaderEngine.ts client/src/lib/religiousLeaderEn
 git commit -m "feat: religious leader festivals and interfaith summit"
 ```
 
-### Task 12: Religious Leader — Policy Reaction System
+### Task 13: Religious Leader — Policy Reaction System
 
 **Files:**
 - Modify: `client/src/lib/religiousLeaderEngine.ts`

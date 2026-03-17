@@ -33,8 +33,9 @@ previousOffices?: string[];
 // Used to populate careerHistory at seed time
 
 healthStatus?: "healthy" | "declining" | "critical";
-// Default: "healthy". Updated by lifecycle engine health events.
-// Displayed on character profile. Affects event generation for aging characters.
+// Default: undefined (treated as "healthy"). Updated by lifecycle engine health events.
+// Displayed on character profile. No lifecycle engine changes in this scope — field
+// defaults to undefined until lifecycle integration is implemented separately.
 
 foreignConnections?: string[];
 // Values: freeform, e.g. ["UK business interests", "Saudi diplomatic ties", "US-educated"]
@@ -105,17 +106,41 @@ Changes:
    - `politics` = average of (`administration` + `diplomacy`) / 2 ± 10 random variance
    - `management` = average of (`administration` + `leadership`) / 2 ± 10 random variance
    - `discretion` = average of (`integrity` + `resilience`) / 2 ± 10 random variance
-4. Rename `media` → `communications` in all pool files (find-and-replace)
-5. For procedurally generated characters: `characterPoolGenerator.ts` already generates all professional/personal fields — add the 3 new ones to its generation logic
-6. Update all tests that reference `media` to use `communications`
-7. Update all engine functions that read `media` competency (e.g. `computeMinisterialEffectiveness`) to read `communications`
+4. Rename `media` → `communications` **strictly in competency contexts** — see rename scope rules below
+5. For procedurally generated characters: `characterPoolGenerator.ts` already generates all professional/personal fields — add the 3 new ones to its generation logic. Update `GeneratedCharacter` interface to include `honorific` field for procedural derivation.
+6. Update all tests that reference `competencies.professional.media` to use `.communications`
+7. Update all engine functions that read `media` competency to read `communications`
+8. Update `averageProfessionalCompetence()` in `competencyUtils.ts` — currently hardcodes division by 7, must change to 9
+
+### `media` → `communications` rename scope rules
+
+**IN SCOPE (rename these):**
+- `ProfessionalCompetencies.media` → `.communications` in `competencyTypes.ts`
+- All `competencies.professional.media` or `competencies: { professional: { media: N } }` in pool files
+- `competencyUtils.ts` keyword mapping — change the **values** from `"media"` to `"communications"`, but keep `"media"` as a **lookup key** so portfolios containing "media" still resolve correctly: `media: "communications", press: "communications", broadcast: "communications"`
+- `advisoryWhispers.ts` portfolio-to-competency mapping — rename key
+- `characterGeneration.ts` competency references
+
+**OUT OF SCOPE (do NOT rename):**
+- `ActiveEvent.category: "media"` in `gameTypes.ts` — this is an event domain category, not a competency
+- `BusinessSector: "media-entertainment"` in `businessOligarchTypes.ts` — this is an industry sector name
+- `sector: "media-entertainment"` in `businessOligarchPool.ts` candidate data — same reason
+- Any UI labels or headline strings that use the word "media" in prose context
+- The `MediaTab.tsx` component name
 
 ### Impact on existing systems
 
 - `computeMinisterialEffectiveness()` in `cabinetSystem.ts` — averages professional competencies. Adding 2 more dilutes slightly but the band thresholds (80/60/40) remain the same. No functional change needed.
+- `averageProfessionalCompetence()` in `competencyUtils.ts` — **must update**: currently sums 7 fields and divides by 7. After adding `politics` and `management`, it must sum 9 and divide by 9. This function is used by director engine, sector turn processor, and other systems.
 - `computeAffinity()` in `affinityRegistry.ts` — doesn't read competencies. No change.
-- `sectorTurnProcessor.ts` — reads professional competency averages via director positions. Adding 2 more fields is handled automatically.
+- `sectorTurnProcessor.ts` — reads professional competency averages via director positions. Adding 2 more fields is handled automatically IF `averageProfessionalCompetence()` is updated.
 - Character profile UI — competency radar charts will show 9+8=17 axes instead of 7+7=14. May need minor layout adjustment.
+
+## Decisions
+
+### Traits: No Change
+
+The current freeform `traits: string[]` system is retained as-is. Traits remain unstructured descriptive labels (e.g. "Dealmaker", "Hawkish", "Reformist") shown on character profiles and used as narrative context in media/headline generation. Each system keeps its own trait vocabulary. No mechanical effect, no universal standardisation, no changes needed.
 
 ## 3. Bio Enforcement
 
@@ -206,8 +231,11 @@ The `assignAvatarId(gender, ethnicity, ageGroup, roleCategory)` function is crea
 
 | File | Changes |
 |---|---|
-| `characterPoolGenerator.ts` | Add new competency generation, honorific derivation, bio expansion, career history building |
+| `characterPoolGenerator.ts` | Add new competency generation, honorific derivation, bio expansion, career history building; update `GeneratedCharacter` interface to include `honorific` |
 | `characterPoolGenerator.test.ts` | Update tests for new fields |
+| `characterGeneration.ts` | Expand `generateBiography()` to produce 100+ word bios; update `media` → `communications` in competency references |
+| `competencyUtils.ts` | Rename `media` → `communications` in keyword mapping (values only, keep `"media"` as lookup key); update `averageProfessionalCompetence()` divisor from 7 to 9 |
+| `advisoryWhispers.ts` | Rename `media` → `communications` in portfolio-to-competency mapping |
 | `cabinetSystem.ts` | Update `media` → `communications` references |
 | `sectorTurnProcessor.ts` | Update if any `media` references exist |
 | `gameEngine.ts` | Update if any `media` references exist |

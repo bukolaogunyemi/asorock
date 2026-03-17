@@ -83,6 +83,7 @@ import { tickReforms } from "./reformTracker";
 import { seedUnionLeaders } from "./unionEngine";
 import { seedGovernorSystem } from "./governorEngine";
 import { seedLegislature } from "./legislativeElections";
+import { seatJudiciary } from "./judiciaryEngine";
 import {
   defaultInfrastructureState,
   defaultHealthState,
@@ -1072,6 +1073,10 @@ export function initializeGameState(config: CampaignConfig): GameState {
   const legislatureSeed = seedLegislature(eraStart.day * 10301);
   Object.assign(charMap, legislatureSeed.characters);
 
+  // Seed judiciary — seat 10 SC + 20 CA justices
+  const judiciarySeed = seatJudiciary(eraStart.day * 11003);
+  Object.assign(charMap, judiciarySeed.characters);
+
   let state: GameState = {
     day: eraStart.day,
     date: eraStart.date,
@@ -1196,11 +1201,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
       pendingFECMemos: [],
     },
     directors: directorSeed.state,
-    judiciary: {
-      supremeCourt: { justices: [], chiefJustice: null, cjnConfirmed: false },
-      courtOfAppeal: { justices: [], president: null, pcaConfirmed: false },
-      pendingNomination: { position: null, nominee: null, hearingDay: null },
-    },
+    judiciary: judiciarySeed.state,
     unionLeaders: unionSeed.state,
     governorSystem: governorSeed.state,
   };

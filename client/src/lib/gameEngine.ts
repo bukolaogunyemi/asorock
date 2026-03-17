@@ -10,6 +10,7 @@ import { processDirectors } from "./directorEngine";
 import { processUnionPressure } from "./unionEngine";
 import { processGovernors } from "./governorEngine";
 import { processLegislatureLeadership } from "./legislativeElections";
+import { processJudiciary } from "./judiciaryEngine";
 import { seededRandom } from "./seededRandom";
 import type { FailureState, VictoryPath } from "./victorySystem";
 import type {
@@ -2660,6 +2661,17 @@ export function processTurn(state: GameState): GameState {
   };
   if (legLeadershipResult.consequences.length > 0) {
     next = processConsequences(next, legLeadershipResult.consequences);
+  }
+
+  // Process judiciary — nominations, confirmation hearings, retirements
+  const judiciaryResult = processJudiciary(next, seededRandom(next.day * 11003));
+  next = {
+    ...next,
+    judiciary: judiciaryResult.updatedJudiciary,
+    activeEvents: [...next.activeEvents, ...judiciaryResult.newEvents],
+  };
+  if (judiciaryResult.consequences.length > 0) {
+    next = processConsequences(next, judiciaryResult.consequences);
   }
 
   const hookProgress = processHookInvestigations(next);

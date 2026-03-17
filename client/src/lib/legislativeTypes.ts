@@ -70,6 +70,22 @@ export interface Bill {
   houseStageEnteredDay: number;
   senateStageEnteredDay: number;
   powerBrokerTag?: string;
+  term: number;
+  sponsorCharacter?: { name: string; avatar: string; chamber: string; faction: string };
+  sponsorInfluenceBonus?: number;
+  lobbied?: boolean;
+}
+
+export interface SponsorCandidate {
+  name: string;
+  avatar: string;
+  gender: "male" | "female";
+  chamber: "house" | "senate";
+  faction: string;
+  tier: "chair" | "senior" | "junior";
+  competence: number;
+  influenceBonus: number;
+  pcCost: number;
 }
 
 export interface LeverCost {
@@ -105,6 +121,20 @@ export interface CrisisState {
   resolved?: boolean;
 }
 
+export interface LegislativeLeader {
+  characterName: string;
+  position: string;
+  chamber: "senate" | "house";
+  electedDay: number;
+}
+
+export interface LegislatureLeadership {
+  senateLeaders: LegislativeLeader[];
+  houseLeaders: LegislativeLeader[];
+  leadershipElectionsDone: boolean;
+  committeesFilled: boolean;
+}
+
 export interface LegislativeState {
   activeBills: Bill[];
   passedBills: Bill[];
@@ -121,4 +151,5 @@ export interface LegislativeState {
     overrideAttempts: number;
     overrideSuccesses: number;
   };
+  leadership: LegislatureLeadership;
 }

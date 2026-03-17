@@ -8,6 +8,8 @@ import { migrateOldCompetencies, deriveBetrayalThreshold, averageProfessionalCom
 import { checkDefeat, checkVictory } from "./victorySystem";
 import { processDirectors } from "./directorEngine";
 import { processUnionPressure } from "./unionEngine";
+import { processGovernors } from "./governorEngine";
+import { processLegislatureLeadership } from "./legislativeElections";
 import { seededRandom } from "./seededRandom";
 import type { FailureState, VictoryPath } from "./victorySystem";
 import type {
@@ -2632,6 +2634,32 @@ export function processTurn(state: GameState): GameState {
   };
   if (unionResult.consequences.length > 0) {
     next = processConsequences(next, unionResult.consequences);
+  }
+
+  // Process governor system
+  const governorResult = processGovernors(next, seededRandom(next.day * 9311));
+  next = {
+    ...next,
+    governorSystem: governorResult.updatedGovernorSystem,
+    activeEvents: [...next.activeEvents, ...governorResult.newEvents],
+  };
+  if (governorResult.consequences.length > 0) {
+    next = processConsequences(next, governorResult.consequences);
+  }
+
+  // Process legislative leadership elections
+  const legLeadershipResult = processLegislatureLeadership(next, seededRandom(next.day * 10301));
+  next = {
+    ...next,
+    legislature: {
+      ...next.legislature,
+      leadership: legLeadershipResult.updatedLeadership,
+    },
+    activeEvents: [...next.activeEvents, ...legLeadershipResult.newEvents],
+    characters: { ...next.characters, ...legLeadershipResult.newCharacters },
+  };
+  if (legLeadershipResult.consequences.length > 0) {
+    next = processConsequences(next, legLeadershipResult.consequences);
   }
 
   const hookProgress = processHookInvestigations(next);

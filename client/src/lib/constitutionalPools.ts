@@ -30,7 +30,7 @@ function candidate(
 
 // ── Pool structure: [positionIndex][zoneIndex][candidateIndex] ──
 // Zone order matches GEOPOLITICAL_ZONES: NC=0, NW=1, NE=2, SW=3, SE=4, SS=5
-// Position order: Senate President=0, Deputy Senate President=1, Speaker=2, Deputy Speaker=3, CJN=4
+// Position order: Senate President=0, Deputy Senate President=1, Speaker=2, Deputy Speaker=3
 
 const pools: ConstitutionalCandidate[][][] = [
   // ── Position 0: Senate President ──
@@ -241,57 +241,6 @@ const pools: ConstitutionalCandidate[][][] = [
     ],
   ],
 
-  // ── Position 4: Chief Justice of Nigeria ──
-  [
-    // NC
-    [
-      candidate("Justice Terhemba Aba", 55, "Benue", "Male", "Christian", 45, 82, 40, "Judiciary", "Neutral", "Judicial independence and rule of law.", "Protective of judicial turf — resists executive pressure."),
-      candidate("Justice Hajiya Asabe Jiya", 58, "Niger", "Female", "Muslim", 50, 78, 35, "Judiciary", "Neutral", "Sharia-common law harmonisation.", "Scholarly — respected across legal traditions."),
-      candidate("Justice Comfort Malu", 52, "Benue", "Female", "Christian", 48, 80, 42, "Judiciary", "Wary", "Human rights jurisprudence and constitutional interpretation.", "Reform-minded — has ruled against government."),
-      candidate("Justice Ibrahim Agaie", 62, "Niger", "Male", "Muslim", 55, 76, 38, "Judiciary", "Friendly", "Court administration reform and case backlog.", "Traditionalist — predictable but fair."),
-      candidate("Justice Samuel Adikpo", 56, "Benue", "Male", "Christian", 52, 74, 45, "Judiciary", "Neutral", "Anti-corruption judicial framework.", "Independent — follows precedent strictly."),
-    ],
-    // NW
-    [
-      candidate("Justice Abdulkadir Fagge", 60, "Kano", "Male", "Muslim", 55, 78, 40, "Judiciary", "Neutral", "Islamic jurisprudence and constitutional law.", "Scholarly — deep knowledge of both legal systems."),
-      candidate("Justice Hadiza Ringim", 54, "Jigawa", "Female", "Muslim", 48, 82, 35, "Judiciary", "Neutral", "Women's rights within Islamic legal framework.", "Pioneering — first female CJN candidate from NW."),
-      candidate("Justice Garba Tsafe", 63, "Zamfara", "Male", "Muslim", 58, 74, 42, "Judiciary", "Friendly", "Criminal justice reform and banditry prosecution.", "Pragmatic — understands security-justice balance."),
-      candidate("Justice Maryam Gwarzo", 57, "Kano", "Female", "Christian", 52, 80, 38, "Judiciary", "Neutral", "Family law and children's rights.", "Compassionate — respected for fairness."),
-      candidate("Justice Stephen Bichi", 61, "Kano", "Male", "Christian", 55, 76, 40, "Judiciary", "Neutral", "Constitutional interpretation and minority rights.", "Rare voice — Christian jurist from NW."),
-    ],
-    // NE
-    [
-      candidate("Justice Kashim Konduga", 59, "Borno", "Male", "Muslim", 55, 80, 38, "Judiciary", "Neutral", "Post-conflict justice and transitional law.", "Deep understanding of NE crisis — fair-minded."),
-      candidate("Justice Falmata Marte", 55, "Borno", "Female", "Muslim", 50, 78, 40, "Judiciary", "Neutral", "Humanitarian law and IDP rights.", "Compassionate — internationally connected."),
-      candidate("Justice Barnabas Joda", 62, "Adamawa", "Male", "Christian", 58, 76, 42, "Judiciary", "Wary", "Land tenure reform and grazing rights.", "Independent — follows law strictly."),
-      candidate("Justice Hannatu Bogoro", 53, "Bauchi", "Female", "Christian", 52, 82, 35, "Judiciary", "Neutral", "Women's rights and gender-based violence.", "Reform champion — may challenge executive."),
-      candidate("Justice Bukar Lawan", 66, "Yobe", "Male", "Muslim", 62, 74, 36, "Judiciary", "Friendly", "Traditional justice and customary law.", "Elder jurist — predictable rulings."),
-    ],
-    // SW
-    [
-      candidate("Justice Adewale Onifade", 60, "Ogun", "Male", "Christian", 55, 80, 42, "Judiciary", "Neutral", "Constitutional reform and judicial review.", "Traditionalist — protective of judicial turf."),
-      candidate("Justice Folake Adesanya", 56, "Lagos", "Female", "Christian", 52, 84, 38, "Judiciary", "Neutral", "Corporate law and commercial dispute resolution.", "Sharp legal mind — respected by the bar."),
-      candidate("Justice Alhaji Kolawole Ipaye", 63, "Oyo", "Male", "Muslim", 58, 76, 40, "Judiciary", "Friendly", "ADR and court decongestion.", "Efficient — focused on court administration."),
-      candidate("Justice Modupe Ogundare", 52, "Oyo", "Female", "Muslim", 48, 82, 36, "Judiciary", "Neutral", "Human rights and social justice.", "Progressive — may rule against executive."),
-      candidate("Justice Adeniyi Bakare", 65, "Lagos", "Male", "Christian", 62, 78, 35, "Judiciary", "Friendly", "Election petition tribunals and electoral law.", "Deep electoral law expertise."),
-    ],
-    // SE
-    [
-      candidate("Justice Chukwuemeka Arinze", 59, "Anambra", "Male", "Christian", 55, 82, 40, "Judiciary", "Neutral", "Federalism and state rights jurisprudence.", "Independent — strict constructionist."),
-      candidate("Justice Obiageli Nwosu", 54, "Enugu", "Female", "Christian", 50, 80, 38, "Judiciary", "Neutral", "Environmental law and oil spill adjudication.", "Principled — has fined government agencies."),
-      candidate("Justice Ikechukwu Mbah", 62, "Ebonyi", "Male", "Christian", 58, 76, 42, "Judiciary", "Wary", "Land use reform and mining rights.", "Cautious — suspects executive overreach."),
-      candidate("Justice Amaka Okoro", 55, "Imo", "Female", "Muslim", 52, 84, 35, "Judiciary", "Neutral", "Criminal justice reform and prison decongestion.", "Compassionate — balanced sentencing."),
-      candidate("Justice Alhaji Nonso Igwe", 63, "Abia", "Male", "Muslim", 60, 74, 36, "Judiciary", "Friendly", "Inter-faith legal framework.", "Unique perspective — valued."),
-    ],
-    // SS
-    [
-      candidate("Justice Dakoru Ayah", 58, "Bayelsa", "Male", "Christian", 55, 78, 40, "Judiciary", "Neutral", "Maritime law and oil industry disputes.", "Deep knowledge of petroleum law."),
-      candidate("Justice Isoken Ehanire", 54, "Edo", "Female", "Christian", 50, 82, 38, "Judiciary", "Neutral", "Human rights and constitutional freedoms.", "Has ruled against security agencies."),
-      candidate("Justice Bassey Effiong", 62, "Cross River", "Male", "Christian", 58, 76, 42, "Judiciary", "Wary", "ECOWAS law and international treaties.", "Internationally connected — independent."),
-      candidate("Justice Ebiere Lokpobiri", 55, "Bayelsa", "Female", "Muslim", 52, 80, 36, "Judiciary", "Neutral", "Environmental justice and community rights.", "Principled — deep environmental expertise."),
-      candidate("Justice Ovie Edewor", 63, "Delta", "Male", "Muslim", 60, 74, 40, "Judiciary", "Friendly", "Commercial arbitration and trade disputes.", "Business-savvy — efficient court management."),
-    ],
-  ],
 ];
 
 /** Register the full candidate pools with the selection system */

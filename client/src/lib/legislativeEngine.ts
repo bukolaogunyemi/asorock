@@ -3,6 +3,7 @@ import type { GameState } from "./gameTypes";
 import type { Amendment, Bill, BillStage, CrisisState, GameStateModifier, LegislativeState, VoteProjection } from "./legislativeTypes";
 import { getAutonomousBillPool } from "./legislativeBills";
 import { getLeverById } from "./influenceLevers";
+import { getSponsorByTier } from "./sponsorCandidates";
 
 // ── Chamber Seat Blocs ────────────────────────────────────────────────────────
 
@@ -339,6 +340,12 @@ export function defaultLegislativeState(): LegislativeState {
       overrideAttempts: 0,
       overrideSuccesses: 0,
     },
+    leadership: {
+      senateLeaders: [],
+      houseLeaders: [],
+      leadershipElectionsDone: false,
+      committeesFilled: false,
+    },
   };
 }
 
@@ -351,9 +358,11 @@ export function createBillFromTemplate(
     sponsor?: Bill["sponsor"];
   },
   currentDay: number,
+  currentTerm: number = 1,
 ): Bill {
   return {
     id: `bill-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    term: currentTerm,
     title: template.title,
     description: template.description,
     subjectTag: template.subjectTag,
@@ -634,7 +643,7 @@ export function generateAutonomousBill(state: GameState): Bill | null {
   }
 
   const template = candidates[Math.floor(Math.random() * candidates.length)];
-  return createBillFromTemplate(template, state.day);
+  return createBillFromTemplate(template, state.day, state.term.current);
 }
 
 // ── Signing / Veto ────────────────────────────────────────────────────────────
@@ -1103,7 +1112,11 @@ export function getAvailableExecutiveBills(state: GameState): ExecutiveBillOptio
  *
  * Returns updated GameState (does not mutate the input).
  */
-export function proposeExecutiveBill(state: GameState, templateId: string): GameState {
+export function proposeExecutiveBill(
+  state: GameState,
+  templateId: string,
+  sponsorTier?: "chair" | "senior" | "junior",
+): GameState {
   const legislature = state.legislature ?? defaultLegislativeState();
 
   const template = EXECUTIVE_BILL_TEMPLATES.find((t) => t.id === templateId);
@@ -1111,7 +1124,29 @@ export function proposeExecutiveBill(state: GameState, templateId: string): Game
 
   if (legislature.activeBills.length >= MAX_ACTIVE_BILLS) return state;
 
-  const bill = createBillFromTemplate({ ...template, sponsor: "executive" }, state.day);
+  const bill = createBillFromTemplate({ ...template, sponsor: "executive" }, state.day, state.term.current);
+  let updatedState = state;
+
+  // Apply sponsor if tier specified
+  if (sponsorTier) {
+    const sponsor = getSponsorByTier(template.subjectTag, sponsorTier);
+    if (sponsor) {
+      bill.sponsorCharacter = {
+        name: sponsor.name,
+        avatar: sponsor.avatar,
+        chamber: sponsor.chamber,
+        faction: sponsor.faction,
+      };
+      bill.sponsorInfluenceBonus = sponsor.influenceBonus;
+      // Apply initial support bonus to vote projections
+      bill.houseSupport = addSwing(bill.houseSupport, sponsor.influenceBonus, 360);
+      bill.senateSupport = addSwing(bill.senateSupport, sponsor.influenceBonus, 109);
+      // Deduct PC cost
+      if (sponsor.pcCost > 0) {
+        updatedState = { ...updatedState, politicalCapital: updatedState.politicalCapital - sponsor.pcCost };
+      }
+    }
+  }
 
   const newLegislature: LegislativeState = {
     ...legislature,
@@ -1122,7 +1157,73 @@ export function proposeExecutiveBill(state: GameState, templateId: string): Game
     },
   };
 
-  return { ...state, legislature: newLegislature };
+  return { ...updatedState, legislature: newLegislature };
+}
+
+/** Helper: shift votes from undecided/leaning-no toward leaning-yes */
+function addSwing(vp: VoteProjection, swing: number, _totalSeats: number): VoteProjection {
+  const result = { ...vp };
+  let remaining = swing;
+
+  // Move from undecided to leaning yes
+  const fromUndecided = Math.min(remaining, result.undecided);
+  result.undecided -= fromUndecided;
+  result.leaningYes += fromUndecided;
+  remaining -= fromUndecided;
+
+  // Move from leaning no to undecided
+  if (remaining > 0) {
+    const fromLeaningNo = Math.min(remaining, result.leaningNo);
+    result.leaningNo -= fromLeaningNo;
+    result.undecided += fromLeaningNo;
+  }
+
+  return result;
+}
+
+/**
+ * Lobby a committee on a bill in committee stage.
+ * Costs 3 PC, provides +8 support swing. Once per bill per committee stage.
+ */
+export function lobbyCommittee(state: GameState, billId: string): GameState {
+  const legislature = state.legislature;
+  if (!legislature) return state;
+
+  const LOBBY_COST = 3;
+  const LOBBY_SWING = 8;
+
+  if (state.politicalCapital < LOBBY_COST) return state;
+
+  const billIndex = legislature.activeBills.findIndex((b) => b.id === billId);
+  if (billIndex === -1) return state;
+
+  const bill = legislature.activeBills[billIndex];
+
+  // Must be in committee stage in at least one chamber
+  const inHouseCommittee = bill.houseStage === "committee";
+  const inSenateCommittee = bill.senateStage === "committee";
+  if (!inHouseCommittee && !inSenateCommittee) return state;
+
+  // Prevent double-lobbying
+  if (bill.lobbied) return state;
+
+  const updatedBill = { ...bill, lobbied: true };
+
+  if (inHouseCommittee) {
+    updatedBill.houseSupport = addSwing(bill.houseSupport, LOBBY_SWING, 360);
+  }
+  if (inSenateCommittee) {
+    updatedBill.senateSupport = addSwing(bill.senateSupport, LOBBY_SWING, 109);
+  }
+
+  const updatedBills = [...legislature.activeBills];
+  updatedBills[billIndex] = updatedBill;
+
+  return {
+    ...state,
+    politicalCapital: state.politicalCapital - LOBBY_COST,
+    legislature: { ...legislature, activeBills: updatedBills },
+  };
 }
 
 // ── Amendments ────────────────────────────────────────────────────────────────
@@ -1368,7 +1469,7 @@ export function processLegislativeTurn(state: GameState): GameState {
 
   for (const entry of dueEntries) {
     if (newActiveBills.length >= MAX_ACTIVE_BILLS) break;
-    const bill = createBillFromTemplate(entry.template, state.day);
+    const bill = createBillFromTemplate(entry.template, state.day, state.term.current);
     bill.isCrisis = entry.isCrisis;
     newActiveBills.push(bill);
   }

@@ -16,7 +16,6 @@ export const POSITION_NAMES = [
   "Deputy Senate President",
   "Speaker of the House",
   "Deputy Speaker",
-  "Chief Justice of Nigeria",
 ] as const;
 
 export type PositionName = typeof POSITION_NAMES[number];

@@ -81,6 +81,8 @@ import { seedLegislativeCalendar } from "./legislativeBills";
 import { defaultEconomicState } from "./economicEngine";
 import { tickReforms } from "./reformTracker";
 import { seedUnionLeaders } from "./unionEngine";
+import { seedGovernorSystem } from "./governorEngine";
+import { seedLegislature } from "./legislativeElections";
 import {
   defaultInfrastructureState,
   defaultHealthState,
@@ -1062,6 +1064,14 @@ export function initializeGameState(config: CampaignConfig): GameState {
   const unionSeed = seedUnionLeaders(eraStart.day * 8731);
   Object.assign(charMap, unionSeed.characters);
 
+  // Seed governor system — populate all 36 state governors
+  const governorSeed = seedGovernorSystem(eraStart.day * 9311);
+  Object.assign(charMap, governorSeed.characters);
+
+  // Seed legislative leadership — populate top senators and house reps
+  const legislatureSeed = seedLegislature(eraStart.day * 10301);
+  Object.assign(charMap, legislatureSeed.characters);
+
   let state: GameState = {
     day: eraStart.day,
     date: eraStart.date,
@@ -1134,6 +1144,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
     legislature: {
       ...defaultLegislativeState(),
       legislativeCalendar: seedLegislativeCalendar(),
+      leadership: legislatureSeed.leadership,
     },
     patronage: defaultPatronageState(),
     federalCharacter: defaultFederalCharacterState(),
@@ -1191,12 +1202,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
       pendingNomination: { position: null, nominee: null, hearingDay: null },
     },
     unionLeaders: unionSeed.state,
-    governorSystem: {
-      governors: [],
-      forumChair: null,
-      forumChairElectedDay: null,
-      nextElectionDay: 1460,
-    },
+    governorSystem: governorSeed.state,
   };
 
   state = syncStrategicState(state);

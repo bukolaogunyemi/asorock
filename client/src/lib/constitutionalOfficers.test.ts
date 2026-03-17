@@ -14,9 +14,9 @@ beforeAll(() => {
 });
 
 describe("selectConstitutionalOfficers", () => {
-  it("returns exactly 5 officers", () => {
+  it("returns exactly 4 officers", () => {
     const officers = selectConstitutionalOfficers("Lagos", "Adamawa", 42);
-    expect(officers).toHaveLength(5);
+    expect(officers).toHaveLength(4);
   });
 
   it("assigns correct portfolio names in order", () => {
@@ -25,7 +25,6 @@ describe("selectConstitutionalOfficers", () => {
     expect(officers[1].portfolio).toBe("Deputy Senate President");
     expect(officers[2].portfolio).toBe("Speaker of the House");
     expect(officers[3].portfolio).toBe("Deputy Speaker");
-    expect(officers[4].portfolio).toBe("Chief Justice of Nigeria");
   });
 
   it("no officer comes from the president's zone", () => {
@@ -47,20 +46,18 @@ describe("selectConstitutionalOfficers", () => {
   });
 
   it("no two officers share the same zone (when president ≠ VP zone)", () => {
-    // Kano=NW, Enugu=SE → 4 available zones for 5 positions
-    // First 4 must be unique, 5th reuses one
+    // Kano=NW, Enugu=SE → 4 available zones for 4 positions — all unique
     const officers = selectConstitutionalOfficers("Kano", "Enugu", 42);
     const zones = officers.map((o) => getZoneForState(o.state)!.name);
-    // At most one duplicate (since 5 positions, 4 zones)
     const unique = new Set(zones);
-    expect(unique.size).toBeGreaterThanOrEqual(4);
+    expect(unique.size).toBe(4);
   });
 
-  it("all 5 zones unique when president and VP share a zone", () => {
-    // Lagos=SW, Ogun=SW → 5 available zones for 5 positions
+  it("all 4 zones unique when president and VP share a zone", () => {
+    // Lagos=SW, Ogun=SW → 5 available zones for 4 positions — all unique
     const officers = selectConstitutionalOfficers("Lagos", "Ogun", 42);
     const zones = officers.map((o) => getZoneForState(o.state)!.name);
-    expect(new Set(zones).size).toBe(5);
+    expect(new Set(zones).size).toBe(4);
   });
 
   it("is deterministic with the same inputs", () => {
@@ -93,7 +90,7 @@ describe("selectConstitutionalOfficers", () => {
 
   it("end-to-end: officers come from diverse zones with real pools", () => {
     const officers = selectConstitutionalOfficers("Lagos", "Kano", 42);
-    expect(officers).toHaveLength(5);
+    expect(officers).toHaveLength(4);
     const zones = officers.map((o) => getZoneForState(o.state)!.name);
     // Should not include SW (Lagos) or NW (Kano)
     for (const z of zones) {

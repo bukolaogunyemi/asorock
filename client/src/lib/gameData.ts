@@ -3,7 +3,6 @@ import type { AnyPolicyPosition, PolicyLeverKey } from "./gameTypes";
 import {
   cabinetRoster as hcCabinetRoster,
   cabinetCandidates as hcCabinetCandidates,
-  keyCharacters as hcKeyCharacters,
 } from "./handcraftedCharacters";
 
 // ── Approval ──────────────────────────────────────────────
@@ -93,7 +92,7 @@ export interface CabinetCandidate extends Minister {
 }
 
 /** Each portfolio has 2-3 candidates. The first matches the original cabinetRoster entry. */
-export const cabinetCandidates: Partial<Record<MinistryPosition, CabinetCandidate[]>> = hcCabinetCandidates;
+export const cabinetCandidates: Record<MinistryPosition, CabinetCandidate[]> = hcCabinetCandidates;
 
 // ── Factions ─────────────────────────────────────────────
 export const factions: { name: string; influence: number }[] = [
@@ -123,7 +122,8 @@ export interface Character {
   gender?: string;
 }
 
-export const characters: Character[] = hcKeyCharacters;
+/** @deprecated keyCharacters removed — characters now come from director/governor/legislature/union systems */
+export const characters: Character[] = [];
 
 // ── Intrigue Plots ───────────────────────────────────────
 export interface IntriguePlot {
@@ -548,7 +548,7 @@ export const POLICY_LEVER_DEFS: Record<PolicyLeverKey, PolicyLeverDef> = {
     zeroImpactPosition: "reformed",
     modifiers: {
       "status-quo": { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
-      reformed:     { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 1, treasury: -0.01, trust: 1 },
+      reformed:     { inflation: 0, fxRate: 0, reserves: 0, debtToGdp: 0, subsidyPressure: 0, approval: 0, treasury: 0, trust: 0 },
       scrapped:     { inflation: 0, fxRate: 0, reserves: 0.02, debtToGdp: -0.02, subsidyPressure: -0.5, approval: -2, treasury: 0.02, trust: -1 },
     },
   },

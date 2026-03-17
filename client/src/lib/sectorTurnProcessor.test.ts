@@ -175,7 +175,26 @@ function makeMinimalGameState(): GameState {
     crossSectorCascades: [],
     defeatVictoryCounters: { famineTurns: 0, blackoutTurns: 0, governanceCrisisTurns: 0, gdpGrowthPositiveTurns: 0 },
     ministerStatuses: {},
-    cabinetRetreats: { lastRetreatDay: 0, priorities: [], lastFECDay: 0, fecCooldownUntil: 0 },
+    cabinetRetreats: { lastRetreatDay: 0, priorities: [], lastFECDay: 0, fecCooldownUntil: 0, pendingFECMemos: [] },
+    directors: { positions: [], appointments: [], technocratsFired: 0, vacancyTracking: {} },
+    judiciary: {
+      supremeCourt: { justices: [], chiefJustice: null, cjnConfirmed: false },
+      courtOfAppeal: { justices: [], president: null, pcaConfirmed: false },
+      pendingNomination: { position: null, nominee: null, hearingDay: null },
+    },
+    unionLeaders: {
+      positions: [],
+      appointments: {
+        "chairman-teachers-union": null,
+        "chairman-labour-union": null,
+        "chairman-trade-congress": null,
+        "chairman-youth-forum": null,
+        "chairman-petroleum-workers": null,
+        "chairman-medical-association": null,
+      },
+    },
+    governorSystem: { governors: [], forumChair: null, forumChairElectedDay: null, nextElectionDay: 1460 },
+    diplomats: { posts: [], appointments: [] },
   };
 }
 

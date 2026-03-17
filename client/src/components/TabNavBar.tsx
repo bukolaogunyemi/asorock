@@ -26,13 +26,19 @@ const MAIN_TABS: TabDef[] = [
 ];
 
 const HUB_SUB_TABS: Record<string, string[]> = {
-  governance: ["economy", "infrastructure", "health", "education"],
+  villa: ["briefing-room", "decision-desk"],
+  governance: ["economy", "infrastructure", "health", "education", "agriculture", "interior", "environment", "youthEmployment"],
   media: ["news", "public-affairs", "social-media"],
   politics: ["cabal", "party", "elections", "campaign"],
   security: ["intel", "military", "police"],
 };
 
+const SUB_TAB_LABELS: Record<string, string> = {
+  youthEmployment: "Labour",
+};
+
 function capitalize(s: string): string {
+  if (SUB_TAB_LABELS[s]) return SUB_TAB_LABELS[s];
   return s
     .split("-")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))

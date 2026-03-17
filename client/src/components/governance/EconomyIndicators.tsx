@@ -120,12 +120,34 @@ function SingleChart({ config, economy }: { config: ChartConfig; economy: Econom
   const lineColor = config.id.includes("fx") || config.id.includes("inflation") || config.id.includes("unemployment") || config.id.includes("debt")
     ? "#ef4444" : "#22c55e";
 
+  // Inside SingleChart, before the line chart return statement:
+  const delta = useMemo(() => {
+    if (!config.historyKey || history.length < 2) return null;
+    const prev = (history[history.length - 2] as unknown as Record<string, unknown>)[config.historyKey] as number ?? 0;
+    const curr = (history[history.length - 1] as unknown as Record<string, unknown>)[config.historyKey] as number ?? 0;
+    const diff = curr - prev;
+    if (Math.abs(diff) < 0.01) return null;
+    // "bad direction": if warningThreshold triggers on gt, increases are bad
+    const increaseIsBad = config.warningThreshold?.condition === "gt";
+    const isBad = increaseIsBad ? diff > 0 : diff < 0;
+    return {
+      arrow: diff > 0 ? "↑" : "↓",
+      value: Math.abs(diff).toFixed(1),
+      color: isBad ? "#ef4444" : "#22c55e",
+    };
+  }, [history, config.historyKey, config.warningThreshold]);
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-1 shrink-0">
         <h4 className="text-[11px] font-semibold text-gray-700">{config.title}</h4>
         <span className="text-xs font-bold" style={{ color: lineColor }}>
           {formatValue(currentValue, config.format)}
+          {delta && (
+            <span className="ml-1 text-[10px] font-semibold" style={{ color: delta.color }}>
+              {delta.arrow}{delta.value}
+            </span>
+          )}
         </span>
       </div>
       <div className="flex-1 min-h-0">
@@ -156,7 +178,7 @@ export function EconomyIndicators({ charts }: Props) {
       <h3 className="text-xs font-bold uppercase tracking-wider text-[#d4af37]">
         Key Indicators
       </h3>
-      <div className="grid grid-cols-3 gap-2 flex-1 min-h-0 overflow-y-auto" style={{ gridAutoRows: "minmax(160px, 1fr)" }}>
+      <div className="grid grid-cols-3 gap-2 flex-1 min-h-0 overflow-y-auto" style={{ gridAutoRows: "minmax(120px, 1fr)" }}>
         {charts.map(config => (
           <div key={config.id} className="rounded-md border border-gray-100 bg-[#faf8f5] p-2 flex flex-col min-h-0">
             <SingleChart config={config} economy={economy} />

@@ -47,9 +47,9 @@ describe("defaultEconomicState", () => {
     expect(indicators.treasuryZone).toBe("green");
     expect(indicators.oilOutputZone).toBe("green");
 
-    // Empty arrays
+    // Empty cascades, seeded history
     expect(state.activeCascades).toEqual([]);
-    expect(state.history).toEqual([]);
+    expect(state.history.length).toBe(8);
   });
 
   it("has sector IDs matching oil, agriculture, manufacturing, services, tourism", () => {
@@ -491,7 +491,7 @@ describe("processEconomicTurn", () => {
     expect(result.gdp).toBeGreaterThan(0);
     expect(result.unemploymentRate).toBeGreaterThanOrEqual(5);
     expect(result.revenue.total).toBeGreaterThan(0);
-    expect(result.history.length).toBe(1);
+    expect(result.history.length).toBe(9);
   });
 
   it("should cap history at 12 snapshots", () => {

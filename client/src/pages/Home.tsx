@@ -1,20 +1,26 @@
-import { Suspense, lazy, useState, useCallback } from "react";
+import { Suspense, lazy, useState, useCallback, useMemo } from "react";
 import TopBar from "@/components/TopBar";
-import BreadcrumbNav from "@/components/BreadcrumbNav";
 import { ProfileBreadcrumbNav } from "@/components/ProfileBreadcrumbNav";
 import { PerplexityAttribution } from "@/components/PerplexityAttribution";
 import InboxPanel from "@/components/InboxPanel";
 import { useGame } from "@/lib/GameContext";
 import { ProfileNavigationProvider, useProfileNavigation } from "@/lib/ProfileNavigationContext";
 import { resolveEntityProfile } from "@/lib/entityAdapters";
-import { PresidentialDashboard } from "@/components/PresidentialDashboard";
+import { PresidentialSidebar } from "@/components/PresidentialSidebar";
 import { TabNavBar } from "@/components/TabNavBar";
-import { AdvisoryWhisper } from "@/components/AdvisoryWhisper";
 import { EconomySection } from "@/components/governance/EconomySection";
+import { GovernanceSection } from "@/components/governance/GovernanceSection";
+import {
+  INFRASTRUCTURE_CONFIG,
+  HEALTH_CONFIG,
+  EDUCATION_CONFIG,
+  AGRICULTURE_CONFIG,
+  INTERIOR_CONFIG,
+  ENVIRONMENT_CONFIG,
+  YOUTH_EMPLOYMENT_CONFIG,
+} from "@/lib/governanceSections";
 
-const DailyBriefColumn = lazy(() => import("@/components/DailyBriefColumn"));
-const DecisionDesk = lazy(() => import("@/components/DecisionDesk"));
-const HeadlinesColumn = lazy(() => import("@/components/HeadlinesColumn"));
+const BriefingRoom = lazy(() => import("@/components/BriefingRoom"));
 const IntelligenceBrief = lazy(() => import("@/components/IntelligenceBrief"));
 
 const CharacterProfile = lazy(() => import("@/components/CharacterProfile"));
@@ -29,10 +35,8 @@ const DiplomacyTab = lazy(() => import("@/components/DiplomacyTab"));
 const MediaTab = lazy(() => import("@/components/MediaTab"));
 const PublicAffairsTab = lazy(() => import("@/components/PublicAffairsTab"));
 const DecisionsTab = lazy(() => import("@/components/DecisionsTab"));
-const InfrastructureTab = lazy(() => import("@/components/InfrastructureTab"));
-const HealthTab = lazy(() => import("@/components/HealthTab"));
-const EducationTab = lazy(() => import("@/components/EducationTab"));
 const SocialMediaTab = lazy(() => import("@/components/SocialMediaTab"));
+const InboxTab = lazy(() => import("@/components/InboxTab"));
 
 interface HomeProps {
   dark: boolean;
@@ -45,6 +49,10 @@ const governanceSubTabs = [
   { id: "infrastructure", label: "Infrastructure" },
   { id: "health", label: "Health" },
   { id: "education", label: "Education" },
+  { id: "agriculture", label: "Agriculture" },
+  { id: "interior", label: "Interior" },
+  { id: "environment", label: "Environment" },
+  { id: "youthEmployment", label: "Labour" },
 ];
 
 const mediaSubTabs = [
@@ -66,11 +74,14 @@ const securitySubTabs = [
   { id: "police", label: "Police" },
 ];
 
-// Tabs that use the fixed three-column layout (Intel Brief | Decision Desk | Headlines)
-const THREE_COLUMN_TABS = ["villa", "governance", "politics", "security", "diplomacy"];
+const villaSubTabs = [
+  { id: "briefing-room", label: "Briefing Room" },
+  { id: "decision-desk", label: "Decision Desk" },
+];
 
 // Tabs that use hub-style breadcrumb navigation
 const HUB_TABS: Record<string, { label: string; defaultSub: string; subTabs: { id: string; label: string }[] }> = {
+  villa: { label: "Villa", defaultSub: "briefing-room", subTabs: villaSubTabs },
   governance: { label: "Governance", defaultSub: "economy", subTabs: governanceSubTabs },
   media: { label: "Media", defaultSub: "news", subTabs: mediaSubTabs },
   politics: { label: "Politics", defaultSub: "cabal", subTabs: politicsSubTabs },
@@ -90,6 +101,7 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
   const [activeSubTab, setActiveSubTab] = useState<string | null>(null);
   const [inboxOpen, setInboxOpen] = useState(false);
   const [pulsingIndicators, setPulsingIndicators] = useState<string[]>([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { state, endDay, dismissBrief, reopenBrief } = useGame();
   const { isProfileOpen, currentProfile, pushProfile, clearStack } = useProfileNavigation();
 
@@ -109,6 +121,30 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
   const handleReopenBrief = () => reopenBrief();
 
   const unreadCount = state.inboxMessages.filter((message) => !message.read).length;
+
+  // Compute pending decision counts per tab for badge display
+  const pendingCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    const catToTab: Record<string, string> = {
+      economy: "governance",
+      governance: "governance",
+      security: "security",
+      politics: "politics",
+      diplomacy: "diplomacy",
+      media: "media",
+    };
+    for (const ev of state.activeEvents) {
+      const tab = catToTab[ev.category];
+      if (tab) counts[tab] = (counts[tab] ?? 0) + 1;
+    }
+    // Villa shows total
+    const total = state.activeEvents.length + (state.cabalMeeting && !state.cabalMeeting.resolved ? 1 : 0);
+    if (total > 0) counts.villa = total;
+    // Inbox shows unread count
+    const unread = state.inboxMessages.filter((m) => !m.read).length;
+    if (unread > 0) counts.inbox = unread;
+    return counts;
+  }, [state.activeEvents, state.cabalMeeting, state.inboxMessages]);
 
   const handleNavigate = (tab: string, subTab?: string) => {
     clearStack();
@@ -169,15 +205,21 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
 
   function renderTabContent() {
     switch (activeTab) {
-      case "villa": return <DecisionsTab />;
+      case "villa":
+        if (activeSubTab === "decision-desk") return <DecisionsTab />;
+        return <BriefingRoom onOpenFullBrief={handleReopenBrief} />;
       case "cabinet": return <CabinetTab onCharacterClick={charClick("cabinet", "Cabinet")} onEntityClick={entityClick("cabinet", "Cabinet")} />;
       case "politics":
         return <PoliticsTab onCharacterClick={charClick("politics", "Politics")} onEntityClick={entityClick("politics", "Politics")} />;
       case "governance":
         if (activeSubTab === "economy") return <EconomySection onCharacterClick={charClick("governance", "Economy")} />;
-        if (activeSubTab === "infrastructure") return <InfrastructureTab />;
-        if (activeSubTab === "health") return <HealthTab />;
-        if (activeSubTab === "education") return <EducationTab />;
+        if (activeSubTab === "infrastructure") return <GovernanceSection config={INFRASTRUCTURE_CONFIG} sectorStateKey="infrastructure" onCharacterClick={charClick("governance", "Infrastructure")} />;
+        if (activeSubTab === "health") return <GovernanceSection config={HEALTH_CONFIG} sectorStateKey="healthSector" onCharacterClick={charClick("governance", "Health")} />;
+        if (activeSubTab === "education") return <GovernanceSection config={EDUCATION_CONFIG} sectorStateKey="education" onCharacterClick={charClick("governance", "Education")} />;
+        if (activeSubTab === "agriculture") return <GovernanceSection config={AGRICULTURE_CONFIG} sectorStateKey="agriculture" onCharacterClick={charClick("governance", "Agriculture")} />;
+        if (activeSubTab === "interior") return <GovernanceSection config={INTERIOR_CONFIG} sectorStateKey="interior" onCharacterClick={charClick("governance", "Interior")} />;
+        if (activeSubTab === "environment") return <GovernanceSection config={ENVIRONMENT_CONFIG} sectorStateKey="environment" onCharacterClick={charClick("governance", "Environment")} />;
+        if (activeSubTab === "youthEmployment") return <GovernanceSection config={YOUTH_EMPLOYMENT_CONFIG} sectorStateKey="youthEmployment" onCharacterClick={charClick("governance", "Labour")} />;
         return <EconomySection onCharacterClick={charClick("governance", "Economy")} />;
       case "security":
         return <SecurityTab view={(activeSubTab as "intel" | "military" | "police") ?? "intel"} onCharacterClick={charClick("security", "Security")} onEntityClick={entityClick("security", "Security")} />;
@@ -190,12 +232,13 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
         if (activeSubTab === "social-media") return <SocialMediaTab />;
         return <MediaTab onCharacterClick={charClick("media", "Media")} onEntityClick={entityClick("media", "Media")} />;
       case "legacy": return <LegacyTab />;
+      case "inbox": return <div className="h-full -m-4"><InboxTab /></div>;
       default: return <DecisionsTab />;
     }
   }
 
   return (
-    <div className="h-screen flex flex-col bg-[#0a1f14]">
+    <div className="h-screen flex flex-col bg-[#0f2b1e]">
       {/* Top Bar */}
       <TopBar
         dark={dark}
@@ -205,100 +248,59 @@ function HomeInner({ dark, toggleDark }: HomeProps) {
         proceedDisabledReason={proceedDisabledReason}
       />
 
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* Zone A — Persistent Dashboard */}
-        <div className="shrink-0">
-          <PresidentialDashboard onNavigate={handleNavigate} pulsingIndicators={pulsingIndicators} />
-        </div>
+      {/* Main content area — sidebar left + content right */}
+      <div className="flex-1 flex min-h-0 overflow-hidden">
+        {/* Left Panel */}
+        <PresidentialSidebar onNavigate={handleNavigate} pulsingIndicators={pulsingIndicators} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
-        {/* Zone B — light background area */}
+        {/* Right content area */}
         <div className="flex-1 flex flex-col min-h-0 bg-[#faf8f5]">
-        {/* Advisory Whisper */}
-        <div className="shrink-0">
-          <AdvisoryWhisper activeTab={activeTab} />
-        </div>
-
-        {/* Tab Navigation Bar */}
-        <div className="shrink-0">
-          <TabNavBar
-            activeTab={activeTab}
-            activeSubTab={activeSubTab}
-            onNavigate={handleTabChange}
-            onSubNavigate={handleSubTabChange}
-          />
-        </div>
-
-        {/* Profile breadcrumbs (hub sub-tab breadcrumbs removed — TabNavBar handles sub-tabs) */}
-        {isProfileOpen && (
-          <div className="px-4 pt-2 shrink-0">
-            <ProfileBreadcrumbNav />
+          {/* Tab Navigation Bar */}
+          <div className="shrink-0">
+            <TabNavBar
+              activeTab={activeTab}
+              activeSubTab={activeSubTab}
+              onNavigate={handleTabChange}
+              onSubNavigate={handleSubTabChange}
+              pendingCounts={pendingCounts}
+            />
           </div>
-        )}
 
-        {/* Scrollable content area: Zone B + Zone C */}
-        {isProfileOpen && currentProfile ? (
-          /* Profile view — full width, scrollable */
-          <div className="flex-1 overflow-y-auto p-4">
-            <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
-              {currentProfile.type === "entity" ? (
-                <EntityProfile
-                  entityId={currentProfile.key}
-                  onCharacterClick={handleCharacterClick}
-                  onEntityClick={handleEntityClick}
-                />
-              ) : (
-                <CharacterProfile
-                  characterKey={currentProfile.key}
-                  sourceTab={currentProfile.sourceTab}
-                  onCharacterClick={handleCharacterClick}
-                  onEntityClick={handleEntityClick}
-                />
-              )}
-            </Suspense>
-          </div>
-        ) : THREE_COLUMN_TABS.includes(activeTab) ? (
-          /* Scrollable area containing Zone B (fixed-height) + Zone C (tab content) */
-          <div className="flex-1 overflow-y-auto min-h-0">
-            {/* Zone B — Three-column fixed-height layout */}
-            <div className="h-[280px] flex m-2 rounded-lg border border-gray-200 shadow-sm overflow-hidden" style={{ backgroundColor: "#f5f3ef" }}>
-              {/* Left: Intel Brief Column */}
-              <Suspense fallback={<div className="w-[260px] shrink-0" />}>
-                <DailyBriefColumn activeTab={activeTab} onOpenFullBrief={handleReopenBrief} />
-              </Suspense>
+          {/* Profile breadcrumbs */}
+          {isProfileOpen && (
+            <div className="px-4 pt-2 shrink-0">
+              <ProfileBreadcrumbNav />
+            </div>
+          )}
 
-              {/* Center: Decision Desk — constrained to avoid dominating */}
-              <div className="flex-1 flex flex-col min-h-0 overflow-hidden border-x border-gray-200 max-w-[480px]">
-                <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
-                  <DecisionDesk
-                    activeTab={activeTab}
-                    onNavigateToTab={handleTabChange}
+          {/* Scrollable content area */}
+          {isProfileOpen && currentProfile ? (
+            <div className="flex-1 overflow-y-auto p-4">
+              <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
+                {currentProfile.type === "entity" ? (
+                  <EntityProfile
+                    entityId={currentProfile.key}
+                    onCharacterClick={handleCharacterClick}
+                    onEntityClick={handleEntityClick}
                   />
-                </Suspense>
-              </div>
-
-              {/* Right: Headlines Column */}
-              <Suspense fallback={<div className="w-[260px] shrink-0" />}>
-                <HeadlinesColumn activeTab={activeTab} />
+                ) : (
+                  <CharacterProfile
+                    characterKey={currentProfile.key}
+                    sourceTab={currentProfile.sourceTab}
+                    onCharacterClick={handleCharacterClick}
+                    onEntityClick={handleEntityClick}
+                  />
+                )}
               </Suspense>
             </div>
-
-            {/* Zone C — Tab-specific content below Zone B */}
-            <div className="px-4 py-3">
+          ) : (
+            <div className="flex-1 overflow-y-auto p-4">
               <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
                 {renderTabContent()}
               </Suspense>
             </div>
-          </div>
-        ) : (
-          /* Full-page tab content (Cabinet, Legislature, Judiciary, Media, Legacy) */
-          <div className="flex-1 overflow-y-auto p-4">
-            <Suspense fallback={<div className="p-4 text-gray-400">Loading...</div>}>
-              {renderTabContent()}
-            </Suspense>
-          </div>
-        )}
-        </div>{/* end light background area */}
+          )}
+        </div>
       </div>
 
       {/* Overlays */}

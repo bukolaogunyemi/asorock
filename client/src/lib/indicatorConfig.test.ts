@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { getIndicatorColor, getIndicatorTrend, INDICATORS } from "./indicatorConfig";
 
 describe("indicatorConfig", () => {
-  it("returns 8 indicators", () => {
-    expect(INDICATORS).toHaveLength(8);
+  it("returns 6 indicators", () => {
+    expect(INDICATORS).toHaveLength(6);
   });
 
   it("colors approval green when above 60", () => {

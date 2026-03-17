@@ -584,7 +584,7 @@ export const startingInboxMessages: GameInboxMessage[] = [
     initials: "BK",
     subject: "IMF Delegation Prep",
     preview: "The IMF team arrives in three days and wants a coherent fiscal line from the Presidency.",
-    fullText: "Sir, the IMF team arrives in three days. I need your approval on the fiscal report before we can present our consolidated position. The current draft shows a deficit well above our public commitment. Without your sign-off by tomorrow, we risk looking unprepared and divided.",
+    fullText: "Your Excellency,\n\nThe IMF Managing Director's delegation arrives in 72 hours. I need your approval on the fiscal report before we can present our consolidated position. The current draft shows a deficit well above our public commitment — the gap between projected and actual revenue is wider than anything we've disclosed.\n\nTreasury reserves stand at ₦1.2T, below the comfort threshold. The delegation will press hard on our debt-to-GDP ratio and pending bond obligations. We need your directive on whether to present an optimistic or conservative forecast.\n\nWithout your sign-off by tomorrow, we risk looking unprepared and divided. I await your instruction, sir.",
     day: 1,
     priority: "Urgent",
     read: false,
@@ -595,6 +595,15 @@ export const startingInboxMessages: GameInboxMessage[] = [
       { label: "Revise the Numbers", actionId: "modify" },
       { label: "Delay the Meeting", actionId: "defer" },
     ],
+    contextData: {
+      senderLoyalty: 68,
+      relatedEventTitle: "IMF Fiscal Review Delegation",
+      relevantMetrics: [
+        { label: "Treasury", value: "₦1.2T", color: "yellow" },
+        { label: "Inflation", value: "18.0%", color: "red" },
+      ],
+      factionName: "Technocrats",
+    },
   },
   {
     id: "msg-security-nw",
@@ -603,7 +612,7 @@ export const startingInboxMessages: GameInboxMessage[] = [
     initials: "KM",
     subject: "North-West Threat Window",
     preview: "Intelligence suggests coordinated attacks are being prepared across multiple northern states.",
-    fullText: "Mr. President, our sources indicate a coordinated attack is being prepared across Zamfara, Katsina, and Sokoto. We have 48 to 72 hours before the threat matures. I need a political decision on whether to move early and accept the optics of a heavy deployment.",
+    fullText: "Mr. President,\n\nOur sources indicate a coordinated attack is being prepared across Zamfara, Katsina, and Sokoto states. Multiple armed groups have been tracked converging on soft targets near local government headquarters. We estimate 48 to 72 hours before the threat matures into active operations.\n\nThe military has a forward deployment plan ready, but it requires your political clearance. Moving early means accepting the optics of a heavy security presence — governors will complain, and the media will question whether we are escalating. But if we wait and the attacks proceed, the political cost will be far greater.\n\nI need a decision today, sir.",
     day: 1,
     priority: "Critical",
     read: false,
@@ -614,6 +623,13 @@ export const startingInboxMessages: GameInboxMessage[] = [
       { label: "Order Surveillance First", actionId: "investigate" },
       { label: "Assign to NSA", actionId: "delegate" },
     ],
+    contextData: {
+      senderLoyalty: 75,
+      relevantMetrics: [
+        { label: "Security", value: "Elevated", color: "yellow" },
+      ],
+      factionName: "Military",
+    },
   },
   {
     id: "msg-party-unity",
@@ -622,7 +638,7 @@ export const startingInboxMessages: GameInboxMessage[] = [
     initials: "CO",
     subject: "Party Unity Warning",
     preview: "The South-East caucus is threatening to break ranks over appointments and patronage.",
-    fullText: "Your Excellency, I write to express concern about the growing division within our party. The South-East caucus believes your coalition is taking them for granted. If we do not move symbolically and quickly, I cannot guarantee discipline at the next NEC meeting.",
+    fullText: "Your Excellency,\n\nI write to express deep concern about the growing division within our party. The South-East caucus believes your coalition is taking them for granted — they point to zero cabinet appointments from their zone and the stalled East-West highway project as evidence of systematic exclusion.\n\nSenator Eze has been holding private meetings with opposition figures in Enugu. If we do not move symbolically and quickly — a visible appointment, a policy concession, something tangible — I cannot guarantee discipline at the next NEC meeting. The whip count suggests we could lose the floor vote on the appropriations bill.\n\nThis requires your personal attention, sir.",
     day: 1,
     priority: "Normal",
     read: false,
@@ -632,6 +648,10 @@ export const startingInboxMessages: GameInboxMessage[] = [
       { label: "Send Reassurance", actionId: "acknowledge" },
       { label: "Ignore for Now", actionId: "ignore-response" },
     ],
+    contextData: {
+      senderLoyalty: 55,
+      factionName: "Old Guard",
+    },
   },
   {
     id: "msg-labour-pressure",
@@ -640,7 +660,7 @@ export const startingInboxMessages: GameInboxMessage[] = [
     initials: "NO",
     subject: "Strike Notice",
     preview: "Labour is preparing a coordinated shutdown unless the Presidency moves on wages and transport relief.",
-    fullText: "Mr. President, the NLC has formally resolved to commence a nationwide strike if our demands are ignored. The minimum wage review is stalled and subsidy pain is unbearable. We await a serious offer, not another speech.",
+    fullText: "Mr. President,\n\nThe NLC Central Working Committee has formally resolved to commence a nationwide strike in 48 hours if our demands continue to be ignored. The minimum wage review has been stalled for six months. Workers cannot feed their families while fuel prices climb every week.\n\nWe have shown patience, sir. We attended three rounds of negotiations in good faith. Each time, your representatives promised action and delivered nothing. The subsidy pain is unbearable for ordinary Nigerians.\n\nWe are not asking for the impossible — we are asking for a serious offer. Not another speech. The streets are watching, and so is labour.",
     day: 1,
     priority: "Urgent",
     read: false,
@@ -650,6 +670,12 @@ export const startingInboxMessages: GameInboxMessage[] = [
       { label: "Issue Public Statement", actionId: "acknowledge" },
       { label: "Stand Firm", actionId: "reject" },
     ],
+    contextData: {
+      senderLoyalty: 40,
+      relevantMetrics: [
+        { label: "Approval", value: "48%", color: "yellow" },
+      ],
+    },
   },
   {
     id: "msg-governors-fiscal",
@@ -658,7 +684,7 @@ export const startingInboxMessages: GameInboxMessage[] = [
     initials: "MG",
     subject: "Fiscal Autonomy Request",
     preview: "Governors want an emergency discussion on revenue sharing and emergency support.",
-    fullText: "On behalf of the Governors Forum, I request an emergency discussion on fiscal autonomy reforms. Several states are approaching salary defaults and will blame the Presidency if no bridge support emerges.",
+    fullText: "Your Excellency,\n\nOn behalf of the Nigeria Governors Forum, I write to request an emergency discussion on fiscal autonomy reforms. The situation in the states has reached a critical point — at least seven governors cannot meet next month's salary obligations without federal bridge support.\n\nThe current revenue allocation formula is strangling state governments. Our internally generated revenue cannot cover recurrent expenditure, let alone capital projects. If defaults begin, the governors will have no choice but to blame the Presidency publicly.\n\nI propose a confidential meeting at the Villa this week to discuss emergency fiscal measures before the crisis becomes a media spectacle.",
     day: 1,
     priority: "Normal",
     read: false,
@@ -668,6 +694,10 @@ export const startingInboxMessages: GameInboxMessage[] = [
       { label: "Negotiate Terms", actionId: "modify" },
       { label: "Refer to Budget Office", actionId: "delegate" },
     ],
+    contextData: {
+      senderLoyalty: 50,
+      factionName: "Governors Bloc",
+    },
   },
 ];
 

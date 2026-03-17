@@ -1,14 +1,17 @@
 import { useMemo } from "react";
 import { useGame } from "@/lib/GameContext";
 import { computeAllStakeholderSentiments } from "@/lib/stakeholderSentiment";
+import type { StakeholderConfig } from "@/lib/governanceSections";
 
 /** Icon + color config per stakeholder */
 const STAKEHOLDER_ICONS: Record<string, string> = {
-  imf: "🏛",
-  "world-bank": "🏛",
+  international: "🏛",
   business: "🏢",
   labour: "✊",
   analysts: "📊",
+  "oil-industry": "🛢",
+  "bond-market": "📈",
+  manufacturers: "🏭",
 };
 
 const SENTIMENT_STYLES: Record<string, {
@@ -41,19 +44,19 @@ const SENTIMENT_STYLES: Record<string, {
   },
 };
 
-export function EconomyStakeholders() {
+interface Props {
+  stakeholders?: StakeholderConfig[];
+}
+
+export function EconomyStakeholders({ stakeholders }: Props) {
   const { state } = useGame();
 
   const sentiments = useMemo(() => {
-    return computeAllStakeholderSentiments(state.policyLevers, state.economy);
-  }, [state.policyLevers, state.economy]);
+    return computeAllStakeholderSentiments(state.policyLevers, state.economy, stakeholders);
+  }, [state.policyLevers, state.economy, stakeholders]);
 
   return (
     <div className="flex flex-col h-full">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-[#d4af37] mb-2">
-        Stakeholder Pulse
-      </h3>
-
       <div className="flex-1 space-y-2 overflow-y-auto">
         {sentiments.map(s => {
           const style = SENTIMENT_STYLES[s.sentiment] ?? SENTIMENT_STYLES.cautious;

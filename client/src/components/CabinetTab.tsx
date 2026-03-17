@@ -1,348 +1,605 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
+import { useCallback, useState, useMemo } from "react";
 import { useGame } from "@/lib/GameContext";
-import { CharacterAvatar } from "@/components/CharacterAvatar";
-import { CompetencyBar } from "@/components/CompetencyBar";
-import { RelationshipIndicator } from "@/components/RelationshipIndicator";
-import { Briefcase, Shield, Scale, Megaphone, Shuffle, ClipboardCheck, Key } from "lucide-react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { cabinetRoster, factions } from "@/lib/gameData";
-import { slugify } from "@/lib/entityTypes";
-import { traitDefinitions } from "@/lib/traits";
-import { getConsequences } from "@/lib/federalCharacter";
+  CABINET_CLUSTERS,
+  PORTFOLIO_SECTOR_MAP,
+  computeMinisterPerformance,
+  computeMinisterStatus,
+  relationshipToScore,
+  STATUS_CONFIG,
+} from "@/lib/cabinetSystem";
+import { averageProfessionalCompetence } from "@/lib/competencyUtils";
+import { CharacterAvatar } from "./CharacterAvatar";
+import { AppointmentModal, type AppointmentModalCandidate } from "./AppointmentModal";
+import { APPOINTMENT_POSITIONS, cabinetCandidates, AGENCY_HEAD_POSITIONS, agencyHeadCandidates } from "@/lib/handcraftedCharacters";
+import FederalCharacterPanel from "./cabinet/FederalCharacterPanel";
+import MinisterDetailPanel from "./cabinet/MinisterDetailPanel";
+import { FECMeeting } from "./cabinet/FECMeeting";
+import { PerformanceReview } from "./cabinet/PerformanceReview";
+import { ReassignModal, DismissModal } from "./cabinet/CabinetActionModals";
+import { CabinetRetreat } from "./cabinet/CabinetRetreat";
+import { BudgetMeeting } from "./cabinet/BudgetMeeting";
+import { CabinetRecords } from "./cabinet/CabinetRecords";
+import { isRetreatDue, isOctoberBudgetMonth } from "@/lib/cabinetRetreats";
+import type { GameState, Relationship, CharacterState } from "@/lib/gameTypes";
+import type { CareerEntry, InteractionEntry } from "@/lib/competencyTypes";
 
+interface CabinetTabProps {
+  onCharacterClick?: (name: string) => void;
+  onEntityClick?: (entityId: string) => void;
+}
 
-const traitBadgeVariant = (category: string) => {
-  if (category === "personality") return "outline" as const;
-  if (category === "ideology") return "secondary" as const;
-  return "default" as const;
-};
+// Constitutional officers — must match APPOINTMENT_POSITIONS keys
+const CABINET_OFFICERS = [
+  "Chief of Staff",
+  "Secretary to the Government",
+  "National Security Adviser",
+  "Chief Economic Adviser",
+  "Director of National Intelligence",
+  "National Political Adviser",
+  "National Media Adviser",
+] as const;
 
-export default function CabinetTab({ onCharacterClick, onEntityClick }: { onCharacterClick?: (characterKey: string) => void; onEntityClick?: (entityId: string) => void }) {
-  const { toast } = useToast();
-  const { state } = useGame();
-  const action = (title: string) => (msg: string) => () =>
-    toast({ title, description: msg });
+// Helpers
+function getSectorHealth(state: GameState, portfolio: string): number | null {
+  const sectorKey = PORTFOLIO_SECTOR_MAP[portfolio];
+  if (!sectorKey) return null;
+  const sector = (state as any)[sectorKey];
+  return sector?.health ?? 50;
+}
 
-  const isPlaying = state.phase === "playing";
+function statColor(value: number): string {
+  if (value > 70) return "bg-emerald-500";
+  if (value >= 40) return "bg-amber-500";
+  return "bg-red-500";
+}
+
+function relationBadge(rel: Relationship): { label: string; color: string } {
+  const map: Record<Relationship, { label: string; color: string }> = {
+    Loyal: { label: "Loyal", color: "bg-emerald-500/20 text-emerald-700" },
+    Friendly: { label: "Friendly", color: "bg-emerald-500/20 text-emerald-700" },
+    Neutral: { label: "Neutral", color: "bg-amber-500/20 text-amber-700" },
+    Wary: { label: "Wary", color: "bg-amber-500/20 text-amber-700" },
+    Distrustful: { label: "Distrustful", color: "bg-red-500/20 text-red-700" },
+    Hostile: { label: "Hostile", color: "bg-red-500/20 text-red-700" },
+  };
+  return map[rel];
+}
+
+type ModalState =
+  | null
+  | { type: "review"; name: string; portfolio: string }
+  | { type: "reassign"; name: string; portfolio: string }
+  | { type: "dismiss"; name: string; portfolio: string };
+
+type CabinetView = "cabinet" | "records";
+
+// Action button config
+const ACTION_BUTTONS = [
+  { id: "convene-fec", label: "Convene FEC", icon: "📋" },
+  { id: "summon-minister", label: "Summon Minister", icon: "🔔" },
+  { id: "reshuffle", label: "Reshuffle", icon: "🔄" },
+  { id: "retreat", label: "Retreat", icon: "🏛️" },
+] as const;
+
+// ── Shared card for filled positions (governance-style) ──
+function FilledPositionCard({
+  name,
+  char,
+  role,
+  onClick,
+  statusLine,
+  borderClass,
+}: {
+  name: string;
+  char: CharacterState;
+  role: string;
+  onClick: () => void;
+  statusLine?: string;
+  borderClass?: string;
+}) {
+  const loyalty = char.competencies.personal.loyalty;
+  const competence = averageProfessionalCompetence(char.competencies);
+  const badge = relationBadge(char.relationship);
 
   return (
-    <div className="space-y-4">
-      {/* Cabinet Roster — Card Grid */}
-      <Card className="border border-border" data-testid="cabinet-roster-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm font-semibold">Cabinet Roster</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-            {cabinetRoster.map((m) => {
-              // Get live character data from GameContext if playing
-              const charData = isPlaying ? state.characters[m.name] : null;
-              const loyalty = charData?.competencies?.personal.loyalty ?? m.loyalty;
-              const competence = charData ? Math.round(Object.values(charData.competencies.professional).reduce((a, b) => a + b, 0) / 7) : m.competence;
-              const ambition = charData?.competencies?.personal.ambition ?? m.ambition;
-              const relationship = charData?.relationship ?? m.relationship;
-              const faction = charData?.faction ?? m.faction;
-              const traits = charData?.traits ?? [];
-              const hooks = charData?.hooks ?? [];
-
-              return (
-                <Card
-                  key={m.name}
-                  className={`group border border-border bg-muted/30 ${onCharacterClick ? "cursor-pointer hover:border-primary/50 hover:shadow-md transition-all" : ""}`}
-                  onClick={onCharacterClick ? () => onCharacterClick(m.name) : undefined}
-                >
-                  <CardContent className="p-3 space-y-2">
-                    <div className="flex items-start gap-3">
-                      <CharacterAvatar name={m.name} initials={m.avatar} size="md" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className={`text-sm font-semibold ${onCharacterClick ? "group-hover:underline" : ""}`}>{m.name}</p>
-                            <p
-                              className={`text-xs text-muted-foreground ${onEntityClick ? "cursor-pointer hover:underline hover:text-primary/80" : ""}`}
-                              onClick={onEntityClick ? (e) => { e.stopPropagation(); onEntityClick("ministry:" + slugify(m.portfolio)); } : undefined}
-                            >
-                              {m.portfolio}
-                            </p>
-                          </div>
-                          {hooks.length > 0 && (
-                            <Key
-                              className="h-3.5 w-3.5 text-amber-500 flex-shrink-0"
-                              data-testid={`hook-indicator-${m.name.toLowerCase().replace(/\s+/g, "-")}`}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Trait Badges */}
-                    {traits.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {traits.map((t) => {
-                          const def = traitDefinitions[t];
-                          return (
-                            <Badge
-                              key={t}
-                              variant={def ? traitBadgeVariant(def.category) : "outline"}
-                              className="text-xs"
-                              data-testid={`trait-badge-${t}`}
-                            >
-                              {def?.label ?? t}
-                            </Badge>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    <div className="space-y-0.5">
-                      <CompetencyBar value={loyalty} label="Loyalty" />
-                      <CompetencyBar value={competence} label="Competence" />
-                      <CompetencyBar value={ambition} label="Ambition" />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <RelationshipIndicator relationship={relationship} />
-                      <Badge variant="outline" className="text-xs">{faction}</Badge>
-                    </div>
-                    <Button
-                      data-testid={`summon-${m.portfolio.toLowerCase().replace(/\s+/g, "-")}`}
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-xs"
-                      onClick={() => toast({ title: m.portfolio, description: `continue_conversation: Summon ${m.name} (${m.portfolio}) — request a private ministerial briefing on ${m.portfolio} matters.` })}
-                    >
-                      Summon for Briefing
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
+    <button
+      onClick={onClick}
+      className={`w-full rounded-lg border border-gray-200 bg-[#faf8f5] p-2 text-left hover:bg-gray-50 transition-colors ${borderClass ?? ""}`}
+    >
+      <div className="flex items-center gap-2">
+        <CharacterAvatar
+          name={name}
+          initials={char.avatar || name.slice(0, 2).toUpperCase()}
+          size="sm"
+          gender={char.gender}
+          role={role}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold text-[#0a1f14] truncate">{name}</p>
+          <p className="text-[10px] text-gray-500 truncate">{role}</p>
+        </div>
+        <span className={`inline-block px-1.5 py-0.5 rounded-full text-[9px] font-medium shrink-0 ${badge.color}`}>
+          {badge.label}
+        </span>
+      </div>
+      {/* Trait pills */}
+      {char.traits.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap gap-1">
+          {char.traits.slice(0, 2).map((trait) => (
+            <span key={trait} className="inline-block px-1.5 py-0.5 rounded text-[8px] font-medium bg-[#0a1f14]/5 text-[#0a1f14]/70 capitalize">
+              {trait}
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="mt-1.5 flex gap-3">
+        <div className="flex items-center gap-1 flex-1">
+          <span className="text-[9px] text-gray-400">Loy</span>
+          <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div className={`h-full rounded-full ${statColor(loyalty)}`} style={{ width: `${loyalty}%` }} />
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Federal Character Compliance Panel */}
-      {isPlaying && state.federalCharacter && (() => {
-        const fc = state.federalCharacter;
-        const consequences = getConsequences(fc.complianceScore);
-        const scoreColor =
-          fc.complianceScore >= 85 ? "text-green-400" :
-          fc.complianceScore >= 70 ? "text-yellow-400" :
-          fc.complianceScore >= 45 ? "text-orange-400" :
-          "text-red-400";
-        const tierBadgeColor =
-          consequences.level === "balanced" ? "bg-[#0A4D2C] text-[#C5A55A] border-[#C5A55A]/40" :
-          consequences.level === "mild" ? "bg-yellow-900/30 text-yellow-400 border-yellow-500/40" :
-          consequences.level === "moderate" ? "bg-orange-900/30 text-orange-400 border-orange-500/40" :
-          "bg-red-900/30 text-red-400 border-red-500/40";
-        const zones = Object.values(fc.zoneScores);
-
-        return (
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4" data-testid="federal-character-panel">
-            {/* Compliance Score Card */}
-            <Card className="border border-[#C5A55A]/30 bg-gradient-to-br from-[#0A4D2C]/10 to-transparent" data-testid="compliance-score-card">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Federal Character Compliance</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0 space-y-3">
-                <div className="flex items-center gap-4">
-                  <div className={`text-4xl font-bold tabular-nums ${scoreColor}`} data-testid="compliance-score">
-                    {Math.round(fc.complianceScore)}
-                  </div>
-                  <div className="space-y-1">
-                    <Badge className={`text-xs border ${tierBadgeColor}`} data-testid="compliance-tier">
-                      {consequences.level.charAt(0).toUpperCase() + consequences.level.slice(1)}
-                    </Badge>
-                    <p className="text-xs text-muted-foreground leading-snug">{consequences.description}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Zone Balance Table */}
-            <Card className="xl:col-span-2 border border-[#C5A55A]/30 bg-gradient-to-br from-[#0A4D2C]/10 to-transparent" data-testid="zone-balance-card">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm font-semibold text-[#C5A55A]">Zone Balance</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-[#C5A55A]/20">
-                      <TableHead className="text-xs text-[#C5A55A]/70 h-8">Zone</TableHead>
-                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Weighted</TableHead>
-                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Expected</TableHead>
-                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Actual</TableHead>
-                      <TableHead className="text-xs text-[#C5A55A]/70 h-8">Deviation</TableHead>
-                      <TableHead className="text-xs text-[#C5A55A]/70 h-8 text-right">Grievance</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {zones.map((z) => {
-                      const deviationPct = z.deviation * 100;
-                      const barWidth = Math.min(Math.abs(deviationPct) * 4, 100);
-                      const barColor =
-                        Math.abs(deviationPct) < 2 ? "bg-green-500" :
-                        deviationPct < 0 ? "bg-red-500" :
-                        "bg-orange-500";
-
-                      return (
-                        <TableRow key={z.zone} className="border-[#C5A55A]/10" data-testid={`zone-row-${z.zone}`}>
-                          <TableCell className="p-2 text-xs font-semibold">{z.zone}</TableCell>
-                          <TableCell className="p-2 text-xs text-right tabular-nums">{z.weightedAppointments}</TableCell>
-                          <TableCell className="p-2 text-xs text-right tabular-nums">{(z.expectedShare * 100).toFixed(1)}%</TableCell>
-                          <TableCell className="p-2 text-xs text-right tabular-nums">{(z.actualShare * 100).toFixed(1)}%</TableCell>
-                          <TableCell className="p-2">
-                            <div className="flex items-center gap-1.5">
-                              <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                                <div
-                                  className={`h-full rounded-full ${barColor}`}
-                                  style={{ width: `${barWidth}%` }}
-                                />
-                              </div>
-                              <span className="text-xs tabular-nums text-muted-foreground">
-                                {deviationPct >= 0 ? "+" : ""}{deviationPct.toFixed(1)}%
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="p-2 text-xs text-right tabular-nums">{z.grievanceContribution.toFixed(1)}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+        </div>
+        <div className="flex items-center gap-1 flex-1">
+          <span className="text-[9px] text-gray-400">Comp</span>
+          <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div className={`h-full rounded-full ${statColor(competence)}`} style={{ width: `${competence}%` }} />
           </div>
-        );
-      })()}
-
-      {/* Faction Influence (unchanged chart) */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <Card className="border border-border">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-semibold">Faction Influence</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={factions} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip
-                  contentStyle={{
-                    background: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                />
-                <Bar dataKey="influence" fill="hsl(153, 60%, 32%)" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Cabinet Meeting + Cabinet Actions */}
-        <div className="space-y-4">
-          <Card className="border border-border" data-testid="cabinet-meeting-card">
-            <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-semibold">Cabinet Meeting</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  data-testid="economy-briefing-btn"
-                  variant="outline"
-                  className="flex flex-col items-center justify-center gap-1.5 h-20 text-xs"
-                  onClick={() => toast({ title: "Cabinet Meeting", description: "continue_conversation: Economy Briefing — Finance Minister presents fiscal outlook, revenue projections, and IMF engagement update." })}
-                >
-                  <Briefcase className="h-5 w-5" />
-                  Economy Briefing
-                </Button>
-                <Button
-                  data-testid="security-briefing-btn"
-                  variant="outline"
-                  className="flex flex-col items-center justify-center gap-1.5 h-20 text-xs"
-                  onClick={() => toast({ title: "Cabinet Meeting", description: "continue_conversation: Security Briefing — NSA and Defence Minister present threat assessment and operational updates." })}
-                >
-                  <Shield className="h-5 w-5" />
-                  Security Briefing
-                </Button>
-                <Button
-                  data-testid="legislative-strategy-btn"
-                  variant="outline"
-                  className="flex flex-col items-center justify-center gap-1.5 h-20 text-xs"
-                  onClick={() => toast({ title: "Cabinet Meeting", description: "continue_conversation: Legislative Strategy — Attorney General briefs on pending bills, whip counts, and parliamentary tactics." })}
-                >
-                  <Scale className="h-5 w-5" />
-                  Legislative Strategy
-                </Button>
-                <Button
-                  data-testid="public-affairs-btn"
-                  variant="outline"
-                  className="flex flex-col items-center justify-center gap-1.5 h-20 text-xs"
-                  onClick={() => toast({ title: "Cabinet Meeting", description: "continue_conversation: Public Affairs Review — Media team presents sentiment analysis, narrative tracking, and communications strategy." })}
-                >
-                  <Megaphone className="h-5 w-5" />
-                  Public Affairs Review
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border border-border" data-testid="cabinet-actions-card">
-            <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-semibold">Cabinet Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0 space-y-2">
-              <Button
-                data-testid="reshuffle-minister-btn"
-                variant="outline"
-                size="sm"
-                className="w-full justify-start"
-                onClick={() => toast({ title: "Cabinet Reshuffle", description: "continue_conversation: Reshuffle Minister — select a minister to replace. Consider faction balance and competence needs." })}
-              >
-                <Shuffle className="h-3.5 w-3.5 mr-2" />
-                Reshuffle Minister
-              </Button>
-              <Button
-                data-testid="performance-review-btn"
-                variant="outline"
-                size="sm"
-                className="w-full justify-start"
-                onClick={() => toast({ title: "Performance Review", description: "continue_conversation: Performance Review — evaluate minister performance metrics and issue warnings or commendations." })}
-              >
-                <ClipboardCheck className="h-3.5 w-3.5 mr-2" />
-                Performance Review
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </div>
+      {statusLine && <p className="text-[9px] text-gray-400 mt-1">{statusLine}</p>}
+    </button>
+  );
+}
+
+// ── Shared card for vacant positions ──
+function VacantPositionCard({ role, onAppoint }: { role: string; onAppoint: () => void }) {
+  return (
+    <div className="rounded-lg border border-dashed border-[#d4af37]/40 bg-[#faf8f5] p-2.5">
+      <p className="text-xs font-semibold text-[#0a1f14] mb-0.5">{role}</p>
+      <p className="text-[10px] text-gray-400 mb-2">Position vacant</p>
+      <button
+        onClick={onAppoint}
+        className="w-full py-1.5 rounded-md text-[10px] font-bold text-white transition-all hover:opacity-90"
+        style={{ backgroundColor: "#d4af37" }}
+      >
+        Make Appointment
+      </button>
+    </div>
+  );
+}
+
+// ── Appointment candidate adapter ──
+interface RawCandidate {
+  name: string;
+  avatar: string;
+  loyalty: number;
+  competence: number;
+  age: number;
+  state: string;
+  gender: string;
+  religion: string;
+  ethnicity: string;
+  traits?: string[];
+  tradeOff?: string;
+  note?: string;
+  bio?: string;
+  faction?: string;
+  competencies?: Record<string, number>;
+}
+
+function adaptCandidates(raw: RawCandidate[]): AppointmentModalCandidate[] {
+  return raw.map(c => ({
+    name: c.name,
+    avatar: c.avatar,
+    age: c.age,
+    state: c.state,
+    gender: c.gender,
+    faction: c.faction,
+    traits: c.traits,
+    bio: c.tradeOff ?? c.bio ?? "",
+    note: c.tradeOff ?? c.note ?? "",
+    stats: [
+      { label: "Loyalty", value: c.loyalty },
+      { label: "Competence", value: c.competence },
+    ],
+  }));
+}
+
+function buildCharacterFromCandidate(candidate: RawCandidate, role: string): CharacterState {
+  const admin = candidate.competence;
+  const pol = Math.round(candidate.competence * 0.9);
+  const net = Math.round(candidate.competence * 0.85);
+  const disc = Math.round(candidate.competence * 0.8);
+  const loy = candidate.loyalty;
+
+  return {
+    name: candidate.name,
+    portfolio: role,
+    faction: candidate.faction ?? "",
+    relationship: "Neutral" as Relationship,
+    avatar: candidate.avatar,
+    age: candidate.age,
+    state: candidate.state,
+    gender: candidate.gender,
+    competencies: {
+      professional: {
+        economics: admin,
+        diplomacy: net,
+        security: disc,
+        media: pol,
+        legal: disc,
+        administration: admin,
+        technology: Math.round((admin + net) / 2),
+      },
+      personal: {
+        loyalty: loy,
+        charisma: pol,
+        leadership: Math.round((pol + admin) / 2),
+        ambition: 50,
+        integrity: disc,
+        resilience: 60,
+        intrigue: Math.round(net * 0.7),
+      },
+    },
+    hooks: [],
+    traits: candidate.traits ?? [],
+    careerHistory: [] as CareerEntry[],
+    interactionLog: [] as InteractionEntry[],
+    biography: candidate.bio,
+    education: (candidate as any).education,
+    religion: candidate.religion,
+    ethnicity: candidate.ethnicity,
+  };
+}
+
+export default function CabinetTab({ onCharacterClick }: CabinetTabProps) {
+  const { state, conveneFEC, clearFECMemos, applyRetreat, submitBudget, makeAppointment } = useGame();
+  const isPlaying = state.phase === "playing";
+  const pendingMemos = state.cabinetRetreats.pendingFECMemos;
+  const hasPendingFEC = pendingMemos.length > 0;
+
+  const [selectedMinister, setSelectedMinister] = useState<{ name: string; portfolio: string } | null>(null);
+  const [activeModal, setActiveModal] = useState<ModalState>(null);
+  const [showRetreat, setShowRetreat] = useState(false);
+  const [showBudget, setShowBudget] = useState(false);
+  const [view, setView] = useState<CabinetView>("cabinet");
+  const [appointingRole, setAppointingRole] = useState<string | null>(null);
+
+  const retreatDue = isPlaying && isRetreatDue(state.cabinetRetreats.lastRetreatDay, state.day);
+  const budgetDue = retreatDue && isOctoberBudgetMonth(state.day);
+
+  const handleMinisterClick = useCallback(
+    (name: string, portfolio: string) => setSelectedMinister({ name, portfolio }),
+    [],
+  );
+
+  const handleAction = useCallback((actionId: string) => {
+    switch (actionId) {
+      case "convene-fec": conveneFEC(); break;
+      case "summon-minister": break; // TODO: open minister picker
+      case "reshuffle": break; // TODO: open reshuffle flow
+      case "retreat": setShowRetreat(true); break;
+    }
+  }, [conveneFEC]);
+
+  // Resolve constitutional officers
+  const cabinetOfficers = useMemo(() =>
+    CABINET_OFFICERS.map((office) => {
+      const appointment = state.appointments?.find((a) => a.office === office);
+      const name = appointment?.appointee ?? null;
+      const char = name ? state.characters[name] ?? null : null;
+      return { office, name, char };
+    }),
+    [state.appointments, state.characters],
+  );
+
+  // Resolve agency heads
+  const agencyHeads = useMemo(() =>
+    AGENCY_HEAD_POSITIONS.map((office) => {
+      const appointment = state.appointments?.find((a) => a.office === office);
+      const name = appointment?.appointee ?? null;
+      const char = name ? state.characters[name] ?? null : null;
+      return { office, name, char };
+    }),
+    [state.appointments, state.characters],
+  );
+
+  // Get candidates for the current appointing role
+  const { rawCandidates, modalCandidates } = useMemo(() => {
+    if (!appointingRole) return { rawCandidates: [] as RawCandidate[], modalCandidates: [] as AppointmentModalCandidate[] };
+
+    // Try APPOINTMENT_POSITIONS first (presidential staff)
+    const posMatch = APPOINTMENT_POSITIONS.find(p => p.position === appointingRole);
+    if (posMatch) {
+      const raw = posMatch.candidates as unknown as RawCandidate[];
+      return { rawCandidates: raw, modalCandidates: adaptCandidates(raw) };
+    }
+
+    // Try agencyHeadCandidates (CBN, FIRS, Customs, NNPCL)
+    const agencyKey = (AGENCY_HEAD_POSITIONS as readonly string[]).find(k =>
+      k.toLowerCase() === appointingRole.toLowerCase()
+    ) as keyof typeof agencyHeadCandidates | undefined;
+    if (agencyKey) {
+      const raw = agencyHeadCandidates[agencyKey] as unknown as RawCandidate[];
+      return { rawCandidates: raw, modalCandidates: adaptCandidates(raw) };
+    }
+
+    // Try cabinetCandidates (minister portfolios)
+    const cabinetKey = Object.keys(cabinetCandidates).find(k =>
+      k.toLowerCase() === appointingRole.toLowerCase()
+    ) as keyof typeof cabinetCandidates | undefined;
+    if (cabinetKey) {
+      const raw = cabinetCandidates[cabinetKey] as unknown as RawCandidate[];
+      return { rawCandidates: raw, modalCandidates: adaptCandidates(raw) };
+    }
+
+    return { rawCandidates: [] as RawCandidate[], modalCandidates: [] as AppointmentModalCandidate[] };
+  }, [appointingRole]);
+
+  const handleModalSelect = useCallback((index: number) => {
+    if (!appointingRole || !rawCandidates[index]) return;
+    const candidate = rawCandidates[index];
+    const newChar = buildCharacterFromCandidate(candidate, appointingRole);
+
+    // Presidential staff uses office-based appointment; ministers use portfolio
+    const isStaff = CABINET_OFFICERS.includes(appointingRole as any);
+    makeAppointment(appointingRole, candidate.name, newChar);
+
+    // For ministers, also set cabinetAppointments
+    if (!isStaff) {
+      // cabinetAppointments is handled by the MAKE_APPOINTMENT reducer for portfolio-based
+    }
+
+    setAppointingRole(null);
+  }, [appointingRole, rawCandidates, makeAppointment]);
+
+  // FEC meeting overlay
+  if (hasPendingFEC) {
+    return (
+      <div className="h-full min-h-0 p-4 max-w-2xl mx-auto">
+        <FECMeeting memos={pendingMemos} onComplete={clearFECMemos} />
+      </div>
+    );
+  }
+
+  // Retreat overlay
+  if (showRetreat || (retreatDue && !budgetDue && !showBudget)) {
+    return (
+      <div className="h-full min-h-0 p-4 max-w-2xl mx-auto">
+        <CabinetRetreat
+          onComplete={(priorities) => {
+            applyRetreat(priorities);
+            setShowRetreat(false);
+          }}
+        />
+      </div>
+    );
+  }
+
+  // Budget meeting overlay
+  if (showBudget || budgetDue) {
+    return (
+      <div className="h-full min-h-0 p-4 max-w-2xl mx-auto">
+        <BudgetMeeting
+          onComplete={(allocation) => {
+            submitBudget(allocation);
+            setShowBudget(false);
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0">
+      {/* ── LEFT COLUMN: Actions + Federal Character ── */}
+      {isPlaying && (
+        <div className="w-[220px] shrink-0 border-r border-gray-200 bg-white overflow-y-auto p-3 flex flex-col gap-4">
+          {/* Presidential Actions */}
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37] mb-2">
+              Presidential Actions
+            </h3>
+            <div className="grid grid-cols-2 gap-1.5">
+              {ACTION_BUTTONS.map((btn) => (
+                <button
+                  key={btn.id}
+                  onClick={() => handleAction(btn.id)}
+                  className="flex flex-col items-center gap-1 px-2 py-2.5 rounded-lg text-center transition-all bg-white border border-gray-200 text-[#0a1f14] hover:border-[#d4af37] hover:text-[#d4af37]"
+                >
+                  <span className="text-base">{btn.icon}</span>
+                  <span className="text-[10px] font-semibold leading-tight">{btn.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Federal Character Compliance */}
+          <FederalCharacterPanel />
+        </div>
+      )}
+
+      {/* ── RIGHT COLUMN: Tab pills + Cabinet/Records content ── */}
+      <div className="flex-1 min-w-0 flex flex-col min-h-0">
+        {/* Sub-tab pills (governance style) */}
+        <div className="flex items-center gap-2 px-4 py-2 border-b border-gray-200">
+          <button
+            onClick={() => setView("cabinet")}
+            className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+              view === "cabinet"
+                ? "bg-[#d4af37] text-white"
+                : "text-gray-500 hover:text-[#0a1f14] bg-gray-100 hover:bg-gray-200"
+            }`}
+          >
+            Cabinet
+          </button>
+          <button
+            onClick={() => setView("records")}
+            className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+              view === "records"
+                ? "bg-[#d4af37] text-white"
+                : "text-gray-500 hover:text-[#0a1f14] bg-gray-100 hover:bg-gray-200"
+            }`}
+          >
+            Records & Reforms
+          </button>
+        </div>
+
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {view === "records" ? (
+            <CabinetRecords />
+          ) : selectedMinister ? (
+            <MinisterDetailPanel
+              ministerName={selectedMinister.name}
+              portfolio={selectedMinister.portfolio}
+              onClose={() => setSelectedMinister(null)}
+              onSummon={() => console.log("Summon:", selectedMinister.name)}
+              onDirective={() => console.log("Directive:", selectedMinister.name)}
+              onReview={() => setActiveModal({ type: "review", ...selectedMinister })}
+              onReassign={() => setActiveModal({ type: "reassign", ...selectedMinister })}
+              onDismiss={() => setActiveModal({ type: "dismiss", ...selectedMinister })}
+              onViewProfile={() => onCharacterClick?.(selectedMinister.name)}
+            />
+          ) : (
+            <div className="space-y-4">
+              {/* Presidential Staff cluster */}
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37] mb-2">
+                  Presidential Staff
+                </h3>
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                  {cabinetOfficers.map(({ office, name, char }) =>
+                    char && name ? (
+                      <FilledPositionCard
+                        key={office}
+                        name={name}
+                        char={char}
+                        role={office}
+                        onClick={() => onCharacterClick?.(name)}
+                      />
+                    ) : (
+                      <VacantPositionCard
+                        key={office}
+                        role={office}
+                        onAppoint={() => setAppointingRole(office)}
+                      />
+                    ),
+                  )}
+                </div>
+              </div>
+
+              {/* Agency Heads cluster */}
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37] mb-2">
+                  Agency Heads
+                </h3>
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                  {agencyHeads.map(({ office, name, char }) =>
+                    char && name ? (
+                      <FilledPositionCard
+                        key={office}
+                        name={name}
+                        char={char}
+                        role={office}
+                        onClick={() => onCharacterClick?.(name)}
+                      />
+                    ) : (
+                      <VacantPositionCard
+                        key={office}
+                        role={office}
+                        onAppoint={() => setAppointingRole(office)}
+                      />
+                    ),
+                  )}
+                </div>
+              </div>
+
+              {/* Minister cluster grids */}
+              {CABINET_CLUSTERS.map((cluster) => (
+                <div key={cluster.id}>
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37] mb-2">
+                    {cluster.label}
+                  </h3>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                    {cluster.portfolios.map((portfolio) => {
+                      const appointedName = state.cabinetAppointments[portfolio];
+                      const char = appointedName ? state.characters[appointedName] : null;
+
+                      if (!appointedName || !char) {
+                        return (
+                          <VacantPositionCard
+                            key={portfolio}
+                            role={portfolio}
+                            onAppoint={() => setAppointingRole(portfolio)}
+                          />
+                        );
+                      }
+
+                      const sectorHealth = getSectorHealth(state, portfolio);
+                      const competenceAvg = averageProfessionalCompetence(char.competencies);
+                      const relScore = relationshipToScore(char.relationship);
+                      const performance = computeMinisterPerformance(sectorHealth, competenceAvg, relScore);
+                      const ms = state.ministerStatuses?.[appointedName];
+                      const status = computeMinisterStatus(
+                        sectorHealth ?? 50, relScore,
+                        ms?.onProbation ?? false, ms?.appointmentDay ?? 0, state.day,
+                      );
+                      const statusConfig = STATUS_CONFIG[status];
+
+                      return (
+                        <FilledPositionCard
+                          key={portfolio}
+                          name={appointedName}
+                          char={char}
+                          role={`Minister of ${portfolio}`}
+                          onClick={() => handleMinisterClick(appointedName, portfolio)}
+                          statusLine={`${status} · ${Math.round(performance)}%`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Appointment Modal */}
+      {appointingRole && modalCandidates.length > 0 && (
+        <AppointmentModal
+          title={appointingRole}
+          headerLabel="Appointment"
+          candidates={modalCandidates}
+          onSelect={handleModalSelect}
+          onCancel={() => setAppointingRole(null)}
+        />
+      )}
+
+      {/* Action Modals */}
+      {activeModal?.type === "review" && (
+        <PerformanceReview
+          ministerName={activeModal.name}
+          portfolio={activeModal.portfolio}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+      {activeModal?.type === "reassign" && (
+        <ReassignModal
+          ministerName={activeModal.name}
+          currentPortfolio={activeModal.portfolio}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+      {activeModal?.type === "dismiss" && (
+        <DismissModal
+          ministerName={activeModal.name}
+          portfolio={activeModal.portfolio}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
     </div>
   );
 }

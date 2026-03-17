@@ -487,7 +487,7 @@ git commit -m "feat: populate godfather interest data for all 39 godfathers"
 - Modify: `client/src/lib/godfatherEngine.ts`
 - Modify: `client/src/lib/godfatherEngine.test.ts`
 
-- [ ] **Step 1: Write failing tests for appointment watch**
+- [x] **Step 1: Write failing tests for appointment watch**
 
 ```typescript
 describe("godfather appointment watch", () => {
@@ -497,7 +497,7 @@ describe("godfather appointment watch", () => {
 });
 ```
 
-- [ ] **Step 2: Write failing tests for dismissal reaction**
+- [x] **Step 2: Write failing tests for dismissal reaction**
 
 ```typescript
 describe("godfather dismissal reaction", () => {
@@ -507,9 +507,9 @@ describe("godfather dismissal reaction", () => {
 });
 ```
 
-- [ ] **Step 3: Run tests to verify they fail**
+- [x] **Step 3: Run tests to verify they fail**
 
-- [ ] **Step 4: Implement checkGodfatherAppointment() and checkGodfatherDismissal()**
+- [x] **Step 4: Implement checkGodfatherAppointment() and checkGodfatherDismissal()**
 
 Two new exported functions in `godfatherEngine.ts`:
 
@@ -519,13 +519,13 @@ Two new exported functions in `godfatherEngine.ts`:
 
 Both return partial state updates + events.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [ ] **Step 5: Run tests to verify they pass** *(pending test execution)*
 
-- [ ] **Step 6: Wire dismissal reaction into dismissalEngine.ts**
+- [x] **Step 6: Wire dismissal reaction into dismissalEngine.ts**
 
 In `processDismissal`, after generating base consequences and mechanical escalation (Task 3), call `checkGodfatherDismissal(state, positionId)` and merge the returned events into the result.
 
-- [ ] **Step 7: Wire appointment watch into GameContext.tsx reducer**
+- [x] **Step 7: Wire appointment watch into GameContext.tsx reducer**
 
 In the existing reducer cases that handle appointments (`APPOINT_MINISTER`, `SELECT_CANDIDATE`, `CONFIRM_APPOINTMENT`, or equivalent), call `checkGodfatherAppointment(state, positionId, appointeeZone)` and apply the returned state changes (favour debt reduction or escalation increase). This ensures godfather interest is checked on every appointment, not just dismissals.
 
@@ -547,7 +547,7 @@ git commit -m "feat: godfather appointment watch and dismissal reaction"
 - Modify: `client/src/lib/godfatherEngine.ts`
 - Modify: `client/src/lib/godfatherEngine.test.ts`
 
-- [ ] **Step 1: Write failing tests for ally amplification**
+- [x] **Step 1: Write failing tests for ally amplification**
 
 ```typescript
 describe("ally amplification (interim)", () => {
@@ -559,9 +559,9 @@ describe("ally amplification (interim)", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
-- [ ] **Step 3: Implement processAllyAmplification()**
+- [x] **Step 3: Implement processAllyAmplification()**
 
 In `godfatherEngine.ts`, add `processAllyAmplification(state, rng)`:
 - Iterate godfathers with `escalationStage >= 3`
@@ -569,7 +569,7 @@ In `godfatherEngine.ts`, add `processAllyAmplification(state, rng)`:
 - 40% chance per ally: generate sympathy event (headline + inbox message from the ally)
 - Mark this function with a comment: `// INTERIM: replaced by affinityRegistry coalition pressure in Item 5`
 
-- [ ] **Step 4: Wire into processGodfatherTurn**
+- [x] **Step 4: Wire into processGodfatherTurn**
 
 Call `processAllyAmplification` at the end of `processGodfatherTurn` and merge results.
 

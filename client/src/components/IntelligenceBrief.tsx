@@ -180,7 +180,7 @@ export default function IntelligenceBrief({ onDismiss }: IntelligenceBriefProps)
             </div>
             <div className="text-right shrink-0">
               <span className="px-2 py-0.5 text-[10px] uppercase font-bold bg-[#d4af37]/15 text-[#d4af37] rounded tracking-wider border border-[#d4af37]/30">
-                CONFIDENTIAL
+                FOR YOUR EYES
               </span>
               <p className="text-[10px] text-white/30 mt-1">Day {state.day} of Presidency</p>
             </div>

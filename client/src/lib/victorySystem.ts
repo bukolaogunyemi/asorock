@@ -1,5 +1,7 @@
 // Aso Rock - Victory Paths & Failure States
 
+import type { DefeatVictoryCounters } from "./gameTypes";
+
 export interface VictoryPath {
   id: string;
   name: string;
@@ -15,7 +17,21 @@ export interface FailureState {
   description: string;
   icon: string;
   color: string;
+  /** Returns a risk score 0-100; a score >= 100 triggers defeat. */
   riskFn: (state: VictoryCheckState) => number;
+  /**
+   * Optional hard-check that bypasses the risk score — returns true when this
+   * defeat condition is definitively triggered (used for sector-based conditions
+   * where the counter threshold tells us it has already fired).
+   */
+  hardCheck?: (state: VictoryCheckState) => boolean;
+}
+
+// Sector sub-state (mirrors GovernanceSectorState keys we need)
+interface SectorView {
+  health: number;
+  crisisZone: "green" | "yellow" | "red";
+  indicators: Record<string, number>;
 }
 
 export interface VictoryCheckState {
@@ -38,6 +54,39 @@ export interface VictoryCheckState {
   campaignPromises: { progress: number; status: string }[];
   healthCrisis: { rumorsActive: boolean; announced: boolean; concealmentActive: boolean };
   macroEconomy: { inflation: number; fxRate: number; reserves: number; debtToGdp: number; oilOutput: number; subsidyPressure: number };
+  // Governance sector states (optional for backward-compat with existing tests)
+  infrastructure?: SectorView;
+  healthSector?: SectorView;
+  education?: SectorView;
+  agriculture?: SectorView;
+  interior?: SectorView;
+  environment?: SectorView;
+  youthEmployment?: SectorView;
+  // Policy levers (optional for backward-compat)
+  policyLevers?: {
+    powerPrivatization?: { position: string };
+    oilSectorReform?: { position: string };
+    transportPriority?: { position: string };
+    digitalInvestment?: { position: string };
+    healthcareFunding?: { position: string };
+    drugProcurement?: { position: string };
+    universityAutonomy?: { position: string };
+    educationBudgetSplit?: { position: string };
+    landReform?: { position: string };
+    agricSubsidies?: { position: string };
+    borderPolicy?: { position: string };
+    nationalIdPush?: { position: string };
+    gasFlarePolicy?: { position: string };
+    climateAdaptation?: { position: string };
+    nyscReform?: { position: string };
+    youthEnterprise?: { position: string };
+  };
+  // Economy state for GDP growth tracking (optional for backward-compat)
+  economy?: { gdpGrowthRate?: number };
+  // Consecutive-turn counters for defeat/victory conditions
+  defeatVictoryCounters?: DefeatVictoryCounters;
+  // International reputation (0-100)
+  internationalReputation?: number;
 }
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
@@ -124,6 +173,93 @@ export const victoryPaths: VictoryPath[] = [
       const vpControlScore = Math.min(10, (s.vicePresident.loyalty / 100) * 10);
       const pcScore = Math.min(10, (s.politicalCapital / 100) * 10);
       return Math.round(Math.min(100, factionScore + reelectionScore + momentumScore + vpControlScore + pcScore));
+    },
+  },
+  // ── New sector-based victory paths ──────────────────────────────────────────
+  {
+    id: "economic-titan",
+    name: "Economic Titan",
+    description: "Economy health > 80, GDP growth positive for 12+ turns, debt-to-GDP < 30",
+    icon: "Landmark",
+    color: "hsl(38, 80%, 45%)",
+    progressFn: (s) => {
+      const econHealth = s.economy ? Math.min(30, ((s.economy.gdpGrowthRate ?? 0) > 0 ? 30 : 0)) : 0;
+      const gdpStreakScore = Math.min(30, ((s.defeatVictoryCounters?.gdpGrowthPositiveTurns ?? 0) / 12) * 30);
+      const debtScore = s.macroEconomy.debtToGdp < 30 ? 25 : Math.min(25, Math.max(0, ((50 - s.macroEconomy.debtToGdp) / 20) * 25));
+      const sectorEconHealth = s.agriculture?.health ?? 50;
+      const sectorScore = Math.min(15, ((sectorEconHealth - 60) / 20) * 15);
+      return Math.round(clamp(econHealth + gdpStreakScore + debtScore + sectorScore, 0, 100));
+    },
+  },
+  {
+    id: "peoples-champion",
+    name: "People's Champion",
+    description: "Health > 70, Education > 70, Youth > 65, approval > 75",
+    icon: "Heart",
+    color: "hsl(340, 70%, 50%)",
+    progressFn: (s) => {
+      const healthScore = Math.min(25, Math.max(0, (((s.healthSector?.health ?? 50) - 50) / 20) * 25));
+      const educationScore = Math.min(25, Math.max(0, (((s.education?.health ?? 50) - 50) / 20) * 25));
+      const youthScore = Math.min(20, Math.max(0, (((s.youthEmployment?.health ?? 50) - 45) / 20) * 20));
+      const approvalScore = Math.min(30, Math.max(0, ((s.approval - 55) / 20) * 30));
+      return Math.round(clamp(healthScore + educationScore + youthScore + approvalScore, 0, 100));
+    },
+  },
+  {
+    id: "reformer",
+    name: "Reformer",
+    description: "Infrastructure > 75, 4+ sectors green, all reform levers at most progressive position",
+    icon: "Wrench",
+    color: "hsl(210, 60%, 46%)",
+    progressFn: (s) => {
+      const infraHealth = s.infrastructure?.health ?? 50;
+      const infraScore = Math.min(25, Math.max(0, ((infraHealth - 55) / 20) * 25));
+      const sectors: Array<SectorView | undefined> = [
+        s.infrastructure, s.healthSector, s.education, s.agriculture,
+        s.interior, s.environment, s.youthEmployment,
+      ];
+      const greenCount = sectors.filter(sec => sec?.crisisZone === "green").length;
+      const greenScore = Math.min(40, (greenCount / 4) * 40);
+      // Count levers at their most progressive position
+      const progressiveMap: Record<string, string> = {
+        powerPrivatization: "full-private", oilSectorReform: "full-deregulation",
+        transportPriority: "multimodal", digitalInvestment: "aggressive",
+        healthcareFunding: "universal-push", drugProcurement: "international-partnership",
+        universityAutonomy: "full-autonomy", educationBudgetSplit: "basic-heavy",
+        landReform: "titling-program", agricSubsidies: "full-mechanization",
+        borderPolicy: "fortress", nationalIdPush: "mandatory",
+        gasFlarePolicy: "zero-flare", climateAdaptation: "aggressive",
+        nyscReform: "reformed", youthEnterprise: "startup-ecosystem",
+      };
+      let progressiveLevers = 0;
+      if (s.policyLevers) {
+        for (const [key, targetPos] of Object.entries(progressiveMap)) {
+          const lever = (s.policyLevers as Record<string, { position?: string } | undefined>)[key];
+          if (lever?.position === targetPos) progressiveLevers++;
+        }
+      }
+      const leverScore = Math.min(35, (progressiveLevers / Object.keys(progressiveMap).length) * 35);
+      return Math.round(clamp(infraScore + greenScore + leverScore, 0, 100));
+    },
+  },
+  {
+    id: "statesman",
+    name: "Statesman",
+    description: "International reputation > 80, 5+ sectors green, no sectors red",
+    icon: "Globe2",
+    color: "hsl(195, 65%, 42%)",
+    progressFn: (s) => {
+      const repScore = Math.min(35, Math.max(0, (((s.internationalReputation ?? 50) - 50) / 30) * 35));
+      const sectors: Array<SectorView | undefined> = [
+        s.infrastructure, s.healthSector, s.education, s.agriculture,
+        s.interior, s.environment, s.youthEmployment,
+      ];
+      const greenCount = sectors.filter(sec => sec?.crisisZone === "green").length;
+      const redCount = sectors.filter(sec => sec?.crisisZone === "red").length;
+      const greenScore = Math.min(40, (greenCount / 5) * 40);
+      const noRedPenalty = redCount > 0 ? redCount * 15 : 0;
+      const approvalScore = Math.min(25, Math.max(0, ((s.approval - 50) / 25) * 25));
+      return Math.round(clamp(repScore + greenScore + approvalScore - noRedPenalty, 0, 100));
     },
   },
 ];
@@ -253,6 +389,110 @@ export const failureStates: FailureState[] = [
       return Math.round(Math.min(100, vpRisk + overstayRisk + approvalRisk));
     },
   },
+  // ── New sector-based defeat conditions ──────────────────────────────────────
+  {
+    id: "famine",
+    name: "Famine",
+    description: "Food price index > 95 for 3+ consecutive turns — mass starvation",
+    icon: "Wheat",
+    color: "hsl(35, 80%, 40%)",
+    hardCheck: (s) => (s.defeatVictoryCounters?.famineTurns ?? 0) >= 3,
+    riskFn: (s) => {
+      const foodPriceIndex = s.agriculture?.indicators?.foodPriceIndex ?? 60;
+      const baseRisk = Math.max(0, ((foodPriceIndex - 70) / 25) * 70);
+      const turnsRisk = Math.min(30, ((s.defeatVictoryCounters?.famineTurns ?? 0) / 3) * 30);
+      return Math.round(Math.min(100, baseRisk + turnsRisk));
+    },
+  },
+  {
+    id: "health-catastrophe",
+    name: "Health Catastrophe",
+    description: "Epidemic risk > 80 AND health worker density < 0.5",
+    icon: "Biohazard",
+    color: "hsl(120, 60%, 30%)",
+    hardCheck: (s) => {
+      const epidemicRisk = s.healthSector?.indicators?.epidemicRisk ?? 0;
+      const healthWorkerDensity = s.healthSector?.indicators?.healthWorkerDensity ?? 1.5;
+      return epidemicRisk > 80 && healthWorkerDensity < 0.5;
+    },
+    riskFn: (s) => {
+      const epidemicRisk = s.healthSector?.indicators?.epidemicRisk ?? 0;
+      const hwd = s.healthSector?.indicators?.healthWorkerDensity ?? 1.5;
+      const epidemicComponent = Math.max(0, ((epidemicRisk - 50) / 30) * 60);
+      const hwdComponent = Math.max(0, ((1.5 - hwd) / 1.0) * 40);
+      return Math.round(Math.min(100, epidemicComponent + hwdComponent));
+    },
+  },
+  {
+    id: "total-blackout",
+    name: "Total Blackout",
+    description: "Power generation < 2.0 GW for 5+ consecutive turns — national grid collapse",
+    icon: "ZapOff",
+    color: "hsl(240, 50%, 35%)",
+    hardCheck: (s) => (s.defeatVictoryCounters?.blackoutTurns ?? 0) >= 5,
+    riskFn: (s) => {
+      const powerGW = s.infrastructure?.indicators?.powerGenerationGW ?? 5;
+      const baseRisk = Math.max(0, ((3 - powerGW) / 1.5) * 60);
+      const turnsRisk = Math.min(40, ((s.defeatVictoryCounters?.blackoutTurns ?? 0) / 5) * 40);
+      return Math.round(Math.min(100, baseRisk + turnsRisk));
+    },
+  },
+  {
+    id: "youth-uprising",
+    name: "Youth Uprising",
+    description: "Social unrest risk > 90 AND youth unemployment > 55%",
+    icon: "Megaphone",
+    color: "hsl(15, 75%, 45%)",
+    hardCheck: (s) => {
+      const unrestRisk = s.youthEmployment?.indicators?.socialUnrestRisk ?? 0;
+      const unemployment = s.youthEmployment?.indicators?.youthUnemploymentRate ?? 0;
+      return unrestRisk > 90 && unemployment > 55;
+    },
+    riskFn: (s) => {
+      const unrestRisk = s.youthEmployment?.indicators?.socialUnrestRisk ?? 0;
+      const unemployment = s.youthEmployment?.indicators?.youthUnemploymentRate ?? 0;
+      const unrestComponent = Math.max(0, ((unrestRisk - 60) / 30) * 65);
+      const unemploymentComponent = Math.max(0, ((unemployment - 40) / 15) * 35);
+      return Math.round(Math.min(100, unrestComponent + unemploymentComponent));
+    },
+  },
+  {
+    id: "governance-crisis",
+    name: "Governance Crisis",
+    description: "3+ sectors in red crisis zone for 4+ consecutive turns",
+    icon: "AlertTriangle",
+    color: "hsl(0, 65%, 42%)",
+    hardCheck: (s) => (s.defeatVictoryCounters?.governanceCrisisTurns ?? 0) >= 4,
+    riskFn: (s) => {
+      const sectors: Array<SectorView | undefined> = [
+        s.infrastructure, s.healthSector, s.education, s.agriculture,
+        s.interior, s.environment, s.youthEmployment,
+      ];
+      const redCount = sectors.filter(sec => sec?.crisisZone === "red").length;
+      const redComponent = Math.max(0, ((redCount - 1) / 2) * 55);
+      const turnsComponent = Math.min(45, ((s.defeatVictoryCounters?.governanceCrisisTurns ?? 0) / 4) * 45);
+      return Math.round(Math.min(100, redComponent + turnsComponent));
+    },
+  },
+  {
+    id: "environmental-catastrophe",
+    name: "Environmental Catastrophe",
+    description: "Flood displacement risk > 90 AND climate adaptation score < 10",
+    icon: "Waves",
+    color: "hsl(200, 70%, 38%)",
+    hardCheck: (s) => {
+      const floodRisk = s.environment?.indicators?.floodDisplacementRisk ?? 0;
+      const climateAdaptation = s.environment?.indicators?.climateAdaptationScore ?? 50;
+      return floodRisk > 90 && climateAdaptation < 10;
+    },
+    riskFn: (s) => {
+      const floodRisk = s.environment?.indicators?.floodDisplacementRisk ?? 0;
+      const climateAdaptation = s.environment?.indicators?.climateAdaptationScore ?? 50;
+      const floodComponent = Math.max(0, ((floodRisk - 60) / 30) * 65);
+      const adaptationComponent = Math.max(0, ((20 - climateAdaptation) / 15) * 35);
+      return Math.round(Math.min(100, floodComponent + adaptationComponent));
+    },
+  },
 ];
 
 export function computeVictoryProgress(state: VictoryCheckState): Record<string, number> {
@@ -280,6 +520,8 @@ export function checkVictory(state: VictoryCheckState): VictoryPath | null {
 
 export function checkDefeat(state: VictoryCheckState): FailureState | null {
   for (const fs of failureStates) {
+    // Hard-check overrides risk score for sector-based instant defeats
+    if (fs.hardCheck && fs.hardCheck(state)) return fs;
     if (fs.riskFn(state) >= 100) return fs;
   }
   return null;

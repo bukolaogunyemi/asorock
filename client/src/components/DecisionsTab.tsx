@@ -1,54 +1,108 @@
-import { useMemo, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useToast } from "@/hooks/use-toast";
+import { useMemo, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "@/lib/GameContext";
-import { quickActionDefinitions } from "@/lib/gameContent";
 import { getChainById } from "@/lib/eventChains";
-import { Info, Link2, ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import { AppointmentModal, type AppointmentModalCandidate } from "./AppointmentModal";
+import { cabinetCandidates, type MinistryPosition } from "@/lib/gameData";
+import type { ActiveEvent } from "@/lib/gameTypes";
 
-const severityBadge = (severity: string) => {
-  if (severity === "critical") return "destructive" as const;
-  if (severity === "warning") return "outline" as const;
-  return "secondary" as const;
+// ── Category & severity styling ──
+
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  economy: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-l-emerald-500" },
+  security: { bg: "bg-red-50", text: "text-red-700", border: "border-l-red-500" },
+  politics: { bg: "bg-purple-50", text: "text-purple-700", border: "border-l-purple-500" },
+  governance: { bg: "bg-blue-50", text: "text-blue-700", border: "border-l-blue-500" },
+  diplomacy: { bg: "bg-amber-50", text: "text-amber-700", border: "border-l-amber-500" },
+  media: { bg: "bg-pink-50", text: "text-pink-700", border: "border-l-pink-500" },
 };
 
-const severityBorderClass = (severity: string) => {
-  if (severity === "critical") return "border-l-4 border-l-red-500";
-  if (severity === "warning") return "border-l-4 border-l-amber-500";
-  return "border-l-4 border-l-blue-500";
+const SEVERITY_DOT: Record<string, string> = {
+  critical: "bg-red-500",
+  warning: "bg-amber-500",
+  info: "bg-blue-500",
 };
 
-const chainCategoryBadge = (category: string) => {
-  if (category === "crisis") return "destructive" as const;
-  if (category === "opportunity") return "default" as const;
-  if (category === "intrigue") return "secondary" as const;
-  return "outline" as const;
+const CHAIN_CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
+  crisis: { bg: "bg-red-50", text: "text-red-700" },
+  opportunity: { bg: "bg-emerald-50", text: "text-emerald-700" },
+  intrigue: { bg: "bg-purple-50", text: "text-purple-700" },
 };
+
+const HISTORY_CATEGORY_ICON: Record<string, string> = {
+  decision: "\u{1F4CB}",   // 📋
+  event: "\u26A1",          // ⚡
+  cabal: "\u{1F91D}",      // 🤝
+  chain: "\u{1F517}",      // 🔗
+  "quick-action": "\u{1F4DC}", // 📜
+  system: "\u2699",         // ⚙
+  inbox: "\u{1F4E8}",      // 📨
+  court: "\u2696",          // ⚖
+  hook: "\u{1F50C}",       // 🔌
+};
+
+/** Return 1-2 contextual metric strings for a decision's category */
+function getCategoryMetrics(category: string, state: Record<string, unknown>): string[] {
+  const eco = state.economy as { inflation?: number; fxRate?: number } | undefined;
+  switch (category) {
+    case "economy":
+      return [
+        eco?.inflation != null ? `Inflation: ${eco.inflation.toFixed(1)}%` : "",
+        eco?.fxRate != null ? `FX: \u20A6${Math.round(eco.fxRate)}` : "",
+      ].filter(Boolean);
+    case "security":
+      return [
+        state.stability != null ? `Stability: ${Math.round(state.stability as number)}` : "",
+      ].filter(Boolean);
+    case "politics":
+      return [
+        state.approval != null ? `Approval: ${Math.round(state.approval as number)}%` : "",
+        state.partyLoyalty != null ? `Party: ${Math.round(state.partyLoyalty as number)}` : "",
+      ].filter(Boolean);
+    case "diplomacy":
+      return [
+        state.internationalStanding != null ? `Standing: ${Math.round(state.internationalStanding as number)}` : "",
+      ].filter(Boolean);
+    case "governance":
+      return [
+        state.trust != null ? `Trust: ${Math.round(state.trust as number)}` : "",
+      ].filter(Boolean);
+    default:
+      return [];
+  }
+}
 
 const formatRequirements = (requirements?: { metric: string; min?: number; max?: number }[]) => {
   if (!requirements?.length) return null;
-  return requirements.map((requirement) => {
-    if (requirement.min !== undefined) return `${requirement.metric} >= ${requirement.min}`;
-    if (requirement.max !== undefined) return `${requirement.metric} <= ${requirement.max}`;
-    return requirement.metric;
-  }).join(" • ");
+  return requirements.map((r) => {
+    if (r.min !== undefined) return `${r.metric} \u2265 ${r.min}`;
+    if (r.max !== undefined) return `${r.metric} \u2264 ${r.max}`;
+    return r.metric;
+  }).join(" \u2022 ");
 };
 
+// Unified item type for the carousel — either a cabal meeting or an active event
+type DeskItem =
+  | { kind: "cabal" }
+  | { kind: "event"; event: ActiveEvent };
+
 export default function DecisionsTab() {
-  const { toast } = useToast();
   const {
     state,
     canResolveChoice,
-    executeQuickAction,
     resolveChainChoice,
     resolveEventChoice,
+    resolveCabalChoice,
+    delegateToVP,
+    delegateToCOS,
   } = useGame();
-  const [chainIndex, setChainIndex] = useState(0);
-  const [eventIndex, setEventIndex] = useState(0);
 
+  const [showStamp, setShowStamp] = useState(false);
+  const [reviewingAppointment, setReviewingAppointment] = useState<ActiveEvent | null>(null);
+
+  const stateRecord = state as unknown as Record<string, unknown>;
+
+  // ── Active event chains ──
   const activeChains = useMemo(() => state.activeChains
     .filter((instance) => !instance.resolved)
     .map((instance) => {
@@ -64,201 +118,363 @@ export default function DecisionsTab() {
       totalSteps: number;
     }[];
 
-  const activeEvents = state.activeEvents;
+  // ── Cabal meeting ──
+  const cabal = state.cabalMeeting && !state.cabalMeeting.resolved ? state.cabalMeeting : null;
+
+  // ── Unified desk items: cabal first, then active events ──
+  const deskItems = useMemo((): DeskItem[] => {
+    const items: DeskItem[] = [];
+    if (cabal) items.push({ kind: "cabal" });
+    for (const event of state.activeEvents) {
+      items.push({ kind: "event", event });
+    }
+    return items;
+  }, [cabal, state.activeEvents]);
+
+  // ── Decision history from turnLog ──
+  const recentHistory = useMemo(() => {
+    const relevant = state.turnLog.filter(
+      (e) => e.category === "decision" || e.category === "event" || e.category === "cabal" || e.category === "chain"
+    );
+    return relevant.slice(-5).reverse();
+  }, [state.turnLog]);
+
+  // ── Appointment modal candidates ──
+  const modalCandidates = useMemo((): AppointmentModalCandidate[] => {
+    if (!reviewingAppointment?.cabinetPortfolio) return [];
+    const portfolio = reviewingAppointment.cabinetPortfolio as MinistryPosition;
+    const raw = cabinetCandidates[portfolio] ?? [];
+    return raw.map((c, i) => ({
+      name: c.name,
+      avatar: c.avatar,
+      age: c.age,
+      state: c.state,
+      gender: c.gender,
+      faction: c.faction,
+      scandalRisk: c.scandalRisk,
+      note: c.tradeOff,
+      stats: [
+        { label: "Loyalty", value: c.loyalty },
+        { label: "Competence", value: c.competence },
+        { label: "Ambition", value: c.ambition },
+      ],
+      impacts: reviewingAppointment.choices[i]?.consequences?.map(con => con.description) ?? [],
+    }));
+  }, [reviewingAppointment]);
+
+  const animateStamp = useCallback(() => {
+    setShowStamp(true);
+    setTimeout(() => setShowStamp(false), 1800);
+  }, []);
+
+  const handleEventChoice = useCallback((eventId: string, choiceIndex: number) => {
+    resolveEventChoice(eventId, choiceIndex);
+    animateStamp();
+  }, [resolveEventChoice, animateStamp]);
+
+  const handleCabalChoice = useCallback((choiceIndex: number) => {
+    resolveCabalChoice(choiceIndex);
+    animateStamp();
+  }, [resolveCabalChoice, animateStamp]);
+
+  const handleAppointmentSelect = useCallback((choiceIndex: number) => {
+    if (reviewingAppointment) {
+      resolveEventChoice(reviewingAppointment.id, choiceIndex);
+      setReviewingAppointment(null);
+      animateStamp();
+    }
+  }, [reviewingAppointment, resolveEventChoice, animateStamp]);
 
   return (
     <div className="space-y-4">
+      {/* ── Event Chains ── */}
       {activeChains.length > 0 && (
-        <Card className="border border-border" data-testid="active-event-chains-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <Link2 className="h-4 w-4" />
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+            <h3 className="text-xs font-bold text-[#0a1f14] uppercase tracking-wider flex items-center gap-2">
               Active Event Chains
-              <Badge variant="secondary" className="text-xs ml-auto">{activeChains.length}</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" disabled={chainIndex === 0} onClick={() => setChainIndex((value) => value - 1)}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <div className="flex-1 min-w-0">
-                {(() => {
-                  const current = activeChains[Math.min(chainIndex, activeChains.length - 1)];
-                  if (!current) return null;
-                  return (
-                    <Card className="border border-border border-l-4 border-l-amber-500">
-                      <CardHeader className="p-3 pb-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant={chainCategoryBadge(current.chain.category)} className="text-xs">{current.chain.category}</Badge>
-                          <CardTitle className="text-sm font-semibold">{current.chain.title}</CardTitle>
+              <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-[#d4af37] text-white font-bold leading-none">
+                {activeChains.length}
+              </span>
+            </h3>
+          </div>
+          <div className="p-4 space-y-3">
+            {activeChains.map((current) => {
+              const catColors = CHAIN_CATEGORY_COLORS[current.chain.category];
+              return (
+                <div key={current.instance.chainId} className="border border-gray-200 rounded-lg border-l-[3px] border-l-amber-500 p-3">
+                  <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                    <span className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide rounded ${catColors?.bg ?? "bg-gray-100"} ${catColors?.text ?? "text-gray-600"}`}>
+                      {current.chain.category}
+                    </span>
+                    <span className="text-sm font-bold text-[#0a1f14]">{current.chain.title}</span>
+                  </div>
+                  {/* Step progress */}
+                  <div className="flex items-center gap-1 mb-2">
+                    {Array.from({ length: current.totalSteps }, (_, i) => (
+                      <div key={i} className={`h-1.5 flex-1 rounded-full ${i < current.instance.currentStepIndex ? "bg-green-500" : i === current.instance.currentStepIndex ? "bg-amber-500" : "bg-gray-200"}`} />
+                    ))}
+                    <span className="text-[10px] text-gray-400 ml-1 tabular-nums">{current.instance.currentStepIndex + 1}/{current.totalSteps}</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mb-3 leading-relaxed">{current.currentStep.narrative}</p>
+                  <div className="flex flex-col gap-1.5">
+                    {current.currentStep.choices.map((choice, ci) => {
+                      const enabled = canResolveChoice(choice.requirements);
+                      return (
+                        <div key={`${current.instance.chainId}-${ci}`}>
+                          <button
+                            data-testid={`chain-${current.instance.chainId}-choice-${ci}`}
+                            disabled={!enabled}
+                            onClick={() => {
+                              resolveChainChoice(current.instance.chainId, ci);
+                              animateStamp();
+                            }}
+                            className="w-full text-left px-2.5 py-2 rounded-md border border-gray-300 bg-[#faf8f5] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <span className="text-xs font-medium text-[#0a1f14] leading-snug">{choice.label}</span>
+                          </button>
+                          {!enabled && choice.requirements && (
+                            <p className="text-[10px] text-gray-400 mt-0.5 ml-1">Requires {formatRequirements(choice.requirements)}</p>
+                          )}
                         </div>
-                        <div className="flex items-center gap-1 mt-1">
-                          {Array.from({ length: current.totalSteps }, (_, index) => (
-                            <div key={index} className={`h-1.5 flex-1 rounded-full ${index < current.instance.currentStepIndex ? "bg-green-500" : index === current.instance.currentStepIndex ? "bg-amber-500" : "bg-muted"}`} />
-                          ))}
-                          <span className="text-xs text-muted-foreground ml-1 tabular-nums">{current.instance.currentStepIndex + 1}/{current.totalSteps}</span>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-3 pt-1 space-y-3">
-                        <p className="text-xs text-muted-foreground">{current.currentStep.narrative}</p>
-                        <div className="flex flex-col gap-1.5">
-                          {current.currentStep.choices.map((choice, choiceIndex) => {
-                            const enabled = canResolveChoice(choice.requirements);
-                            return (
-                              <div key={`${current.instance.chainId}-${choiceIndex}`} className="space-y-1">
-                                <Button
-                                  data-testid={`chain-${current.instance.chainId}-choice-${choiceIndex}`}
-                                  variant="outline"
-                                  size="sm"
-                                  className="w-full justify-start text-xs"
-                                  disabled={!enabled}
-                                  onClick={() => {
-                                    resolveChainChoice(current.instance.chainId, choiceIndex);
-                                    toast({ title: current.chain.title, description: `${choice.label} recorded.` });
-                                  }}
-                                >
-                                  {choice.label}
-                                </Button>
-                                {!enabled && choice.requirements && (
-                                  <p className="text-[11px] text-muted-foreground">Requires {formatRequirements(choice.requirements)}</p>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })()}
-              </div>
-              <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" disabled={chainIndex >= activeChains.length - 1} onClick={() => setChainIndex((value) => value + 1)}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       )}
 
-      <Card className="border border-border" data-testid="decisions-active-events">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm font-semibold">Active Files Requiring a Decision</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0">
-          {activeEvents.length === 0 ? (
-            <p className="text-xs text-muted-foreground">The desk is clear for now. Use strategic directives or proceed to the next day.</p>
-          ) : (
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" disabled={eventIndex === 0} onClick={() => setEventIndex((value) => value - 1)}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <div className="flex-1 min-w-0">
-                {(() => {
-                  const event = activeEvents[Math.min(eventIndex, activeEvents.length - 1)];
-                  if (!event) return null;
-                  return (
-                    <Card className={`border border-border ${severityBorderClass(event.severity)}`} data-testid={`decision-event-${event.id}`}>
-                      <CardHeader className="p-3 pb-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant={severityBadge(event.severity)} className="text-xs">{event.severity}</Badge>
-                          <Badge variant="outline" className="text-xs">{event.category}</Badge>
-                          <CardTitle className="text-sm font-semibold">{event.title}</CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-3 pt-1 space-y-3">
-                        <p className="text-xs text-muted-foreground">{event.description}</p>
-                        <div className="flex flex-col gap-1.5">
-                          {event.choices.map((choice, choiceIndex) => {
-                            const enabled = canResolveChoice(choice.requirements);
-                            return (
-                              <div key={`${event.id}-${choiceIndex}`} className="space-y-1">
-                                <Button
-                                  data-testid={`decision-event-${event.id}-choice-${choiceIndex}`}
-                                  variant="outline"
-                                  size="sm"
-                                  className="w-full justify-start text-xs"
-                                  disabled={!enabled}
-                                  onClick={() => {
-                                    resolveEventChoice(event.id, choiceIndex);
-                                    toast({ title: choice.label, description: `${event.title} has been updated.` });
-                                  }}
-                                >
-                                  {choice.label}
-                                </Button>
-                                <p className="text-[11px] text-muted-foreground">{choice.context}</p>
-                                {!enabled && choice.requirements && (
-                                  <p className="text-[11px] text-muted-foreground">Requires {formatRequirements(choice.requirements)}</p>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })()}
-              </div>
-              <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" disabled={eventIndex >= activeEvents.length - 1} onClick={() => setEventIndex((value) => value + 1)}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* ── The President's Desk — unified cabal + active events ── */}
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden" data-testid="decisions-active-events">
+        <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+          <h3 className="text-xs font-bold text-[#0a1f14] uppercase tracking-wider flex items-center gap-2">
+            The President&apos;s Desk
+            {deskItems.length > 0 && (
+              <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-red-500/10 text-red-500 font-bold leading-none">
+                {deskItems.length}
+              </span>
+            )}
+          </h3>
+        </div>
 
-      <Alert className="py-3 px-4">
-        <Info className="h-4 w-4" />
-        <AlertTitle className="text-xs font-medium">Turn Loop</AlertTitle>
-        <AlertDescription className="text-xs">
-          Resolve critical files first, use directives to shape the board, then proceed to process delayed consequences, random pressure, court movement, and faction drift.
-        </AlertDescription>
-      </Alert>
-
-      <Card className="border border-border" data-testid="strategic-directives-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Zap className="h-4 w-4" /> Strategic Directives
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-          {quickActionDefinitions.map((action) => {
-            const lastUsedDay = state.lastActionAtDay[action.id];
-            const coolingDown = lastUsedDay !== undefined && state.day - lastUsedDay < 2;
-            return (
-              <Card key={action.id} className="border border-border">
-                <CardContent className="p-3 space-y-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-semibold">{action.label}</p>
-                      {coolingDown && <Badge variant="secondary" className="text-[11px]">Cooling down</Badge>}
-                    </div>
-                    <p className="text-xs text-muted-foreground">{action.summary}</p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-xs"
-                    disabled={coolingDown}
-                    onClick={() => {
-                      executeQuickAction(action.id);
-                      toast({ title: action.label, description: action.context });
-                    }}
+        {deskItems.length === 0 ? (
+          <div className="p-6 text-center">
+            <p className="text-gray-400 text-xs italic">The desk is clear for now, Mr. President.</p>
+          </div>
+        ) : (
+          <div className="p-4 space-y-3 relative">
+            {deskItems.map((item) => {
+              // ── Cabal meeting item ──
+              if (item.kind === "cabal" && cabal) {
+                return (
+                  <div
+                    key="cabal"
+                    className="border border-gray-200 rounded-lg border-l-[3px] border-l-[#d4af37]"
                   >
-                    Issue Directive
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </CardContent>
-      </Card>
+                      <div className="p-4">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <span className="px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide rounded bg-[#d4af37]/15 text-[#d4af37]">
+                            Cabal Meeting
+                          </span>
+                          <span className="text-[9px] font-semibold text-red-500 uppercase">Urgent</span>
+                        </div>
+                        <h3 className="text-base font-bold text-[#0a1f14] mb-1">{cabal.title}</h3>
+                        <p className="text-xs text-gray-600 mb-3 leading-relaxed">{cabal.brief}</p>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {cabal.choices.map((choice, ci) => (
+                            <button
+                              key={choice.id}
+                              onClick={() => handleCabalChoice(ci)}
+                              className={`text-left px-2.5 py-2 rounded-md border border-gray-300 bg-[#faf8f5] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors ${cabal.choices.length === 3 && ci === 2 ? "col-span-2" : ""}`}
+                            >
+                              <span className="text-xs font-medium text-[#0a1f14] leading-snug">{choice.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                  </div>
+                );
+              }
+
+              // ── Regular event item ──
+              if (item.kind === "event") {
+                const event = item.event;
+                const catColor = CATEGORY_COLORS[event.category];
+                const metrics = getCategoryMetrics(event.category, stateRecord);
+                const isAppointment = event.source === "cabinet-appointment";
+
+                return (
+                  <div
+                    key={event.id}
+                    className={`border border-gray-200 rounded-lg border-l-[3px] ${catColor?.border ?? "border-l-gray-300"}`}
+                    data-testid={`decision-event-${event.id}`}
+                  >
+                      <div className="p-4">
+                        {/* Category + Severity row */}
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <span className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide rounded ${catColor?.bg ?? "bg-gray-100"} ${catColor?.text ?? "text-gray-600"}`}>
+                            {event.category}
+                          </span>
+                          <span className={`w-2 h-2 rounded-full ${SEVERITY_DOT[event.severity] ?? "bg-gray-400"}`} title={event.severity} />
+                          {event.severity === "critical" && (
+                            <span className="text-[9px] font-semibold text-red-500 uppercase">Urgent</span>
+                          )}
+                        </div>
+
+                        {/* Context metrics */}
+                        {metrics.length > 0 && (
+                          <div className="flex items-center gap-2 mb-1.5">
+                            {metrics.map((m, i) => (
+                              <span key={i} className="text-[10px] text-gray-500 font-medium bg-gray-50 px-1.5 py-0.5 rounded">{m}</span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Title + Description */}
+                        <h3 className="text-base font-bold text-[#0a1f14] mb-1 leading-snug">{event.title}</h3>
+                        <p className="text-xs text-gray-600 mb-3 leading-relaxed">{event.description}</p>
+
+                        {/* Choices */}
+                        {isAppointment ? (
+                          <div className="grid gap-1.5 grid-cols-2">
+                            <button
+                              onClick={() => setReviewingAppointment(event)}
+                              className="text-left px-2.5 py-2 rounded-md border-2 border-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37]/20 transition-colors col-span-2"
+                            >
+                              <span className="text-xs font-semibold text-[#0a1f14]">Review Candidates</span>
+                              <span className="text-[10px] text-gray-500 block mt-0.5">{event.choices.length} candidates available</span>
+                            </button>
+                            <button
+                              onClick={() => { delegateToVP(event.id); animateStamp(); }}
+                              className="text-left px-2.5 py-2 rounded-md border border-gray-300 bg-[#faf8f5] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors"
+                            >
+                              <span className="text-xs font-medium text-[#0a1f14]">Delegate to VP</span>
+                            </button>
+                            <button
+                              onClick={() => { delegateToCOS(event.id); animateStamp(); }}
+                              className="text-left px-2.5 py-2 rounded-md border border-gray-300 bg-[#faf8f5] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors"
+                            >
+                              <span className="text-xs font-medium text-[#0a1f14]">Delegate to CoS</span>
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="grid gap-1.5 grid-cols-2">
+                              {event.choices.map((choice, ci) => {
+                                const enabled = canResolveChoice(choice.requirements);
+                                return (
+                                  <div key={`${event.id}-${ci}`} className={`${event.choices.length === 3 && ci === 2 ? "col-span-2" : ""}`}>
+                                    <button
+                                      data-testid={`decision-event-${event.id}-choice-${ci}`}
+                                      disabled={!enabled}
+                                      onClick={() => handleEventChoice(event.id, ci)}
+                                      className="w-full text-left px-2.5 py-2 rounded-md border border-gray-300 bg-[#faf8f5] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                      <span className="text-xs font-medium text-[#0a1f14] leading-snug line-clamp-2">{choice.label}</span>
+                                      {choice.context && (
+                                        <span className="text-[10px] text-gray-500 block mt-0.5 line-clamp-1">{choice.context}</span>
+                                      )}
+                                    </button>
+                                    {!enabled && choice.requirements && (
+                                      <p className="text-[10px] text-gray-400 mt-0.5 ml-1">Requires {formatRequirements(choice.requirements)}</p>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* Delegation row */}
+                            <div className="flex items-center gap-3 mt-2 pt-1.5 border-t border-gray-100">
+                              <span className="text-[10px] text-gray-400">Delegate:</span>
+                              <button
+                                onClick={() => { delegateToVP(event.id); animateStamp(); }}
+                                className="text-[10px] font-medium text-[#d4af37]/80 hover:text-[#d4af37] transition-colors"
+                              >
+                                Vice President &#8599;
+                              </button>
+                              <span className="text-gray-300">|</span>
+                              <button
+                                onClick={() => { delegateToCOS(event.id); animateStamp(); }}
+                                className="text-[10px] font-medium text-[#d4af37]/80 hover:text-[#d4af37] transition-colors"
+                              >
+                                Chief of Staff &#8599;
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                  </div>
+                );
+              }
+
+              return null;
+            })}
+
+            {/* Stamp overlay */}
+            <AnimatePresence>
+              {showStamp && (
+                <motion.div
+                  initial={{ scale: 3, rotate: -15, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                >
+                  <span className="text-3xl font-black text-green-500/40 uppercase tracking-widest border-4 border-green-500/40 px-4 py-1 rounded-lg rotate-[-5deg]">
+                    APPROVED
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
+
+      {/* ── Decision History ── */}
+      {recentHistory.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+          <div className="px-4 py-2 border-b border-gray-100">
+            <h3 className="text-xs font-bold text-[#0a1f14] uppercase tracking-wider">Recent Presidential Actions</h3>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {recentHistory.map((entry, i) => {
+              const icon = HISTORY_CATEGORY_ICON[entry.category] ?? "\u{1F4CB}";
+              return (
+                <div key={`${entry.day}-${i}`} className="px-4 py-2.5 flex gap-3">
+                  <span className="text-sm shrink-0 mt-0.5">{icon}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs font-semibold text-[#0a1f14] leading-snug">{entry.event}</span>
+                      <span className="text-[10px] text-gray-400 shrink-0">{entry.date}</span>
+                    </div>
+                    {entry.effects.length > 0 && (
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                        {entry.effects.map((effect, ei) => (
+                          <span key={ei} className="text-[10px] text-gray-500 leading-snug">{effect}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── Appointment Modal ── */}
+      {reviewingAppointment && modalCandidates.length > 0 && (
+        <AppointmentModal
+          title={reviewingAppointment.title}
+          headerLabel="Review Candidates"
+          candidates={modalCandidates}
+          onSelect={handleAppointmentSelect}
+          onCancel={() => setReviewingAppointment(null)}
+        />
+      )}
     </div>
   );
 }
-
-
-
-
-
-
-

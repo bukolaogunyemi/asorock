@@ -79,6 +79,7 @@ describe("game engine core loop", () => {
     expect(state.vicePresident.name).toBe("Chief Ada Okafor");
     expect(state.personalAssistant).toBe("Amara Obi");
     expect(state.campaignPromises).toHaveLength(2);
+    // 2 onboarding appointments (agency heads now handled by director system)
     expect(state.appointments).toHaveLength(2);
     expect(state.term.current).toBe(1);
     expect(state.term.daysUntilElection).toBeGreaterThan(1000);
@@ -272,7 +273,7 @@ describe("policy lever era defaults", () => {
 
 describe("policy lever definitions", () => {
   it("defines all 9 levers with positions and modifiers", () => {
-    expect(Object.keys(POLICY_LEVER_DEFS)).toHaveLength(9);
+    expect(Object.keys(POLICY_LEVER_DEFS)).toHaveLength(25);
     const fuelSubsidy = POLICY_LEVER_DEFS.fuelSubsidy;
     expect(fuelSubsidy.displayName).toBe("Fuel Subsidy");
     expect(fuelSubsidy.positions).toHaveLength(4);

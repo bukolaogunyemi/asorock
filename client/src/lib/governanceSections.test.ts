@@ -26,12 +26,19 @@ describe("ECONOMY_CONFIG", () => {
     }
   });
 
-  it("overview has 6 chart configs", () => {
-    expect(ECONOMY_CONFIG.overview.charts).toHaveLength(6);
+  it("has exactly 3 overview charts: inflation, fx-rate, gdp", () => {
+    const ids = ECONOMY_CONFIG.overview.charts.map(c => c.id);
+    expect(ids).toEqual(["inflation", "fx-rate", "gdp"]);
   });
 
-  it("has 5 stakeholders", () => {
-    expect(ECONOMY_CONFIG.overview.stakeholders).toHaveLength(5);
+  it("has exactly 3 overview levers", () => {
+    expect(ECONOMY_CONFIG.overview.levers).toEqual([
+      "fuelSubsidy", "fxPolicy", "interestRate",
+    ]);
+  });
+
+  it("has 4 stakeholders", () => {
+    expect(ECONOMY_CONFIG.overview.stakeholders).toHaveLength(4);
   });
 
   it("has 3 reform definitions", () => {

@@ -7,16 +7,7 @@ import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { useToast } from "@/hooks/use-toast";
 import { useGame } from "@/lib/GameContext";
 import type { GameInboxMessage } from "@/lib/gameTypes";
-
-const categoryResponses: Record<string, readonly { label: string; actionId: string }[]> = {
-  seed:             [{ label: "Acknowledge", actionId: "acknowledge" }, { label: "Investigate", actionId: "investigate" }, { label: "Defer", actionId: "defer" }],
-  system:           [{ label: "Acknowledge", actionId: "acknowledge" }, { label: "Note for Review", actionId: "note" }],
-  decision:         [{ label: "Acknowledge", actionId: "acknowledge" }, { label: "Review Personally", actionId: "investigate" }, { label: "Assign to Minister", actionId: "delegate" }],
-  chain:            [{ label: "Accept Outcome", actionId: "accept" }, { label: "Escalate", actionId: "escalate" }, { label: "Order Investigation", actionId: "investigate" }],
-  court:            [{ label: "Comply", actionId: "comply" }, { label: "Appeal Ruling", actionId: "appeal" }, { label: "Seek Delay", actionId: "delay" }],
-  random:           [{ label: "Address Directly", actionId: "address" }, { label: "Delegate", actionId: "delegate" }, { label: "Monitor", actionId: "acknowledge" }],
-  "faction-demand": [{ label: "Schedule Dialogue", actionId: "engage" }, { label: "Send Emissary", actionId: "acknowledge" }, { label: "Dismiss", actionId: "dismiss" }],
-};
+import { categoryResponses } from "@/lib/inboxResponses";
 
 const priorityBadge = (priority: string) => {
   if (priority === "Critical") return "destructive" as const;

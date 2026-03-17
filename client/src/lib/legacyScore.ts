@@ -2,6 +2,23 @@ import type { GameState, LegacyMilestoneRecord } from "./gameTypes";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+/** Minimal sector state shape needed for legacy delta computation. */
+export interface SectorHealthInput {
+  health: number; // 0-100
+}
+
+/** All 7 governance sector states required for computeSectorLegacyDelta. */
+export interface AllSectorHealthInputs {
+  economy: SectorHealthInput;        // proxy: agriculture health
+  infrastructure: SectorHealthInput;
+  health: SectorHealthInput;
+  education: SectorHealthInput;
+  agriculture: SectorHealthInput;
+  youth: SectorHealthInput;
+  interior: SectorHealthInput;
+  environment: SectorHealthInput;
+}
+
 export interface MilestoneDef {
   id: string;
   title: string;
@@ -18,11 +35,73 @@ export interface PrestigeTier {
 
 // ─── Core Functions ───────────────────────────────────────────────────────────
 
+// Sector importance weights (sum = 100)
+const SECTOR_WEIGHTS: Record<keyof AllSectorHealthInputs, number> = {
+  economy: 20,
+  infrastructure: 15,
+  health: 15,
+  education: 15,
+  agriculture: 10,
+  youth: 10,
+  interior: 8,
+  environment: 7,
+};
+
+/**
+ * Computes a legacy delta from the current governance sector health values.
+ *
+ * Mapping:
+ *   - health > 70  → positive contribution (up to +10 total)
+ *   - health 40-70 → near-zero contribution
+ *   - health < 40  → negative contribution (down to -15 total)
+ *
+ * Returns a value clamped to [-15, +10].
+ */
+export function computeSectorLegacyDelta(sectors: AllSectorHealthInputs): number {
+  let rawDelta = 0;
+
+  for (const [key, weight] of Object.entries(SECTOR_WEIGHTS) as [keyof AllSectorHealthInputs, number][]) {
+    const { health } = sectors[key];
+    const fraction = weight / 100;
+
+    let sectorContribution: number;
+    if (health > 70) {
+      // Map 70..100 → 0..+10 contribution (proportional to weight)
+      sectorContribution = ((health - 70) / 30) * 10 * fraction;
+    } else if (health >= 40) {
+      // Near zero: linear from -2.67*fraction at 40 to 0 at 70
+      sectorContribution = ((health - 70) / 30) * 2.67 * fraction;
+    } else {
+      // Map 0..40 → -15..-2.67 contribution (proportional to weight)
+      sectorContribution = (-15 + (health / 40) * (15 - 2.67)) * fraction;
+    }
+
+    rawDelta += sectorContribution;
+  }
+
+  // Clamp to [-15, +10]
+  return Math.max(-15, Math.min(10, rawDelta));
+}
+
 /**
  * Sums the impact values of all legacy milestone records.
+ * Optionally blends in a sector-based delta:
+ *   milestone score weighted at 40%, sector delta at 60%.
  */
-export function computeLegacyScore(milestones: LegacyMilestoneRecord[]): number {
-  return milestones.reduce((sum, m) => sum + m.impact, 0);
+export function computeLegacyScore(
+  milestones: LegacyMilestoneRecord[],
+  sectors?: AllSectorHealthInputs,
+): number {
+  const milestoneScore = milestones.reduce((sum, m) => sum + m.impact, 0);
+  if (!sectors) return milestoneScore;
+
+  const sectorDelta = computeSectorLegacyDelta(sectors);
+  // Blend: milestone score × 40% + sector delta × 60%
+  // The milestone score is on an additive scale (each milestone adds points),
+  // while sectorDelta is a per-turn contribution in [-15, +10].
+  // We normalise the sector delta to the same scale as the milestone score
+  // by treating it as an additive modifier.
+  return milestoneScore * 0.4 + sectorDelta * 0.6;
 }
 
 /**

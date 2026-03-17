@@ -4,9 +4,9 @@ import { generateEconomyBriefing } from "@/lib/economyBriefing";
 import { averageProfessionalCompetence } from "@/lib/competencyUtils";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { AppointmentModal, type AppointmentModalCandidate } from "@/components/AppointmentModal";
-import { APPOINTMENT_POSITIONS } from "@/lib/handcraftedCharacters";
+import { APPOINTMENT_POSITIONS, cabinetCandidates, AGENCY_HEAD_POSITIONS, agencyHeadCandidates } from "@/lib/handcraftedCharacters";
 import type { TeamMemberConfig } from "@/lib/governanceSections";
-import type { CharacterState, Relationship } from "@/lib/gameTypes";
+import type { CharacterState, Relationship, ActiveEvent } from "@/lib/gameTypes";
 import type { CharacterCompetencies, CareerEntry, InteractionEntry } from "@/lib/competencyTypes";
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
   briefingCooldownKey: string;
   subsection: string | null;
   onCharacterClick?: (name: string) => void;
+  onSummonBriefing?: (event: ActiveEvent) => void;
 }
 
 // Color helpers
@@ -60,8 +61,8 @@ interface AppointmentCandidate {
 
 /* ─── Main Component ──────────────────────────────────────────── */
 
-export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, onCharacterClick }: Props) {
-  const { state, summonBriefing, makeAppointment } = useGame();
+export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, onCharacterClick, onSummonBriefing }: Props) {
+  const { state, makeAppointment } = useGame();
   const [appointingRole, setAppointingRole] = useState<string | null>(null);
 
   // Resolve team members from state
@@ -87,8 +88,9 @@ export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, 
     });
   }, [teamConfig, state.characters, state.appointments]);
 
-  // Get candidates for a role from APPOINTMENT_POSITIONS
+  // Get candidates for a role from APPOINTMENT_POSITIONS or cabinetCandidates
   const getCandidatesForRole = useCallback((role: string): AppointmentCandidate[] => {
+    // Check APPOINTMENT_POSITIONS first (CoS, SGF, NSA, CEA, PA, BD, MA)
     const match = APPOINTMENT_POSITIONS.find(p =>
       p.position.toLowerCase() === role.toLowerCase() ||
       role.toLowerCase().includes(p.position.toLowerCase()) ||
@@ -96,33 +98,59 @@ export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, 
     );
     if (match) return match.candidates as AppointmentCandidate[];
 
-    // Generate placeholder candidates for positions not in APPOINTMENT_POSITIONS (min 3)
-    return [
-      {
-        name: `Alh. Musa Adamu`, avatar: "MA", loyalty: 70, competence: 65,
-        age: 54, state: "Katsina", gender: "Male", religion: "Islam", ethnicity: "Hausa",
-        traits: ["Experienced", "Steady", "Connected"],
-        note: "A reliable loyalist. Strong party connections but may lack technical depth.",
-        bio: `Veteran civil servant with over 20 years across federal ministries. Well-connected in party circles. Served as Permanent Secretary in two ministries.`,
-        competencies: { loyalty: 4, administration: 3, political: 4, discretion: 3, networks: 3 },
-      },
-      {
-        name: `Dr. Amara Obi`, avatar: "AO", loyalty: 55, competence: 82,
-        age: 44, state: "Anambra", gender: "Female", religion: "Christianity", ethnicity: "Igbo",
-        traits: ["Technocrat", "Reformist", "Independent"],
-        note: "Brilliant technocrat. IMF-trained. May clash with old guard but will deliver results.",
-        bio: `Former World Bank consultant who led governance reform programs in 3 West African countries. PhD from Harvard Kennedy School. Outspoken on transparency.`,
-        competencies: { loyalty: 3, administration: 4, political: 2, discretion: 4, networks: 4 },
-      },
-      {
-        name: `Barr. Funke Adeyemi`, avatar: "FA", loyalty: 62, competence: 73,
-        age: 49, state: "Oyo", gender: "Female", religion: "Christianity", ethnicity: "Yoruba",
-        traits: ["Pragmatic", "Diplomatic", "Bridge-Builder"],
-        note: "Consensus builder. Won't make waves but keeps the machinery running smoothly.",
-        bio: `Corporate lawyer turned public administrator. Chaired the Presidential Committee on Ease of Doing Business. Known for finding middle ground between competing interests.`,
-        competencies: { loyalty: 3, administration: 4, political: 3, discretion: 4, networks: 3 },
-      },
-    ];
+    // Check agency head candidates (CBN, FIRS, Customs, NNPCL)
+    const agencyKey = (AGENCY_HEAD_POSITIONS as readonly string[]).find(k =>
+      k.toLowerCase() === role.toLowerCase() ||
+      role.toLowerCase().includes(k.toLowerCase()) ||
+      k.toLowerCase().includes(role.toLowerCase())
+    ) as keyof typeof agencyHeadCandidates | undefined;
+    if (agencyKey) {
+      const raw = agencyHeadCandidates[agencyKey];
+      return raw.map(c => ({
+        name: c.name,
+        avatar: c.avatar,
+        loyalty: c.loyalty,
+        competence: c.competence,
+        age: c.age,
+        state: c.state,
+        gender: c.gender as "Male" | "Female",
+        religion: c.religion,
+        ethnicity: c.ethnicity,
+        traits: c.traits ?? ["Experienced", c.faction ?? ""],
+        note: c.tradeOff,
+        bio: c.tradeOff,
+        competencies: { loyalty: Math.round(c.loyalty / 20), administration: Math.round(c.competence / 20), political: 3, discretion: 3, networks: 3 },
+      }));
+    }
+
+    // Check cabinetCandidates (Minister portfolios) — match by portfolioMatch or role name
+    const roleLower = role.toLowerCase();
+    const cabinetKey = Object.keys(cabinetCandidates).find(k => {
+      const kLower = k.toLowerCase();
+      return roleLower.includes(kLower) || kLower.includes(roleLower.replace("minister of ", "").replace(" & ", " & "));
+    }) as keyof typeof cabinetCandidates | undefined;
+
+    if (cabinetKey) {
+      const raw = cabinetCandidates[cabinetKey];
+      return raw.map(c => ({
+        name: c.name,
+        avatar: c.avatar,
+        loyalty: c.loyalty,
+        competence: c.competence,
+        age: c.age,
+        state: c.state,
+        gender: c.gender as "Male" | "Female",
+        religion: c.religion,
+        ethnicity: c.ethnicity,
+        traits: ["Experienced", c.faction],
+        note: c.tradeOff,
+        bio: c.tradeOff,
+        competencies: { loyalty: Math.round(c.loyalty / 20), administration: Math.round(c.competence / 20), political: 3, discretion: 3, networks: 3 },
+      }));
+    }
+
+    // Fallback: should not happen with proper config, but return empty
+    return [];
   }, []);
 
   // Resolve raw candidates for the appointing role
@@ -227,15 +255,13 @@ export function EconomyTeamPanel({ teamConfig, briefingCooldownKey, subsection, 
   const handleSummon = () => {
     if (onCooldown || !hasTeam) return;
     const event = generateEconomyBriefing(state, subsection ?? undefined, avgCompetence);
-    summonBriefing(event, briefingCooldownKey);
+    if (onSummonBriefing) {
+      onSummonBriefing(event);
+    }
   };
 
   return (
     <div className="flex flex-col h-full gap-3">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#d4af37]">
-        Economic Team
-      </h3>
-
       <div className="flex-1 space-y-2 overflow-y-auto">
         {teamMembers.map(({ config, name, character }) => {
           if (!character || !name) {

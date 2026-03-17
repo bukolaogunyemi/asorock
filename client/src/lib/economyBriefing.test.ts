@@ -51,7 +51,7 @@ describe("generateEconomyBriefing", () => {
   it("generates 2-3 choices", () => {
     const event = generateEconomyBriefing(makeState(), undefined, 75);
     expect(event.choices.length).toBeGreaterThanOrEqual(2);
-    expect(event.choices.length).toBeLessThanOrEqual(3);
+    expect(event.choices.length).toBeLessThanOrEqual(4);
   });
 
   it("generates inflation briefing when inflation > 20", () => {

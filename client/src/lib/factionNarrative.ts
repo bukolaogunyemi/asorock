@@ -92,6 +92,13 @@ export function generateInboxMessage(
           { label: "Send Emissary", actionId: "acknowledge" },
           { label: "Dismiss Demands", actionId: "reject" },
         ],
+    contextData: {
+      senderLoyalty: Math.max(0, Math.round(100 - grievance)),
+      factionName,
+      relevantMetrics: [
+        { label: "Grievance", value: `${Math.round(grievance)}%`, color: grievance >= 90 ? "red" : "yellow" },
+      ],
+    },
   };
 }
 

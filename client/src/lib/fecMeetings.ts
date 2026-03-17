@@ -238,15 +238,16 @@ export function generateFECMemos(state: GameState): FECMemo[] {
     if (!sector || typeof sector.health !== "number") continue;
 
     const minister = findMinisterForSector(state, sectorKey);
-    if (!minister) continue;
+    const sectorLabel = SECTOR_LABELS[sectorKey] ?? sectorKey;
+    const ministerName = minister?.name ?? `the Ministry of ${sectorLabel}`;
 
     const healthRange = getHealthRange(sector.health);
     const template = MEMO_TEMPLATES.find((t) => t.healthRange === healthRange);
     if (!template) continue;
 
     const vars = {
-      sector: SECTOR_LABELS[sectorKey] ?? sectorKey,
-      minister: minister.name,
+      sector: sectorLabel,
+      minister: ministerName,
     };
 
     const urgency: FECMemo["urgency"] =
@@ -264,8 +265,8 @@ export function generateFECMemos(state: GameState): FECMemo[] {
 
     memos.push({
       id: memoId,
-      ministerKey: minister.name,
-      portfolio: minister.portfolio,
+      ministerKey: minister?.name ?? sectorKey,
+      portfolio: minister?.portfolio ?? sectorLabel,
       title: fillTemplate(template.titleTemplate, vars),
       description: fillTemplate(template.descriptionTemplate, vars),
       urgency,

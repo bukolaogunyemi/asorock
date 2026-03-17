@@ -8,6 +8,14 @@ import type { PartyInternalsState } from "./partyTypes";
 import type { EconomicState } from "./economicTypes";
 import type { CharacterCompetencies, CareerEntry, InteractionEntry } from "./competencyTypes";
 import type { GovernanceSectorState, BudgetAllocation, CrossSectorEffects, CrossSectorCascade } from "./sectorTypes";
+import type { DirectorSystemState } from "./directorTypes";
+import type { JudiciaryState } from "./judiciaryTypes";
+import type { UnionLeaderState } from "./unionTypes";
+import type { GovernorSystemState } from "./governorTypes";
+import type { DiplomatSystemState } from "./diplomatTypes";
+import type { MilitarySystemState } from "./militaryTypes";
+import type { TraditionalRulerSystemState } from "./traditionalRulerTypes";
+import type { ReligiousLeaderSystemState } from "./religiousLeaderTypes";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -221,7 +229,7 @@ export interface ActiveEvent {
   severity: EventSeverity;
   description: string;
   category: "economy" | "security" | "governance" | "politics" | "diplomacy" | "media";
-  source: "opening" | "contextual" | "chain" | "policy" | "faction-demand" | "cabinet-appointment" | "team-briefing" | "fec-memo" | "minister-summons";
+  source: "opening" | "contextual" | "chain" | "policy" | "faction-demand" | "cabinet-appointment" | "team-briefing" | "fec-memo" | "minister-summons" | "godfather-pressure";
   choices: EventChoice[];
   factionKey?: string;
   createdDay: number;
@@ -587,6 +595,15 @@ export interface GameState {
   crossSectorEffects: CrossSectorEffects;
   crossSectorCascades: CrossSectorCascade[];
   defeatVictoryCounters: DefeatVictoryCounters;
+  // ── New NPC system slices (added 2026-03-17) ──
+  directors: DirectorSystemState;
+  judiciary: JudiciaryState;
+  unionLeaders: UnionLeaderState;
+  governorSystem: GovernorSystemState;
+  diplomats: DiplomatSystemState;
+  military: MilitarySystemState;
+  traditionalRulers: TraditionalRulerSystemState;
+  religiousLeaders: ReligiousLeaderSystemState;
 }
 
 /**

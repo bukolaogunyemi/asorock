@@ -74,7 +74,7 @@ import type { DirectorCandidate } from "./directorPool";
 import type { DirectorPosition, DirectorAppointment, DirectorSystemState } from "./directorTypes";
 import { commissionOperation } from "./intelligenceEngine";
 import { acceptDeal, rejectDeal, cashInFavour } from "./godfatherDeals";
-import { neutralizeGodfather } from "./godfatherEngine";
+import { neutralizeGodfather, checkGodfatherAppointment } from "./godfatherEngine";
 import { defaultPartyInternalsState, initiatePoaching, executeDefection, checkPoachingCooldown } from "./partyEngine";
 import type { GodfatherDeal } from "./godfatherTypes";
 import { seedLegislativeCalendar } from "./legislativeBills";
@@ -87,8 +87,8 @@ import { seedLegislature } from "./legislativeElections";
 import { seatJudiciary } from "./judiciaryEngine";
 import { seedDiplomatSystem } from "./diplomatEngine";
 import { seedMilitarySystem } from "./militaryEngine";
-import { seedTraditionalRulers } from "./traditionalRulerEngine";
-import { seedReligiousLeaders } from "./religiousLeaderEngine";
+import { seedTraditionalRulers, processStateVisit } from "./traditionalRulerEngine";
+import { seedReligiousLeaders, processInterfaithSummit } from "./religiousLeaderEngine";
 import {
   defaultInfrastructureState,
   defaultHealthState,
@@ -1272,6 +1272,8 @@ export type GameAction =
   | { type: "REASSIGN_MINISTER"; name: string; newPortfolio: string }
   | { type: "DISMISS_MINISTER"; name: string }
   | { type: "DISMISS_OFFICIAL"; systemType: DismissableSystem; positionId: string; reason?: string }
+  | { type: "INITIATE_STATE_VISIT"; rulerId: string }
+  | { type: "INITIATE_INTERFAITH_SUMMIT" }
   | { type: "APPLY_RETREAT"; priorities: string[] }
   | { type: "SUBMIT_BUDGET"; allocation: BudgetAllocation };
 
@@ -1474,12 +1476,23 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         updatedFC.complianceScore = calculateComplianceScore(updatedFC.appointments, updatedFC.budgetAllocation);
       }
 
+      // Godfather appointment watch — check if any godfather cares about this position
+      const appointeeZoneAbbrev = zone?.abbrev ?? "";
+      const godfatherUpdates = appointeeZoneAbbrev
+        ? checkGodfatherAppointment(
+            { ...state, patronage: state.patronage },
+            action.office,
+            appointeeZoneAbbrev,
+          )
+        : {};
+
       return withDerivedState({
         ...state,
         appointments: newAppointments,
         characters: newCharacters,
         cabinetAppointments: newCabinetAppointments,
         federalCharacter: updatedFC,
+        ...godfatherUpdates,
       });
     }
     case "SET_BRIEFING_COOLDOWN":
@@ -1601,6 +1614,26 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
       return withDerivedState(merged);
     }
+    case "INITIATE_STATE_VISIT": {
+      const visitResult = processStateVisit(state, action.rulerId);
+      return withDerivedState({
+        ...state,
+        traditionalRulers: visitResult.updatedTraditionalRulers,
+        activeEvents: [...state.activeEvents, ...visitResult.events],
+        pendingConsequences: [...state.pendingConsequences, ...visitResult.consequences],
+        inboxMessages: [...state.inboxMessages, ...visitResult.inboxMessages],
+      });
+    }
+    case "INITIATE_INTERFAITH_SUMMIT": {
+      const summitResult = processInterfaithSummit(state);
+      return withDerivedState({
+        ...state,
+        religiousLeaders: summitResult.updatedReligiousLeaders,
+        activeEvents: [...state.activeEvents, ...summitResult.events],
+        pendingConsequences: [...state.pendingConsequences, ...summitResult.consequences],
+        inboxMessages: [...state.inboxMessages, ...summitResult.inboxMessages],
+      });
+    }
     case "APPLY_RETREAT": {
       const next = { ...state };
       applyRetreatEffects(next, action.priorities);
@@ -1665,6 +1698,8 @@ interface GameContextValue {
   reassignMinister: (name: string, newPortfolio: string) => void;
   dismissMinister: (name: string) => void;
   dismissOfficial: (systemType: DismissableSystem, positionId: string, reason?: string) => void;
+  initiateStateVisit: (rulerId: string) => void;
+  initiateInterfaithSummit: () => void;
   applyRetreat: (priorities: string[]) => void;
   submitBudget: (allocation: BudgetAllocation) => void;
 }
@@ -1722,6 +1757,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     reassignMinister: (name, newPortfolio) => dispatch({ type: "REASSIGN_MINISTER", name, newPortfolio }),
     dismissMinister: (name) => dispatch({ type: "DISMISS_MINISTER", name }),
     dismissOfficial: (systemType, positionId, reason) => dispatch({ type: "DISMISS_OFFICIAL", systemType, positionId, reason }),
+    initiateStateVisit: (rulerId: string) => dispatch({ type: "INITIATE_STATE_VISIT", rulerId }),
+    initiateInterfaithSummit: () => dispatch({ type: "INITIATE_INTERFAITH_SUMMIT" }),
     applyRetreat: (priorities) => dispatch({ type: "APPLY_RETREAT", priorities }),
     submitBudget: (allocation) => dispatch({ type: "SUBMIT_BUDGET", allocation }),
   };

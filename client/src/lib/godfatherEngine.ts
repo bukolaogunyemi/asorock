@@ -1,5 +1,5 @@
 // client/src/lib/godfatherEngine.ts
-import type { GameState } from "./gameTypes";
+import type { GameState, ActiveEvent } from "./gameTypes";
 import type {
   Godfather,
   GodfatherArchetype,
@@ -9,6 +9,8 @@ import type {
 import type { GameStateModifier } from "./legislativeTypes";
 import { generateDealProposal } from "./godfatherDeals";
 import { GODFATHER_PROFILES } from "./godfatherProfiles";
+import { selectBusinessOligarchs } from "./businessOligarchEngine";
+import { seededRandom } from "./seededRandom";
 
 // ── PatronageEffects ─────────────────────────────────────────────────
 
@@ -175,13 +177,20 @@ export function processGodfatherTurn(
     }
   }
 
+  // Ally amplification — godfathers at stage 3+ may have allies generate sympathy events
+  const rng = seededRandom(state.day);
+  const allyResult = processAllyAmplification(
+    { ...state, patronage: patronageState } as GameState,
+    rng,
+  );
+
   return {
     patronageState: {
       ...patronageState,
       approachCooldowns: updatedCooldowns,
     },
     approaches,
-    events,
+    events: [...events, ...allyResult.events],
   };
 }
 
@@ -218,6 +227,25 @@ export function neutralizeGodfather(
 export function defaultPatronageState(): PatronageState {
   return {
     godfathers: GODFATHER_PROFILES.map((gf) => ({ ...gf })),
+    patronageIndex: 0,
+    activeDeals: 0,
+    neutralizedGodfathers: [],
+    approachCooldowns: {},
+  };
+}
+
+/**
+ * Creates a seeded PatronageState that replaces the 5 hardcoded business-oligarch
+ * godfathers with 20 selected from the 100-candidate pool.
+ * Non-business godfathers (19) are kept as-is.
+ */
+export function seededPatronageState(seed: number): PatronageState {
+  const nonBusiness = GODFATHER_PROFILES.filter(
+    gf => gf.archetype !== "business-oligarch",
+  );
+  const businessOligarchs = selectBusinessOligarchs(seed, 20);
+  return {
+    godfathers: [...nonBusiness, ...businessOligarchs].map(gf => ({ ...gf })),
     patronageIndex: 0,
     activeDeals: 0,
     neutralizedGodfathers: [],
@@ -350,4 +378,185 @@ export function generateNuclearEvent(
 ): { type: string; title: string; description: string; effects: GameStateModifier[] } {
   const templateFn = NUCLEAR_EVENTS[godfather.archetype];
   return templateFn(godfather);
+}
+
+// ── Appointment Watch ────────────────────────────────────────────────
+
+/**
+ * Helper: does this godfather have an interest in the given position?
+ */
+function godfatherHasInterest(gf: Godfather, positionId: string): boolean {
+  if (gf.stable.cabinetCandidates.includes(positionId)) return true;
+  if (gf.stable.militaryInterests?.includes(positionId)) return true;
+  if (gf.stable.diplomaticInterests?.includes(positionId)) return true;
+  if (gf.stable.directorInterests?.includes(positionId)) return true;
+  return false;
+}
+
+/**
+ * Checks if any godfather cares about a position that was just filled.
+ * If the appointee's zone matches the godfather's zone → reduce favourDebt by 1.
+ * If the zones mismatch and the godfather has active escalation → escalation +1.
+ * Returns partial state updates to merge into game state.
+ */
+export function checkGodfatherAppointment(
+  state: GameState,
+  positionId: string,
+  appointeeZone: string,
+): { patronage?: PatronageState } {
+  if (!state.patronage?.godfathers?.length) return {};
+
+  let changed = false;
+  const updatedGodfathers = state.patronage.godfathers.map(gf => {
+    if (gf.neutralized) return gf;
+    if (!godfatherHasInterest(gf, positionId)) return gf;
+
+    if (appointeeZone === gf.zone) {
+      // Zone match — reduce favour debt
+      changed = true;
+      return {
+        ...gf,
+        favourDebt: Math.max(0, gf.favourDebt - 1),
+      };
+    } else if (gf.escalationStage > 0) {
+      // Zone mismatch + active escalation — escalation +1
+      changed = true;
+      return {
+        ...gf,
+        escalationStage: Math.min(4, gf.escalationStage + 1) as 0 | 1 | 2 | 3 | 4,
+      };
+    }
+
+    return gf;
+  });
+
+  if (!changed) return {};
+
+  return {
+    patronage: {
+      ...state.patronage,
+      godfathers: updatedGodfathers,
+    },
+  };
+}
+
+// ── Dismissal Reaction ──────────────────────────────────────────────
+
+let godfatherEventCounter = 0;
+function nextGodfatherEventId(): string {
+  return `evt-gf-pressure-${Date.now()}-${++godfatherEventCounter}`;
+}
+
+const DISPOSITION_PRESSURE_THRESHOLD: Godfather["disposition"][] = [
+  "hostile",
+  "cold",
+  "neutral",
+];
+
+/**
+ * Checks if any godfather reacts to a dismissal.
+ * If a godfather has interest in the dismissed position and their
+ * disposition is ≤ Neutral (hostile, cold, or neutral), generates a
+ * pressure event with Consult/Ignore choices.
+ * Deterministic — no RNG.
+ */
+export function checkGodfatherDismissal(
+  state: GameState,
+  positionId: string,
+): ActiveEvent[] {
+  if (!state.patronage?.godfathers?.length) return [];
+
+  const events: ActiveEvent[] = [];
+
+  for (const gf of state.patronage.godfathers) {
+    if (gf.neutralized) continue;
+    if (!godfatherHasInterest(gf, positionId)) continue;
+    if (!DISPOSITION_PRESSURE_THRESHOLD.includes(gf.disposition)) continue;
+
+    const event: ActiveEvent = {
+      id: nextGodfatherEventId(),
+      title: `${gf.name} Demands Consultation`,
+      severity: "warning",
+      description: `${gf.name} is displeased with the removal from ${positionId}. He demands consultation on the replacement.`,
+      category: "politics",
+      source: "godfather-pressure",
+      choices: [
+        {
+          id: `${gf.id}-consult`,
+          label: "Consult",
+          context: `Consult with ${gf.name} on a replacement. Costs 1 political capital but reduces tension.`,
+          consequences: [
+            {
+              id: `csq-gf-consult-${gf.id}`,
+              sourceEvent: `godfather-dismissal-reaction-${gf.id}`,
+              description: `Consulted ${gf.name} on replacement`,
+              effects: [{ target: "politicalCapital" as any, value: -1 }],
+              delayDays: 0,
+            },
+          ],
+        },
+        {
+          id: `${gf.id}-ignore`,
+          label: "Ignore",
+          context: `Ignore ${gf.name}'s demands. This will increase his escalation.`,
+          consequences: [
+            {
+              id: `csq-gf-ignore-${gf.id}`,
+              sourceEvent: `godfather-dismissal-reaction-${gf.id}`,
+              description: `Ignored ${gf.name}'s demand for consultation — escalation increased`,
+              effects: [],
+              delayDays: 0,
+            },
+          ],
+        },
+      ],
+      createdDay: state.day,
+    };
+
+    events.push(event);
+  }
+
+  return events;
+}
+
+// ── Ally Amplification (Interim) ────────────────────────────────────
+// INTERIM: replaced by affinityRegistry coalition pressure in Chunk 5
+
+/**
+ * For each godfather at escalation stage 3+, iterate their traditional
+ * ruler and religious leader allies. 40% chance per ally (via rng) to
+ * generate a sympathy inbox event.
+ */
+export function processAllyAmplification(
+  state: GameState,
+  rng: () => number,
+): { events: any[] } {
+  if (!state.patronage?.godfathers?.length) return { events: [] };
+
+  const events: any[] = [];
+
+  for (const gf of state.patronage.godfathers) {
+    if (gf.neutralized) continue;
+    if (gf.escalationStage < 3) continue;
+
+    const allies = [
+      ...(gf.stable.traditionalRulerAllies ?? []),
+      ...(gf.stable.religiousLeaderAllies ?? []),
+    ];
+
+    for (const allyId of allies) {
+      // INTERIM: replaced by affinityRegistry coalition pressure in Chunk 5
+      if (rng() < 0.4) {
+        events.push({
+          type: "ally-sympathy",
+          godfatherId: gf.id,
+          godfatherName: gf.name,
+          allyId,
+          message: `${allyId} has expressed public support for ${gf.name}'s position, adding political pressure on the presidency.`,
+        });
+      }
+    }
+  }
+
+  return { events };
 }

@@ -11,6 +11,9 @@ import {
   getPatronageEffects,
   getGodfatherVoteModifier,
   generateNuclearEvent,
+  checkGodfatherAppointment,
+  checkGodfatherDismissal,
+  processAllyAmplification,
 } from "./godfatherEngine";
 import { GODFATHER_PROFILES } from "./godfatherProfiles";
 
@@ -466,5 +469,276 @@ describe("nuclear events", () => {
       expect(event.description).toBeTruthy();
       expect(event.effects.length).toBeGreaterThan(0);
     }
+  });
+});
+
+// ── checkGodfatherAppointment ────────────────────────────────────────
+
+describe("checkGodfatherAppointment", () => {
+  it("reduces favourDebt by 1 when appointee zone matches godfather zone", () => {
+    const gf = makeGodfather({
+      zone: "NW",
+      favourDebt: 3,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        militaryInterests: ["chief-army-staff"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = checkGodfatherAppointment(state, "chief-army-staff", "NW");
+    expect(result.patronage!.godfathers[0].favourDebt).toBe(2);
+  });
+
+  it("increases escalation on zone mismatch when godfather has active escalation", () => {
+    const gf = makeGodfather({
+      zone: "NW",
+      escalationStage: 2,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        diplomaticInterests: ["amb-saudi"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = checkGodfatherAppointment(state, "amb-saudi", "SW");
+    expect(result.patronage!.godfathers[0].escalationStage).toBe(3);
+  });
+
+  it("does nothing for positions no godfather cares about", () => {
+    const gf = makeGodfather({
+      zone: "NW",
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        militaryInterests: ["chief-army-staff"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = checkGodfatherAppointment(state, "amb-brazil", "SW");
+    expect(result.patronage).toBeUndefined();
+  });
+
+  it("does not escalate on zone mismatch when godfather has no active escalation", () => {
+    const gf = makeGodfather({
+      zone: "NW",
+      escalationStage: 0,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        directorInterests: ["cbn-governor"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = checkGodfatherAppointment(state, "cbn-governor", "SE");
+    // No change because escalation is 0
+    expect(result.patronage).toBeUndefined();
+  });
+
+  it("handles cabinetCandidates interest", () => {
+    const gf = makeGodfather({
+      zone: "NC",
+      favourDebt: 5,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: ["finance"],
+        connections: [],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = checkGodfatherAppointment(state, "finance", "NC");
+    expect(result.patronage!.godfathers[0].favourDebt).toBe(4);
+  });
+});
+
+// ── checkGodfatherDismissal ──────────────────────────────────────────
+
+describe("checkGodfatherDismissal", () => {
+  it("generates pressure event when godfather has interest and disposition is Neutral", () => {
+    const gf = makeGodfather({
+      disposition: "neutral",
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        militaryInterests: ["chief-army-staff"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const events = checkGodfatherDismissal(state, "chief-army-staff");
+    expect(events.length).toBe(1);
+    expect(events[0].title).toContain("Test Godfather");
+    expect(events[0].source).toBe("godfather-pressure");
+  });
+
+  it("does not fire when godfather disposition is friendly", () => {
+    const gf = makeGodfather({
+      disposition: "friendly",
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        militaryInterests: ["chief-army-staff"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const events = checkGodfatherDismissal(state, "chief-army-staff");
+    expect(events.length).toBe(0);
+  });
+
+  it("event has Consult and Ignore choices", () => {
+    const gf = makeGodfather({
+      disposition: "hostile",
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        diplomaticInterests: ["amb-saudi"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const events = checkGodfatherDismissal(state, "amb-saudi");
+    expect(events.length).toBe(1);
+    const choices = events[0].choices;
+    expect(choices.length).toBe(2);
+    expect(choices[0].label).toBe("Consult");
+    expect(choices[1].label).toBe("Ignore");
+  });
+});
+
+// ── processAllyAmplification ────────────────────────────────────────
+
+describe("processAllyAmplification", () => {
+  it("generates sympathy event from ally when godfather at stage 3+", () => {
+    const gf = makeGodfather({
+      escalationStage: 3,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        traditionalRulerAllies: ["sultan-sokoto"],
+        religiousLeaderAllies: ["pres-muslim-society"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    // RNG always returns 0 (below 0.4 threshold) — all allies fire
+    const result = processAllyAmplification(state, () => 0);
+    expect(result.events.length).toBe(2);
+    expect(result.events[0].type).toBe("ally-sympathy");
+    expect(result.events[0].allyId).toBe("sultan-sokoto");
+    expect(result.events[1].allyId).toBe("pres-muslim-society");
+  });
+
+  it("does not trigger below stage 3", () => {
+    const gf = makeGodfather({
+      escalationStage: 2,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        traditionalRulerAllies: ["sultan-sokoto"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = processAllyAmplification(state, () => 0);
+    expect(result.events.length).toBe(0);
+  });
+
+  it("fires at ~40% probability over many seeds", () => {
+    const gf = makeGodfather({
+      escalationStage: 4,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        traditionalRulerAllies: ["sultan-sokoto"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+
+    let fires = 0;
+    const trials = 500;
+    for (let i = 0; i < trials; i++) {
+      // Simple deterministic rng based on index
+      const result = processAllyAmplification(state, () => i / trials);
+      if (result.events.length > 0) fires++;
+    }
+    // Should fire ~40% of the time (200/500)
+    // Allow some tolerance: between 35% and 45%
+    expect(fires / trials).toBeGreaterThanOrEqual(0.35);
+    expect(fires / trials).toBeLessThanOrEqual(0.45);
+  });
+
+  it("does not trigger for neutralized godfathers", () => {
+    const gf = makeGodfather({
+      escalationStage: 4,
+      neutralized: true,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+        traditionalRulerAllies: ["sultan-sokoto"],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = processAllyAmplification(state, () => 0);
+    expect(result.events.length).toBe(0);
+  });
+
+  it("handles godfather with no allies gracefully", () => {
+    const gf = makeGodfather({
+      escalationStage: 3,
+      stable: {
+        governors: [],
+        legislativeBloc: { house: 0, senate: 0 },
+        cabinetCandidates: [],
+        connections: [],
+      },
+    });
+    const state = mockGameState({
+      patronage: makePatronageState({ godfathers: [gf] }),
+    });
+    const result = processAllyAmplification(state, () => 0);
+    expect(result.events.length).toBe(0);
   });
 });

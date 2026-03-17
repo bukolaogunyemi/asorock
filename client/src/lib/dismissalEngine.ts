@@ -14,6 +14,7 @@ import type { MilitarySystemState } from "./militaryTypes";
 import type { PatronageState, Godfather } from "./godfatherTypes";
 import { ALL_DIPLOMAT_POSTS } from "./diplomatPosts";
 import { cabinetCandidates } from "./handcraftedCharacters";
+import { checkGodfatherDismissal } from "./godfatherEngine";
 
 // ══════════════════════════════════════════════════════════════
 // Types
@@ -132,18 +133,18 @@ function applyGodfatherEscalation(
   const updatedGodfathers: Godfather[] = state.patronage.godfathers.map(gf => {
     let hasInterest = false;
 
-    // Currently only check cabinetCandidates for minister positions.
-    // Structure allows extension to militaryInterests, diplomaticInterests,
-    // directorInterests once those fields are added to GodfatherStable.
     if (systemType === "minister") {
       hasInterest = gf.stable.cabinetCandidates.includes(positionId);
     }
-    // Future extension points:
-    // if (systemType === "military" && gf.stable.militaryInterests) {
-    //   hasInterest = gf.stable.militaryInterests.includes(positionId);
-    // }
-    // if (systemType === "diplomat" && gf.stable.diplomaticInterests) { ... }
-    // if (systemType === "director" && gf.stable.directorInterests) { ... }
+    if (systemType === "military" && gf.stable.militaryInterests) {
+      hasInterest = hasInterest || gf.stable.militaryInterests.includes(positionId);
+    }
+    if (systemType === "diplomat" && gf.stable.diplomaticInterests) {
+      hasInterest = hasInterest || gf.stable.diplomaticInterests.includes(positionId);
+    }
+    if (systemType === "director" && gf.stable.directorInterests) {
+      hasInterest = hasInterest || gf.stable.directorInterests.includes(positionId);
+    }
 
     if (hasInterest && gf.escalationStage < 4) {
       anyEscalated = true;
@@ -579,7 +580,15 @@ export function computeDismissalPreview(
       if (systemType === "minister") {
         hasInterest = gf.stable.cabinetCandidates.includes(positionId);
       }
-      // Future: militaryInterests, diplomaticInterests, directorInterests
+      if (systemType === "military" && gf.stable.militaryInterests) {
+        hasInterest = hasInterest || gf.stable.militaryInterests.includes(positionId);
+      }
+      if (systemType === "diplomat" && gf.stable.diplomaticInterests) {
+        hasInterest = hasInterest || gf.stable.diplomaticInterests.includes(positionId);
+      }
+      if (systemType === "director" && gf.stable.directorInterests) {
+        hasInterest = hasInterest || gf.stable.directorInterests.includes(positionId);
+      }
       if (hasInterest) {
         interestedGodfathers.push(gf.name);
       }
@@ -610,18 +619,35 @@ export function processDismissal(
   positionId: string,
   reason?: string,
 ): DismissalResult {
+  let result: DismissalResult;
   switch (systemType) {
     case "minister":
-      return processMinisterDismissal(state, positionId, reason);
+      result = processMinisterDismissal(state, positionId, reason);
+      break;
     case "director":
-      return processDirectorDismissal(state, positionId, reason);
+      result = processDirectorDismissal(state, positionId, reason);
+      break;
     case "diplomat":
-      return processDiplomatDismissal(state, positionId, reason);
+      result = processDiplomatDismissal(state, positionId, reason);
+      break;
     case "military":
-      return processMilitaryDismissal(state, positionId, reason);
+      result = processMilitaryDismissal(state, positionId, reason);
+      break;
     case "aide":
-      return processAideDismissal(state, positionId, reason);
+      result = processAideDismissal(state, positionId, reason);
+      break;
     default:
       return emptyResult();
   }
+
+  // Godfather dismissal reaction — generates pressure events
+  const godfatherEvents = checkGodfatherDismissal(state, positionId);
+  if (godfatherEvents.length > 0) {
+    result = {
+      ...result,
+      events: [...result.events, ...godfatherEvents],
+    };
+  }
+
+  return result;
 }

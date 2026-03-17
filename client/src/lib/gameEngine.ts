@@ -6,6 +6,9 @@ import { getQuickActionById, getTriggeredActiveEvents } from "./gameContent";
 import { checkBetrayalRisk, getTraitEffect } from "./traits";
 import { migrateOldCompetencies, deriveBetrayalThreshold, averageProfessionalCompetence } from "./competencyUtils";
 import { checkDefeat, checkVictory } from "./victorySystem";
+import { processDirectors } from "./directorEngine";
+import { processUnionPressure } from "./unionEngine";
+import { seededRandom } from "./seededRandom";
 import type { FailureState, VictoryPath } from "./victorySystem";
 import type {
   ActiveEvent,
@@ -2580,6 +2583,56 @@ export function processTurn(state: GameState): GameState {
 
   // Apply sector approval modifier
   next.approval = clamp(next.approval + sectorResult.approvalModifier, 0, 100);
+
+  // Process director system — competence modifiers, departures, vacancies
+  const directorResult = processDirectors(next, seededRandom(next.day * 7919));
+  next = {
+    ...next,
+    directors: directorResult.updatedDirectors,
+    activeEvents: [...next.activeEvents, ...directorResult.newEvents],
+  };
+  // Apply director sector modifiers (they feed into future sector calculations)
+  for (const [sector, modifier] of Object.entries(directorResult.sectorModifiers)) {
+    const key = sector as keyof typeof next;
+    if (typeof next[key] === "number") {
+      (next as any)[key] = Math.max(0, Math.min(100, (next[key] as number) + modifier));
+    }
+  }
+  // Process director consequences
+  if (directorResult.consequences.length > 0) {
+    next = processConsequences(next, directorResult.consequences);
+  }
+  // Add departure notices to inbox
+  for (const notice of directorResult.departureNotices) {
+    const noticeSubject = `${notice.type === "resignation" ? "Resignation" : "Retirement"} Notice: ${notice.positionTitle}`;
+    const noticeBody = `${notice.characterName} has submitted their ${notice.type} as ${notice.positionTitle}. Their departure is scheduled for day ${notice.departureDay}. You will need to appoint a replacement.`;
+    const msg: GameInboxMessage = {
+      id: `director-departure-${notice.positionId}-${next.day}`,
+      sender: "Personal Assistant",
+      role: "Staff",
+      initials: "PA",
+      subject: noticeSubject,
+      preview: noticeBody.slice(0, 100),
+      fullText: noticeBody,
+      day: next.day,
+      date: next.date,
+      priority: "Normal",
+      read: false,
+      source: "system",
+    };
+    next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
+  }
+  summaryItems.push(`Director system processed (${Object.keys(directorResult.sectorModifiers).length} sectors influenced)`);
+
+  // Process union leader system
+  const unionResult = processUnionPressure(next, seededRandom(next.day * 8731));
+  next = {
+    ...next,
+    activeEvents: [...next.activeEvents, ...unionResult.newEvents],
+  };
+  if (unionResult.consequences.length > 0) {
+    next = processConsequences(next, unionResult.consequences);
+  }
 
   const hookProgress = processHookInvestigations(next);
   next = hookProgress.state;

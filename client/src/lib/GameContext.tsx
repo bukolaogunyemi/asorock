@@ -25,6 +25,8 @@ import {
 } from "./gameEngine";
 import { generateBrief } from "./intelligenceBrief";
 import { canConveneFEC, generateFECMemos } from "./fecMeetings";
+import { applyRetreatEffects } from "./cabinetRetreats";
+import type { BudgetAllocation } from "./sectorTypes";
 import { checkMilestones } from "./legacyScore";
 import {
   computeFailureRisks,
@@ -54,14 +56,22 @@ import type {
   AnyPolicyPosition,
   SingleLeverState,
   PolicyLeverState,
+  Relationship,
 } from "./gameTypes";
 import { cabinetRoster, characters, factions, ministryPositions, cabinetCandidates } from "./gameData";
+import { APPOINTMENT_POSITIONS, AGENCY_HEAD_POSITIONS } from "./handcraftedCharacters";
 import { migrateOldCompetencies, deriveBetrayalThreshold, averageProfessionalCompetence } from "./competencyUtils";
 import { selectConstitutionalOfficers } from "./constitutionalOfficers";
 import { registerConstitutionalPools } from "./constitutionalPools";
 import { defaultLegislativeState, signBill, vetoBill, resolveLegislativeCrisis, proposeExecutiveBill, lobbyCommittee, applyInfluenceLevers } from "./legislativeEngine";
 import { defaultPatronageState } from "./godfatherEngine";
-import { defaultFederalCharacterState } from "./federalCharacter";
+import { defaultFederalCharacterState, calculateZoneBalances, calculateComplianceScore } from "./federalCharacter";
+import { getZoneForState } from "./zones";
+import { seededRandom } from "./seededRandom";
+import { DIRECTOR_POSITIONS } from "./directorPositions";
+import { DIRECTOR_CANDIDATES } from "./directorPool";
+import type { DirectorCandidate } from "./directorPool";
+import type { DirectorPosition, DirectorAppointment, DirectorSystemState } from "./directorTypes";
 import { commissionOperation } from "./intelligenceEngine";
 import { acceptDeal, rejectDeal, cashInFavour } from "./godfatherDeals";
 import { neutralizeGodfather } from "./godfatherEngine";
@@ -70,6 +80,7 @@ import type { GodfatherDeal } from "./godfatherTypes";
 import { seedLegislativeCalendar } from "./legislativeBills";
 import { defaultEconomicState } from "./economicEngine";
 import { tickReforms } from "./reformTracker";
+import { seedUnionLeaders } from "./unionEngine";
 import {
   defaultInfrastructureState,
   defaultHealthState,
@@ -84,6 +95,15 @@ import {
 
 // Register constitutional officer pools at module load time
 registerConstitutionalPools();
+
+const RELATIONSHIP_LADDER: Relationship[] = ["Hostile", "Distrustful", "Wary", "Neutral", "Friendly", "Loyal"];
+
+function stepRelationship(current: string, delta: number): Relationship {
+  const idx = RELATIONSHIP_LADDER.indexOf(current as Relationship);
+  if (idx === -1) return current as Relationship;
+  const newIdx = Math.max(0, Math.min(RELATIONSHIP_LADDER.length - 1, idx + delta));
+  return RELATIONSHIP_LADDER[newIdx];
+}
 
 export type {
   ActiveEvent,
@@ -428,6 +448,147 @@ const seedInitialHooks = (charactersMap: Record<string, CharacterState>): Record
   return updated;
 };
 
+/** Seed default agency head appointments from NPC characters already in the character map */
+const seedAgencyHeadAppointments = (charMap: Record<string, CharacterState>): AppointmentState[] => {
+  const appointments: AppointmentState[] = [];
+  for (const office of AGENCY_HEAD_POSITIONS) {
+    const char = Object.values(charMap).find(c => c.portfolio === office);
+    if (char) {
+      appointments.push({ office, appointee: char.name, confirmed: true });
+    }
+  }
+  return appointments;
+};
+
+function directorCandidateToCharacter(candidate: DirectorCandidate, position: DirectorPosition): CharacterState {
+  return {
+    name: candidate.name,
+    portfolio: position.title,
+    faction: "",
+    relationship: "Neutral",
+    avatar: candidate.avatar,
+    age: candidate.age,
+    state: candidate.state,
+    gender: candidate.gender,
+    competencies: {
+      professional: candidate.competencies.professional,
+      personal: candidate.competencies.personal,
+    },
+    hooks: [],
+    traits: candidate.traits,
+    careerHistory: [],
+    interactionLog: [],
+    biography: candidate.bio,
+    education: candidate.education,
+    religion: candidate.religion,
+    ethnicity: candidate.ethnicity,
+  };
+}
+
+function seedDirectorSystem(seed: number): { state: DirectorSystemState; characters: Record<string, CharacterState> } {
+  const rng = seededRandom(seed);
+  const characters: Record<string, CharacterState> = {};
+  const appointments: DirectorAppointment[] = [];
+  const usedCandidates = new Set<string>();
+
+  // Track zone usage for federal character balance
+  const zoneUsage: Record<string, number> = {};
+
+  for (const position of DIRECTOR_POSITIONS) {
+    const qualified = DIRECTOR_CANDIDATES.filter(
+      c => c.qualifiedFor.includes(position.id) && !usedCandidates.has(c.name)
+    );
+
+    if (qualified.length === 0) {
+      // Fallback: leave vacant
+      appointments.push({
+        positionId: position.id,
+        characterName: null,
+        appointedDay: 0,
+        isOriginal: true,
+      });
+      continue;
+    }
+
+    // Sort by zone balance (prefer underrepresented zones)
+    const sorted = [...qualified].sort((a, b) => {
+      const zoneA = getZoneForState(a.state)?.name ?? "";
+      const zoneB = getZoneForState(b.state)?.name ?? "";
+      return (zoneUsage[zoneA] ?? 0) - (zoneUsage[zoneB] ?? 0);
+    });
+
+    // Pick from top candidates with some randomness
+    const topN = sorted.slice(0, Math.min(3, sorted.length));
+    const pick = topN[Math.floor(rng() * topN.length)];
+
+    usedCandidates.add(pick.name);
+    const zone = getZoneForState(pick.state)?.name ?? "unknown";
+    zoneUsage[zone] = (zoneUsage[zone] ?? 0) + 1;
+
+    const charState = directorCandidateToCharacter(pick, position);
+    characters[pick.name] = charState;
+
+    appointments.push({
+      positionId: position.id,
+      characterName: pick.name,
+      appointedDay: 0,
+      isOriginal: true,
+    });
+  }
+
+  return {
+    state: {
+      positions: DIRECTOR_POSITIONS,
+      appointments,
+      technocratsFired: 0,
+      vacancyTracking: {},
+    },
+    characters,
+  };
+}
+
+/** Build a CharacterState from an APPOINTMENT_POSITIONS candidate looked up by name */
+const buildCharacterFromAppointmentCandidate = (
+  candidateName: string,
+  office: string,
+): CharacterState | null => {
+  for (const pos of APPOINTMENT_POSITIONS) {
+    const candidate = pos.candidates.find((c: any) => c.name === candidateName);
+    if (candidate) {
+      const comp = candidate.competence ?? 70;
+      const loy = candidate.loyalty ?? 50;
+      const pol = Math.round(comp * 0.9);
+      const net = Math.round(comp * 0.85);
+      const disc = Math.round(comp * 0.8);
+      return {
+        name: candidate.name,
+        portfolio: office,
+        faction: (candidate as any).faction ?? "",
+        relationship: relationshipFromLoyalty(loy),
+        avatar: candidate.avatar,
+        age: candidate.age,
+        state: candidate.state,
+        gender: candidate.gender,
+        competencies: migrateOldCompetencies({
+          loyalty: loy,
+          competence: comp,
+          ambition: 50,
+          portfolio: office,
+        }),
+        hooks: [],
+        traits: (candidate as any).traits ?? [],
+        careerHistory: [],
+        interactionLog: [],
+        biography: (candidate as any).bio,
+        education: (candidate as any).education,
+        religion: (candidate as any).religion,
+        ethnicity: (candidate as any).ethnicity,
+      };
+    }
+  }
+  return null;
+};
+
 const buildCharacterMap = (vicePresident?: VicePresidentState): Record<string, CharacterState> => {
   const map: Record<string, CharacterState> = {};
   // Cabinet characters are NOT added here — they are added when the player appoints them
@@ -445,13 +606,17 @@ const buildCharacterMap = (vicePresident?: VicePresidentState): Record<string, C
       faction: character.faction,
       relationship: character.relationship,
       avatar: character.avatar,
-      traits: [],
+      traits: (character as any).traits ?? [],
       hooks: [],
       careerHistory: [],
       interactionLog: [],
       age: character.age,
       state: character.state,
       gender: character.gender,
+      religion: (character as any).religion,
+      ethnicity: (character as any).ethnicity,
+      biography: (character as any).bio,
+      education: (character as any).education,
     };
   }
   if (vicePresident && !map[vicePresident.name]) {
@@ -633,6 +798,34 @@ const defaultGameState: GameState = {
     lastFECDay: 0,
     fecCooldownUntil: 0,
     pendingFECMemos: [],
+  },
+  directors: {
+    positions: [],
+    appointments: [],
+    technocratsFired: 0,
+    vacancyTracking: {},
+  },
+  judiciary: {
+    supremeCourt: { justices: [], chiefJustice: null, cjnConfirmed: false },
+    courtOfAppeal: { justices: [], president: null, pcaConfirmed: false },
+    pendingNomination: { position: null, nominee: null, hearingDay: null },
+  },
+  unionLeaders: {
+    positions: [],
+    appointments: {
+      "chairman-teachers-union": null,
+      "chairman-labour-union": null,
+      "chairman-trade-congress": null,
+      "chairman-youth-forum": null,
+      "chairman-petroleum-workers": null,
+      "chairman-medical-association": null,
+    },
+  },
+  governorSystem: {
+    governors: [],
+    forumChair: null,
+    forumChairElectedDay: null,
+    nextElectionDay: 1460,
   },
 };
 
@@ -849,6 +1042,26 @@ export function initializeGameState(config: CampaignConfig): GameState {
   );
   const baseApproval = Math.round(43 + origin.approval);
   const macroEconomy = createMacroEconomyState(config.era, config.origin);
+
+  // Build character map and inject onboarding appointees
+  const charMap = buildCharacterMap(vicePresident);
+  if (config.appointments) {
+    for (const [office, appointeeName] of Object.entries(config.appointments)) {
+      if (appointeeName && !charMap[appointeeName]) {
+        const built = buildCharacterFromAppointmentCandidate(appointeeName, office);
+        if (built) charMap[appointeeName] = built;
+      }
+    }
+  }
+
+  // Seed director system — populate all 49 agency head positions
+  const directorSeed = seedDirectorSystem(eraStart.day * 31337);
+  Object.assign(charMap, directorSeed.characters);
+
+  // Seed union leader system — populate all 6 union chairman positions
+  const unionSeed = seedUnionLeaders(eraStart.day * 8731);
+  Object.assign(charMap, unionSeed.characters);
+
   let state: GameState = {
     day: eraStart.day,
     date: eraStart.date,
@@ -877,14 +1090,18 @@ export function initializeGameState(config: CampaignConfig): GameState {
     constitutionalOfficers,
     personalAssistant: config.personalAssistant,
     campaignPromises: createCampaignPromises(config.promises),
-    appointments: createAppointments(config.appointments),
+    appointments: [
+      ...createAppointments(config.appointments),
+      // Seed default agency heads from key NPC characters
+      ...seedAgencyHeadAppointments(charMap),
+    ],
     term: createTermState(config.era),
     health: 85,
     healthCrisis: createHealthCrisisState(),
     macroEconomy,
     macroHistory: createMacroHistory(eraStart.day, macroEconomy),
     cabalMeeting: null,
-    characters: buildCharacterMap(vicePresident),
+    characters: charMap,
     factions: buildFactionMap(),
     activeChains: [],
     activeEvents: getOpeningEvents(eraStart.day),
@@ -965,6 +1182,20 @@ export function initializeGameState(config: CampaignConfig): GameState {
       priorities: [],
       lastFECDay: 0,
       fecCooldownUntil: 0,
+      pendingFECMemos: [],
+    },
+    directors: directorSeed.state,
+    judiciary: {
+      supremeCourt: { justices: [], chiefJustice: null, cjnConfirmed: false },
+      courtOfAppeal: { justices: [], president: null, pcaConfirmed: false },
+      pendingNomination: { position: null, nominee: null, hearingDay: null },
+    },
+    unionLeaders: unionSeed.state,
+    governorSystem: {
+      governors: [],
+      forumChair: null,
+      forumChairElectedDay: null,
+      nextElectionDay: 1460,
     },
   };
 
@@ -1013,7 +1244,14 @@ export type GameAction =
   | { type: "MAKE_APPOINTMENT"; office: string; appointeeName: string; character: CharacterState }
   | { type: "SET_BRIEFING_COOLDOWN"; cooldownKey: string }
   | { type: "PROCESS_BRIEFING_CHOICE"; event: ActiveEvent; choiceIndex: number }
-  | { type: "CONVENE_FEC" };
+  | { type: "CONVENE_FEC" }
+  | { type: "RESOLVE_FEC_MEMO"; memoId: string; choiceIndex: number }
+  | { type: "CLEAR_FEC_MEMOS" }
+  | { type: "REVIEW_MINISTER"; name: string; action: "commend" | "warn" | "probation" }
+  | { type: "REASSIGN_MINISTER"; name: string; newPortfolio: string }
+  | { type: "DISMISS_MINISTER"; name: string }
+  | { type: "APPLY_RETREAT"; priorities: string[] }
+  | { type: "SUBMIT_BUDGET"; allocation: BudgetAllocation };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -1180,7 +1418,47 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         { office: action.office, appointee: action.appointeeName, confirmed: true },
       ];
       const newCharacters = { ...state.characters, [action.appointeeName]: action.character };
-      return withDerivedState({ ...state, appointments: newAppointments, characters: newCharacters });
+
+      // Also update cabinetAppointments if this is a minister portfolio
+      const newCabinetAppointments = { ...state.cabinetAppointments };
+      if (action.office in newCabinetAppointments) {
+        newCabinetAppointments[action.office] = action.appointeeName;
+      }
+
+      // Update federal character compliance
+      const appointeeState = action.character.state;
+      const zone = appointeeState ? getZoneForState(appointeeState) : undefined;
+      const updatedFC = { ...state.federalCharacter };
+      if (zone) {
+        // Find or create the federal appointment entry for this office
+        const existingIdx = updatedFC.appointments.findIndex(
+          a => a.positionName === action.office,
+        );
+        const fcEntry = {
+          positionId: action.office.toLowerCase().replace(/\s+/g, "-"),
+          positionName: action.office,
+          category: (action.office in state.cabinetAppointments ? "cabinet" : "constitutional-officer") as "cabinet" | "constitutional-officer",
+          prestigeTier: "standard" as const,
+          appointeeId: action.appointeeName,
+          appointeeZone: zone.abbrev,
+        };
+        if (existingIdx >= 0) {
+          updatedFC.appointments = [...updatedFC.appointments];
+          updatedFC.appointments[existingIdx] = fcEntry;
+        } else {
+          updatedFC.appointments = [...updatedFC.appointments, fcEntry];
+        }
+        updatedFC.zoneScores = calculateZoneBalances(updatedFC.appointments);
+        updatedFC.complianceScore = calculateComplianceScore(updatedFC.appointments, updatedFC.budgetAllocation);
+      }
+
+      return withDerivedState({
+        ...state,
+        appointments: newAppointments,
+        characters: newCharacters,
+        cabinetAppointments: newCabinetAppointments,
+        federalCharacter: updatedFC,
+      });
     }
     case "SET_BRIEFING_COOLDOWN":
       return {
@@ -1214,6 +1492,111 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           fecCooldownUntil: state.day + 14,
           pendingFECMemos: memos,
         },
+      });
+    }
+    case "RESOLVE_FEC_MEMO": {
+      const memo = state.cabinetRetreats.pendingFECMemos.find(m => m.id === action.memoId);
+      if (!memo) return state;
+      const fecChoice = memo.choices[action.choiceIndex];
+      if (!fecChoice) return state;
+      const afterConsequences = applyBriefingConsequences(
+        state,
+        `FEC Memo: ${memo.title} — ${fecChoice.label}`,
+        fecChoice.context,
+        fecChoice.consequences,
+        "decision",
+      );
+      return withDerivedState({
+        ...afterConsequences,
+        cabinetRetreats: {
+          ...afterConsequences.cabinetRetreats,
+          pendingFECMemos: afterConsequences.cabinetRetreats.pendingFECMemos.filter(m => m.id !== action.memoId),
+        },
+      });
+    }
+    case "CLEAR_FEC_MEMOS": {
+      return withDerivedState({
+        ...state,
+        cabinetRetreats: {
+          ...state.cabinetRetreats,
+          pendingFECMemos: [],
+        },
+      });
+    }
+    case "REVIEW_MINISTER": {
+      const char = state.characters[action.name];
+      if (!char) return state;
+      const updatedChar = { ...char };
+      if (action.action === "commend") {
+        updatedChar.loyalty = Math.min(100, (char.loyalty ?? 50) + 10);
+        updatedChar.relationship = stepRelationship(char.relationship, 1);
+      } else if (action.action === "warn") {
+        updatedChar.loyalty = Math.max(0, (char.loyalty ?? 50) - 10);
+        updatedChar.relationship = stepRelationship(char.relationship, -1);
+      }
+      const newStatuses = { ...state.ministerStatuses };
+      if (action.action === "probation") {
+        newStatuses[action.name] = {
+          ...(newStatuses[action.name] ?? { lastSummonedDay: 0, lastDirectiveDay: 0, onProbation: false, probationStartDay: 0, appointmentDay: state.day, pendingMemos: [] }),
+          onProbation: true,
+          probationStartDay: state.day,
+        };
+      }
+      return withDerivedState({
+        ...state,
+        characters: { ...state.characters, [action.name]: updatedChar },
+        ministerStatuses: newStatuses,
+      });
+    }
+    case "REASSIGN_MINISTER": {
+      const { name, newPortfolio } = action;
+      if (state.politicalCapital < 8) return state;
+      const oldPortfolio = Object.entries(state.cabinetAppointments).find(([, n]) => n === name)?.[0];
+      if (!oldPortfolio) return state;
+      const occupant = state.cabinetAppointments[newPortfolio] ?? null;
+      const updatedAppointments = { ...state.cabinetAppointments };
+      updatedAppointments[newPortfolio] = name;
+      updatedAppointments[oldPortfolio] = occupant; // swap or null
+      return withDerivedState({
+        ...state,
+        cabinetAppointments: updatedAppointments,
+        politicalCapital: state.politicalCapital - 8,
+      });
+    }
+    case "DISMISS_MINISTER": {
+      const { name } = action;
+      const portfolio = Object.entries(state.cabinetAppointments).find(([, n]) => n === name)?.[0];
+      if (!portfolio) return state;
+      const updatedAppts = { ...state.cabinetAppointments, [portfolio]: null };
+      const char = state.characters[name];
+      const faction = char?.faction;
+      const updatedChars = { ...state.characters };
+      if (faction) {
+        for (const [cName, cState] of Object.entries(updatedChars)) {
+          if (cState.faction === faction && cName !== name) {
+            updatedChars[cName] = { ...cState, loyalty: Math.max(0, (cState.loyalty ?? 50) - 5) };
+          }
+        }
+      }
+      const newStatuses = { ...state.ministerStatuses };
+      delete newStatuses[name];
+      return withDerivedState({
+        ...state,
+        cabinetAppointments: updatedAppts,
+        characters: updatedChars,
+        ministerStatuses: newStatuses,
+        approval: Math.max(0, state.approval - 2),
+      });
+    }
+    case "APPLY_RETREAT": {
+      const next = { ...state };
+      applyRetreatEffects(next, action.priorities);
+      return withDerivedState(next);
+    }
+    case "SUBMIT_BUDGET": {
+      return withDerivedState({
+        ...state,
+        budgetAllocation: action.allocation,
       });
     }
     default:
@@ -1263,6 +1646,13 @@ interface GameContextValue {
   setBriefingCooldown: (cooldownKey: string) => void;
   processBriefingChoice: (event: ActiveEvent, choiceIndex: number) => void;
   conveneFEC: () => void;
+  resolveFECMemo: (memoId: string, choiceIndex: number) => void;
+  clearFECMemos: () => void;
+  reviewMinister: (name: string, action: "commend" | "warn" | "probation") => void;
+  reassignMinister: (name: string, newPortfolio: string) => void;
+  dismissMinister: (name: string) => void;
+  applyRetreat: (priorities: string[]) => void;
+  submitBudget: (allocation: BudgetAllocation) => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -1312,6 +1702,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setBriefingCooldown: (cooldownKey) => dispatch({ type: "SET_BRIEFING_COOLDOWN", cooldownKey }),
     processBriefingChoice: (event, choiceIndex) => dispatch({ type: "PROCESS_BRIEFING_CHOICE", event, choiceIndex }),
     conveneFEC: () => dispatch({ type: "CONVENE_FEC" }),
+    resolveFECMemo: (memoId, choiceIndex) => dispatch({ type: "RESOLVE_FEC_MEMO", memoId, choiceIndex }),
+    clearFECMemos: () => dispatch({ type: "CLEAR_FEC_MEMOS" }),
+    reviewMinister: (name, action) => dispatch({ type: "REVIEW_MINISTER", name, action }),
+    reassignMinister: (name, newPortfolio) => dispatch({ type: "REASSIGN_MINISTER", name, newPortfolio }),
+    dismissMinister: (name) => dispatch({ type: "DISMISS_MINISTER", name }),
+    applyRetreat: (priorities) => dispatch({ type: "APPLY_RETREAT", priorities }),
+    submitBudget: (allocation) => dispatch({ type: "SUBMIT_BUDGET", allocation }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

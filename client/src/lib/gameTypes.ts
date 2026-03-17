@@ -16,6 +16,7 @@ import type { DiplomatSystemState } from "./diplomatTypes";
 import type { MilitarySystemState } from "./militaryTypes";
 import type { TraditionalRulerSystemState } from "./traditionalRulerTypes";
 import type { ReligiousLeaderSystemState } from "./religiousLeaderTypes";
+import type { NPCLink } from "./affinityRegistry";
 
 /** Tags a presidential decision with its ideological direction */
 export interface IdeologyImpact {
@@ -604,6 +605,7 @@ export interface GameState {
   military: MilitarySystemState;
   traditionalRulers: TraditionalRulerSystemState;
   religiousLeaders: ReligiousLeaderSystemState;
+  npcLinks: NPCLink[];
 }
 
 /**

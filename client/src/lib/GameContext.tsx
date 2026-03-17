@@ -1218,6 +1218,7 @@ export function initializeGameState(config: CampaignConfig): GameState {
     military: militarySeed.state,
     traditionalRulers: tradRulerSeed.state,
     religiousLeaders: relLeaderSeed.state,
+    npcLinks: [],
   };
 
   state = syncStrategicState(state);

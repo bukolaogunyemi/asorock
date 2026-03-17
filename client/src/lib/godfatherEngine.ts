@@ -10,7 +10,7 @@ import type { GameStateModifier } from "./legislativeTypes";
 import { generateDealProposal } from "./godfatherDeals";
 import { GODFATHER_PROFILES } from "./godfatherProfiles";
 import { selectBusinessOligarchs } from "./businessOligarchEngine";
-import { seededRandom } from "./seededRandom";
+
 
 // ── PatronageEffects ─────────────────────────────────────────────────
 
@@ -177,12 +177,9 @@ export function processGodfatherTurn(
     }
   }
 
-  // Ally amplification — godfathers at stage 3+ may have allies generate sympathy events
-  const rng = seededRandom(state.day);
-  const allyResult = processAllyAmplification(
-    { ...state, patronage: patronageState } as GameState,
-    rng,
-  );
+  // NOTE: Ally amplification (processAllyAmplification) removed — replaced by
+  // processCoalitionPressure in affinityRegistry.ts, which uses NPCLink
+  // strength-weighted probabilities (40%/25%/10% for strength 3/2/1).
 
   return {
     patronageState: {
@@ -190,7 +187,7 @@ export function processGodfatherTurn(
       approachCooldowns: updatedCooldowns,
     },
     approaches,
-    events: [...events, ...allyResult.events],
+    events,
   };
 }
 

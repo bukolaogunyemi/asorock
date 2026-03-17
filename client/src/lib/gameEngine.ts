@@ -54,6 +54,7 @@ import { processIntelligenceTurn } from "./intelligenceEngine";
 import { processEconomicTurn } from "./economicEngine";
 import { processSectorTurns } from "./sectorTurnProcessor";
 import { computeMinisterialEffectiveness, generateMinisterEvents } from "./cabinetSystem";
+import { processCoalitionPressure, processRivalryEruptions, processGenderFriction } from "./affinityRegistry";
 import { isFECMeetingDay, generateFECMemos } from "./fecMeetings";
 
 export type {
@@ -2756,6 +2757,40 @@ export function processTurn(state: GameState): GameState {
   };
   if (relLeaderResult.consequences.length > 0) {
     next = processConsequences(next, relLeaderResult.consequences);
+  }
+
+  // Process inter-NPC relationship dynamics — coalition pressure, rivalries, gender friction
+  const coalitionResult = processCoalitionPressure(next, seededRandom(next.day * 17001));
+  if (coalitionResult.events.length > 0) {
+    next = {
+      ...next,
+      activeEvents: [...next.activeEvents, ...coalitionResult.events],
+    };
+  }
+  if (coalitionResult.consequences.length > 0) {
+    next = processConsequences(next, coalitionResult.consequences);
+  }
+
+  const rivalryResult = processRivalryEruptions(next, seededRandom(next.day * 17501));
+  if (rivalryResult.events.length > 0) {
+    next = {
+      ...next,
+      activeEvents: [...next.activeEvents, ...rivalryResult.events],
+    };
+  }
+  if (rivalryResult.consequences.length > 0) {
+    next = processConsequences(next, rivalryResult.consequences);
+  }
+
+  const genderFrictionResult = processGenderFriction(next, seededRandom(next.day * 18001));
+  if (genderFrictionResult.events.length > 0) {
+    next = {
+      ...next,
+      activeEvents: [...next.activeEvents, ...genderFrictionResult.events],
+    };
+  }
+  if (genderFrictionResult.consequences.length > 0) {
+    next = processConsequences(next, genderFrictionResult.consequences);
   }
 
   // Process lifecycle — aging, retirement, death, career mobility

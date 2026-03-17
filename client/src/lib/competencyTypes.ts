@@ -2,10 +2,12 @@ export interface ProfessionalCompetencies {
   economics: number;      // 0-100
   diplomacy: number;      // 0-100
   security: number;       // 0-100
-  media: number;          // 0-100
+  communications: number; // 0-100 (renamed from 'media')
   legal: number;          // 0-100
   administration: number; // 0-100
+  management: number;     // 0-100
   technology: number;     // 0-100
+  politics: number;       // 0-100
 }
 
 export interface PersonalCompetencies {
@@ -16,6 +18,7 @@ export interface PersonalCompetencies {
   integrity: number;   // 0-100
   resilience: number;  // 0-100
   intrigue: number;    // 0-100
+  discretion: number;  // 0-100
 }
 
 export interface CharacterCompetencies {
@@ -37,21 +40,23 @@ export interface InteractionEntry {
 }
 
 export const PROFESSIONAL_KEYS = [
-  "economics", "diplomacy", "security", "media", "legal", "administration", "technology",
+  "economics", "diplomacy", "security", "communications", "legal", "administration", "management", "technology", "politics",
 ] as const;
 
 export const PERSONAL_KEYS = [
-  "loyalty", "charisma", "leadership", "ambition", "integrity", "resilience", "intrigue",
+  "loyalty", "charisma", "leadership", "ambition", "integrity", "resilience", "intrigue", "discretion",
 ] as const;
 
 export const PROFESSIONAL_LABELS: Record<keyof ProfessionalCompetencies, string> = {
   economics: "Economics",
   diplomacy: "Diplomacy",
   security: "Security",
-  media: "Media",
+  communications: "Communications",
   legal: "Legal",
   administration: "Administration",
+  management: "Management",
   technology: "Technology",
+  politics: "Politics",
 };
 
 export const PERSONAL_LABELS: Record<keyof PersonalCompetencies, string> = {
@@ -62,4 +67,5 @@ export const PERSONAL_LABELS: Record<keyof PersonalCompetencies, string> = {
   integrity: "Integrity",
   resilience: "Resilience",
   intrigue: "Intrigue",
+  discretion: "Discretion",
 };

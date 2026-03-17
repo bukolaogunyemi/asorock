@@ -357,7 +357,7 @@ export const DIRECTOR_POSITIONS: DirectorPosition[] = [
     prestigeTier: "standard",
     sectorInfluence: ["approval"],
     weight: 0.5,
-    primaryCompetency: "media",
+    primaryCompetency: "communications",
   },
 
   // ── Environment (2) ────────────────────────────────────────────────────────

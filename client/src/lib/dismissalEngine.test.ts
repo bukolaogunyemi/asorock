@@ -1,13 +1,9 @@
 // client/src/lib/dismissalEngine.test.ts
 import { describe, it, expect } from "vitest";
-import type { GameState, CharacterState, ActiveEvent, GameInboxMessage, FactionState, Consequence } from "./gameTypes";
+import type { GameState, CharacterState, FactionState } from "./gameTypes";
 import type { CharacterCompetencies } from "./competencyTypes";
-import type { DirectorAppointment } from "./directorTypes";
-import type { AmbassadorAppointment } from "./diplomatTypes";
-import type { MilitaryAppointment } from "./militaryTypes";
-import type { Godfather, GodfatherStable, PatronageState } from "./godfatherTypes";
+import type { Godfather } from "./godfatherTypes";
 import { processDismissal } from "./dismissalEngine";
-import type { DismissalResult } from "./dismissalEngine";
 
 // ══════════════════════════════════════════════════════════════
 // Helpers
@@ -85,10 +81,6 @@ function makeGodfather(overrides: Partial<Godfather> = {}): Godfather {
   };
 }
 
-/**
- * Builds a minimal GameState sufficient for dismissal testing.
- * Only the fields needed by processDismissal are populated.
- */
 function makeMockState(overrides: Partial<GameState> = {}): GameState {
   return {
     day: 30,
@@ -217,20 +209,15 @@ describe("dismissalEngine — minister path", () => {
       cabinetAppointments: { finance: "Dr. Bello" },
       ministerStatuses: {
         "Dr. Bello": {
-          lastSummonedDay: 0,
-          lastDirectiveDay: 0,
-          onProbation: false,
-          probationStartDay: 0,
-          appointmentDay: 5,
-          pendingMemos: [],
+          lastSummonedDay: 0, lastDirectiveDay: 0,
+          onProbation: false, probationStartDay: 0,
+          appointmentDay: 5, pendingMemos: [],
         },
       },
       characters: {
         "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
       },
-      factions: {
-        "Northern Caucus": makeFaction({ name: "Northern Caucus", loyalty: 60 }),
-      },
+      factions: { "Northern Caucus": makeFaction() },
     });
 
     const result = processDismissal(state, "minister", "finance");
@@ -252,9 +239,7 @@ describe("dismissalEngine — minister path", () => {
       characters: {
         "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
       },
-      factions: {
-        "Northern Caucus": makeFaction(),
-      },
+      factions: { "Northern Caucus": makeFaction() },
     });
 
     const result = processDismissal(state, "minister", "finance");
@@ -290,10 +275,7 @@ describe("dismissalEngine — minister path", () => {
   });
 
   it("returns empty result when positionId has no appointment", () => {
-    const state = makeMockState({
-      cabinetAppointments: { finance: null },
-    });
-
+    const state = makeMockState({ cabinetAppointments: { finance: null } });
     const result = processDismissal(state, "minister", "finance");
     expect(result.consequences).toHaveLength(0);
     expect(result.inboxMessages).toHaveLength(0);
@@ -301,10 +283,7 @@ describe("dismissalEngine — minister path", () => {
   });
 
   it("returns empty result when positionId does not exist", () => {
-    const state = makeMockState({
-      cabinetAppointments: {},
-    });
-
+    const state = makeMockState({ cabinetAppointments: {} });
     const result = processDismissal(state, "minister", "nonexistent");
     expect(result.consequences).toHaveLength(0);
   });
@@ -352,5 +331,464 @@ describe("dismissalEngine — minister path", () => {
       characterName: "Dr. Bello",
       exitReason: "fired",
     });
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// Task 2: Director, diplomat, military, aide paths
+// ══════════════════════════════════════════════════════════════
+
+describe("dismissalEngine — director path", () => {
+  it("sets characterName to null and updates vacancyTracking", () => {
+    const state = makeMockState({
+      directors: {
+        positions: [],
+        appointments: [
+          { positionId: "cbn-governor", characterName: "Chief Emeka", appointedDay: 5, isOriginal: true },
+        ],
+        technocratsFired: 0,
+        vacancyTracking: {} as any,
+      },
+      characters: {
+        "Chief Emeka": makeCharacter({ name: "Chief Emeka", faction: "Southern Caucus" }),
+      },
+      factions: { "Southern Caucus": makeFaction({ name: "Southern Caucus" }) },
+    });
+
+    const result = processDismissal(state, "director", "cbn-governor");
+    const updatedDirectors = result.updatedState.directors!;
+    const appt = updatedDirectors.appointments.find(a => a.positionId === "cbn-governor");
+    expect(appt!.characterName).toBeNull();
+    expect(updatedDirectors.vacancyTracking["cbn-governor"]).toBe(30);
+  });
+
+  it("generates -1 approval consequence for director", () => {
+    const state = makeMockState({
+      directors: {
+        positions: [],
+        appointments: [
+          { positionId: "cbn-governor", characterName: "Chief Emeka", appointedDay: 5, isOriginal: true },
+        ],
+        technocratsFired: 0,
+        vacancyTracking: {} as any,
+      },
+      characters: {
+        "Chief Emeka": makeCharacter({ name: "Chief Emeka", faction: "Southern Caucus" }),
+      },
+      factions: { "Southern Caucus": makeFaction({ name: "Southern Caucus" }) },
+    });
+
+    const result = processDismissal(state, "director", "cbn-governor");
+    const approvalEffect = result.consequences.flatMap(c => c.effects).find(e => e.target === "approval");
+    expect(approvalEffect).toBeDefined();
+    expect(approvalEffect!.value).toBe(-1);
+  });
+
+  it("returns empty result for vacant director position", () => {
+    const state = makeMockState({
+      directors: {
+        positions: [],
+        appointments: [
+          { positionId: "cbn-governor", characterName: null, appointedDay: 5, isOriginal: true },
+        ],
+        technocratsFired: 0,
+        vacancyTracking: {} as any,
+      },
+    });
+
+    const result = processDismissal(state, "director", "cbn-governor");
+    expect(result.consequences).toHaveLength(0);
+  });
+
+  it("marks lifecycle exit for director", () => {
+    const state = makeMockState({
+      directors: {
+        positions: [],
+        appointments: [
+          { positionId: "cbn-governor", characterName: "Chief Emeka", appointedDay: 5, isOriginal: true },
+        ],
+        technocratsFired: 0,
+        vacancyTracking: {} as any,
+      },
+      characters: {
+        "Chief Emeka": makeCharacter({ name: "Chief Emeka" }),
+      },
+      factions: {},
+    });
+
+    const result = processDismissal(state, "director", "cbn-governor");
+    expect(result.lifecycleExit).toEqual({
+      characterName: "Chief Emeka",
+      exitReason: "fired",
+    });
+  });
+});
+
+describe("dismissalEngine — diplomat path", () => {
+  it("sets characterName to null and vacantSinceDay for bilateral post", () => {
+    const state = makeMockState({
+      diplomats: {
+        posts: [],
+        appointments: [
+          { postId: "amb-usa", characterName: "Amb. Okoro", appointedDay: 5, rotationDueDay: 900, vacantSinceDay: null },
+        ],
+        incidents: [],
+        diplomaticEffectiveness: 50,
+      },
+      characters: {
+        "Amb. Okoro": makeCharacter({ name: "Amb. Okoro", faction: "Foreign Service" }),
+      },
+      factions: { "Foreign Service": makeFaction({ name: "Foreign Service" }) },
+    });
+
+    const result = processDismissal(state, "diplomat", "amb-usa");
+    const updatedDiplomats = result.updatedState.diplomats!;
+    const appt = updatedDiplomats.appointments.find(a => a.postId === "amb-usa");
+    expect(appt!.characterName).toBeNull();
+    expect(appt!.vacantSinceDay).toBe(30);
+  });
+
+  it("generates -2 approval for bilateral diplomat", () => {
+    const state = makeMockState({
+      diplomats: {
+        posts: [],
+        appointments: [
+          { postId: "amb-usa", characterName: "Amb. Okoro", appointedDay: 5, rotationDueDay: 900, vacantSinceDay: null },
+        ],
+        incidents: [],
+        diplomaticEffectiveness: 50,
+      },
+      characters: {
+        "Amb. Okoro": makeCharacter({ name: "Amb. Okoro", faction: "Foreign Service" }),
+      },
+      factions: { "Foreign Service": makeFaction({ name: "Foreign Service" }) },
+    });
+
+    const result = processDismissal(state, "diplomat", "amb-usa");
+    const approvalEffect = result.consequences.flatMap(c => c.effects).find(e => e.target === "approval");
+    expect(approvalEffect).toBeDefined();
+    expect(approvalEffect!.value).toBe(-2);
+  });
+
+  it("generates -1 approval for minor diplomat post", () => {
+    const state = makeMockState({
+      diplomats: {
+        posts: [],
+        appointments: [
+          { postId: "minor-cuba", characterName: "Amb. Adamu", appointedDay: 5, rotationDueDay: 900, vacantSinceDay: null },
+        ],
+        incidents: [],
+        diplomaticEffectiveness: 50,
+      },
+      characters: {
+        "Amb. Adamu": makeCharacter({ name: "Amb. Adamu", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+    });
+
+    const result = processDismissal(state, "diplomat", "minor-cuba");
+    const approvalEffect = result.consequences.flatMap(c => c.effects).find(e => e.target === "approval");
+    expect(approvalEffect).toBeDefined();
+    expect(approvalEffect!.value).toBe(-1);
+  });
+});
+
+describe("dismissalEngine — military path", () => {
+  it("sets characterName to null for military appointment", () => {
+    const state = makeMockState({
+      military: {
+        positions: [],
+        appointments: [
+          { positionId: "chief-army-force", characterName: "Gen. Tsafe", appointedDay: 5 },
+        ],
+        coupRisk: 10,
+        securityEffectiveness: 50,
+      },
+      characters: {
+        "Gen. Tsafe": makeCharacter({ name: "Gen. Tsafe", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+    });
+
+    const result = processDismissal(state, "military", "chief-army-force");
+    const updatedMilitary = result.updatedState.military!;
+    const appt = updatedMilitary.appointments.find(a => a.positionId === "chief-army-force");
+    expect(appt!.characterName).toBeNull();
+  });
+
+  it("generates -4 approval and -3 stability for military", () => {
+    const state = makeMockState({
+      military: {
+        positions: [],
+        appointments: [
+          { positionId: "chief-army-force", characterName: "Gen. Tsafe", appointedDay: 5 },
+        ],
+        coupRisk: 10,
+        securityEffectiveness: 50,
+      },
+      characters: {
+        "Gen. Tsafe": makeCharacter({ name: "Gen. Tsafe", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+    });
+
+    const result = processDismissal(state, "military", "chief-army-force");
+    const effects = result.consequences.flatMap(c => c.effects);
+    expect(effects.find(e => e.target === "approval")!.value).toBe(-4);
+    expect(effects.find(e => e.target === "stability")!.value).toBe(-3);
+  });
+});
+
+describe("dismissalEngine — aide path", () => {
+  it("removes aide from appointments array", () => {
+    const state = makeMockState({
+      appointments: [
+        { office: "Chief of Staff", appointee: "Sen. Agba", confirmed: true },
+        { office: "SGF", appointee: "Amb. Mustapha", confirmed: true },
+      ],
+      characters: {
+        "Sen. Agba": makeCharacter({ name: "Sen. Agba", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+    });
+
+    const result = processDismissal(state, "aide", "Chief of Staff");
+    const updatedAppointments = result.updatedState.appointments!;
+    expect(updatedAppointments.find(a => a.office === "Chief of Staff")).toBeUndefined();
+    expect(updatedAppointments.find(a => a.office === "SGF")).toBeDefined();
+  });
+
+  it("clears personalAssistant when dismissing PA", () => {
+    const state = makeMockState({
+      personalAssistant: "Alhaji Sule",
+      appointments: [
+        { office: "Personal Assistant", appointee: "Alhaji Sule", confirmed: true },
+      ],
+      characters: {
+        "Alhaji Sule": makeCharacter({ name: "Alhaji Sule", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+    });
+
+    const result = processDismissal(state, "aide", "Personal Assistant");
+    expect(result.updatedState.personalAssistant).toBe("");
+    expect(result.updatedState.appointments!.find(a => a.office === "Personal Assistant")).toBeUndefined();
+  });
+
+  it("generates -2 approval for aide dismissal", () => {
+    const state = makeMockState({
+      appointments: [
+        { office: "NSA", appointee: "Gen. Monguno", confirmed: true },
+      ],
+      characters: {
+        "Gen. Monguno": makeCharacter({ name: "Gen. Monguno", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+    });
+
+    const result = processDismissal(state, "aide", "NSA");
+    const approvalEffect = result.consequences.flatMap(c => c.effects).find(e => e.target === "approval");
+    expect(approvalEffect).toBeDefined();
+    expect(approvalEffect!.value).toBe(-2);
+  });
+
+  it("returns empty result when aide not found", () => {
+    const state = makeMockState({ appointments: [] });
+    const result = processDismissal(state, "aide", "Nonexistent Office");
+    expect(result.consequences).toHaveLength(0);
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// Task 3: Faction penalty and godfather escalation
+// ══════════════════════════════════════════════════════════════
+
+describe("dismissalEngine — faction penalty", () => {
+  it("reduces faction loyalty by 5 on minister dismissal", () => {
+    const state = makeMockState({
+      cabinetAppointments: { finance: "Dr. Bello" },
+      ministerStatuses: {
+        "Dr. Bello": {
+          lastSummonedDay: 0, lastDirectiveDay: 0,
+          onProbation: false, probationStartDay: 0,
+          appointmentDay: 5, pendingMemos: [],
+        },
+      },
+      characters: {
+        "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
+      },
+      factions: {
+        "Northern Caucus": makeFaction({ name: "Northern Caucus", loyalty: 60 }),
+      },
+    });
+
+    const result = processDismissal(state, "minister", "finance");
+    expect(result.updatedState.factions!["Northern Caucus"].loyalty).toBe(55);
+  });
+
+  it("clamps faction loyalty at 0", () => {
+    const state = makeMockState({
+      cabinetAppointments: { finance: "Dr. Bello" },
+      ministerStatuses: {
+        "Dr. Bello": {
+          lastSummonedDay: 0, lastDirectiveDay: 0,
+          onProbation: false, probationStartDay: 0,
+          appointmentDay: 5, pendingMemos: [],
+        },
+      },
+      characters: {
+        "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
+      },
+      factions: {
+        "Northern Caucus": makeFaction({ name: "Northern Caucus", loyalty: 2 }),
+      },
+    });
+
+    const result = processDismissal(state, "minister", "finance");
+    expect(result.updatedState.factions!["Northern Caucus"].loyalty).toBe(0);
+  });
+
+  it("does not crash when character has no faction match in state.factions", () => {
+    const state = makeMockState({
+      cabinetAppointments: { finance: "Dr. Bello" },
+      ministerStatuses: {
+        "Dr. Bello": {
+          lastSummonedDay: 0, lastDirectiveDay: 0,
+          onProbation: false, probationStartDay: 0,
+          appointmentDay: 5, pendingMemos: [],
+        },
+      },
+      characters: {
+        "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Nonexistent Faction" }),
+      },
+      factions: {},
+    });
+
+    // Should not throw
+    const result = processDismissal(state, "minister", "finance");
+    expect(result.consequences.length).toBeGreaterThan(0);
+  });
+});
+
+describe("dismissalEngine — godfather escalation", () => {
+  it("escalates godfather when dismissed minister is in cabinetCandidates", () => {
+    const state = makeMockState({
+      cabinetAppointments: { finance: "Dr. Bello" },
+      ministerStatuses: {
+        "Dr. Bello": {
+          lastSummonedDay: 0, lastDirectiveDay: 0,
+          onProbation: false, probationStartDay: 0,
+          appointmentDay: 5, pendingMemos: [],
+        },
+      },
+      characters: {
+        "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+      patronage: {
+        godfathers: [
+          makeGodfather({
+            id: "gf-dantata",
+            name: "Alhaji Dantata",
+            escalationStage: 1,
+            stable: {
+              governors: [],
+              legislativeBloc: { house: 0, senate: 0 },
+              cabinetCandidates: ["finance"],
+              connections: [],
+            },
+          }),
+        ],
+        patronageIndex: 0,
+        activeDeals: 0,
+        neutralizedGodfathers: [],
+        approachCooldowns: {},
+      },
+    });
+
+    const result = processDismissal(state, "minister", "finance");
+    const updatedPatronage = result.updatedState.patronage!;
+    const godfather = updatedPatronage.godfathers.find(g => g.id === "gf-dantata");
+    expect(godfather!.escalationStage).toBe(2);
+  });
+
+  it("does not escalate godfather past stage 4", () => {
+    const state = makeMockState({
+      cabinetAppointments: { finance: "Dr. Bello" },
+      ministerStatuses: {
+        "Dr. Bello": {
+          lastSummonedDay: 0, lastDirectiveDay: 0,
+          onProbation: false, probationStartDay: 0,
+          appointmentDay: 5, pendingMemos: [],
+        },
+      },
+      characters: {
+        "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+      patronage: {
+        godfathers: [
+          makeGodfather({
+            id: "gf-dantata",
+            escalationStage: 4,
+            stable: {
+              governors: [],
+              legislativeBloc: { house: 0, senate: 0 },
+              cabinetCandidates: ["finance"],
+              connections: [],
+            },
+          }),
+        ],
+        patronageIndex: 0,
+        activeDeals: 0,
+        neutralizedGodfathers: [],
+        approachCooldowns: {},
+      },
+    });
+
+    const result = processDismissal(state, "minister", "finance");
+    const updatedPatronage = result.updatedState.patronage!;
+    const godfather = updatedPatronage.godfathers.find(g => g.id === "gf-dantata");
+    expect(godfather!.escalationStage).toBe(4);
+  });
+
+  it("does not escalate godfather with no interest in the position", () => {
+    const state = makeMockState({
+      cabinetAppointments: { finance: "Dr. Bello" },
+      ministerStatuses: {
+        "Dr. Bello": {
+          lastSummonedDay: 0, lastDirectiveDay: 0,
+          onProbation: false, probationStartDay: 0,
+          appointmentDay: 5, pendingMemos: [],
+        },
+      },
+      characters: {
+        "Dr. Bello": makeCharacter({ name: "Dr. Bello", faction: "Northern Caucus" }),
+      },
+      factions: { "Northern Caucus": makeFaction() },
+      patronage: {
+        godfathers: [
+          makeGodfather({
+            id: "gf-unrelated",
+            escalationStage: 1,
+            stable: {
+              governors: [],
+              legislativeBloc: { house: 0, senate: 0 },
+              cabinetCandidates: ["defence"],
+              connections: [],
+            },
+          }),
+        ],
+        patronageIndex: 0,
+        activeDeals: 0,
+        neutralizedGodfathers: [],
+        approachCooldowns: {},
+      },
+    });
+
+    const result = processDismissal(state, "minister", "finance");
+    const updatedPatronage = result.updatedState.patronage!;
+    const godfather = updatedPatronage.godfathers.find(g => g.id === "gf-unrelated");
+    expect(godfather!.escalationStage).toBe(1);
   });
 });

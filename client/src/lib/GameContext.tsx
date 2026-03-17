@@ -24,6 +24,7 @@ import {
   applyBriefingConsequences,
 } from "./gameEngine";
 import { generateBrief } from "./intelligenceBrief";
+import { canConveneFEC, generateFECMemos } from "./fecMeetings";
 import { checkMilestones } from "./legacyScore";
 import {
   computeFailureRisks,
@@ -631,6 +632,7 @@ const defaultGameState: GameState = {
     priorities: [],
     lastFECDay: 0,
     fecCooldownUntil: 0,
+    pendingFECMemos: [],
   },
 };
 
@@ -779,7 +781,12 @@ export const hydrateLoadedGameState = (state: GameState): GameState => {
       priorities: [],
       lastFECDay: 0,
       fecCooldownUntil: 0,
+      pendingFECMemos: [],
     };
+  }
+  // Migration: add pendingFECMemos if missing from existing cabinetRetreats
+  if (!state.cabinetRetreats.pendingFECMemos) {
+    state.cabinetRetreats = { ...state.cabinetRetreats, pendingFECMemos: [] };
   }
 
   // Backfill any new portfolios into cabinetAppointments
@@ -1005,7 +1012,8 @@ export type GameAction =
   | { type: "SUMMON_BRIEFING"; event: ActiveEvent; cooldownKey: string }
   | { type: "MAKE_APPOINTMENT"; office: string; appointeeName: string; character: CharacterState }
   | { type: "SET_BRIEFING_COOLDOWN"; cooldownKey: string }
-  | { type: "PROCESS_BRIEFING_CHOICE"; event: ActiveEvent; choiceIndex: number };
+  | { type: "PROCESS_BRIEFING_CHOICE"; event: ActiveEvent; choiceIndex: number }
+  | { type: "CONVENE_FEC" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -1193,6 +1201,21 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ),
       );
     }
+    case "CONVENE_FEC": {
+      const { lastFECDay, fecCooldownUntil } = state.cabinetRetreats;
+      if (!canConveneFEC(lastFECDay, fecCooldownUntil, state.day)) return state;
+      const memos = generateFECMemos(state);
+      if (memos.length === 0) return state;
+      return withDerivedState({
+        ...state,
+        cabinetRetreats: {
+          ...state.cabinetRetreats,
+          lastFECDay: state.day,
+          fecCooldownUntil: state.day + 14,
+          pendingFECMemos: memos,
+        },
+      });
+    }
     default:
       return state;
   }
@@ -1239,6 +1262,7 @@ interface GameContextValue {
   makeAppointment: (office: string, appointeeName: string, character: CharacterState) => void;
   setBriefingCooldown: (cooldownKey: string) => void;
   processBriefingChoice: (event: ActiveEvent, choiceIndex: number) => void;
+  conveneFEC: () => void;
 }
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -1287,6 +1311,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     makeAppointment: (office, appointeeName, character) => dispatch({ type: "MAKE_APPOINTMENT", office, appointeeName, character }),
     setBriefingCooldown: (cooldownKey) => dispatch({ type: "SET_BRIEFING_COOLDOWN", cooldownKey }),
     processBriefingChoice: (event, choiceIndex) => dispatch({ type: "PROCESS_BRIEFING_CHOICE", event, choiceIndex }),
+    conveneFEC: () => dispatch({ type: "CONVENE_FEC" }),
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

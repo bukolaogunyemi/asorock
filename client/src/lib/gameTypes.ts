@@ -560,6 +560,7 @@ export interface GameState {
     priorities: string[];
     lastFECDay: number;
     fecCooldownUntil: number;
+    pendingFECMemos: FECMemo[];
   };
   lastActionAtDay: Record<string, number>;
   victoryPath?: string;

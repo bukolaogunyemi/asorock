@@ -1,4 +1,5 @@
 import { getChainById, getChainStep, getTriggeredChains } from "./eventChains";
+import { resolveActionLabel } from "./inboxResponses";
 import { parseEntityId, slugify } from "./entityTypes";
 import { getZoneForState } from "./zones";
 import { getQuickActionById, getTriggeredActiveEvents } from "./gameContent";
@@ -39,6 +40,8 @@ import { processGodfatherTurn, getPatronageEffects } from "./godfatherEngine";
 import { calculateComplianceScore, calculateZoneBalances, getConsequences } from "./federalCharacter";
 import { processIntelligenceTurn } from "./intelligenceEngine";
 import { processEconomicTurn } from "./economicEngine";
+import { processSectorTurns } from "./sectorTurnProcessor";
+import { isFECMeetingDay, generateFECMemos } from "./fecMeetings";
 
 export type {
   ActiveEvent,
@@ -1280,6 +1283,31 @@ const finalizePresentation = (state: GameState): GameState => {
   };
 };
 
+/**
+ * Apply consequences to game state without generating inbox messages.
+ * Used for lightweight briefing interactions on governance pages.
+ */
+export function applyBriefingConsequences(
+  state: GameState,
+  title: string,
+  description: string,
+  consequences: Consequence[],
+  category: TurnLogEntry["category"] = "decision",
+): GameState {
+  const immediate = consequences.filter((c) => c.delayDays <= 0);
+  let next = processConsequences(state, immediate);
+  next = queueFutureConsequences(next, consequences);
+  next = appendTurnLog(next, {
+    day: state.day,
+    date: state.date,
+    event: title,
+    effects: consequences.map((c) => c.description),
+    category,
+  });
+  next = maybeRecordMilestone(next, title, description, consequences);
+  return finalizePresentation(next);
+}
+
 const applyDecisionConsequences = (
   state: GameState,
   title: string,
@@ -1369,6 +1397,17 @@ export function resolveActiveEventChoice(state: GameState, eventId: string, choi
         ...next,
         characters: { ...next.characters, [c.name]: newChar },
         cabinetAppointments: { ...next.cabinetAppointments, [portfolio]: c.name },
+        ministerStatuses: {
+          ...next.ministerStatuses,
+          [c.name]: {
+            lastSummonedDay: 0,
+            lastDirectiveDay: 0,
+            onProbation: false,
+            probationStartDay: 0,
+            appointmentDay: next.day,
+            pendingMemos: [],
+          },
+        },
         inboxMessages: [
           ...next.inboxMessages,
           {
@@ -1659,7 +1698,31 @@ export function handleInboxAction(state: GameState, messageId: string, actionId:
   const message = state.inboxMessages.find((candidate) => candidate.id === messageId);
   if (!message) return state;
   let next = markInboxMessageRead(state, messageId);
-  next = applyDecisionConsequences(next, `${message.subject}: ${actionId}`, message.preview, inboxActionConsequences(next, messageId, actionId), "inbox");
+
+  // Apply consequences without generating a follow-up inbox message
+  const consequences = inboxActionConsequences(next, messageId, actionId);
+  const title = `${message.subject}: ${actionId}`;
+  const immediate = consequences.filter((c) => c.delayDays <= 0);
+  next = processConsequences(next, immediate);
+  next = queueFutureConsequences(next, consequences);
+  next = appendTurnLog(next, {
+    day: next.day,
+    date: next.date,
+    event: title,
+    effects: consequences.map((c) => c.description),
+    category: "inbox",
+  });
+  next = maybeRecordMilestone(next, title, message.preview, consequences);
+
+  // Persist which response the player chose
+  const respondedLabel = resolveActionLabel(actionId, message.responseOptions, message.source);
+  next = {
+    ...next,
+    inboxMessages: next.inboxMessages.map((m) =>
+      m.id === messageId ? { ...m, respondedAction: actionId, respondedLabel } : m,
+    ),
+  };
+
   return finalizePresentation(next);
 }
 
@@ -1669,6 +1732,46 @@ export function checkVictoryConditions(state: GameState): VictoryPath | null {
 
 export function checkDefeatConditions(state: GameState): FailureState | null {
   return checkDefeat(state);
+}
+
+/**
+ * Advances consecutive-turn counters used by defeat/victory conditions.
+ * Called once per turn, after sectors are updated and before defeat/victory checks.
+ */
+export function advanceDefeatVictoryCounters(state: GameState): GameState {
+  const prev = state.defeatVictoryCounters ?? {
+    famineTurns: 0,
+    blackoutTurns: 0,
+    governanceCrisisTurns: 0,
+    gdpGrowthPositiveTurns: 0,
+  };
+
+  const foodPriceIndex = state.agriculture?.indicators?.foodPriceIndex ?? 60;
+  const powerGW = state.infrastructure?.indicators?.powerGenerationGW ?? 5;
+
+  // Count sectors currently in red crisis zone
+  const sectorList = [
+    state.infrastructure,
+    state.healthSector,
+    state.education,
+    state.agriculture,
+    state.interior,
+    state.environment,
+    state.youthEmployment,
+  ];
+  const redSectorCount = sectorList.filter(s => s?.crisisZone === "red").length;
+
+  const gdpGrowthRate = state.economy?.gdpGrowthRate ?? 0;
+
+  return {
+    ...state,
+    defeatVictoryCounters: {
+      famineTurns: foodPriceIndex > 95 ? prev.famineTurns + 1 : 0,
+      blackoutTurns: powerGW < 2.0 ? prev.blackoutTurns + 1 : 0,
+      governanceCrisisTurns: redSectorCount >= 3 ? prev.governanceCrisisTurns + 1 : 0,
+      gdpGrowthPositiveTurns: gdpGrowthRate > 0 ? prev.gdpGrowthPositiveTurns + 1 : 0,
+    },
+  };
 }
 
 export function driftMetrics(state: GameState): GameState {
@@ -2329,14 +2432,18 @@ const spawnNarrativePressure = (state: GameState): { state: GameState; items: st
 
 /**
  * Generate a cabinet appointment ActiveEvent for a ministry position.
- * One position is presented per day on days 2-8.
+ * Days 2-8 for the first 7 portfolios, days 10-18 for the remaining 9.
  */
-function generateCabinetAppointmentEvent(state: GameState): ActiveEvent | null {
-  // Only on days 2 through 8
-  const appointmentDay = state.day - 1; // day 2 → index 0 (Finance), day 3 → index 1 (Petroleum), etc.
-  if (appointmentDay < 1 || appointmentDay > ministryPositions.length) return null;
+const CABINET_APPOINTMENT_SCHEDULE: Record<number, number> = {
+  2: 0, 3: 1, 4: 2, 5: 3, 6: 4, 7: 5, 8: 6,
+  10: 7, 11: 8, 12: 9, 13: 10, 14: 11, 15: 12, 16: 13, 17: 14, 18: 15,
+};
 
-  const portfolio = ministryPositions[appointmentDay - 1] as MinistryPosition;
+function generateCabinetAppointmentEvent(state: GameState): ActiveEvent | null {
+  const portfolioIndex = CABINET_APPOINTMENT_SCHEDULE[state.day];
+  if (portfolioIndex === undefined || portfolioIndex >= ministryPositions.length) return null;
+
+  const portfolio = ministryPositions[portfolioIndex] as MinistryPosition;
 
   // Skip if already appointed (shouldn't happen in normal flow, but guard for save migration)
   if (state.cabinetAppointments[portfolio]) return null;
@@ -2455,6 +2562,25 @@ export function processTurn(state: GameState): GameState {
     },
   };
 
+  // Process governance sector turns
+  const sectorResult = processSectorTurns(next);
+  next = {
+    ...next,
+    infrastructure: sectorResult.infrastructure,
+    healthSector: sectorResult.healthSector,
+    education: sectorResult.education,
+    agriculture: sectorResult.agriculture,
+    interior: sectorResult.interior,
+    environment: sectorResult.environment,
+    youthEmployment: sectorResult.youthEmployment,
+    crossSectorEffects: sectorResult.crossSectorEffects,
+    crossSectorCascades: sectorResult.crossSectorCascades,
+    internationalReputation: sectorResult.internationalReputation,
+  };
+
+  // Apply sector approval modifier
+  next.approval = clamp(next.approval + sectorResult.approvalModifier, 0, 100);
+
   const hookProgress = processHookInvestigations(next);
   next = hookProgress.state;
   summaryItems.push(...hookProgress.items.slice(0, 2));
@@ -2486,6 +2612,22 @@ export function processTurn(state: GameState): GameState {
   if (cabinetEvent) {
     next = { ...next, activeEvents: [...next.activeEvents, cabinetEvent] };
     summaryItems.push(`${cabinetEvent.title} — candidates await your decision`);
+  }
+
+  // FEC meeting auto-trigger — every 30 days after day 20
+  if (isFECMeetingDay(next.day)) {
+    const fecMemos = generateFECMemos(next);
+    if (fecMemos.length > 0) {
+      next = {
+        ...next,
+        cabinetRetreats: {
+          ...next.cabinetRetreats,
+          lastFECDay: next.day,
+          pendingFECMemos: fecMemos,
+        },
+      };
+      summaryItems.push(`FEC meeting convened — ${fecMemos.length} memo(s) on the agenda`);
+    }
   }
 
   const election = resolveElectionCycle(next);
@@ -2597,6 +2739,9 @@ export function processTurn(state: GameState): GameState {
           priority: "Normal" as const,
           read: false,
           source: "system" as const,
+          contextData: {
+            senderLoyalty: ({ friendly: 75, neutral: 50, cold: 30, hostile: 10 } as Record<string, number>)[gf.disposition] ?? 50,
+          },
         };
         if (!next.inboxMessages.some(m => m.id === msg.id)) {
           next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
@@ -2663,6 +2808,9 @@ export function processTurn(state: GameState): GameState {
           priority: (completed.exposed ? "Urgent" : "Normal") as "Urgent" | "Normal",
           read: false,
           source: "system" as const,
+          contextData: {
+            relatedEventTitle: completed.operationId ?? completed.type,
+          },
         };
         next = { ...next, inboxMessages: [...next.inboxMessages, msg] };
       }
@@ -2682,6 +2830,7 @@ export function processTurn(state: GameState): GameState {
     const briefText = briefing.weeklySummary
       ? `${briefing.dailyBrief} ${briefing.weeklySummary}`
       : briefing.dailyBrief;
+    const activeBill = next.legislature?.activeBills?.[0];
     const briefMsg = {
       id: `legislative-brief-${next.day}`,
       day: next.day,
@@ -2695,6 +2844,10 @@ export function processTurn(state: GameState): GameState {
       priority: (next.legislature?.activeBills.some((b) => b.isCrisis) ? "Urgent" : "Normal") as "Urgent" | "Normal",
       read: false,
       source: "system" as const,
+      contextData: {
+        relatedEventTitle: activeBill?.title,
+        relevantMetrics: activeBill ? [{ label: "Bill Stakes", value: activeBill.stakes, color: activeBill.isCrisis ? "red" : "yellow" }] : [],
+      },
     };
     if (!next.inboxMessages.some((m) => m.id === briefMsg.id)) {
       next = { ...next, inboxMessages: [...next.inboxMessages, briefMsg] };
@@ -2713,6 +2866,9 @@ export function processTurn(state: GameState): GameState {
       }),
     };
   }
+
+  // Advance defeat/victory consecutive-turn counters
+  next = advanceDefeatVictoryCounters(next);
 
   const defeat = checkDefeatConditions(next);
   const victory = checkVictoryConditions(next);
@@ -2937,6 +3093,9 @@ export function delegateToCOS(state: GameState, eventId: string): GameState {
   const newPending = [...state.pendingConsequences, ...chosenOption.consequences];
   const newEvents = state.activeEvents.filter((e) => e.id !== eventId);
 
+  const cosAppointment = state.appointments.find((a) => a.office === "Chief of Staff");
+  const cosChar = cosAppointment ? state.characters[cosAppointment.appointee] : undefined;
+
   const inboxMessage: GameInboxMessage = {
     id: `cos-delegation-${state.day}-${eventId}`,
     sender: "Chief of Staff",
@@ -2946,9 +3105,14 @@ export function delegateToCOS(state: GameState, eventId: string): GameState {
     preview: `Handled: ${chosenOption.label}`,
     fullText: `Mr. President,\n\nRegarding "${event.title}", I have taken the decision to proceed with "${chosenOption.label}". ${chosenOption.context ?? ""}\n\nI will monitor the situation and keep you informed.\n\nYour Chief of Staff`,
     day: state.day,
+    date: state.date,
     priority: "Normal",
     read: false,
     source: "system",
+    contextData: {
+      senderLoyalty: cosChar ? ({ Loyal: 90, Friendly: 75, Neutral: 50, Wary: 35, Distrustful: 20, Hostile: 10 } as Record<string, number>)[cosChar.relationship] ?? 50 : 50,
+      relatedEventTitle: event.title,
+    },
   };
 
   return {
@@ -2977,9 +3141,14 @@ export function delegateToVP(state: GameState, eventId: string): GameState {
     preview: `Chose: ${chosenOption.label}`,
     fullText: `Mr. President,\n\nRegarding "${event.title}", I have decided to proceed with "${chosenOption.label}". ${chosenOption.context}\n\nRespectfully,\n${state.vicePresident.name}`,
     day: state.day,
+    date: state.date,
     priority: "Normal",
     read: false,
     source: "system",
+    contextData: {
+      senderLoyalty: Math.round(state.vicePresident?.loyalty ?? 50),
+      relatedEventTitle: event.title,
+    },
   };
 
   return {

@@ -15,6 +15,7 @@ import type { PatronageState, Godfather } from "./godfatherTypes";
 import { ALL_DIPLOMAT_POSTS } from "./diplomatPosts";
 import { cabinetCandidates } from "./handcraftedCharacters";
 import { checkGodfatherDismissal } from "./godfatherEngine";
+import { processAppointmentRipple } from "./affinityRegistry";
 
 // ══════════════════════════════════════════════════════════════
 // Types
@@ -647,6 +648,23 @@ export function processDismissal(
       ...result,
       events: [...result.events, ...godfatherEvents],
     };
+  }
+
+  // Appointment ripple — relationship shifts across NPC link network
+  if (result.lifecycleExit?.characterName) {
+    const charName = result.lifecycleExit.characterName;
+    const char = state.characters?.[charName];
+    const isHighPrestige = systemType === "military" || systemType === "director";
+    const ripple = processAppointmentRipple(
+      state, charName, "dismiss", isHighPrestige, char?.gender,
+    );
+    if (ripple.consequences.length > 0) {
+      result = {
+        ...result,
+        consequences: [...result.consequences, ...ripple.consequences],
+        inboxMessages: [...result.inboxMessages, ...ripple.inboxMessages],
+      };
+    }
   }
 
   return result;

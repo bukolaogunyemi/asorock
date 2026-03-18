@@ -46,7 +46,7 @@ describe("generateCareerHistory", () => {
 });
 
 describe("generateBiography", () => {
-  it("generates 4-5 sentences", () => {
+  it("generates 6-7 sentences (100+ words)", () => {
     const bio = generateBiography({
       name: "Alhaji Musa Ibrahim",
       state: "Kano",
@@ -59,8 +59,8 @@ describe("generateBiography", () => {
       seed: 42,
     });
     const sentences = bio.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    expect(sentences.length).toBeGreaterThanOrEqual(4);
-    expect(sentences.length).toBeLessThanOrEqual(5);
+    expect(sentences.length).toBeGreaterThanOrEqual(6);
+    expect(sentences.length).toBeLessThanOrEqual(7);
     expect(bio).toContain("Kano");
   });
 });

@@ -39,6 +39,22 @@ export interface GeneratedCharacter {
   competencies: CharacterCompetencies;
   careerHistory: CareerEntry[];
   party?: string;
+  honorific?: string;
+}
+
+export function deriveHonorific(
+  gender: string,
+  religion: string,
+  age: number,
+  education?: string,
+  background?: string,
+): string | undefined {
+  if (background?.includes("Military")) return age > 55 ? "Gen. (Rtd.)" : "Col. (Rtd.)";
+  if (education?.includes("PhD") || education?.includes("Professor")) return "Prof.";
+  if (education?.includes("Law") || background === "Lawyer") return "Barr.";
+  if (background === "Engineer") return "Engr.";
+  if (religion === "Islam" && age >= 50) return gender === "Female" ? "Hajiya" : "Alhaji";
+  return undefined;
 }
 
 // Education templates by region
@@ -305,6 +321,7 @@ export function generateCharacterPool(config: PoolGenerationConfig): GeneratedCh
     });
 
     const relationship = relationshipFromLoyalty(personal.loyalty);
+    const honorific = deriveHonorific(gender, religion, age, education);
 
     characters.push({
       name,
@@ -322,6 +339,7 @@ export function generateCharacterPool(config: PoolGenerationConfig): GeneratedCh
       competencies,
       careerHistory,
       party: config.partyId,
+      honorific,
     });
   }
 

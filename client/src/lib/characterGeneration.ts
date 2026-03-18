@@ -200,6 +200,20 @@ const CLOSING_TEMPLATES = [
   "Within the {party}, {pronoun} is regarded as both an asset and a potential power broker.",
 ];
 
+const CONNECTIONS_TEMPLATES = [
+  "{pronoun_cap} network of relationships across {state} State gives {pronoun_obj} unparalleled access to grassroots intelligence and local power structures.",
+  "Years of public service have forged strong ties with both traditional institutions and modern civic organisations across the {ethnicity} community.",
+  "{pronoun_cap} connections span the civil service, the military establishment, and the business community, providing a broad base of influence.",
+  "Through decades in {state} State politics, {pronoun} has cultivated alliances that stretch from village councils to the corridors of Abuja.",
+];
+
+const REPUTATION_TEMPLATES = [
+  "In closed-door meetings, {pronoun} is known for a methodical approach to problem-solving that has earned both allies and detractors.",
+  "Observers note that {pronoun_pos} ability to navigate complex political terrain without alienating key stakeholders is {pronoun_pos} greatest asset.",
+  "{pronoun_cap} tenure in public office has been marked by a careful balance of pragmatism and principled decision-making.",
+  "Those who have worked alongside {pronoun_obj} speak of someone who keeps counsel well and acts decisively when circumstances demand it.",
+];
+
 function paraphraseEducation(education: string): string {
   if (!education) return "several leading institutions";
   const parts = education.split(",").map(p => p.trim());
@@ -219,6 +233,10 @@ export function generateBiography(opts: {
   careerHighlight: string;
   party: string;
   seed: number;
+  professionalBackground?: string;
+  religion?: string;
+  gender?: string;
+  age?: number;
 }): string {
   const rng = seededRandom(opts.seed);
   const pronoun = "they";
@@ -248,6 +266,8 @@ export function generateBiography(opts: {
     fill(pick(rng, EDUCATION_TEMPLATES)),
     fill(pick(rng, CAREER_TEMPLATES)),
     fill(pick(rng, TRAIT_TEMPLATES)),
+    fill(pick(rng, CONNECTIONS_TEMPLATES)),
+    fill(pick(rng, REPUTATION_TEMPLATES)),
     fill(pick(rng, CLOSING_TEMPLATES)),
   ];
 

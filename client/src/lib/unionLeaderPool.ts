@@ -69,8 +69,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 52, diplomacy: 38, security: 20, communications: 65, legal: 44, administration: 55, technology: 22, management: 76, politics: 55 },
       personal: { loyalty: 55, charisma: 70, leadership: 80, ambition: 60, integrity: 72, resilience: 85, intrigue: 40, discretion: 87 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 82,
     influence: 78,
@@ -92,8 +92,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 65, diplomacy: 75, security: 18, communications: 48, legal: 55, administration: 72, technology: 40, management: 66, politics: 69 },
       personal: { loyalty: 68, charisma: 55, leadership: 70, ambition: 45, integrity: 80, resilience: 62, intrigue: 30, discretion: 66 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 25,
     influence: 62,
@@ -115,8 +115,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 35, diplomacy: 28, security: 15, communications: 88, legal: 30, administration: 38, technology: 72, management: 52, politics: 33 },
       personal: { loyalty: 42, charisma: 85, leadership: 65, ambition: 88, integrity: 58, resilience: 70, intrigue: 55, discretion: 64 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 90,
     influence: 52,
@@ -138,8 +138,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 72, diplomacy: 65, security: 15, communications: 42, legal: 60, administration: 78, technology: 55, management: 69, politics: 68 },
       personal: { loyalty: 62, charisma: 45, leadership: 68, ambition: 50, integrity: 85, resilience: 60, intrigue: 25, discretion: 69 },
-    honorific: "Prof.",
     },
+    honorific: "Prof.",
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 38,
     influence: 65,
@@ -161,8 +161,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 58, diplomacy: 80, security: 25, communications: 45, legal: 62, administration: 70, technology: 30, management: 62, politics: 69 },
       personal: { loyalty: 40, charisma: 60, leadership: 65, ambition: 75, integrity: 38, resilience: 68, intrigue: 82, discretion: 47 },
-    honorific: "Alh.",
     },
+    honorific: "Alh.",
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 20,
     influence: 80,
@@ -186,8 +186,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 58, diplomacy: 40, security: 28, communications: 78, legal: 52, administration: 60, technology: 20, management: 79, politics: 56 },
       personal: { loyalty: 60, charisma: 80, leadership: 85, ambition: 55, integrity: 78, resilience: 90, intrigue: 42, discretion: 90 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 80,
     influence: 88,
@@ -231,8 +231,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 42, diplomacy: 22, security: 18, communications: 85, legal: 35, administration: 40, technology: 60, management: 58, politics: 34 },
       personal: { loyalty: 48, charisma: 88, leadership: 70, ambition: 85, integrity: 65, resilience: 75, intrigue: 50, discretion: 73 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 92,
     influence: 55,
@@ -254,8 +254,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 80, diplomacy: 68, security: 20, communications: 45, legal: 65, administration: 75, technology: 50, management: 60, politics: 62 },
       personal: { loyalty: 60, charisma: 50, leadership: 65, ambition: 45, integrity: 88, resilience: 62, intrigue: 28, discretion: 65 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 35,
     influence: 60,
@@ -277,8 +277,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 60, diplomacy: 85, security: 35, communications: 52, legal: 58, administration: 65, technology: 28, management: 58, politics: 70 },
       personal: { loyalty: 38, charisma: 65, leadership: 60, ambition: 80, integrity: 32, resilience: 65, intrigue: 88, discretion: 44 },
-    honorific: "Sen.",
     },
+    honorific: "Sen.",
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 18,
     influence: 82,
@@ -302,8 +302,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 55, diplomacy: 42, security: 25, communications: 72, legal: 48, administration: 58, technology: 22, management: 69, politics: 49 },
       personal: { loyalty: 62, charisma: 72, leadership: 82, ambition: 58, integrity: 80, resilience: 88, intrigue: 38, discretion: 83 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 78,
     influence: 82,
@@ -347,8 +347,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 38, diplomacy: 30, security: 18, communications: 82, legal: 68, administration: 42, technology: 70, management: 52, politics: 34 },
       personal: { loyalty: 45, charisma: 82, leadership: 65, ambition: 90, integrity: 72, resilience: 72, intrigue: 55, discretion: 70 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 88,
     influence: 48,
@@ -392,8 +392,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 58, diplomacy: 82, security: 30, communications: 55, legal: 52, administration: 68, technology: 25, management: 61, politics: 69 },
       personal: { loyalty: 40, charisma: 68, leadership: 65, ambition: 82, integrity: 38, resilience: 62, intrigue: 85, discretion: 44 },
-    honorific: "Chief",
     },
+    honorific: "Chief",
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 22,
     influence: 78,
@@ -417,8 +417,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 48, diplomacy: 52, security: 65, communications: 68, legal: 35, administration: 55, technology: 38, management: 76, politics: 61 },
       personal: { loyalty: 62, charisma: 75, leadership: 82, ambition: 60, integrity: 72, resilience: 92, intrigue: 45, discretion: 89 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 72,
     influence: 75,
@@ -462,8 +462,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 28, diplomacy: 18, security: 22, communications: 92, legal: 30, administration: 25, technology: 80, management: 44, politics: 23 },
       personal: { loyalty: 35, charisma: 90, leadership: 60, ambition: 88, integrity: 60, resilience: 78, intrigue: 48, discretion: 70 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 92,
     influence: 58,
@@ -485,8 +485,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 72, diplomacy: 60, security: 15, communications: 55, legal: 40, administration: 72, technology: 88, management: 61, politics: 57 },
       personal: { loyalty: 60, charisma: 52, leadership: 68, ambition: 62, integrity: 82, resilience: 60, intrigue: 28, discretion: 62 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 30,
     influence: 60,
@@ -532,8 +532,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 62, diplomacy: 45, security: 35, communications: 72, legal: 50, administration: 65, technology: 48, management: 86, politics: 64 },
       personal: { loyalty: 55, charisma: 75, leadership: 88, ambition: 60, integrity: 70, resilience: 88, intrigue: 52, discretion: 88 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 78,
     influence: 90,
@@ -555,8 +555,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 65, diplomacy: 72, security: 28, communications: 48, legal: 55, administration: 70, technology: 72, management: 80, politics: 81 },
       personal: { loyalty: 68, charisma: 55, leadership: 70, ambition: 48, integrity: 82, resilience: 65, intrigue: 32, discretion: 84 },
-    honorific: "Engr.",
     },
+    honorific: "Engr.",
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 28,
     influence: 62,
@@ -578,8 +578,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 35, diplomacy: 25, security: 20, communications: 85, legal: 42, administration: 38, technology: 55, management: 43, politics: 22 },
       personal: { loyalty: 45, charisma: 88, leadership: 68, ambition: 82, integrity: 68, resilience: 78, intrigue: 52, discretion: 63 },
-    honorific: "Comr.",
     },
+    honorific: "Comr.",
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 88,
     influence: 55,
@@ -601,8 +601,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 80, diplomacy: 65, security: 30, communications: 45, legal: 58, administration: 78, technology: 82, management: 70, politics: 70 },
       personal: { loyalty: 58, charisma: 48, leadership: 65, ambition: 50, integrity: 85, resilience: 62, intrigue: 30, discretion: 72 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 38,
     influence: 65,
@@ -624,8 +624,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 68, diplomacy: 85, security: 32, communications: 42, legal: 55, administration: 72, technology: 35, management: 73, politics: 86 },
       personal: { loyalty: 38, charisma: 60, leadership: 60, ambition: 80, integrity: 30, resilience: 65, intrigue: 88, discretion: 55 },
-    honorific: "Alh.",
     },
+    honorific: "Alh.",
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 15,
     influence: 80,
@@ -649,8 +649,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 58, diplomacy: 42, security: 18, communications: 78, legal: 52, administration: 62, technology: 40, management: 70, politics: 48 },
       personal: { loyalty: 55, charisma: 75, leadership: 85, ambition: 58, integrity: 80, resilience: 88, intrigue: 40, discretion: 80 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 75,
     influence: 85,
@@ -672,8 +672,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 65, diplomacy: 80, security: 18, communications: 50, legal: 52, administration: 72, technology: 55, management: 74, politics: 78 },
       personal: { loyalty: 70, charisma: 58, leadership: 72, ambition: 45, integrity: 85, resilience: 65, intrigue: 30, discretion: 77 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 22,
     influence: 60,
@@ -695,8 +695,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 38, diplomacy: 25, security: 15, communications: 88, legal: 38, administration: 35, technology: 78, management: 43, politics: 24 },
       personal: { loyalty: 42, charisma: 85, leadership: 62, ambition: 85, integrity: 72, resilience: 75, intrigue: 48, discretion: 68 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 90,
     influence: 50,
@@ -718,8 +718,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 72, diplomacy: 70, security: 18, communications: 48, legal: 58, administration: 80, technology: 62, management: 83, politics: 83 },
       personal: { loyalty: 60, charisma: 48, leadership: 70, ambition: 48, integrity: 88, resilience: 60, intrigue: 22, discretion: 82 },
-    honorific: "Prof.",
     },
+    honorific: "Prof.",
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 30,
     influence: 68,
@@ -741,8 +741,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     competencies: {
       professional: { economics: 62, diplomacy: 85, security: 28, communications: 52, legal: 55, administration: 72, technology: 38, management: 71, politics: 81 },
       personal: { loyalty: 38, charisma: 65, leadership: 65, ambition: 80, integrity: 35, resilience: 62, intrigue: 85, discretion: 51 },
-    honorific: "Dr.",
     },
+    honorific: "Dr.",
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 18,
     influence: 82,

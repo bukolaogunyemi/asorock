@@ -316,6 +316,13 @@ export interface CharacterState {
   ambition?: number;
   /** @deprecated Use deriveBetrayalThreshold(competencies.personal) */
   betrayalThreshold?: number;
+  honorific?: string;
+  traditionalTitle?: string;
+  professionalBackground?: string;
+  previousOffices?: string[];
+  healthStatus?: "healthy" | "declining" | "critical";
+  foreignConnections?: string[];
+  avatarId?: string;
 }
 
 export interface FactionState {

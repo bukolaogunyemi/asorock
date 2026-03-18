@@ -37,6 +37,13 @@ export interface UnionLeaderCandidate {
   qualifiedFor: UnionPositionId[];
   strikeReadiness: number; // 0–100: how likely to call strikes
   influence: number;       // 0–100: how much political weight they carry
+  honorific?: string;
+  traditionalTitle?: string;
+  professionalBackground?: string;
+  previousOffices?: string[];
+  healthStatus?: "healthy" | "declining" | "critical";
+  foreignConnections?: string[];
+  avatarId?: string;
 }
 
 export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [

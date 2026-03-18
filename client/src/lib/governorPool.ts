@@ -22,6 +22,13 @@ export interface GovernorCandidate {
   popularity: number;        // 30–85, derived from charisma + leadership
   financialStrength: number; // 20–80, campaign war chest proxy
   incumbentAdvantage: boolean;
+  honorific?: string;
+  traditionalTitle?: string;
+  professionalBackground?: string;
+  previousOffices?: string[];
+  healthStatus?: "healthy" | "declining" | "critical";
+  foreignConnections?: string[];
+  avatarId?: string;
 }
 
 // Party strength by zone

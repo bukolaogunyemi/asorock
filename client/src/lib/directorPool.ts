@@ -40,6 +40,13 @@ export interface DirectorCandidate {
     };
   };
   qualifiedFor: string[]; // position IDs from directorPositions.ts
+  honorific?: string;
+  traditionalTitle?: string;
+  professionalBackground?: string;
+  previousOffices?: string[];
+  healthStatus?: "healthy" | "declining" | "critical";
+  foreignConnections?: string[];
+  avatarId?: string;
 }
 
 const BATCH1_CANDIDATES: DirectorCandidate[] = [

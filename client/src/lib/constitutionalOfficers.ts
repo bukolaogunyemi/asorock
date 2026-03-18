@@ -9,6 +9,13 @@ export interface ConstitutionalCandidate extends Character {
   gender: "Male" | "Female";
   religion: "Muslim" | "Christian";
   relationship: Relationship;
+  honorific?: string;
+  traditionalTitle?: string;
+  professionalBackground?: string;
+  previousOffices?: string[];
+  healthStatus?: "healthy" | "declining" | "critical";
+  foreignConnections?: string[];
+  avatarId?: string;
 }
 
 export const POSITION_NAMES = [

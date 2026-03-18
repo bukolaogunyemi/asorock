@@ -120,6 +120,13 @@ export interface Character {
   age?: number;
   state?: string;
   gender?: string;
+  honorific?: string;
+  traditionalTitle?: string;
+  professionalBackground?: string;
+  previousOffices?: string[];
+  healthStatus?: "healthy" | "declining" | "critical";
+  foreignConnections?: string[];
+  avatarId?: string;
 }
 
 /** @deprecated keyCharacters removed — characters now come from director/governor/legislature/union systems */

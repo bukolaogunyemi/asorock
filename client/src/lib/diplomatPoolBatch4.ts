@@ -19,8 +19,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 78, languageSkills: ["None"],
     qualifiedFor: ["amb-indonesia", "amb-malaysia", "amb-singapore", "amb-australia"],
     competencies: {
-      professional: { economics: 68, diplomacy: 82, security: 42, media: 50, legal: 55, administration: 60, technology: 45 },
-      personal: { loyalty: 65, charisma: 62, leadership: 68, ambition: 55, integrity: 72, resilience: 70, intrigue: 35 },
+      professional: { economics: 68, diplomacy: 82, security: 42, communications: 50, legal: 55, administration: 60, technology: 45, management: 57, politics: 64 },
+      personal: { loyalty: 65, charisma: 62, leadership: 68, ambition: 55, integrity: 72, resilience: 70, intrigue: 35, discretion: 64 },
     },
   },
   {
@@ -32,8 +32,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 74, languageSkills: ["None"],
     qualifiedFor: ["amb-indonesia", "amb-malaysia", "amb-australia"],
     competencies: {
-      professional: { economics: 78, diplomacy: 70, security: 35, media: 65, legal: 48, administration: 58, technology: 52 },
-      personal: { loyalty: 55, charisma: 72, leadership: 65, ambition: 70, integrity: 60, resilience: 62, intrigue: 45 },
+      professional: { economics: 78, diplomacy: 70, security: 35, communications: 65, legal: 48, administration: 58, technology: 52, management: 57, politics: 59 },
+      personal: { loyalty: 55, charisma: 72, leadership: 65, ambition: 70, integrity: 60, resilience: 62, intrigue: 45, discretion: 56 },
     },
   },
   {
@@ -45,8 +45,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 80, languageSkills: ["French"],
     qualifiedFor: ["amb-indonesia", "amb-singapore", "amb-belgium", "amb-switzerland"],
     competencies: {
-      professional: { economics: 52, diplomacy: 85, security: 45, media: 58, legal: 50, administration: 68, technology: 38 },
-      personal: { loyalty: 70, charisma: 75, leadership: 72, ambition: 50, integrity: 78, resilience: 68, intrigue: 28 },
+      professional: { economics: 52, diplomacy: 85, security: 45, communications: 58, legal: 50, administration: 68, technology: 38, management: 64, politics: 71 },
+      personal: { loyalty: 70, charisma: 75, leadership: 72, ambition: 50, integrity: 78, resilience: 68, intrigue: 28, discretion: 67 },
     },
   },
   {
@@ -58,8 +58,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 72, languageSkills: ["Arabic"],
     qualifiedFor: ["amb-indonesia", "amb-malaysia", "amb-morocco", "amb-algeria"],
     competencies: {
-      professional: { economics: 45, diplomacy: 76, security: 58, media: 52, legal: 60, administration: 48, technology: 40 },
-      personal: { loyalty: 62, charisma: 58, leadership: 60, ambition: 55, integrity: 82, resilience: 65, intrigue: 25 },
+      professional: { economics: 45, diplomacy: 76, security: 58, communications: 52, legal: 60, administration: 48, technology: 40, management: 49, politics: 57 },
+      personal: { loyalty: 62, charisma: 58, leadership: 60, ambition: 55, integrity: 82, resilience: 65, intrigue: 25, discretion: 69 },
     },
   },
   {
@@ -71,8 +71,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 76, languageSkills: ["None"],
     qualifiedFor: ["amb-indonesia", "amb-norway", "amb-australia"],
     competencies: {
-      professional: { economics: 80, diplomacy: 72, security: 38, media: 42, legal: 55, administration: 58, technology: 65 },
-      personal: { loyalty: 58, charisma: 55, leadership: 62, ambition: 68, integrity: 65, resilience: 60, intrigue: 42 },
+      professional: { economics: 80, diplomacy: 72, security: 38, communications: 42, legal: 55, administration: 58, technology: 65, management: 64, politics: 69 },
+      personal: { loyalty: 58, charisma: 55, leadership: 62, ambition: 68, integrity: 65, resilience: 60, intrigue: 42, discretion: 67 },
     },
   },
 
@@ -89,8 +89,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 77, languageSkills: ["Arabic"],
     qualifiedFor: ["amb-malaysia", "amb-indonesia", "amb-singapore", "amb-morocco"],
     competencies: {
-      professional: { economics: 55, diplomacy: 80, security: 52, media: 45, legal: 58, administration: 72, technology: 38 },
-      personal: { loyalty: 75, charisma: 60, leadership: 65, ambition: 48, integrity: 74, resilience: 70, intrigue: 32 },
+      professional: { economics: 55, diplomacy: 80, security: 52, communications: 45, legal: 58, administration: 72, technology: 38, management: 68, politics: 75 },
+      personal: { loyalty: 75, charisma: 60, leadership: 65, ambition: 48, integrity: 74, resilience: 70, intrigue: 32, discretion: 71 },
     },
   },
   {
@@ -102,8 +102,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 71, languageSkills: ["None"],
     qualifiedFor: ["amb-malaysia", "amb-singapore", "amb-indonesia"],
     competencies: {
-      professional: { economics: 82, diplomacy: 68, security: 30, media: 55, legal: 50, administration: 62, technology: 58 },
-      personal: { loyalty: 52, charisma: 70, leadership: 60, ambition: 75, integrity: 58, resilience: 65, intrigue: 40 },
+      professional: { economics: 82, diplomacy: 68, security: 30, communications: 55, legal: 50, administration: 62, technology: 58, management: 67, politics: 71 },
+      personal: { loyalty: 52, charisma: 70, leadership: 60, ambition: 75, integrity: 58, resilience: 65, intrigue: 40, discretion: 68 },
     },
   },
   {
@@ -115,8 +115,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 75, languageSkills: ["None"],
     qualifiedFor: ["amb-malaysia", "amb-indonesia", "amb-australia", "amb-singapore"],
     competencies: {
-      professional: { economics: 42, diplomacy: 78, security: 72, media: 38, legal: 48, administration: 65, technology: 35 },
-      personal: { loyalty: 72, charisma: 55, leadership: 70, ambition: 42, integrity: 76, resilience: 75, intrigue: 38 },
+      professional: { economics: 42, diplomacy: 78, security: 72, communications: 38, legal: 48, administration: 65, technology: 35, management: 62, politics: 66 },
+      personal: { loyalty: 72, charisma: 55, leadership: 70, ambition: 42, integrity: 76, resilience: 75, intrigue: 38, discretion: 70 },
     },
   },
   {
@@ -128,8 +128,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 68, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-malaysia", "amb-morocco", "amb-algeria", "amb-belgium"],
     competencies: {
-      professional: { economics: 40, diplomacy: 74, security: 35, media: 62, legal: 70, administration: 48, technology: 32 },
-      personal: { loyalty: 60, charisma: 65, leadership: 55, ambition: 52, integrity: 85, resilience: 58, intrigue: 22 },
+      professional: { economics: 40, diplomacy: 74, security: 35, communications: 62, legal: 70, administration: 48, technology: 32, management: 46, politics: 55 },
+      personal: { loyalty: 60, charisma: 65, leadership: 55, ambition: 52, integrity: 85, resilience: 58, intrigue: 22, discretion: 66 },
     },
   },
   {
@@ -141,8 +141,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 73, languageSkills: ["None"],
     qualifiedFor: ["amb-malaysia", "amb-indonesia", "amb-norway"],
     competencies: {
-      professional: { economics: 75, diplomacy: 70, security: 38, media: 40, legal: 45, administration: 55, technology: 72 },
-      personal: { loyalty: 58, charisma: 52, leadership: 60, ambition: 65, integrity: 62, resilience: 68, intrigue: 35 },
+      professional: { economics: 75, diplomacy: 70, security: 38, communications: 40, legal: 45, administration: 55, technology: 72, management: 50, politics: 55 },
+      personal: { loyalty: 58, charisma: 52, leadership: 60, ambition: 65, integrity: 62, resilience: 68, intrigue: 35, discretion: 57 },
     },
   },
 
@@ -159,8 +159,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 79, languageSkills: ["None"],
     qualifiedFor: ["amb-singapore", "amb-australia", "amb-malaysia", "amb-indonesia"],
     competencies: {
-      professional: { economics: 78, diplomacy: 72, security: 30, media: 65, legal: 48, administration: 55, technology: 88 },
-      personal: { loyalty: 50, charisma: 78, leadership: 72, ambition: 80, integrity: 58, resilience: 65, intrigue: 42 },
+      professional: { economics: 78, diplomacy: 72, security: 30, communications: 65, legal: 48, administration: 55, technology: 88, management: 70, politics: 70 },
+      personal: { loyalty: 50, charisma: 78, leadership: 72, ambition: 80, integrity: 58, resilience: 65, intrigue: 42, discretion: 68 },
     },
   },
   {
@@ -172,8 +172,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 82, languageSkills: ["French"],
     qualifiedFor: ["amb-singapore", "amb-malaysia", "amb-belgium", "amb-switzerland"],
     competencies: {
-      professional: { economics: 58, diplomacy: 86, security: 42, media: 50, legal: 55, administration: 75, technology: 45 },
-      personal: { loyalty: 72, charisma: 64, leadership: 68, ambition: 48, integrity: 80, resilience: 72, intrigue: 28 },
+      professional: { economics: 58, diplomacy: 86, security: 42, communications: 50, legal: 55, administration: 75, technology: 45, management: 70, politics: 79 },
+      personal: { loyalty: 72, charisma: 64, leadership: 68, ambition: 48, integrity: 80, resilience: 72, intrigue: 28, discretion: 74 },
     },
   },
   {
@@ -185,8 +185,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 81, languageSkills: ["Mandarin"],
     qualifiedFor: ["amb-singapore", "amb-indonesia", "amb-malaysia"],
     competencies: {
-      professional: { economics: 85, diplomacy: 74, security: 28, media: 52, legal: 60, administration: 58, technology: 72 },
-      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 78, integrity: 62, resilience: 60, intrigue: 48 },
+      professional: { economics: 85, diplomacy: 74, security: 28, communications: 52, legal: 60, administration: 58, technology: 72, management: 71, politics: 75 },
+      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 78, integrity: 62, resilience: 60, intrigue: 48, discretion: 70 },
     },
   },
   {
@@ -198,8 +198,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 76, languageSkills: ["None"],
     qualifiedFor: ["amb-singapore", "amb-australia", "amb-sweden"],
     competencies: {
-      professional: { economics: 48, diplomacy: 80, security: 40, media: 55, legal: 72, administration: 62, technology: 35 },
-      personal: { loyalty: 68, charisma: 62, leadership: 65, ambition: 45, integrity: 82, resilience: 70, intrigue: 25 },
+      professional: { economics: 48, diplomacy: 80, security: 40, communications: 55, legal: 72, administration: 62, technology: 35, management: 71, politics: 78 },
+      personal: { loyalty: 68, charisma: 62, leadership: 65, ambition: 45, integrity: 82, resilience: 70, intrigue: 25, discretion: 83 },
     },
   },
   {
@@ -211,8 +211,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 70, languageSkills: ["Arabic"],
     qualifiedFor: ["amb-singapore", "amb-indonesia", "amb-morocco"],
     competencies: {
-      professional: { economics: 65, diplomacy: 72, security: 45, media: 68, legal: 52, administration: 60, technology: 38 },
-      personal: { loyalty: 48, charisma: 75, leadership: 78, ambition: 72, integrity: 52, resilience: 58, intrigue: 55 },
+      professional: { economics: 65, diplomacy: 72, security: 45, communications: 68, legal: 52, administration: 60, technology: 38, management: 74, politics: 71 },
+      personal: { loyalty: 48, charisma: 75, leadership: 78, ambition: 72, integrity: 52, resilience: 58, intrigue: 55, discretion: 60 },
     },
   },
 
@@ -229,8 +229,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 73, languageSkills: ["None"],
     qualifiedFor: ["amb-australia", "amb-singapore", "amb-sweden", "amb-norway"],
     competencies: {
-      professional: { economics: 42, diplomacy: 75, security: 32, media: 72, legal: 48, administration: 68, technology: 45 },
-      personal: { loyalty: 65, charisma: 72, leadership: 70, ambition: 55, integrity: 78, resilience: 62, intrigue: 28 },
+      professional: { economics: 42, diplomacy: 75, security: 32, communications: 72, legal: 48, administration: 68, technology: 45, management: 68, politics: 71 },
+      personal: { loyalty: 65, charisma: 72, leadership: 70, ambition: 55, integrity: 78, resilience: 62, intrigue: 28, discretion: 69 },
     },
   },
   {
@@ -242,8 +242,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 79, languageSkills: ["None"],
     qualifiedFor: ["amb-australia", "amb-singapore", "amb-indonesia"],
     competencies: {
-      professional: { economics: 70, diplomacy: 82, security: 45, media: 48, legal: 55, administration: 65, technology: 40 },
-      personal: { loyalty: 70, charisma: 58, leadership: 68, ambition: 52, integrity: 75, resilience: 72, intrigue: 30 },
+      professional: { economics: 70, diplomacy: 82, security: 45, communications: 48, legal: 55, administration: 65, technology: 40, management: 59, politics: 66 },
+      personal: { loyalty: 70, charisma: 58, leadership: 68, ambition: 52, integrity: 75, resilience: 72, intrigue: 30, discretion: 66 },
     },
   },
   {
@@ -255,8 +255,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 67, languageSkills: ["None"],
     qualifiedFor: ["amb-australia", "amb-norway", "amb-sweden"],
     competencies: {
-      professional: { economics: 62, diplomacy: 65, security: 48, media: 60, legal: 52, administration: 78, technology: 35 },
-      personal: { loyalty: 50, charisma: 68, leadership: 80, ambition: 72, integrity: 48, resilience: 65, intrigue: 55 },
+      professional: { economics: 62, diplomacy: 65, security: 48, communications: 60, legal: 52, administration: 78, technology: 35, management: 88, politics: 81 },
+      personal: { loyalty: 50, charisma: 68, leadership: 80, ambition: 72, integrity: 48, resilience: 65, intrigue: 55, discretion: 66 },
     },
   },
   {
@@ -268,8 +268,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 72, languageSkills: ["None"],
     qualifiedFor: ["amb-australia", "amb-singapore", "amb-malaysia"],
     competencies: {
-      professional: { economics: 68, diplomacy: 65, security: 28, media: 58, legal: 40, administration: 52, technology: 85 },
-      personal: { loyalty: 55, charisma: 70, leadership: 62, ambition: 75, integrity: 60, resilience: 58, intrigue: 38 },
+      professional: { economics: 68, diplomacy: 65, security: 28, communications: 58, legal: 40, administration: 52, technology: 85, management: 50, politics: 52 },
+      personal: { loyalty: 55, charisma: 70, leadership: 62, ambition: 75, integrity: 60, resilience: 58, intrigue: 38, discretion: 52 },
     },
   },
   {
@@ -281,8 +281,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 77, languageSkills: ["None"],
     qualifiedFor: ["amb-australia", "amb-sweden", "amb-norway", "amb-singapore"],
     competencies: {
-      professional: { economics: 40, diplomacy: 75, security: 82, media: 35, legal: 58, administration: 62, technology: 48 },
-      personal: { loyalty: 78, charisma: 48, leadership: 65, ambition: 50, integrity: 72, resilience: 78, intrigue: 60 },
+      professional: { economics: 40, diplomacy: 75, security: 82, communications: 35, legal: 58, administration: 62, technology: 48, management: 72, politics: 77 },
+      personal: { loyalty: 78, charisma: 48, leadership: 65, ambition: 50, integrity: 72, resilience: 78, intrigue: 60, discretion: 83 },
     },
   },
 
@@ -299,8 +299,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 85, languageSkills: ["French"],
     qualifiedFor: ["amb-belgium", "amb-switzerland", "amb-singapore", "amb-sweden"],
     competencies: {
-      professional: { economics: 58, diplomacy: 88, security: 40, media: 52, legal: 62, administration: 68, technology: 42 },
-      personal: { loyalty: 68, charisma: 70, leadership: 72, ambition: 55, integrity: 78, resilience: 70, intrigue: 30 },
+      professional: { economics: 58, diplomacy: 88, security: 40, communications: 52, legal: 62, administration: 68, technology: 42, management: 72, politics: 80 },
+      personal: { loyalty: 68, charisma: 70, leadership: 72, ambition: 55, integrity: 78, resilience: 70, intrigue: 30, discretion: 76 },
     },
   },
   {
@@ -312,8 +312,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 83, languageSkills: ["French"],
     qualifiedFor: ["amb-belgium", "amb-switzerland", "amb-morocco"],
     competencies: {
-      professional: { economics: 78, diplomacy: 85, security: 35, media: 55, legal: 60, administration: 62, technology: 40 },
-      personal: { loyalty: 62, charisma: 68, leadership: 65, ambition: 60, integrity: 72, resilience: 68, intrigue: 35 },
+      professional: { economics: 78, diplomacy: 85, security: 35, communications: 55, legal: 60, administration: 62, technology: 40, management: 61, politics: 71 },
+      personal: { loyalty: 62, charisma: 68, leadership: 65, ambition: 60, integrity: 72, resilience: 68, intrigue: 35, discretion: 67 },
     },
   },
   {
@@ -325,8 +325,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 78, languageSkills: ["French"],
     qualifiedFor: ["amb-belgium", "amb-switzerland", "amb-sweden", "amb-norway"],
     competencies: {
-      professional: { economics: 42, diplomacy: 80, security: 35, media: 58, legal: 85, administration: 52, technology: 38 },
-      personal: { loyalty: 65, charisma: 62, leadership: 58, ambition: 52, integrity: 88, resilience: 65, intrigue: 22 },
+      professional: { economics: 42, diplomacy: 80, security: 35, communications: 58, legal: 85, administration: 52, technology: 38, management: 51, politics: 62 },
+      personal: { loyalty: 65, charisma: 62, leadership: 58, ambition: 52, integrity: 88, resilience: 65, intrigue: 22, discretion: 73 },
     },
   },
   {
@@ -338,8 +338,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 80, languageSkills: ["French", "Arabic"],
     qualifiedFor: ["amb-belgium", "amb-morocco", "amb-algeria", "amb-switzerland"],
     competencies: {
-      professional: { economics: 40, diplomacy: 82, security: 78, media: 42, legal: 55, administration: 65, technology: 35 },
-      personal: { loyalty: 75, charisma: 55, leadership: 72, ambition: 48, integrity: 74, resilience: 80, intrigue: 42 },
+      professional: { economics: 40, diplomacy: 82, security: 78, communications: 42, legal: 55, administration: 65, technology: 35, management: 61, politics: 66 },
+      personal: { loyalty: 75, charisma: 55, leadership: 72, ambition: 48, integrity: 74, resilience: 80, intrigue: 42, discretion: 69 },
     },
   },
   {
@@ -351,8 +351,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 71, languageSkills: ["French"],
     qualifiedFor: ["amb-belgium", "amb-switzerland"],
     competencies: {
-      professional: { economics: 55, diplomacy: 74, security: 42, media: 72, legal: 58, administration: 60, technology: 35 },
-      personal: { loyalty: 48, charisma: 78, leadership: 75, ambition: 68, integrity: 55, resilience: 60, intrigue: 52 },
+      professional: { economics: 55, diplomacy: 74, security: 42, communications: 72, legal: 58, administration: 60, technology: 35, management: 65, politics: 64 },
+      personal: { loyalty: 48, charisma: 78, leadership: 75, ambition: 68, integrity: 55, resilience: 60, intrigue: 52, discretion: 55 },
     },
   },
 
@@ -369,8 +369,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 82, languageSkills: ["French"],
     qualifiedFor: ["amb-switzerland", "amb-belgium", "amb-sweden"],
     competencies: {
-      professional: { economics: 85, diplomacy: 76, security: 32, media: 48, legal: 58, administration: 62, technology: 55 },
-      personal: { loyalty: 55, charisma: 65, leadership: 62, ambition: 72, integrity: 68, resilience: 60, intrigue: 40 },
+      professional: { economics: 85, diplomacy: 76, security: 32, communications: 48, legal: 58, administration: 62, technology: 55, management: 65, politics: 72 },
+      personal: { loyalty: 55, charisma: 65, leadership: 62, ambition: 72, integrity: 68, resilience: 60, intrigue: 40, discretion: 67 },
     },
   },
   {
@@ -382,8 +382,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 88, languageSkills: ["French"],
     qualifiedFor: ["amb-switzerland", "amb-belgium", "amb-norway", "amb-sweden"],
     competencies: {
-      professional: { economics: 55, diplomacy: 92, security: 42, media: 50, legal: 60, administration: 72, technology: 38 },
-      personal: { loyalty: 72, charisma: 62, leadership: 70, ambition: 45, integrity: 82, resilience: 75, intrigue: 25 },
+      professional: { economics: 55, diplomacy: 92, security: 42, communications: 50, legal: 60, administration: 72, technology: 38, management: 71, politics: 82 },
+      personal: { loyalty: 72, charisma: 62, leadership: 70, ambition: 45, integrity: 82, resilience: 75, intrigue: 25, discretion: 79 },
     },
   },
   {
@@ -395,8 +395,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 76, languageSkills: ["French", "Arabic"],
     qualifiedFor: ["amb-switzerland", "amb-belgium", "amb-morocco", "amb-algeria"],
     competencies: {
-      professional: { economics: 38, diplomacy: 78, security: 40, media: 55, legal: 82, administration: 48, technology: 32 },
-      personal: { loyalty: 60, charisma: 68, leadership: 58, ambition: 55, integrity: 86, resilience: 62, intrigue: 22 },
+      professional: { economics: 38, diplomacy: 78, security: 40, communications: 55, legal: 82, administration: 48, technology: 32, management: 54, politics: 64 },
+      personal: { loyalty: 60, charisma: 68, leadership: 58, ambition: 55, integrity: 86, resilience: 62, intrigue: 22, discretion: 75 },
     },
   },
   {
@@ -408,8 +408,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 75, languageSkills: ["French"],
     qualifiedFor: ["amb-switzerland", "amb-belgium", "amb-norway"],
     competencies: {
-      professional: { economics: 82, diplomacy: 72, security: 30, media: 42, legal: 50, administration: 58, technology: 48 },
-      personal: { loyalty: 50, charisma: 62, leadership: 58, ambition: 70, integrity: 55, resilience: 65, intrigue: 48 },
+      professional: { economics: 82, diplomacy: 72, security: 30, communications: 42, legal: 50, administration: 58, technology: 48, management: 56, politics: 63 },
+      personal: { loyalty: 50, charisma: 62, leadership: 58, ambition: 70, integrity: 55, resilience: 65, intrigue: 48, discretion: 58 },
     },
   },
   {
@@ -421,8 +421,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 74, languageSkills: ["French", "Arabic"],
     qualifiedFor: ["amb-switzerland", "amb-belgium", "amb-algeria", "amb-morocco"],
     competencies: {
-      professional: { economics: 45, diplomacy: 80, security: 38, media: 55, legal: 52, administration: 65, technology: 35 },
-      personal: { loyalty: 68, charisma: 65, leadership: 60, ambition: 48, integrity: 75, resilience: 70, intrigue: 28 },
+      professional: { economics: 45, diplomacy: 80, security: 38, communications: 55, legal: 52, administration: 65, technology: 35, management: 62, politics: 72 },
+      personal: { loyalty: 68, charisma: 65, leadership: 60, ambition: 48, integrity: 75, resilience: 70, intrigue: 28, discretion: 72 },
     },
   },
 
@@ -439,8 +439,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 77, languageSkills: ["None"],
     qualifiedFor: ["amb-sweden", "amb-norway", "amb-australia", "amb-belgium"],
     competencies: {
-      professional: { economics: 40, diplomacy: 80, security: 32, media: 62, legal: 78, administration: 52, technology: 38 },
-      personal: { loyalty: 65, charisma: 70, leadership: 62, ambition: 50, integrity: 85, resilience: 65, intrigue: 22 },
+      professional: { economics: 40, diplomacy: 80, security: 32, communications: 62, legal: 78, administration: 52, technology: 38, management: 56, politics: 65 },
+      personal: { loyalty: 65, charisma: 70, leadership: 62, ambition: 50, integrity: 85, resilience: 65, intrigue: 22, discretion: 74 },
     },
   },
   {
@@ -452,8 +452,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 75, languageSkills: ["French"],
     qualifiedFor: ["amb-sweden", "amb-norway", "amb-belgium", "amb-switzerland"],
     competencies: {
-      professional: { economics: 38, diplomacy: 78, security: 80, media: 40, legal: 48, administration: 65, technology: 42 },
-      personal: { loyalty: 78, charisma: 52, leadership: 72, ambition: 45, integrity: 72, resilience: 78, intrigue: 40 },
+      professional: { economics: 38, diplomacy: 78, security: 80, communications: 40, legal: 48, administration: 65, technology: 42, management: 66, politics: 69 },
+      personal: { loyalty: 78, charisma: 52, leadership: 72, ambition: 45, integrity: 72, resilience: 78, intrigue: 40, discretion: 72 },
     },
   },
   {
@@ -465,8 +465,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 72, languageSkills: ["None"],
     qualifiedFor: ["amb-sweden", "amb-norway", "amb-australia"],
     competencies: {
-      professional: { economics: 72, diplomacy: 68, security: 28, media: 55, legal: 42, administration: 52, technology: 82 },
-      personal: { loyalty: 55, charisma: 72, leadership: 60, ambition: 75, integrity: 62, resilience: 58, intrigue: 35 },
+      professional: { economics: 72, diplomacy: 68, security: 28, communications: 55, legal: 42, administration: 52, technology: 82, management: 59, politics: 63 },
+      personal: { loyalty: 55, charisma: 72, leadership: 60, ambition: 75, integrity: 62, resilience: 58, intrigue: 35, discretion: 63 },
     },
   },
   {
@@ -478,8 +478,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 74, languageSkills: ["None"],
     qualifiedFor: ["amb-sweden", "amb-norway", "amb-australia", "amb-singapore"],
     competencies: {
-      professional: { economics: 45, diplomacy: 78, security: 52, media: 42, legal: 55, administration: 70, technology: 35 },
-      personal: { loyalty: 75, charisma: 55, leadership: 65, ambition: 40, integrity: 78, resilience: 72, intrigue: 28 },
+      professional: { economics: 45, diplomacy: 78, security: 52, communications: 42, legal: 55, administration: 70, technology: 35, management: 62, politics: 68 },
+      personal: { loyalty: 75, charisma: 55, leadership: 65, ambition: 40, integrity: 78, resilience: 72, intrigue: 28, discretion: 69 },
     },
   },
   {
@@ -491,8 +491,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 69, languageSkills: ["None"],
     qualifiedFor: ["amb-sweden", "amb-norway"],
     competencies: {
-      professional: { economics: 38, diplomacy: 72, security: 28, media: 75, legal: 55, administration: 48, technology: 42 },
-      personal: { loyalty: 60, charisma: 68, leadership: 55, ambition: 58, integrity: 80, resilience: 55, intrigue: 22 },
+      professional: { economics: 38, diplomacy: 72, security: 28, communications: 75, legal: 55, administration: 48, technology: 42, management: 54, politics: 62 },
+      personal: { loyalty: 60, charisma: 68, leadership: 55, ambition: 58, integrity: 80, resilience: 55, intrigue: 22, discretion: 70 },
     },
   },
 
@@ -509,8 +509,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 81, languageSkills: ["None"],
     qualifiedFor: ["amb-norway", "amb-sweden", "amb-australia", "amb-indonesia"],
     competencies: {
-      professional: { economics: 78, diplomacy: 78, security: 35, media: 42, legal: 50, administration: 62, technology: 68 },
-      personal: { loyalty: 65, charisma: 58, leadership: 68, ambition: 55, integrity: 72, resilience: 70, intrigue: 32 },
+      professional: { economics: 78, diplomacy: 78, security: 35, communications: 42, legal: 50, administration: 62, technology: 68, management: 57, politics: 62 },
+      personal: { loyalty: 65, charisma: 58, leadership: 68, ambition: 55, integrity: 72, resilience: 70, intrigue: 32, discretion: 63 },
     },
   },
   {
@@ -522,8 +522,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 78, languageSkills: ["None"],
     qualifiedFor: ["amb-norway", "amb-sweden", "amb-australia"],
     competencies: {
-      professional: { economics: 42, diplomacy: 82, security: 72, media: 45, legal: 55, administration: 60, technology: 38 },
-      personal: { loyalty: 70, charisma: 60, leadership: 68, ambition: 48, integrity: 78, resilience: 75, intrigue: 30 },
+      professional: { economics: 42, diplomacy: 82, security: 72, communications: 45, legal: 55, administration: 60, technology: 38, management: 66, politics: 73 },
+      personal: { loyalty: 70, charisma: 60, leadership: 68, ambition: 48, integrity: 78, resilience: 75, intrigue: 30, discretion: 79 },
     },
   },
   {
@@ -535,8 +535,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 74, languageSkills: ["French"],
     qualifiedFor: ["amb-norway", "amb-sweden", "amb-belgium", "amb-switzerland"],
     competencies: {
-      professional: { economics: 75, diplomacy: 72, security: 30, media: 50, legal: 48, administration: 58, technology: 65 },
-      personal: { loyalty: 58, charisma: 65, leadership: 60, ambition: 68, integrity: 65, resilience: 62, intrigue: 35 },
+      professional: { economics: 75, diplomacy: 72, security: 30, communications: 50, legal: 48, administration: 58, technology: 65, management: 60, politics: 66 },
+      personal: { loyalty: 58, charisma: 65, leadership: 60, ambition: 68, integrity: 65, resilience: 62, intrigue: 35, discretion: 65 },
     },
   },
   {
@@ -548,8 +548,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 70, languageSkills: ["Arabic"],
     qualifiedFor: ["amb-norway", "amb-indonesia", "amb-algeria"],
     competencies: {
-      professional: { economics: 68, diplomacy: 68, security: 42, media: 55, legal: 50, administration: 75, technology: 40 },
-      personal: { loyalty: 52, charisma: 65, leadership: 78, ambition: 70, integrity: 50, resilience: 62, intrigue: 50 },
+      professional: { economics: 68, diplomacy: 68, security: 42, communications: 55, legal: 50, administration: 75, technology: 40, management: 72, politics: 67 },
+      personal: { loyalty: 52, charisma: 65, leadership: 78, ambition: 70, integrity: 50, resilience: 62, intrigue: 50, discretion: 51 },
     },
   },
   {
@@ -561,8 +561,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 71, languageSkills: ["None"],
     qualifiedFor: ["amb-norway", "amb-sweden", "amb-australia"],
     competencies: {
-      professional: { economics: 48, diplomacy: 72, security: 30, media: 65, legal: 58, administration: 50, technology: 52 },
-      personal: { loyalty: 62, charisma: 68, leadership: 55, ambition: 52, integrity: 85, resilience: 60, intrigue: 20 },
+      professional: { economics: 48, diplomacy: 72, security: 30, communications: 65, legal: 58, administration: 50, technology: 52, management: 52, politics: 60 },
+      personal: { loyalty: 62, charisma: 68, leadership: 55, ambition: 52, integrity: 85, resilience: 60, intrigue: 20, discretion: 72 },
     },
   },
 
@@ -579,8 +579,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 86, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-morocco", "amb-algeria", "amb-belgium", "amb-switzerland"],
     competencies: {
-      professional: { economics: 52, diplomacy: 90, security: 55, media: 48, legal: 55, administration: 68, technology: 35 },
-      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 52, integrity: 78, resilience: 72, intrigue: 35 },
+      professional: { economics: 52, diplomacy: 90, security: 55, communications: 48, legal: 55, administration: 68, technology: 35, management: 70, politics: 80 },
+      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 52, integrity: 78, resilience: 72, intrigue: 35, discretion: 76 },
     },
   },
   {
@@ -592,8 +592,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 80, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-morocco", "amb-algeria", "amb-indonesia"],
     competencies: {
-      professional: { economics: 80, diplomacy: 78, security: 35, media: 52, legal: 55, administration: 60, technology: 45 },
-      personal: { loyalty: 60, charisma: 70, leadership: 62, ambition: 65, integrity: 68, resilience: 65, intrigue: 38 },
+      professional: { economics: 80, diplomacy: 78, security: 35, communications: 52, legal: 55, administration: 60, technology: 45, management: 54, politics: 62 },
+      personal: { loyalty: 60, charisma: 70, leadership: 62, ambition: 65, integrity: 68, resilience: 65, intrigue: 38, discretion: 60 },
     },
   },
   {
@@ -605,8 +605,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 72, languageSkills: ["Arabic"],
     qualifiedFor: ["amb-morocco", "amb-algeria"],
     competencies: {
-      professional: { economics: 50, diplomacy: 75, security: 42, media: 65, legal: 52, administration: 60, technology: 30 },
-      personal: { loyalty: 48, charisma: 75, leadership: 72, ambition: 68, integrity: 52, resilience: 58, intrigue: 55 },
+      professional: { economics: 50, diplomacy: 75, security: 42, communications: 65, legal: 52, administration: 60, technology: 30, management: 57, politics: 59 },
+      personal: { loyalty: 48, charisma: 75, leadership: 72, ambition: 68, integrity: 52, resilience: 58, intrigue: 55, discretion: 46 },
     },
   },
   {
@@ -618,8 +618,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 78, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-morocco", "amb-algeria", "amb-belgium", "amb-malaysia"],
     competencies: {
-      professional: { economics: 40, diplomacy: 80, security: 72, media: 55, legal: 58, administration: 50, technology: 35 },
-      personal: { loyalty: 65, charisma: 60, leadership: 62, ambition: 55, integrity: 78, resilience: 70, intrigue: 38 },
+      professional: { economics: 40, diplomacy: 80, security: 72, communications: 55, legal: 58, administration: 50, technology: 35, management: 52, politics: 61 },
+      personal: { loyalty: 65, charisma: 60, leadership: 62, ambition: 55, integrity: 78, resilience: 70, intrigue: 38, discretion: 70 },
     },
   },
   {
@@ -631,8 +631,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 73, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-morocco", "amb-algeria", "amb-indonesia", "amb-malaysia"],
     competencies: {
-      professional: { economics: 42, diplomacy: 78, security: 48, media: 58, legal: 55, administration: 52, technology: 38 },
-      personal: { loyalty: 62, charisma: 68, leadership: 58, ambition: 60, integrity: 80, resilience: 65, intrigue: 30 },
+      professional: { economics: 42, diplomacy: 78, security: 48, communications: 58, legal: 55, administration: 52, technology: 38, management: 58, politics: 68 },
+      personal: { loyalty: 62, charisma: 68, leadership: 58, ambition: 60, integrity: 80, resilience: 65, intrigue: 30, discretion: 76 },
     },
   },
 
@@ -649,8 +649,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 84, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-algeria", "amb-morocco", "amb-belgium", "amb-switzerland"],
     competencies: {
-      professional: { economics: 50, diplomacy: 88, security: 65, media: 45, legal: 55, administration: 70, technology: 35 },
-      personal: { loyalty: 72, charisma: 58, leadership: 72, ambition: 48, integrity: 78, resilience: 80, intrigue: 35 },
+      professional: { economics: 50, diplomacy: 88, security: 65, communications: 45, legal: 55, administration: 70, technology: 35, management: 73, politics: 81 },
+      personal: { loyalty: 72, charisma: 58, leadership: 72, ambition: 48, integrity: 78, resilience: 80, intrigue: 35, discretion: 81 },
     },
   },
   {
@@ -662,8 +662,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 79, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-algeria", "amb-morocco", "amb-switzerland"],
     competencies: {
-      professional: { economics: 82, diplomacy: 76, security: 38, media: 50, legal: 52, administration: 58, technology: 48 },
-      personal: { loyalty: 62, charisma: 65, leadership: 60, ambition: 62, integrity: 72, resilience: 68, intrigue: 32 },
+      professional: { economics: 82, diplomacy: 76, security: 38, communications: 50, legal: 52, administration: 58, technology: 48, management: 54, politics: 62 },
+      personal: { loyalty: 62, charisma: 65, leadership: 60, ambition: 62, integrity: 72, resilience: 68, intrigue: 32, discretion: 65 },
     },
   },
   {
@@ -675,8 +675,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 80, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-algeria", "amb-morocco"],
     competencies: {
-      professional: { economics: 35, diplomacy: 75, security: 90, media: 32, legal: 50, administration: 65, technology: 40 },
-      personal: { loyalty: 80, charisma: 45, leadership: 72, ambition: 42, integrity: 70, resilience: 85, intrigue: 65 },
+      professional: { economics: 35, diplomacy: 75, security: 90, communications: 32, legal: 50, administration: 65, technology: 40, management: 63, politics: 64 },
+      personal: { loyalty: 80, charisma: 45, leadership: 72, ambition: 42, integrity: 70, resilience: 85, intrigue: 65, discretion: 72 },
     },
   },
   {
@@ -688,8 +688,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 70, languageSkills: ["Arabic", "French"],
     qualifiedFor: ["amb-algeria", "amb-morocco", "amb-indonesia"],
     competencies: {
-      professional: { economics: 38, diplomacy: 74, security: 40, media: 60, legal: 52, administration: 48, technology: 35 },
-      personal: { loyalty: 65, charisma: 62, leadership: 55, ambition: 52, integrity: 82, resilience: 58, intrigue: 25 },
+      professional: { economics: 38, diplomacy: 74, security: 40, communications: 60, legal: 52, administration: 48, technology: 35, management: 47, politics: 56 },
+      personal: { loyalty: 65, charisma: 62, leadership: 55, ambition: 52, integrity: 82, resilience: 58, intrigue: 25, discretion: 65 },
     },
   },
   {
@@ -701,8 +701,8 @@ export const DIPLOMAT_CANDIDATES_BATCH4: DiplomatCandidate[] = [
     competence: 76, languageSkills: ["Arabic"],
     qualifiedFor: ["amb-algeria", "amb-morocco", "amb-norway"],
     competencies: {
-      professional: { economics: 42, diplomacy: 80, security: 75, media: 40, legal: 55, administration: 62, technology: 35 },
-      personal: { loyalty: 74, charisma: 52, leadership: 68, ambition: 45, integrity: 75, resilience: 78, intrigue: 42 },
+      professional: { economics: 42, diplomacy: 80, security: 75, communications: 40, legal: 55, administration: 62, technology: 35, management: 58, politics: 64 },
+      personal: { loyalty: 74, charisma: 52, leadership: 68, ambition: 45, integrity: 75, resilience: 78, intrigue: 42, discretion: 70 },
     },
   },
 ];

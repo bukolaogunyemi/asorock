@@ -148,8 +148,8 @@ describe("RELIGIOUS_LEADER_CANDIDATES pool", () => {
   });
 
   it("all candidates have correct competency field structure", () => {
-    const profKeys = ["economics", "diplomacy", "security", "media", "legal", "administration", "technology"];
-    const persKeys = ["loyalty", "charisma", "leadership", "ambition", "integrity", "resilience", "intrigue"];
+    const profKeys = ["economics", "diplomacy", "security", "communications", "legal", "administration", "management", "technology", "politics"];
+    const persKeys = ["loyalty", "charisma", "leadership", "ambition", "integrity", "resilience", "intrigue", "discretion"];
 
     for (const c of RELIGIOUS_LEADER_CANDIDATES) {
       expect(Object.keys(c.competencies.professional).sort()).toEqual(profKeys.sort());

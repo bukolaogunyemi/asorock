@@ -13,9 +13,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "University of Nigeria Nsukka (Theology), Wycliffe Hall Oxford (MDiv), Cambridge (PhD Divinity)",
     disposition: "supportive", influence: 88,
     qualifiedFor: ["pres-christian-society"],
+    honorific: "Rev. Dr.",
     competencies: {
-      professional: { economics: 45, diplomacy: 82, security: 30, media: 65, legal: 50, administration: 70, technology: 35 },
-      personal: { loyalty: 70, charisma: 78, leadership: 85, ambition: 55, integrity: 90, resilience: 72, intrigue: 25 },
+      professional: { economics: 45, diplomacy: 82, security: 30, communications: 65, legal: 50, administration: 70, technology: 35, management: 74, politics: 72 },
+      personal: { loyalty: 70, charisma: 78, leadership: 85, ambition: 55, integrity: 90, resilience: 72, intrigue: 25, discretion: 77 },
     },
   },
   {
@@ -27,9 +28,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "University of Lagos (Mathematics), Redeemed Seminary (MDiv), Oral Roberts University (DD)",
     disposition: "neutral", influence: 92,
     qualifiedFor: ["pres-christian-society"],
+    honorific: "Archbishop",
     competencies: {
-      professional: { economics: 60, diplomacy: 55, security: 25, media: 90, legal: 35, administration: 65, technology: 50 },
-      personal: { loyalty: 55, charisma: 95, leadership: 80, ambition: 75, integrity: 60, resilience: 70, intrigue: 40 },
+      professional: { economics: 60, diplomacy: 55, security: 25, communications: 90, legal: 35, administration: 65, technology: 50, management: 80, politics: 67 },
+      personal: { loyalty: 55, charisma: 95, leadership: 80, ambition: 75, integrity: 60, resilience: 70, intrigue: 40, discretion: 72 },
     },
   },
   {
@@ -41,9 +43,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "St. Augustine's Seminary Kaduna, University of London (MA Political Science), SOAS London (PhD)",
     disposition: "critical", influence: 90,
     qualifiedFor: ["pres-christian-society"],
+    honorific: "Bishop",
     competencies: {
-      professional: { economics: 55, diplomacy: 78, security: 40, media: 85, legal: 65, administration: 60, technology: 30 },
-      personal: { loyalty: 45, charisma: 80, leadership: 82, ambition: 50, integrity: 92, resilience: 85, intrigue: 35 },
+      professional: { economics: 55, diplomacy: 78, security: 40, communications: 85, legal: 65, administration: 60, technology: 30, management: 63, politics: 61 },
+      personal: { loyalty: 45, charisma: 80, leadership: 82, ambition: 50, integrity: 92, resilience: 85, intrigue: 35, discretion: 81 },
     },
   },
   {
@@ -55,9 +58,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "Baptist College Ogbomoso, University of Ibadan (PhD Theology), Southern Baptist Seminary Kentucky",
     disposition: "supportive", influence: 78,
     qualifiedFor: ["pres-christian-society"],
+    honorific: "Rev.",
     competencies: {
-      professional: { economics: 50, diplomacy: 70, security: 25, media: 55, legal: 45, administration: 80, technology: 30 },
-      personal: { loyalty: 75, charisma: 65, leadership: 75, ambition: 45, integrity: 82, resilience: 70, intrigue: 20 },
+      professional: { economics: 50, diplomacy: 70, security: 25, communications: 55, legal: 45, administration: 80, technology: 30, management: 79, politics: 76 },
+      personal: { loyalty: 75, charisma: 65, leadership: 75, ambition: 45, integrity: 82, resilience: 70, intrigue: 20, discretion: 77 },
     },
   },
   {
@@ -69,9 +73,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "Pontifical University Rome (Theology), University of Benin (MA Peace Studies), Boston College (PhD)",
     disposition: "neutral", influence: 75,
     qualifiedFor: ["pres-christian-society"],
+    honorific: "Rev. Dr.",
     competencies: {
-      professional: { economics: 40, diplomacy: 85, security: 30, media: 50, legal: 55, administration: 65, technology: 25 },
-      personal: { loyalty: 65, charisma: 70, leadership: 72, ambition: 40, integrity: 88, resilience: 75, intrigue: 20 },
+      professional: { economics: 40, diplomacy: 85, security: 30, communications: 50, legal: 55, administration: 65, technology: 25, management: 75, politics: 81 },
+      personal: { loyalty: 65, charisma: 70, leadership: 72, ambition: 40, integrity: 88, resilience: 75, intrigue: 20, discretion: 88 },
     },
   },
 
@@ -85,9 +90,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "Islamic University of Medina (Sharia), Al-Azhar University Cairo (PhD Islamic Jurisprudence), BUK Kano (Law)",
     disposition: "supportive", influence: 88,
     qualifiedFor: ["pres-muslim-society"],
+    honorific: "Sheikh",
     competencies: {
-      professional: { economics: 40, diplomacy: 80, security: 30, media: 55, legal: 75, administration: 65, technology: 25 },
-      personal: { loyalty: 72, charisma: 75, leadership: 80, ambition: 45, integrity: 88, resilience: 75, intrigue: 20 },
+      professional: { economics: 40, diplomacy: 80, security: 30, communications: 55, legal: 75, administration: 65, technology: 25, management: 72, politics: 72 },
+      personal: { loyalty: 72, charisma: 75, leadership: 80, ambition: 45, integrity: 88, resilience: 75, intrigue: 20, discretion: 81 },
     },
   },
   {
@@ -99,9 +105,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "School for Arabic Studies Kano, Bayero University Kano (Islamic Studies), International Islamic University Malaysia",
     disposition: "critical", influence: 85,
     qualifiedFor: ["pres-muslim-society"],
+    honorific: "Alhaji",
     competencies: {
-      professional: { economics: 50, diplomacy: 60, security: 35, media: 70, legal: 65, administration: 55, technology: 20 },
-      personal: { loyalty: 40, charisma: 72, leadership: 78, ambition: 60, integrity: 70, resilience: 80, intrigue: 50 },
+      professional: { economics: 50, diplomacy: 60, security: 35, communications: 70, legal: 65, administration: 55, technology: 20, management: 76, politics: 67 },
+      personal: { loyalty: 40, charisma: 72, leadership: 78, ambition: 60, integrity: 70, resilience: 80, intrigue: 50, discretion: 84 },
     },
   },
   {
@@ -113,9 +120,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "Usmanu Danfodiyo University Sokoto (Arabic), University of Khartoum (Islamic Studies), SOAS London (MA)",
     disposition: "neutral", influence: 82,
     qualifiedFor: ["pres-muslim-society"],
+    honorific: "Sheikh",
     competencies: {
-      professional: { economics: 35, diplomacy: 75, security: 25, media: 50, legal: 70, administration: 60, technology: 30 },
-      personal: { loyalty: 65, charisma: 80, leadership: 75, ambition: 40, integrity: 85, resilience: 78, intrigue: 25 },
+      professional: { economics: 35, diplomacy: 75, security: 25, communications: 50, legal: 70, administration: 60, technology: 30, management: 74, politics: 74 },
+      personal: { loyalty: 65, charisma: 80, leadership: 75, ambition: 40, integrity: 85, resilience: 78, intrigue: 25, discretion: 88 },
     },
   },
   {
@@ -127,9 +135,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "ABU Zaria (Medicine), Islamic University Medina (Islamic Studies), Harvard Divinity School (MA)",
     disposition: "supportive", influence: 75,
     qualifiedFor: ["pres-muslim-society"],
+    honorific: "Dr.",
     competencies: {
-      professional: { economics: 55, diplomacy: 70, security: 25, media: 60, legal: 50, administration: 72, technology: 55 },
-      personal: { loyalty: 70, charisma: 72, leadership: 70, ambition: 55, integrity: 80, resilience: 68, intrigue: 25 },
+      professional: { economics: 55, diplomacy: 70, security: 25, communications: 60, legal: 50, administration: 72, technology: 55, management: 81, politics: 81 },
+      personal: { loyalty: 70, charisma: 72, leadership: 70, ambition: 55, integrity: 80, resilience: 68, intrigue: 25, discretion: 84 },
     },
   },
   {
@@ -141,9 +150,10 @@ export const RELIGIOUS_LEADER_CANDIDATES: ReligiousLeaderCandidate[] = [
     education: "Traditional Quranic School, ATBU Bauchi (Islamic Studies), University of Khartoum (PhD)",
     disposition: "critical", influence: 80,
     qualifiedFor: ["pres-muslim-society"],
+    honorific: "Sheikh",
     competencies: {
-      professional: { economics: 30, diplomacy: 72, security: 30, media: 45, legal: 60, administration: 50, technology: 20 },
-      personal: { loyalty: 55, charisma: 82, leadership: 76, ambition: 35, integrity: 78, resilience: 80, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 72, security: 30, communications: 45, legal: 60, administration: 50, technology: 20, management: 54, politics: 52 },
+      personal: { loyalty: 55, charisma: 82, leadership: 76, ambition: 35, integrity: 78, resilience: 80, intrigue: 30, discretion: 70 },
     },
   },
 ];

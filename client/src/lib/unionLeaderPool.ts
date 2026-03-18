@@ -19,10 +19,12 @@ export interface UnionLeaderCandidate {
       economics: number;
       diplomacy: number;
       security: number;
-      media: number;
+      communications: number;
       legal: number;
       administration: number;
       technology: number;
+      management: number;
+      politics: number;
     };
     personal: {
       loyalty: number;
@@ -32,6 +34,7 @@ export interface UnionLeaderCandidate {
       integrity: number;
       resilience: number;
       intrigue: number;
+      discretion: number;
     };
   };
   qualifiedFor: UnionPositionId[];
@@ -64,8 +67,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIZIK (BA Education), Lagos (MEd)",
     tradeOff: "Near-guaranteed wage compliance from lecturers, but he will call industrial action at the first sign of breach. Impossible to appease with soft gestures.",
     competencies: {
-      professional: { economics: 52, diplomacy: 38, security: 20, media: 65, legal: 44, administration: 55, technology: 22 },
-      personal: { loyalty: 55, charisma: 70, leadership: 80, ambition: 60, integrity: 72, resilience: 85, intrigue: 40 },
+      professional: { economics: 52, diplomacy: 38, security: 20, communications: 65, legal: 44, administration: 55, technology: 22, management: 76, politics: 55 },
+      personal: { loyalty: 55, charisma: 70, leadership: 80, ambition: 60, integrity: 72, resilience: 85, intrigue: 40, discretion: 87 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 82,
@@ -86,8 +90,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "ABU Zaria (BEd, MEd, PhD Curriculum Studies)",
     tradeOff: "Cooperative partner for reform — but her moderate stance alienates ASUU hardliners who may splinter from negotiations if she leads.",
     competencies: {
-      professional: { economics: 65, diplomacy: 75, security: 18, media: 48, legal: 55, administration: 72, technology: 40 },
-      personal: { loyalty: 68, charisma: 55, leadership: 70, ambition: 45, integrity: 80, resilience: 62, intrigue: 30 },
+      professional: { economics: 65, diplomacy: 75, security: 18, communications: 48, legal: 55, administration: 72, technology: 40, management: 66, politics: 69 },
+      personal: { loyalty: 68, charisma: 55, leadership: 70, ambition: 45, integrity: 80, resilience: 62, intrigue: 30, discretion: 66 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 25,
@@ -108,8 +113,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNAAB (BSc Agric Economics), partial MSc (suspended over ASUU dispute)",
     tradeOff: "Enormous social media leverage and ability to mobilise young teachers overnight. Will escalate every dispute to a strike before diplomacy is exhausted.",
     competencies: {
-      professional: { economics: 35, diplomacy: 28, security: 15, media: 88, legal: 30, administration: 38, technology: 72 },
-      personal: { loyalty: 42, charisma: 85, leadership: 65, ambition: 88, integrity: 58, resilience: 70, intrigue: 55 },
+      professional: { economics: 35, diplomacy: 28, security: 15, communications: 88, legal: 30, administration: 38, technology: 72, management: 52, politics: 33 },
+      personal: { loyalty: 42, charisma: 85, leadership: 65, ambition: 88, integrity: 58, resilience: 70, intrigue: 55, discretion: 64 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 90,
@@ -130,8 +136,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIPORT (BEd, PhD Education Policy), Columbia (Visiting Scholar)",
     tradeOff: "Brings international credibility and durable negotiation frameworks. Slow to act — bureaucratic approach can frustrate rank-and-file who expect quick wins.",
     competencies: {
-      professional: { economics: 72, diplomacy: 65, security: 15, media: 42, legal: 60, administration: 78, technology: 55 },
-      personal: { loyalty: 62, charisma: 45, leadership: 68, ambition: 50, integrity: 85, resilience: 60, intrigue: 25 },
+      professional: { economics: 72, diplomacy: 65, security: 15, communications: 42, legal: 60, administration: 78, technology: 55, management: 69, politics: 68 },
+      personal: { loyalty: 62, charisma: 45, leadership: 68, ambition: 50, integrity: 85, resilience: 60, intrigue: 25, discretion: 69 },
+    honorific: "Prof.",
     },
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 38,
@@ -152,8 +159,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "Bayero University Kano (BEd), NIPSS Kuru (Senior Executive Course)",
     tradeOff: "Can suppress industrial action and deliver teacher compliance in exchange for appointments and funding. His loyalty tracks government favour — not principle.",
     competencies: {
-      professional: { economics: 58, diplomacy: 80, security: 25, media: 45, legal: 62, administration: 70, technology: 30 },
-      personal: { loyalty: 40, charisma: 60, leadership: 65, ambition: 75, integrity: 38, resilience: 68, intrigue: 82 },
+      professional: { economics: 58, diplomacy: 80, security: 25, communications: 45, legal: 62, administration: 70, technology: 30, management: 62, politics: 69 },
+      personal: { loyalty: 40, charisma: 60, leadership: 65, ambition: 75, integrity: 38, resilience: 68, intrigue: 82, discretion: 47 },
+    honorific: "Alh.",
     },
     qualifiedFor: ["chairman-teachers-union"],
     strikeReadiness: 20,
@@ -176,8 +184,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIBEN (BSc Political Science), ILO Turin Centre (Labour Administration)",
     tradeOff: "Maximum credibility with workers and ability to mobilise mass action in 24 hours. Any negotiation with him is public, adversarial, and will become headline news.",
     competencies: {
-      professional: { economics: 58, diplomacy: 40, security: 28, media: 78, legal: 52, administration: 60, technology: 20 },
-      personal: { loyalty: 60, charisma: 80, leadership: 85, ambition: 55, integrity: 78, resilience: 90, intrigue: 42 },
+      professional: { economics: 58, diplomacy: 40, security: 28, communications: 78, legal: 52, administration: 60, technology: 20, management: 79, politics: 56 },
+      personal: { loyalty: 60, charisma: 80, leadership: 85, ambition: 55, integrity: 78, resilience: 90, intrigue: 42, discretion: 90 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 80,
@@ -198,8 +207,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "OAU Ile-Ife (LLB/BL), ILO Turin (Labour Law)",
     tradeOff: "Pragmatic ally who will work within government frameworks. Lower strike leverage — radical NLC factions may declare her leadership illegitimate if she makes concessions.",
     competencies: {
-      professional: { economics: 60, diplomacy: 80, security: 22, media: 55, legal: 70, administration: 68, technology: 35 },
-      personal: { loyalty: 65, charisma: 62, leadership: 72, ambition: 50, integrity: 82, resilience: 68, intrigue: 38 },
+      professional: { economics: 60, diplomacy: 80, security: 22, communications: 55, legal: 70, administration: 68, technology: 35, management: 63, politics: 67 },
+      personal: { loyalty: 65, charisma: 62, leadership: 72, ambition: 50, integrity: 82, resilience: 68, intrigue: 38, discretion: 68 },
     },
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 28,
@@ -220,8 +229,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "FUTO Owerri (BSc Industrial Chem), self-educated in labour economics",
     tradeOff: "Electric mobilisation capacity and deep worker trust. Near-zero appetite for compromise — deals made with him require immediate full delivery or face immediate reversal.",
     competencies: {
-      professional: { economics: 42, diplomacy: 22, security: 18, media: 85, legal: 35, administration: 40, technology: 60 },
-      personal: { loyalty: 48, charisma: 88, leadership: 70, ambition: 85, integrity: 65, resilience: 75, intrigue: 50 },
+      professional: { economics: 42, diplomacy: 22, security: 18, communications: 85, legal: 35, administration: 40, technology: 60, management: 58, politics: 34 },
+      personal: { loyalty: 48, charisma: 88, leadership: 70, ambition: 85, integrity: 65, resilience: 75, intrigue: 50, discretion: 73 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 92,
@@ -242,8 +252,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNICAL Calabar (BSc Economics), ILO Geneva (Labour Policy MSc), LSE (PhD Industrial Relations)",
     tradeOff: "Credible technocratic voice that international lenders respect. Viewed by radical wings as a government apologist — internal dissent could fragment NLC under her leadership.",
     competencies: {
-      professional: { economics: 80, diplomacy: 68, security: 20, media: 45, legal: 65, administration: 75, technology: 50 },
-      personal: { loyalty: 60, charisma: 50, leadership: 65, ambition: 45, integrity: 88, resilience: 62, intrigue: 28 },
+      professional: { economics: 80, diplomacy: 68, security: 20, communications: 45, legal: 65, administration: 75, technology: 50, management: 60, politics: 62 },
+      personal: { loyalty: 60, charisma: 50, leadership: 65, ambition: 45, integrity: 88, resilience: 62, intrigue: 28, discretion: 65 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 35,
@@ -264,8 +275,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "ABU Zaria (BSc Public Admin), Harvard Kennedy School (MPA)",
     tradeOff: "Exceptional back-channel access that can deliver salary agreements quietly. Workers view him as a career politician in a union suit — legitimacy could collapse under media scrutiny.",
     competencies: {
-      professional: { economics: 60, diplomacy: 85, security: 35, media: 52, legal: 58, administration: 65, technology: 28 },
-      personal: { loyalty: 38, charisma: 65, leadership: 60, ambition: 80, integrity: 32, resilience: 65, intrigue: 88 },
+      professional: { economics: 60, diplomacy: 85, security: 35, communications: 52, legal: 58, administration: 65, technology: 28, management: 58, politics: 70 },
+      personal: { loyalty: 38, charisma: 65, leadership: 60, ambition: 80, integrity: 32, resilience: 65, intrigue: 88, discretion: 44 },
+    honorific: "Sen.",
     },
     qualifiedFor: ["chairman-labour-union"],
     strikeReadiness: 18,
@@ -288,8 +300,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "Delta State University (BSc Economics), ILO Turin (Trade Union Management)",
     tradeOff: "Deep worker loyalty and proven strike machinery. Difficult to co-opt — any attempt to offer him personal sweeteners will end up in a press conference.",
     competencies: {
-      professional: { economics: 55, diplomacy: 42, security: 25, media: 72, legal: 48, administration: 58, technology: 22 },
-      personal: { loyalty: 62, charisma: 72, leadership: 82, ambition: 58, integrity: 80, resilience: 88, intrigue: 38 },
+      professional: { economics: 55, diplomacy: 42, security: 25, communications: 72, legal: 48, administration: 58, technology: 22, management: 69, politics: 49 },
+      personal: { loyalty: 62, charisma: 72, leadership: 82, ambition: 58, integrity: 80, resilience: 88, intrigue: 38, discretion: 83 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 78,
@@ -310,8 +323,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIZIK (BSc Human Resource Mgt), Birmingham (MSc Industrial Relations)",
     tradeOff: "Can negotiate complex multi-sector agreements and maintain TUC internal cohesion. Low street credibility — perceived as too comfortable with management by industrial unions.",
     competencies: {
-      professional: { economics: 68, diplomacy: 78, security: 18, media: 50, legal: 65, administration: 75, technology: 45 },
-      personal: { loyalty: 65, charisma: 55, leadership: 68, ambition: 52, integrity: 78, resilience: 60, intrigue: 35 },
+      professional: { economics: 68, diplomacy: 78, security: 18, communications: 50, legal: 65, administration: 75, technology: 45, management: 66, politics: 71 },
+      personal: { loyalty: 65, charisma: 55, leadership: 68, ambition: 52, integrity: 78, resilience: 60, intrigue: 35, discretion: 63 },
     },
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 30,
@@ -332,8 +345,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIJOS (LLB), bar exams pending",
     tradeOff: "Massive youth mobilisation and legal acumen for worker rights cases. Volatile — escalates disputes to litigation or street action before exhausting dialogue. Makes enemies quickly.",
     competencies: {
-      professional: { economics: 38, diplomacy: 30, security: 18, media: 82, legal: 68, administration: 42, technology: 70 },
-      personal: { loyalty: 45, charisma: 82, leadership: 65, ambition: 90, integrity: 72, resilience: 72, intrigue: 55 },
+      professional: { economics: 38, diplomacy: 30, security: 18, communications: 82, legal: 68, administration: 42, technology: 70, management: 52, politics: 34 },
+      personal: { loyalty: 45, charisma: 82, leadership: 65, ambition: 90, integrity: 72, resilience: 72, intrigue: 55, discretion: 70 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 88,
@@ -354,8 +368,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNILAG (BSc Statistics), Ibadan (MSc Economics), SOAS London (PhD Labour Economics)",
     tradeOff: "Strong policy muscle and credibility with government technocrats. Lacks the charisma and grassroots network to deliver worker buy-in on hard compromises.",
     competencies: {
-      professional: { economics: 85, diplomacy: 60, security: 18, media: 40, legal: 62, administration: 78, technology: 58 },
-      personal: { loyalty: 62, charisma: 40, leadership: 60, ambition: 45, integrity: 85, resilience: 58, intrigue: 28 },
+      professional: { economics: 85, diplomacy: 60, security: 18, communications: 40, legal: 62, administration: 78, technology: 58, management: 61, politics: 61 },
+      personal: { loyalty: 62, charisma: 40, leadership: 60, ambition: 45, integrity: 85, resilience: 58, intrigue: 28, discretion: 64 },
     },
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 42,
@@ -376,8 +390,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UI Ibadan (BA History), NIPSS Kuru (Senior Executive Programme)",
     tradeOff: "Exceptional ministerial access and ability to surface hidden government commitments. Will leverage TUC presidency as a springboard — governorship ambitions could distract him.",
     competencies: {
-      professional: { economics: 58, diplomacy: 82, security: 30, media: 55, legal: 52, administration: 68, technology: 25 },
-      personal: { loyalty: 40, charisma: 68, leadership: 65, ambition: 82, integrity: 38, resilience: 62, intrigue: 85 },
+      professional: { economics: 58, diplomacy: 82, security: 30, communications: 55, legal: 52, administration: 68, technology: 25, management: 61, politics: 69 },
+      personal: { loyalty: 40, charisma: 68, leadership: 65, ambition: 82, integrity: 38, resilience: 62, intrigue: 85, discretion: 44 },
+    honorific: "Chief",
     },
     qualifiedFor: ["chairman-trade-congress"],
     strikeReadiness: 22,
@@ -400,8 +415,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIMAID (BA Political Science), NDU (Post-grad Conflict Resolution)",
     tradeOff: "Enormous credibility with North-East and post-conflict youth. His presence in any appointment signals serious government commitment to youth — but also attracts violent opposition from groups who see him as a threat.",
     competencies: {
-      professional: { economics: 48, diplomacy: 52, security: 65, media: 68, legal: 35, administration: 55, technology: 38 },
-      personal: { loyalty: 62, charisma: 75, leadership: 82, ambition: 60, integrity: 72, resilience: 92, intrigue: 45 },
+      professional: { economics: 48, diplomacy: 52, security: 65, communications: 68, legal: 35, administration: 55, technology: 38, management: 76, politics: 61 },
+      personal: { loyalty: 62, charisma: 75, leadership: 82, ambition: 60, integrity: 72, resilience: 92, intrigue: 45, discretion: 89 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 72,
@@ -422,8 +438,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNN Nsukka (BSc Econ), Warwick (MSc Development Economics)",
     tradeOff: "Competent, credible, and unlikely to embarrass the government. Lacks the street credibility to mobilise youth in genuine crisis; seen by radicals as establishment-adjacent.",
     competencies: {
-      professional: { economics: 70, diplomacy: 72, security: 18, media: 52, legal: 45, administration: 78, technology: 62 },
-      personal: { loyalty: 68, charisma: 55, leadership: 68, ambition: 52, integrity: 80, resilience: 58, intrigue: 30 },
+      professional: { economics: 70, diplomacy: 72, security: 18, communications: 52, legal: 45, administration: 78, technology: 62, management: 83, politics: 85 },
+      personal: { loyalty: 68, charisma: 55, leadership: 68, ambition: 52, integrity: 80, resilience: 58, intrigue: 30, discretion: 79 },
     },
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 22,
@@ -444,8 +460,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "LASU (BSc Mass Comm — incomplete, left during #EndSARS)",
     tradeOff: "Unmatched social media reach and youth mobilisation. Will publicly shame any government backsliding in real time. Impossible to contain once galvanised — may become a liability faster than an asset.",
     competencies: {
-      professional: { economics: 28, diplomacy: 18, security: 22, media: 92, legal: 30, administration: 25, technology: 80 },
-      personal: { loyalty: 35, charisma: 90, leadership: 60, ambition: 88, integrity: 60, resilience: 78, intrigue: 48 },
+      professional: { economics: 28, diplomacy: 18, security: 22, communications: 92, legal: 30, administration: 25, technology: 80, management: 44, politics: 23 },
+      personal: { loyalty: 35, charisma: 90, leadership: 60, ambition: 88, integrity: 60, resilience: 78, intrigue: 48, discretion: 70 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 92,
@@ -466,8 +483,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNILORIN (BSc Computer Science), MIT (PhD Technology Policy)",
     tradeOff: "Attracts tech-sector youth and international development funding. Limited grassroots organising network outside South-West and FCT urban corridors.",
     competencies: {
-      professional: { economics: 72, diplomacy: 60, security: 15, media: 55, legal: 40, administration: 72, technology: 88 },
-      personal: { loyalty: 60, charisma: 52, leadership: 68, ambition: 62, integrity: 82, resilience: 60, intrigue: 28 },
+      professional: { economics: 72, diplomacy: 60, security: 15, communications: 55, legal: 40, administration: 72, technology: 88, management: 61, politics: 57 },
+      personal: { loyalty: 60, charisma: 52, leadership: 68, ambition: 62, integrity: 82, resilience: 60, intrigue: 28, discretion: 62 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 30,
@@ -488,8 +506,8 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UI Ibadan (BA History), Henley Business School (MPA)",
     tradeOff: "Unparalleled youth network management and ability to deliver votes and rally turnout. His loyalty to the President is real but transactional — will renegotiate at perceived advantage.",
     competencies: {
-      professional: { economics: 50, diplomacy: 78, security: 28, media: 62, legal: 45, administration: 65, technology: 45 },
-      personal: { loyalty: 40, charisma: 70, leadership: 62, ambition: 85, integrity: 30, resilience: 58, intrigue: 88 },
+      professional: { economics: 50, diplomacy: 78, security: 28, communications: 62, legal: 45, administration: 65, technology: 45, management: 62, politics: 70 },
+      personal: { loyalty: 40, charisma: 70, leadership: 62, ambition: 85, integrity: 30, resilience: 58, intrigue: 88, discretion: 42 },
     },
     qualifiedFor: ["chairman-youth-forum"],
     strikeReadiness: 18,
@@ -512,8 +530,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNILAG (BSc Chemical Engineering), ILO (Labour Administration)",
     tradeOff: "Indispensable to petroleum sector stability. Any government trying to bypass him faces guaranteed oil flow disruptions. Will demand significant policy concessions before lending formal support.",
     competencies: {
-      professional: { economics: 62, diplomacy: 45, security: 35, media: 72, legal: 50, administration: 65, technology: 48 },
-      personal: { loyalty: 55, charisma: 75, leadership: 88, ambition: 60, integrity: 70, resilience: 88, intrigue: 52 },
+      professional: { economics: 62, diplomacy: 45, security: 35, communications: 72, legal: 50, administration: 65, technology: 48, management: 86, politics: 64 },
+      personal: { loyalty: 55, charisma: 75, leadership: 88, ambition: 60, integrity: 70, resilience: 88, intrigue: 52, discretion: 88 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 78,
@@ -534,8 +553,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "ABU Zaria (BEng Petroleum), University of Aberdeen (MSc Oil and Gas Management)",
     tradeOff: "Rare ability to deliver petroleum sector stability — operators, engineers, and NNPC management all respect her technical grounding. Struggles to hold PENGASSAN militant Lagos locals who see her as soft.",
     competencies: {
-      professional: { economics: 65, diplomacy: 72, security: 28, media: 48, legal: 55, administration: 70, technology: 72 },
-      personal: { loyalty: 68, charisma: 55, leadership: 70, ambition: 48, integrity: 82, resilience: 65, intrigue: 32 },
+      professional: { economics: 65, diplomacy: 72, security: 28, communications: 48, legal: 55, administration: 70, technology: 72, management: 80, politics: 81 },
+      personal: { loyalty: 68, charisma: 55, leadership: 70, ambition: 48, integrity: 82, resilience: 65, intrigue: 32, discretion: 84 },
+    honorific: "Engr.",
     },
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 28,
@@ -556,8 +576,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIPORT (BSc Environmental Science), self-taught labour law",
     tradeOff: "Deep roots in Niger Delta communities and ability to link labour action with environmental grievances for double impact. Galvanises international NGO attention — which complicates bilateral oil negotiations.",
     competencies: {
-      professional: { economics: 35, diplomacy: 25, security: 20, media: 85, legal: 42, administration: 38, technology: 55 },
-      personal: { loyalty: 45, charisma: 88, leadership: 68, ambition: 82, integrity: 68, resilience: 78, intrigue: 52 },
+      professional: { economics: 35, diplomacy: 25, security: 20, communications: 85, legal: 42, administration: 38, technology: 55, management: 43, politics: 22 },
+      personal: { loyalty: 45, charisma: 88, leadership: 68, ambition: 82, integrity: 68, resilience: 78, intrigue: 52, discretion: 63 },
+    honorific: "Comr.",
     },
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 88,
@@ -578,8 +599,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "OAU (BEng Chemical Engineering), Imperial College London (PhD Energy Systems)",
     tradeOff: "Policy sophistication that gives petroleum worker negotiations international legitimacy. Former NNPC background means militant NUPENG locals view him with deep suspicion.",
     competencies: {
-      professional: { economics: 80, diplomacy: 65, security: 30, media: 45, legal: 58, administration: 78, technology: 82 },
-      personal: { loyalty: 58, charisma: 48, leadership: 65, ambition: 50, integrity: 85, resilience: 62, intrigue: 30 },
+      professional: { economics: 80, diplomacy: 65, security: 30, communications: 45, legal: 58, administration: 78, technology: 82, management: 70, politics: 70 },
+      personal: { loyalty: 58, charisma: 48, leadership: 65, ambition: 50, integrity: 85, resilience: 62, intrigue: 30, discretion: 72 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 38,
@@ -600,8 +622,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UDUS Sokoto (BSc Accounting), ICAN Fellow",
     tradeOff: "Exceptional back-channel petroleum sector influence and financial management credibility. Seen as a former insider who may be managing union assets for personal benefit — audit trail is murky.",
     competencies: {
-      professional: { economics: 68, diplomacy: 85, security: 32, media: 42, legal: 55, administration: 72, technology: 35 },
-      personal: { loyalty: 38, charisma: 60, leadership: 60, ambition: 80, integrity: 30, resilience: 65, intrigue: 88 },
+      professional: { economics: 68, diplomacy: 85, security: 32, communications: 42, legal: 55, administration: 72, technology: 35, management: 73, politics: 86 },
+      personal: { loyalty: 38, charisma: 60, leadership: 60, ambition: 80, integrity: 30, resilience: 65, intrigue: 88, discretion: 55 },
+    honorific: "Alh.",
     },
     qualifiedFor: ["chairman-petroleum-workers"],
     strikeReadiness: 15,
@@ -624,8 +647,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNIBEN (MBBS), WACP Fellow (Internal Medicine), Harvard (Health Leadership)",
     tradeOff: "Near-total credibility with Nigeria's medical workforce. Calling a national doctors' strike is constitutionally sensitive — associating the presidency with him signals seriousness on health sector reform.",
     competencies: {
-      professional: { economics: 58, diplomacy: 42, security: 18, media: 78, legal: 52, administration: 62, technology: 40 },
-      personal: { loyalty: 55, charisma: 75, leadership: 85, ambition: 58, integrity: 80, resilience: 88, intrigue: 40 },
+      professional: { economics: 58, diplomacy: 42, security: 18, communications: 78, legal: 52, administration: 62, technology: 40, management: 70, politics: 48 },
+      personal: { loyalty: 55, charisma: 75, leadership: 85, ambition: 58, integrity: 80, resilience: 88, intrigue: 40, discretion: 80 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 75,
@@ -646,8 +670,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "Bayero University Kano (MBBS), Liverpool (MPH), London School of Hygiene (PhD)",
     tradeOff: "Can hold the line on essential health services while negotiating — avoids the political damage of a full hospital shutdown. Radical house officers' factions see her as a compromiser and may organise parallel action.",
     competencies: {
-      professional: { economics: 65, diplomacy: 80, security: 18, media: 50, legal: 52, administration: 72, technology: 55 },
-      personal: { loyalty: 70, charisma: 58, leadership: 72, ambition: 45, integrity: 85, resilience: 65, intrigue: 30 },
+      professional: { economics: 65, diplomacy: 80, security: 18, communications: 50, legal: 52, administration: 72, technology: 55, management: 74, politics: 78 },
+      personal: { loyalty: 70, charisma: 58, leadership: 72, ambition: 45, integrity: 85, resilience: 65, intrigue: 30, discretion: 77 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 22,
@@ -668,8 +693,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UI Ibadan (MBBS), Membership of WACP (in progress)",
     tradeOff: "Voice of the junior doctor crisis that is hollowing out Nigerian hospitals. Will not pretend a half-measure is a solution. Mobilises house officers and residents effectively but has limited engagement with senior consultants.",
     competencies: {
-      professional: { economics: 38, diplomacy: 25, security: 15, media: 88, legal: 38, administration: 35, technology: 78 },
-      personal: { loyalty: 42, charisma: 85, leadership: 62, ambition: 85, integrity: 72, resilience: 75, intrigue: 48 },
+      professional: { economics: 38, diplomacy: 25, security: 15, communications: 88, legal: 38, administration: 35, technology: 78, management: 43, politics: 24 },
+      personal: { loyalty: 42, charisma: 85, leadership: 62, ambition: 85, integrity: 72, resilience: 75, intrigue: 48, discretion: 68 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 90,
@@ -690,8 +716,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "UNN (MBBS), Johns Hopkins (MPH), UCL (PhD Global Health)",
     tradeOff: "Brings the highest international credibility of any NMA figure. Slow to engage in worker grievances at the operational level — junior doctors see her as living in a WHO parallel reality.",
     competencies: {
-      professional: { economics: 72, diplomacy: 70, security: 18, media: 48, legal: 58, administration: 80, technology: 62 },
-      personal: { loyalty: 60, charisma: 48, leadership: 70, ambition: 48, integrity: 88, resilience: 60, intrigue: 22 },
+      professional: { economics: 72, diplomacy: 70, security: 18, communications: 48, legal: 58, administration: 80, technology: 62, management: 83, politics: 83 },
+      personal: { loyalty: 60, charisma: 48, leadership: 70, ambition: 48, integrity: 88, resilience: 60, intrigue: 22, discretion: 82 },
+    honorific: "Prof.",
     },
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 30,
@@ -712,8 +739,9 @@ export const UNION_LEADER_CANDIDATES: UnionLeaderCandidate[] = [
     education: "ABU Zaria (MBBS), Harvard Medical School (Health Policy Fellowship), NIPSS Kuru",
     tradeOff: "Extraordinary access to health policy machinery. Will use the NMA chairmanship as a base for further political ambitions. His back-channel resolutions are real but trade transparency for speed.",
     competencies: {
-      professional: { economics: 62, diplomacy: 85, security: 28, media: 52, legal: 55, administration: 72, technology: 38 },
-      personal: { loyalty: 38, charisma: 65, leadership: 65, ambition: 80, integrity: 35, resilience: 62, intrigue: 85 },
+      professional: { economics: 62, diplomacy: 85, security: 28, communications: 52, legal: 55, administration: 72, technology: 38, management: 71, politics: 81 },
+      personal: { loyalty: 38, charisma: 65, leadership: 65, ambition: 80, integrity: 35, resilience: 62, intrigue: 85, discretion: 51 },
+    honorific: "Dr.",
     },
     qualifiedFor: ["chairman-medical-association"],
     strikeReadiness: 18,

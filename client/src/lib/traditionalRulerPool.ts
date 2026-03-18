@@ -23,9 +23,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 92,
     qualifiedFor: ["sultan-sokoto"],
+    traditionalTitle: "Sultan of Sokoto",
     competencies: {
-      professional: { economics: 40, diplomacy: 85, security: 35, media: 45, legal: 70, administration: 75, technology: 20 },
-      personal: { loyalty: 70, charisma: 80, leadership: 88, ambition: 55, integrity: 82, resilience: 75, intrigue: 45 },
+      professional: { economics: 40, diplomacy: 85, security: 35, communications: 45, legal: 70, administration: 75, technology: 20, management: 73, politics: 71 },
+      personal: { loyalty: 70, charisma: 80, leadership: 88, ambition: 55, integrity: 82, resilience: 75, intrigue: 45, discretion: 70 },
     },
   },
   {
@@ -43,9 +44,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 88,
     qualifiedFor: ["sultan-sokoto"],
+    traditionalTitle: "Sultan of Sokoto",
     competencies: {
-      professional: { economics: 55, diplomacy: 92, security: 30, media: 50, legal: 60, administration: 70, technology: 25 },
-      personal: { loyalty: 60, charisma: 75, leadership: 78, ambition: 65, integrity: 72, resilience: 68, intrigue: 55 },
+      professional: { economics: 55, diplomacy: 92, security: 30, communications: 50, legal: 60, administration: 70, technology: 25, management: 84, politics: 91 },
+      personal: { loyalty: 60, charisma: 75, leadership: 78, ambition: 65, integrity: 72, resilience: 68, intrigue: 55, discretion: 80 },
     },
   },
   {
@@ -63,9 +65,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 85,
     qualifiedFor: ["sultan-sokoto"],
+    traditionalTitle: "Sultan of Sokoto",
     competencies: {
-      professional: { economics: 80, diplomacy: 60, security: 25, media: 55, legal: 45, administration: 65, technology: 40 },
-      personal: { loyalty: 55, charisma: 70, leadership: 72, ambition: 80, integrity: 58, resilience: 65, intrigue: 68 },
+      professional: { economics: 80, diplomacy: 60, security: 25, communications: 55, legal: 45, administration: 65, technology: 40, management: 74, politics: 68 },
+      personal: { loyalty: 55, charisma: 70, leadership: 72, ambition: 80, integrity: 58, resilience: 65, intrigue: 68, discretion: 67 },
     },
   },
   {
@@ -83,9 +86,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 80,
     qualifiedFor: ["sultan-sokoto"],
+    traditionalTitle: "Sultan of Sokoto",
     competencies: {
-      professional: { economics: 25, diplomacy: 55, security: 20, media: 30, legal: 75, administration: 60, technology: 10 },
-      personal: { loyalty: 45, charisma: 72, leadership: 70, ambition: 40, integrity: 90, resilience: 80, intrigue: 35 },
+      professional: { economics: 25, diplomacy: 55, security: 20, communications: 30, legal: 75, administration: 60, technology: 10, management: 61, politics: 54 },
+      personal: { loyalty: 45, charisma: 72, leadership: 70, ambition: 40, integrity: 90, resilience: 80, intrigue: 35, discretion: 81 },
     },
   },
   {
@@ -103,9 +107,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["sultan-sokoto"],
+    traditionalTitle: "Sultan of Sokoto",
     competencies: {
-      professional: { economics: 65, diplomacy: 72, security: 30, media: 68, legal: 50, administration: 70, technology: 55 },
-      personal: { loyalty: 65, charisma: 82, leadership: 75, ambition: 72, integrity: 78, resilience: 60, intrigue: 40 },
+      professional: { economics: 65, diplomacy: 72, security: 30, communications: 68, legal: 50, administration: 70, technology: 55, management: 78, politics: 76 },
+      personal: { loyalty: 65, charisma: 82, leadership: 75, ambition: 72, integrity: 78, resilience: 60, intrigue: 40, discretion: 74 },
     },
   },
 
@@ -128,9 +133,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 90,
     qualifiedFor: ["ooni-ife"],
+    traditionalTitle: "Ooni of Ife",
     competencies: {
-      professional: { economics: 75, diplomacy: 70, security: 25, media: 82, legal: 40, administration: 65, technology: 55 },
-      personal: { loyalty: 60, charisma: 90, leadership: 78, ambition: 85, integrity: 62, resilience: 70, intrigue: 55 },
+      professional: { economics: 75, diplomacy: 70, security: 25, communications: 82, legal: 40, administration: 65, technology: 55, management: 63, politics: 59 },
+      personal: { loyalty: 60, charisma: 90, leadership: 78, ambition: 85, integrity: 62, resilience: 70, intrigue: 55, discretion: 57 },
     },
   },
   {
@@ -148,9 +154,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 85,
     qualifiedFor: ["ooni-ife"],
+    traditionalTitle: "Ooni of Ife",
     competencies: {
-      professional: { economics: 30, diplomacy: 60, security: 20, media: 35, legal: 55, administration: 58, technology: 15 },
-      personal: { loyalty: 72, charisma: 78, leadership: 80, ambition: 40, integrity: 88, resilience: 82, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 60, security: 20, communications: 35, legal: 55, administration: 58, technology: 15, management: 76, politics: 66 },
+      personal: { loyalty: 72, charisma: 78, leadership: 80, ambition: 40, integrity: 88, resilience: 82, intrigue: 30, discretion: 92 },
     },
   },
   {
@@ -168,9 +175,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 80,
     qualifiedFor: ["ooni-ife"],
+    traditionalTitle: "Ooni of Ife",
     competencies: {
-      professional: { economics: 45, diplomacy: 65, security: 20, media: 60, legal: 72, administration: 55, technology: 35 },
-      personal: { loyalty: 68, charisma: 65, leadership: 70, ambition: 58, integrity: 85, resilience: 60, intrigue: 35 },
+      professional: { economics: 45, diplomacy: 65, security: 20, communications: 60, legal: 72, administration: 55, technology: 35, management: 53, politics: 50 },
+      personal: { loyalty: 68, charisma: 65, leadership: 70, ambition: 58, integrity: 85, resilience: 60, intrigue: 35, discretion: 63 },
     },
   },
   {
@@ -188,9 +196,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 82,
     qualifiedFor: ["ooni-ife"],
+    traditionalTitle: "Ooni of Ife",
     competencies: {
-      professional: { economics: 50, diplomacy: 72, security: 30, media: 55, legal: 60, administration: 80, technology: 25 },
-      personal: { loyalty: 70, charisma: 75, leadership: 76, ambition: 72, integrity: 60, resilience: 68, intrigue: 65 },
+      professional: { economics: 50, diplomacy: 72, security: 30, communications: 55, legal: 60, administration: 80, technology: 25, management: 81, politics: 79 },
+      personal: { loyalty: 70, charisma: 75, leadership: 76, ambition: 72, integrity: 60, resilience: 68, intrigue: 65, discretion: 67 },
     },
   },
   {
@@ -208,9 +217,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 75,
     qualifiedFor: ["ooni-ife"],
+    traditionalTitle: "Ooni of Ife",
     competencies: {
-      professional: { economics: 55, diplomacy: 68, security: 15, media: 72, legal: 40, administration: 55, technology: 40 },
-      personal: { loyalty: 65, charisma: 85, leadership: 72, ambition: 78, integrity: 75, resilience: 80, intrigue: 42 },
+      professional: { economics: 55, diplomacy: 68, security: 15, communications: 72, legal: 40, administration: 55, technology: 40, management: 68, politics: 66 },
+      personal: { loyalty: 65, charisma: 85, leadership: 72, ambition: 78, integrity: 75, resilience: 80, intrigue: 42, discretion: 82 },
     },
   },
 
@@ -233,9 +243,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 92,
     qualifiedFor: ["oba-benin"],
+    traditionalTitle: "Oba of Benin",
     competencies: {
-      professional: { economics: 60, diplomacy: 72, security: 30, media: 55, legal: 50, administration: 70, technology: 45 },
-      personal: { loyalty: 80, charisma: 78, leadership: 82, ambition: 60, integrity: 78, resilience: 75, intrigue: 40 },
+      professional: { economics: 60, diplomacy: 72, security: 30, communications: 55, legal: 50, administration: 70, technology: 45, management: 81, politics: 76 },
+      personal: { loyalty: 80, charisma: 78, leadership: 82, ambition: 60, integrity: 78, resilience: 75, intrigue: 40, discretion: 82 },
     },
   },
   {
@@ -253,9 +264,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 85,
     qualifiedFor: ["oba-benin"],
+    traditionalTitle: "Oba of Benin",
     competencies: {
-      professional: { economics: 78, diplomacy: 55, security: 25, media: 50, legal: 42, administration: 68, technology: 48 },
-      personal: { loyalty: 55, charisma: 70, leadership: 72, ambition: 82, integrity: 52, resilience: 65, intrigue: 70 },
+      professional: { economics: 78, diplomacy: 55, security: 25, communications: 50, legal: 42, administration: 68, technology: 48, management: 65, politics: 57 },
+      personal: { loyalty: 55, charisma: 70, leadership: 72, ambition: 82, integrity: 52, resilience: 65, intrigue: 70, discretion: 54 },
     },
   },
   {
@@ -273,9 +285,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 82,
     qualifiedFor: ["oba-benin"],
+    traditionalTitle: "Oba of Benin",
     competencies: {
-      professional: { economics: 30, diplomacy: 65, security: 20, media: 40, legal: 68, administration: 62, technology: 12 },
-      personal: { loyalty: 75, charisma: 68, leadership: 75, ambition: 45, integrity: 85, resilience: 80, intrigue: 38 },
+      professional: { economics: 30, diplomacy: 65, security: 20, communications: 40, legal: 68, administration: 62, technology: 12, management: 79, politics: 74 },
+      personal: { loyalty: 75, charisma: 68, leadership: 75, ambition: 45, integrity: 85, resilience: 80, intrigue: 38, discretion: 93 },
     },
   },
   {
@@ -293,9 +306,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["oba-benin"],
+    traditionalTitle: "Oba of Benin",
     competencies: {
-      professional: { economics: 45, diplomacy: 75, security: 15, media: 72, legal: 48, administration: 55, technology: 40 },
-      personal: { loyalty: 62, charisma: 72, leadership: 68, ambition: 55, integrity: 82, resilience: 58, intrigue: 30 },
+      professional: { economics: 45, diplomacy: 75, security: 15, communications: 72, legal: 48, administration: 55, technology: 40, management: 58, politics: 61 },
+      personal: { loyalty: 62, charisma: 72, leadership: 68, ambition: 55, integrity: 82, resilience: 58, intrigue: 30, discretion: 66 },
     },
   },
   {
@@ -313,9 +327,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["oba-benin"],
+    traditionalTitle: "Oba of Benin",
     competencies: {
-      professional: { economics: 65, diplomacy: 80, security: 20, media: 68, legal: 72, administration: 58, technology: 52 },
-      personal: { loyalty: 60, charisma: 80, leadership: 70, ambition: 75, integrity: 78, resilience: 72, intrigue: 35 },
+      professional: { economics: 65, diplomacy: 80, security: 20, communications: 68, legal: 72, administration: 58, technology: 52, management: 72, politics: 77 },
+      personal: { loyalty: 60, charisma: 80, leadership: 70, ambition: 75, integrity: 78, resilience: 72, intrigue: 35, discretion: 83 },
     },
   },
 
@@ -338,9 +353,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 88,
     qualifiedFor: ["obi-onitsha"],
+    traditionalTitle: "Obi of Onitsha",
     competencies: {
-      professional: { economics: 80, diplomacy: 75, security: 25, media: 55, legal: 50, administration: 82, technology: 48 },
-      personal: { loyalty: 65, charisma: 72, leadership: 80, ambition: 60, integrity: 75, resilience: 70, intrigue: 45 },
+      professional: { economics: 80, diplomacy: 75, security: 25, communications: 55, legal: 50, administration: 82, technology: 48, management: 71, politics: 69 },
+      personal: { loyalty: 65, charisma: 72, leadership: 80, ambition: 60, integrity: 75, resilience: 70, intrigue: 45, discretion: 63 },
     },
   },
   {
@@ -358,9 +374,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 85,
     qualifiedFor: ["obi-onitsha"],
+    traditionalTitle: "Obi of Onitsha",
     competencies: {
-      professional: { economics: 82, diplomacy: 58, security: 20, media: 60, legal: 40, administration: 68, technology: 35 },
-      personal: { loyalty: 55, charisma: 78, leadership: 75, ambition: 85, integrity: 55, resilience: 72, intrigue: 70 },
+      professional: { economics: 82, diplomacy: 58, security: 20, communications: 60, legal: 40, administration: 68, technology: 35, management: 63, politics: 54 },
+      personal: { loyalty: 55, charisma: 78, leadership: 75, ambition: 85, integrity: 55, resilience: 72, intrigue: 70, discretion: 55 },
     },
   },
   {
@@ -378,9 +395,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 80,
     qualifiedFor: ["obi-onitsha"],
+    traditionalTitle: "Obi of Onitsha",
     competencies: {
-      professional: { economics: 92, diplomacy: 65, security: 20, media: 58, legal: 55, administration: 75, technology: 50 },
-      personal: { loyalty: 60, charisma: 68, leadership: 72, ambition: 70, integrity: 80, resilience: 65, intrigue: 35 },
+      professional: { economics: 92, diplomacy: 65, security: 20, communications: 58, legal: 55, administration: 75, technology: 50, management: 74, politics: 70 },
+      personal: { loyalty: 60, charisma: 68, leadership: 72, ambition: 70, integrity: 80, resilience: 65, intrigue: 35, discretion: 73 },
     },
   },
   {
@@ -398,9 +416,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 82,
     qualifiedFor: ["obi-onitsha"],
+    traditionalTitle: "Obi of Onitsha",
     competencies: {
-      professional: { economics: 50, diplomacy: 90, security: 20, media: 55, legal: 65, administration: 62, technology: 20 },
-      personal: { loyalty: 70, charisma: 75, leadership: 72, ambition: 35, integrity: 88, resilience: 65, intrigue: 28 },
+      professional: { economics: 50, diplomacy: 90, security: 20, communications: 55, legal: 65, administration: 62, technology: 20, management: 68, politics: 77 },
+      personal: { loyalty: 70, charisma: 75, leadership: 72, ambition: 35, integrity: 88, resilience: 65, intrigue: 28, discretion: 78 },
     },
   },
   {
@@ -418,9 +437,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 75,
     qualifiedFor: ["obi-onitsha"],
+    traditionalTitle: "Obi of Onitsha",
     competencies: {
-      professional: { economics: 70, diplomacy: 55, security: 18, media: 72, legal: 35, administration: 60, technology: 88 },
-      personal: { loyalty: 62, charisma: 80, leadership: 68, ambition: 78, integrity: 72, resilience: 65, intrigue: 40 },
+      professional: { economics: 70, diplomacy: 55, security: 18, communications: 72, legal: 35, administration: 60, technology: 88, management: 65, politics: 59 },
+      personal: { loyalty: 62, charisma: 80, leadership: 68, ambition: 78, integrity: 72, resilience: 65, intrigue: 40, discretion: 70 },
     },
   },
 
@@ -443,9 +463,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 90,
     qualifiedFor: ["shehu-borno"],
+    traditionalTitle: "Shehu of Borno",
     competencies: {
-      professional: { economics: 35, diplomacy: 78, security: 45, media: 40, legal: 65, administration: 72, technology: 15 },
-      personal: { loyalty: 80, charisma: 75, leadership: 85, ambition: 45, integrity: 85, resilience: 90, intrigue: 35 },
+      professional: { economics: 35, diplomacy: 78, security: 45, communications: 40, legal: 65, administration: 72, technology: 15, management: 86, politics: 82 },
+      personal: { loyalty: 80, charisma: 75, leadership: 85, ambition: 45, integrity: 85, resilience: 90, intrigue: 35, discretion: 95 },
     },
   },
   {
@@ -463,9 +484,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 85,
     qualifiedFor: ["shehu-borno"],
+    traditionalTitle: "Shehu of Borno",
     competencies: {
-      professional: { economics: 72, diplomacy: 65, security: 40, media: 50, legal: 45, administration: 70, technology: 30 },
-      personal: { loyalty: 65, charisma: 70, leadership: 75, ambition: 72, integrity: 68, resilience: 80, intrigue: 55 },
+      professional: { economics: 72, diplomacy: 65, security: 40, communications: 50, legal: 45, administration: 70, technology: 30, management: 68, politics: 63 },
+      personal: { loyalty: 65, charisma: 70, leadership: 75, ambition: 72, integrity: 68, resilience: 80, intrigue: 55, discretion: 69 },
     },
   },
   {
@@ -483,9 +505,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 82,
     qualifiedFor: ["shehu-borno"],
+    traditionalTitle: "Shehu of Borno",
     competencies: {
-      professional: { economics: 40, diplomacy: 88, security: 50, media: 65, legal: 78, administration: 55, technology: 25 },
-      personal: { loyalty: 72, charisma: 80, leadership: 78, ambition: 50, integrity: 90, resilience: 85, intrigue: 30 },
+      professional: { economics: 40, diplomacy: 88, security: 50, communications: 65, legal: 78, administration: 55, technology: 25, management: 60, politics: 65 },
+      personal: { loyalty: 72, charisma: 80, leadership: 78, ambition: 50, integrity: 90, resilience: 85, intrigue: 30, discretion: 81 },
     },
   },
   {
@@ -503,9 +526,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 78,
     qualifiedFor: ["shehu-borno"],
+    traditionalTitle: "Shehu of Borno",
     competencies: {
-      professional: { economics: 30, diplomacy: 45, security: 85, media: 35, legal: 40, administration: 72, technology: 20 },
-      personal: { loyalty: 70, charisma: 55, leadership: 82, ambition: 60, integrity: 70, resilience: 88, intrigue: 50 },
+      professional: { economics: 30, diplomacy: 45, security: 85, communications: 35, legal: 40, administration: 72, technology: 20, management: 80, politics: 62 },
+      personal: { loyalty: 70, charisma: 55, leadership: 82, ambition: 60, integrity: 70, resilience: 88, intrigue: 50, discretion: 82 },
     },
   },
   {
@@ -523,9 +547,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 80,
     qualifiedFor: ["shehu-borno"],
+    traditionalTitle: "Shehu of Borno",
     competencies: {
-      professional: { economics: 60, diplomacy: 55, security: 38, media: 58, legal: 42, administration: 78, technology: 52 },
-      personal: { loyalty: 68, charisma: 75, leadership: 72, ambition: 70, integrity: 82, resilience: 78, intrigue: 32 },
+      professional: { economics: 60, diplomacy: 55, security: 38, communications: 58, legal: 42, administration: 78, technology: 52, management: 70, politics: 62 },
+      personal: { loyalty: 68, charisma: 75, leadership: 72, ambition: 70, integrity: 82, resilience: 78, intrigue: 32, discretion: 75 },
     },
   },
 
@@ -548,9 +573,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 85,
     qualifiedFor: ["etsu-nupe"],
+    traditionalTitle: "Etsu Nupe",
     competencies: {
-      professional: { economics: 40, diplomacy: 68, security: 30, media: 42, legal: 60, administration: 75, technology: 18 },
-      personal: { loyalty: 78, charisma: 70, leadership: 80, ambition: 48, integrity: 80, resilience: 72, intrigue: 38 },
+      professional: { economics: 40, diplomacy: 68, security: 30, communications: 42, legal: 60, administration: 75, technology: 18, management: 76, politics: 70 },
+      personal: { loyalty: 78, charisma: 70, leadership: 80, ambition: 48, integrity: 80, resilience: 72, intrigue: 38, discretion: 74 },
     },
   },
   {
@@ -568,9 +594,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 80,
     qualifiedFor: ["etsu-nupe"],
+    traditionalTitle: "Etsu Nupe",
     competencies: {
-      professional: { economics: 55, diplomacy: 78, security: 28, media: 48, legal: 55, administration: 82, technology: 25 },
-      personal: { loyalty: 65, charisma: 68, leadership: 72, ambition: 55, integrity: 75, resilience: 68, intrigue: 45 },
+      professional: { economics: 55, diplomacy: 78, security: 28, communications: 48, legal: 55, administration: 82, technology: 25, management: 70, politics: 73 },
+      personal: { loyalty: 65, charisma: 68, leadership: 72, ambition: 55, integrity: 75, resilience: 68, intrigue: 45, discretion: 65 },
     },
   },
   {
@@ -588,9 +615,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 75,
     qualifiedFor: ["etsu-nupe"],
+    traditionalTitle: "Etsu Nupe",
     competencies: {
-      professional: { economics: 80, diplomacy: 50, security: 20, media: 55, legal: 38, administration: 65, technology: 45 },
-      personal: { loyalty: 60, charisma: 72, leadership: 68, ambition: 78, integrity: 70, resilience: 62, intrigue: 42 },
+      professional: { economics: 80, diplomacy: 50, security: 20, communications: 55, legal: 38, administration: 65, technology: 45, management: 72, politics: 63 },
+      personal: { loyalty: 60, charisma: 72, leadership: 68, ambition: 78, integrity: 70, resilience: 62, intrigue: 42, discretion: 71 },
     },
   },
   {
@@ -608,9 +636,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 72,
     qualifiedFor: ["etsu-nupe"],
+    traditionalTitle: "Etsu Nupe",
     competencies: {
-      professional: { economics: 25, diplomacy: 50, security: 18, media: 30, legal: 62, administration: 58, technology: 10 },
-      personal: { loyalty: 72, charisma: 60, leadership: 68, ambition: 30, integrity: 88, resilience: 75, intrigue: 25 },
+      professional: { economics: 25, diplomacy: 50, security: 18, communications: 30, legal: 62, administration: 58, technology: 10, management: 65, politics: 56 },
+      personal: { loyalty: 72, charisma: 60, leadership: 68, ambition: 30, integrity: 88, resilience: 75, intrigue: 25, discretion: 84 },
     },
   },
   {
@@ -628,9 +657,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 68,
     qualifiedFor: ["etsu-nupe"],
+    traditionalTitle: "Etsu Nupe",
     competencies: {
-      professional: { economics: 50, diplomacy: 62, security: 15, media: 65, legal: 35, administration: 60, technology: 48 },
-      personal: { loyalty: 70, charisma: 78, leadership: 65, ambition: 72, integrity: 82, resilience: 75, intrigue: 28 },
+      professional: { economics: 50, diplomacy: 62, security: 15, communications: 65, legal: 35, administration: 60, technology: 48, management: 65, politics: 63 },
+      personal: { loyalty: 70, charisma: 78, leadership: 65, ambition: 72, integrity: 82, resilience: 75, intrigue: 28, discretion: 81 },
     },
   },
 
@@ -653,9 +683,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 85,
     qualifiedFor: ["oba-lagos"],
+    traditionalTitle: "Oba of Lagos",
     competencies: {
-      professional: { economics: 45, diplomacy: 55, security: 72, media: 50, legal: 68, administration: 65, technology: 22 },
-      personal: { loyalty: 60, charisma: 68, leadership: 75, ambition: 62, integrity: 60, resilience: 78, intrigue: 65 },
+      professional: { economics: 45, diplomacy: 55, security: 72, communications: 50, legal: 68, administration: 65, technology: 22, management: 73, politics: 63 },
+      personal: { loyalty: 60, charisma: 68, leadership: 75, ambition: 62, integrity: 60, resilience: 78, intrigue: 65, discretion: 72 },
     },
   },
   {
@@ -673,9 +704,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 82,
     qualifiedFor: ["oba-lagos"],
+    traditionalTitle: "Oba of Lagos",
     competencies: {
-      professional: { economics: 82, diplomacy: 58, security: 20, media: 70, legal: 55, administration: 62, technology: 60 },
-      personal: { loyalty: 55, charisma: 85, leadership: 70, ambition: 82, integrity: 58, resilience: 62, intrigue: 55 },
+      professional: { economics: 82, diplomacy: 58, security: 20, communications: 70, legal: 55, administration: 62, technology: 60, management: 58, politics: 52 },
+      personal: { loyalty: 55, charisma: 85, leadership: 70, ambition: 82, integrity: 58, resilience: 62, intrigue: 55, discretion: 52 },
     },
   },
   {
@@ -693,9 +725,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["oba-lagos"],
+    traditionalTitle: "Oba of Lagos",
     competencies: {
-      professional: { economics: 50, diplomacy: 75, security: 40, media: 42, legal: 55, administration: 70, technology: 20 },
-      personal: { loyalty: 72, charisma: 68, leadership: 72, ambition: 50, integrity: 75, resilience: 70, intrigue: 40 },
+      professional: { economics: 50, diplomacy: 75, security: 40, communications: 42, legal: 55, administration: 70, technology: 20, management: 72, politics: 74 },
+      personal: { loyalty: 72, charisma: 68, leadership: 72, ambition: 50, integrity: 75, resilience: 70, intrigue: 40, discretion: 74 },
     },
   },
   {
@@ -713,9 +746,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 80,
     qualifiedFor: ["oba-lagos"],
+    traditionalTitle: "Oba of Lagos",
     competencies: {
-      professional: { economics: 68, diplomacy: 60, security: 25, media: 55, legal: 40, administration: 72, technology: 18 },
-      personal: { loyalty: 65, charisma: 82, leadership: 78, ambition: 70, integrity: 65, resilience: 85, intrigue: 58 },
+      professional: { economics: 68, diplomacy: 60, security: 25, communications: 55, legal: 40, administration: 72, technology: 18, management: 72, politics: 63 },
+      personal: { loyalty: 65, charisma: 82, leadership: 78, ambition: 70, integrity: 65, resilience: 85, intrigue: 58, discretion: 72 },
     },
   },
   {
@@ -733,9 +767,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 75,
     qualifiedFor: ["oba-lagos"],
+    traditionalTitle: "Oba of Lagos",
     competencies: {
-      professional: { economics: 55, diplomacy: 62, security: 18, media: 60, legal: 48, administration: 72, technology: 55 },
-      personal: { loyalty: 68, charisma: 70, leadership: 65, ambition: 62, integrity: 78, resilience: 60, intrigue: 32 },
+      professional: { economics: 55, diplomacy: 62, security: 18, communications: 60, legal: 48, administration: 72, technology: 55, management: 68, politics: 66 },
+      personal: { loyalty: 68, charisma: 70, leadership: 65, ambition: 62, integrity: 78, resilience: 60, intrigue: 32, discretion: 68 },
     },
   },
 
@@ -758,9 +793,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 82,
     qualifiedFor: ["obong-calabar"],
+    traditionalTitle: "Obong of Calabar",
     competencies: {
-      professional: { economics: 35, diplomacy: 65, security: 25, media: 55, legal: 58, administration: 68, technology: 18 },
-      personal: { loyalty: 75, charisma: 72, leadership: 78, ambition: 45, integrity: 80, resilience: 72, intrigue: 40 },
+      professional: { economics: 35, diplomacy: 65, security: 25, communications: 55, legal: 58, administration: 68, technology: 18, management: 83, politics: 77 },
+      personal: { loyalty: 75, charisma: 72, leadership: 78, ambition: 45, integrity: 80, resilience: 72, intrigue: 40, discretion: 86 },
     },
   },
   {
@@ -778,9 +814,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 80,
     qualifiedFor: ["obong-calabar"],
+    traditionalTitle: "Obong of Calabar",
     competencies: {
-      professional: { economics: 80, diplomacy: 55, security: 20, media: 58, legal: 42, administration: 65, technology: 42 },
-      personal: { loyalty: 55, charisma: 72, leadership: 70, ambition: 80, integrity: 55, resilience: 65, intrigue: 65 },
+      professional: { economics: 80, diplomacy: 55, security: 20, communications: 58, legal: 42, administration: 65, technology: 42, management: 78, politics: 70 },
+      personal: { loyalty: 55, charisma: 72, leadership: 70, ambition: 80, integrity: 55, resilience: 65, intrigue: 65, discretion: 70 },
     },
   },
   {
@@ -798,9 +835,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 75,
     qualifiedFor: ["obong-calabar"],
+    traditionalTitle: "Obong of Calabar",
     competencies: {
-      professional: { economics: 42, diplomacy: 70, security: 15, media: 62, legal: 68, administration: 52, technology: 30 },
-      personal: { loyalty: 70, charisma: 65, leadership: 68, ambition: 52, integrity: 85, resilience: 58, intrigue: 28 },
+      professional: { economics: 42, diplomacy: 70, security: 15, communications: 62, legal: 68, administration: 52, technology: 30, management: 56, politics: 57 },
+      personal: { loyalty: 70, charisma: 65, leadership: 68, ambition: 52, integrity: 85, resilience: 58, intrigue: 28, discretion: 68 },
     },
   },
   {
@@ -818,9 +856,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["obong-calabar"],
+    traditionalTitle: "Obong of Calabar",
     competencies: {
-      professional: { economics: 55, diplomacy: 62, security: 22, media: 68, legal: 48, administration: 70, technology: 48 },
-      personal: { loyalty: 65, charisma: 78, leadership: 72, ambition: 72, integrity: 70, resilience: 68, intrigue: 38 },
+      professional: { economics: 55, diplomacy: 62, security: 22, communications: 68, legal: 48, administration: 70, technology: 48, management: 67, politics: 62 },
+      personal: { loyalty: 65, charisma: 78, leadership: 72, ambition: 72, integrity: 70, resilience: 68, intrigue: 38, discretion: 65 },
     },
   },
   {
@@ -838,9 +877,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 72,
     qualifiedFor: ["obong-calabar"],
+    traditionalTitle: "Obong of Calabar",
     competencies: {
-      professional: { economics: 40, diplomacy: 68, security: 18, media: 52, legal: 82, administration: 62, technology: 25 },
-      personal: { loyalty: 72, charisma: 70, leadership: 72, ambition: 58, integrity: 85, resilience: 75, intrigue: 32 },
+      professional: { economics: 40, diplomacy: 68, security: 18, communications: 52, legal: 82, administration: 62, technology: 25, management: 62, politics: 60 },
+      personal: { loyalty: 72, charisma: 70, leadership: 72, ambition: 58, integrity: 85, resilience: 75, intrigue: 32, discretion: 75 },
     },
   },
 
@@ -863,9 +903,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 88,
     qualifiedFor: ["emir-kano"],
+    traditionalTitle: "Emir of Kano",
     competencies: {
-      professional: { economics: 45, diplomacy: 75, security: 30, media: 42, legal: 72, administration: 70, technology: 18 },
-      personal: { loyalty: 75, charisma: 78, leadership: 82, ambition: 50, integrity: 80, resilience: 72, intrigue: 38 },
+      professional: { economics: 45, diplomacy: 75, security: 30, communications: 42, legal: 72, administration: 70, technology: 18, management: 71, politics: 68 },
+      personal: { loyalty: 75, charisma: 78, leadership: 82, ambition: 50, integrity: 80, resilience: 72, intrigue: 38, discretion: 71 },
     },
   },
   {
@@ -883,9 +924,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 90,
     qualifiedFor: ["emir-kano"],
+    traditionalTitle: "Emir of Kano",
     competencies: {
-      professional: { economics: 92, diplomacy: 68, security: 22, media: 75, legal: 55, administration: 72, technology: 45 },
-      personal: { loyalty: 50, charisma: 85, leadership: 78, ambition: 82, integrity: 72, resilience: 70, intrigue: 55 },
+      professional: { economics: 92, diplomacy: 68, security: 22, communications: 75, legal: 55, administration: 72, technology: 45, management: 74, politics: 69 },
+      personal: { loyalty: 50, charisma: 85, leadership: 78, ambition: 82, integrity: 72, resilience: 70, intrigue: 55, discretion: 70 },
     },
   },
   {
@@ -903,9 +945,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 82,
     qualifiedFor: ["emir-kano"],
+    traditionalTitle: "Emir of Kano",
     competencies: {
-      professional: { economics: 78, diplomacy: 60, security: 25, media: 50, legal: 42, administration: 68, technology: 30 },
-      personal: { loyalty: 55, charisma: 70, leadership: 72, ambition: 78, integrity: 52, resilience: 68, intrigue: 72 },
+      professional: { economics: 78, diplomacy: 60, security: 25, communications: 50, legal: 42, administration: 68, technology: 30, management: 74, politics: 68 },
+      personal: { loyalty: 55, charisma: 70, leadership: 72, ambition: 78, integrity: 52, resilience: 68, intrigue: 72, discretion: 64 },
     },
   },
   {
@@ -923,9 +966,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 80,
     qualifiedFor: ["emir-kano"],
+    traditionalTitle: "Emir of Kano",
     competencies: {
-      professional: { economics: 30, diplomacy: 55, security: 20, media: 45, legal: 80, administration: 62, technology: 12 },
-      personal: { loyalty: 70, charisma: 75, leadership: 75, ambition: 42, integrity: 85, resilience: 78, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 55, security: 20, communications: 45, legal: 80, administration: 62, technology: 12, management: 65, politics: 55 },
+      personal: { loyalty: 70, charisma: 75, leadership: 75, ambition: 42, integrity: 85, resilience: 78, intrigue: 30, discretion: 78 },
     },
   },
   {
@@ -943,9 +987,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 70,
     qualifiedFor: ["emir-kano"],
+    traditionalTitle: "Emir of Kano",
     competencies: {
-      professional: { economics: 50, diplomacy: 62, security: 15, media: 68, legal: 40, administration: 58, technology: 50 },
-      personal: { loyalty: 68, charisma: 80, leadership: 65, ambition: 75, integrity: 82, resilience: 72, intrigue: 28 },
+      professional: { economics: 50, diplomacy: 62, security: 15, communications: 68, legal: 40, administration: 58, technology: 50, management: 59, politics: 57 },
+      personal: { loyalty: 68, charisma: 80, leadership: 65, ambition: 75, integrity: 82, resilience: 72, intrigue: 28, discretion: 74 },
     },
   },
 
@@ -968,9 +1013,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["emir-zazzau"],
+    traditionalTitle: "Emir of Zazzau",
     competencies: {
-      professional: { economics: 55, diplomacy: 85, security: 28, media: 58, legal: 50, administration: 68, technology: 35 },
-      personal: { loyalty: 62, charisma: 72, leadership: 70, ambition: 65, integrity: 75, resilience: 62, intrigue: 40 },
+      professional: { economics: 55, diplomacy: 85, security: 28, communications: 58, legal: 50, administration: 68, technology: 35, management: 68, politics: 76 },
+      personal: { loyalty: 62, charisma: 72, leadership: 70, ambition: 65, integrity: 75, resilience: 62, intrigue: 40, discretion: 68 },
     },
   },
   {
@@ -988,9 +1034,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 75,
     qualifiedFor: ["emir-zazzau"],
+    traditionalTitle: "Emir of Zazzau",
     competencies: {
-      professional: { economics: 35, diplomacy: 60, security: 25, media: 38, legal: 62, administration: 72, technology: 15 },
-      personal: { loyalty: 72, charisma: 62, leadership: 72, ambition: 40, integrity: 80, resilience: 75, intrigue: 35 },
+      professional: { economics: 35, diplomacy: 60, security: 25, communications: 38, legal: 62, administration: 72, technology: 15, management: 63, politics: 57 },
+      personal: { loyalty: 72, charisma: 62, leadership: 72, ambition: 40, integrity: 80, resilience: 75, intrigue: 35, discretion: 69 },
     },
   },
   {
@@ -1008,9 +1055,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["emir-zazzau"],
+    traditionalTitle: "Emir of Zazzau",
     competencies: {
-      professional: { economics: 45, diplomacy: 68, security: 18, media: 62, legal: 55, administration: 70, technology: 32 },
-      personal: { loyalty: 65, charisma: 65, leadership: 68, ambition: 52, integrity: 85, resilience: 60, intrigue: 28 },
+      professional: { economics: 45, diplomacy: 68, security: 18, communications: 62, legal: 55, administration: 70, technology: 32, management: 63, politics: 63 },
+      personal: { loyalty: 65, charisma: 65, leadership: 68, ambition: 52, integrity: 85, resilience: 60, intrigue: 28, discretion: 67 },
     },
   },
   {
@@ -1028,9 +1076,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["emir-zazzau"],
+    traditionalTitle: "Emir of Zazzau",
     competencies: {
-      professional: { economics: 72, diplomacy: 50, security: 15, media: 65, legal: 35, administration: 55, technology: 82 },
-      personal: { loyalty: 58, charisma: 75, leadership: 65, ambition: 80, integrity: 70, resilience: 58, intrigue: 42 },
+      professional: { economics: 72, diplomacy: 50, security: 15, communications: 65, legal: 35, administration: 55, technology: 82, management: 66, politics: 59 },
+      personal: { loyalty: 58, charisma: 75, leadership: 65, ambition: 80, integrity: 70, resilience: 58, intrigue: 42, discretion: 70 },
     },
   },
   {
@@ -1048,9 +1097,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 72,
     qualifiedFor: ["emir-zazzau"],
+    traditionalTitle: "Emir of Zazzau",
     competencies: {
-      professional: { economics: 30, diplomacy: 52, security: 80, media: 38, legal: 45, administration: 68, technology: 20 },
-      personal: { loyalty: 75, charisma: 58, leadership: 78, ambition: 55, integrity: 72, resilience: 82, intrigue: 45 },
+      professional: { economics: 30, diplomacy: 52, security: 80, communications: 38, legal: 45, administration: 68, technology: 20, management: 72, politics: 59 },
+      personal: { loyalty: 75, charisma: 58, leadership: 78, ambition: 55, integrity: 72, resilience: 82, intrigue: 45, discretion: 76 },
     },
   },
 
@@ -1073,9 +1123,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 78,
     qualifiedFor: ["emir-katsina"],
+    traditionalTitle: "Emir of Katsina",
     competencies: {
-      professional: { economics: 32, diplomacy: 62, security: 22, media: 55, legal: 75, administration: 65, technology: 15 },
-      personal: { loyalty: 72, charisma: 75, leadership: 72, ambition: 42, integrity: 85, resilience: 70, intrigue: 30 },
+      professional: { economics: 32, diplomacy: 62, security: 22, communications: 55, legal: 75, administration: 65, technology: 15, management: 64, politics: 59 },
+      personal: { loyalty: 72, charisma: 75, leadership: 72, ambition: 42, integrity: 85, resilience: 70, intrigue: 30, discretion: 73 },
     },
   },
   {
@@ -1093,9 +1144,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["emir-katsina"],
+    traditionalTitle: "Emir of Katsina",
     competencies: {
-      professional: { economics: 55, diplomacy: 58, security: 18, media: 62, legal: 40, administration: 68, technology: 38 },
-      personal: { loyalty: 68, charisma: 72, leadership: 68, ambition: 65, integrity: 78, resilience: 65, intrigue: 32 },
+      professional: { economics: 55, diplomacy: 58, security: 18, communications: 62, legal: 40, administration: 68, technology: 38, management: 63, politics: 58 },
+      personal: { loyalty: 68, charisma: 72, leadership: 68, ambition: 65, integrity: 78, resilience: 65, intrigue: 32, discretion: 67 },
     },
   },
   {
@@ -1113,9 +1165,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 80,
     qualifiedFor: ["emir-katsina"],
+    traditionalTitle: "Emir of Katsina",
     competencies: {
-      professional: { economics: 75, diplomacy: 65, security: 22, media: 48, legal: 50, administration: 72, technology: 28 },
-      personal: { loyalty: 55, charisma: 68, leadership: 72, ambition: 72, integrity: 58, resilience: 65, intrigue: 62 },
+      professional: { economics: 75, diplomacy: 65, security: 22, communications: 48, legal: 50, administration: 72, technology: 28, management: 75, politics: 72 },
+      personal: { loyalty: 55, charisma: 68, leadership: 72, ambition: 72, integrity: 58, resilience: 65, intrigue: 62, discretion: 65 },
     },
   },
   {
@@ -1133,9 +1186,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 70,
     qualifiedFor: ["emir-katsina"],
+    traditionalTitle: "Emir of Katsina",
     competencies: {
-      professional: { economics: 25, diplomacy: 50, security: 18, media: 28, legal: 65, administration: 55, technology: 8 },
-      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 30, integrity: 88, resilience: 75, intrigue: 22 },
+      professional: { economics: 25, diplomacy: 50, security: 18, communications: 28, legal: 65, administration: 55, technology: 8, management: 60, politics: 51 },
+      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 30, integrity: 88, resilience: 75, intrigue: 22, discretion: 80 },
     },
   },
   {
@@ -1153,9 +1207,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["emir-katsina"],
+    traditionalTitle: "Emir of Katsina",
     competencies: {
-      professional: { economics: 45, diplomacy: 58, security: 12, media: 65, legal: 38, administration: 62, technology: 42 },
-      personal: { loyalty: 70, charisma: 78, leadership: 62, ambition: 70, integrity: 80, resilience: 72, intrigue: 25 },
+      professional: { economics: 45, diplomacy: 58, security: 12, communications: 65, legal: 38, administration: 62, technology: 42, management: 70, politics: 68 },
+      personal: { loyalty: 70, charisma: 78, leadership: 62, ambition: 70, integrity: 80, resilience: 72, intrigue: 25, discretion: 84 },
     },
   },
 
@@ -1178,9 +1233,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 80,
     qualifiedFor: ["emir-adamawa"],
+    traditionalTitle: "Lamido of Adamawa",
     competencies: {
-      professional: { economics: 35, diplomacy: 68, security: 30, media: 40, legal: 60, administration: 72, technology: 15 },
-      personal: { loyalty: 75, charisma: 70, leadership: 78, ambition: 42, integrity: 80, resilience: 75, intrigue: 35 },
+      professional: { economics: 35, diplomacy: 68, security: 30, communications: 40, legal: 60, administration: 72, technology: 15, management: 70, politics: 65 },
+      personal: { loyalty: 75, charisma: 70, leadership: 78, ambition: 42, integrity: 80, resilience: 75, intrigue: 35, discretion: 73 },
     },
   },
   {
@@ -1198,9 +1254,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["emir-adamawa"],
+    traditionalTitle: "Lamido of Adamawa",
     competencies: {
-      professional: { economics: 72, diplomacy: 58, security: 28, media: 45, legal: 40, administration: 65, technology: 22 },
-      personal: { loyalty: 55, charisma: 68, leadership: 72, ambition: 78, integrity: 50, resilience: 70, intrigue: 68 },
+      professional: { economics: 72, diplomacy: 58, security: 28, communications: 45, legal: 40, administration: 65, technology: 22, management: 75, politics: 68 },
+      personal: { loyalty: 55, charisma: 68, leadership: 72, ambition: 78, integrity: 50, resilience: 70, intrigue: 68, discretion: 66 },
     },
   },
   {
@@ -1218,9 +1275,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 68,
     qualifiedFor: ["emir-adamawa"],
+    traditionalTitle: "Lamido of Adamawa",
     competencies: {
-      professional: { economics: 48, diplomacy: 75, security: 35, media: 60, legal: 55, administration: 58, technology: 40 },
-      personal: { loyalty: 65, charisma: 68, leadership: 65, ambition: 58, integrity: 82, resilience: 62, intrigue: 28 },
+      professional: { economics: 48, diplomacy: 75, security: 35, communications: 60, legal: 55, administration: 58, technology: 40, management: 58, politics: 63 },
+      personal: { loyalty: 65, charisma: 68, leadership: 65, ambition: 58, integrity: 82, resilience: 62, intrigue: 28, discretion: 68 },
     },
   },
   {
@@ -1238,9 +1296,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 72,
     qualifiedFor: ["emir-adamawa"],
+    traditionalTitle: "Lamido of Adamawa",
     competencies: {
-      professional: { economics: 28, diplomacy: 48, security: 22, media: 30, legal: 58, administration: 60, technology: 8 },
-      personal: { loyalty: 70, charisma: 58, leadership: 70, ambition: 35, integrity: 78, resilience: 80, intrigue: 40 },
+      professional: { economics: 28, diplomacy: 48, security: 22, communications: 30, legal: 58, administration: 60, technology: 8, management: 74, politics: 63 },
+      personal: { loyalty: 70, charisma: 58, leadership: 70, ambition: 35, integrity: 78, resilience: 80, intrigue: 40, discretion: 88 },
     },
   },
   {
@@ -1258,9 +1317,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["emir-adamawa"],
+    traditionalTitle: "Lamido of Adamawa",
     competencies: {
-      professional: { economics: 68, diplomacy: 60, security: 12, media: 62, legal: 35, administration: 58, technology: 45 },
-      personal: { loyalty: 65, charisma: 75, leadership: 62, ambition: 68, integrity: 78, resilience: 70, intrigue: 25 },
+      professional: { economics: 68, diplomacy: 60, security: 12, communications: 62, legal: 35, administration: 58, technology: 45, management: 57, politics: 56 },
+      personal: { loyalty: 65, charisma: 75, leadership: 62, ambition: 68, integrity: 78, resilience: 70, intrigue: 25, discretion: 71 },
     },
   },
 
@@ -1283,9 +1343,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["emir-bauchi"],
+    traditionalTitle: "Emir of Bauchi",
     competencies: {
-      professional: { economics: 38, diplomacy: 75, security: 32, media: 45, legal: 70, administration: 68, technology: 18 },
-      personal: { loyalty: 72, charisma: 72, leadership: 75, ambition: 48, integrity: 80, resilience: 72, intrigue: 35 },
+      professional: { economics: 38, diplomacy: 75, security: 32, communications: 45, legal: 70, administration: 68, technology: 18, management: 80, politics: 80 },
+      personal: { loyalty: 72, charisma: 72, leadership: 75, ambition: 48, integrity: 80, resilience: 72, intrigue: 35, discretion: 84 },
     },
   },
   {
@@ -1303,9 +1364,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 75,
     qualifiedFor: ["emir-bauchi"],
+    traditionalTitle: "Emir of Bauchi",
     competencies: {
-      professional: { economics: 78, diplomacy: 55, security: 22, media: 50, legal: 40, administration: 62, technology: 42 },
-      personal: { loyalty: 55, charisma: 68, leadership: 68, ambition: 78, integrity: 55, resilience: 65, intrigue: 62 },
+      professional: { economics: 78, diplomacy: 55, security: 22, communications: 50, legal: 40, administration: 62, technology: 42, management: 64, politics: 58 },
+      personal: { loyalty: 55, charisma: 68, leadership: 68, ambition: 78, integrity: 55, resilience: 65, intrigue: 62, discretion: 59 },
     },
   },
   {
@@ -1323,9 +1385,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 70,
     qualifiedFor: ["emir-bauchi"],
+    traditionalTitle: "Emir of Bauchi",
     competencies: {
-      professional: { economics: 30, diplomacy: 55, security: 20, media: 32, legal: 60, administration: 70, technology: 12 },
-      personal: { loyalty: 72, charisma: 58, leadership: 68, ambition: 35, integrity: 82, resilience: 75, intrigue: 28 },
+      professional: { economics: 30, diplomacy: 55, security: 20, communications: 32, legal: 60, administration: 70, technology: 12, management: 77, politics: 71 },
+      personal: { loyalty: 72, charisma: 58, leadership: 68, ambition: 35, integrity: 82, resilience: 75, intrigue: 28, discretion: 87 },
     },
   },
   {
@@ -1343,9 +1406,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 65,
     qualifiedFor: ["emir-bauchi"],
+    traditionalTitle: "Emir of Bauchi",
     competencies: {
-      professional: { economics: 52, diplomacy: 68, security: 28, media: 62, legal: 48, administration: 55, technology: 38 },
-      personal: { loyalty: 65, charisma: 65, leadership: 62, ambition: 55, integrity: 80, resilience: 58, intrigue: 25 },
+      professional: { economics: 52, diplomacy: 68, security: 28, communications: 62, legal: 48, administration: 55, technology: 38, management: 64, politics: 67 },
+      personal: { loyalty: 65, charisma: 65, leadership: 62, ambition: 55, integrity: 80, resilience: 58, intrigue: 25, discretion: 74 },
     },
   },
   {
@@ -1363,9 +1427,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["emir-bauchi"],
+    traditionalTitle: "Emir of Bauchi",
     competencies: {
-      professional: { economics: 48, diplomacy: 52, security: 25, media: 35, legal: 42, administration: 62, technology: 15 },
-      personal: { loyalty: 78, charisma: 60, leadership: 68, ambition: 45, integrity: 78, resilience: 80, intrigue: 22 },
+      professional: { economics: 48, diplomacy: 52, security: 25, communications: 35, legal: 42, administration: 62, technology: 15, management: 55, politics: 47 },
+      personal: { loyalty: 78, charisma: 60, leadership: 68, ambition: 45, integrity: 78, resilience: 80, intrigue: 22, discretion: 69 },
     },
   },
 
@@ -1388,9 +1453,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["mai-borno"],
+    traditionalTitle: "Mai of Dikwa",
     competencies: {
-      professional: { economics: 40, diplomacy: 68, security: 45, media: 42, legal: 52, administration: 70, technology: 15 },
-      personal: { loyalty: 78, charisma: 68, leadership: 75, ambition: 48, integrity: 78, resilience: 85, intrigue: 32 },
+      professional: { economics: 40, diplomacy: 68, security: 45, communications: 42, legal: 52, administration: 70, technology: 15, management: 70, politics: 66 },
+      personal: { loyalty: 78, charisma: 68, leadership: 75, ambition: 48, integrity: 78, resilience: 85, intrigue: 32, discretion: 79 },
     },
   },
   {
@@ -1408,9 +1474,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 68,
     qualifiedFor: ["mai-borno"],
+    traditionalTitle: "Mai of Dikwa",
     competencies: {
-      professional: { economics: 72, diplomacy: 52, security: 25, media: 48, legal: 38, administration: 62, technology: 30 },
-      personal: { loyalty: 55, charisma: 65, leadership: 65, ambition: 75, integrity: 52, resilience: 62, intrigue: 60 },
+      professional: { economics: 72, diplomacy: 52, security: 25, communications: 48, legal: 38, administration: 62, technology: 30, management: 57, politics: 50 },
+      personal: { loyalty: 55, charisma: 65, leadership: 65, ambition: 75, integrity: 52, resilience: 62, intrigue: 60, discretion: 50 },
     },
   },
   {
@@ -1428,9 +1495,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 70,
     qualifiedFor: ["mai-borno"],
+    traditionalTitle: "Mai of Dikwa",
     competencies: {
-      professional: { economics: 25, diplomacy: 60, security: 30, media: 42, legal: 68, administration: 55, technology: 10 },
-      personal: { loyalty: 75, charisma: 72, leadership: 70, ambition: 38, integrity: 88, resilience: 78, intrigue: 25 },
+      professional: { economics: 25, diplomacy: 60, security: 30, communications: 42, legal: 68, administration: 55, technology: 10, management: 53, politics: 48 },
+      personal: { loyalty: 75, charisma: 72, leadership: 70, ambition: 38, integrity: 88, resilience: 78, intrigue: 25, discretion: 73 },
     },
   },
   {
@@ -1448,9 +1516,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["mai-borno"],
+    traditionalTitle: "Mai of Dikwa",
     competencies: {
-      professional: { economics: 35, diplomacy: 48, security: 82, media: 40, legal: 38, administration: 65, technology: 28 },
-      personal: { loyalty: 72, charisma: 60, leadership: 75, ambition: 62, integrity: 72, resilience: 85, intrigue: 38 },
+      professional: { economics: 35, diplomacy: 48, security: 82, communications: 40, legal: 38, administration: 65, technology: 28, management: 61, politics: 48 },
+      personal: { loyalty: 72, charisma: 60, leadership: 75, ambition: 62, integrity: 72, resilience: 85, intrigue: 38, discretion: 70 },
     },
   },
   {
@@ -1468,9 +1537,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["mai-borno"],
+    traditionalTitle: "Mai of Dikwa",
     competencies: {
-      professional: { economics: 42, diplomacy: 58, security: 25, media: 60, legal: 32, administration: 58, technology: 35 },
-      personal: { loyalty: 75, charisma: 72, leadership: 65, ambition: 60, integrity: 85, resilience: 90, intrigue: 20 },
+      professional: { economics: 42, diplomacy: 58, security: 25, communications: 60, legal: 32, administration: 58, technology: 35, management: 56, politics: 52 },
+      personal: { loyalty: 75, charisma: 72, leadership: 65, ambition: 60, integrity: 85, resilience: 90, intrigue: 20, discretion: 82 },
     },
   },
 
@@ -1493,9 +1563,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 80,
     qualifiedFor: ["tor-tiv"],
+    traditionalTitle: "Tor Tiv",
     competencies: {
-      professional: { economics: 42, diplomacy: 78, security: 35, media: 62, legal: 55, administration: 65, technology: 25 },
-      personal: { loyalty: 72, charisma: 75, leadership: 78, ambition: 50, integrity: 80, resilience: 72, intrigue: 35 },
+      professional: { economics: 42, diplomacy: 78, security: 35, communications: 62, legal: 55, administration: 65, technology: 25, management: 78, politics: 78 },
+      personal: { loyalty: 72, charisma: 75, leadership: 78, ambition: 50, integrity: 80, resilience: 72, intrigue: 35, discretion: 82 },
     },
   },
   {
@@ -1513,9 +1584,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 75,
     qualifiedFor: ["tor-tiv"],
+    traditionalTitle: "Tor Tiv",
     competencies: {
-      professional: { economics: 38, diplomacy: 55, security: 30, media: 35, legal: 62, administration: 60, technology: 12 },
-      personal: { loyalty: 78, charisma: 62, leadership: 72, ambition: 38, integrity: 82, resilience: 78, intrigue: 28 },
+      professional: { economics: 38, diplomacy: 55, security: 30, communications: 35, legal: 62, administration: 60, technology: 12, management: 65, politics: 57 },
+      personal: { loyalty: 78, charisma: 62, leadership: 72, ambition: 38, integrity: 82, resilience: 78, intrigue: 28, discretion: 79 },
     },
   },
   {
@@ -1533,9 +1605,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 70,
     qualifiedFor: ["tor-tiv"],
+    traditionalTitle: "Tor Tiv",
     competencies: {
-      professional: { economics: 50, diplomacy: 62, security: 22, media: 58, legal: 40, administration: 62, technology: 42 },
-      personal: { loyalty: 68, charisma: 72, leadership: 68, ambition: 65, integrity: 80, resilience: 65, intrigue: 25 },
+      professional: { economics: 50, diplomacy: 62, security: 22, communications: 58, legal: 40, administration: 62, technology: 42, management: 73, politics: 70 },
+      personal: { loyalty: 68, charisma: 72, leadership: 68, ambition: 65, integrity: 80, resilience: 65, intrigue: 25, discretion: 81 },
     },
   },
   {
@@ -1553,9 +1626,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["tor-tiv"],
+    traditionalTitle: "Tor Tiv",
     competencies: {
-      professional: { economics: 75, diplomacy: 55, security: 22, media: 48, legal: 38, administration: 68, technology: 28 },
-      personal: { loyalty: 58, charisma: 65, leadership: 70, ambition: 72, integrity: 55, resilience: 68, intrigue: 58 },
+      professional: { economics: 75, diplomacy: 55, security: 22, communications: 48, legal: 38, administration: 68, technology: 28, management: 78, politics: 71 },
+      personal: { loyalty: 58, charisma: 65, leadership: 70, ambition: 72, integrity: 55, resilience: 68, intrigue: 58, discretion: 71 },
     },
   },
   {
@@ -1573,9 +1647,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["tor-tiv"],
+    traditionalTitle: "Tor Tiv",
     competencies: {
-      professional: { economics: 42, diplomacy: 62, security: 28, media: 68, legal: 82, administration: 52, technology: 38 },
-      personal: { loyalty: 65, charisma: 78, leadership: 65, ambition: 72, integrity: 85, resilience: 75, intrigue: 30 },
+      professional: { economics: 42, diplomacy: 62, security: 28, communications: 68, legal: 82, administration: 52, technology: 38, management: 68, politics: 66 },
+      personal: { loyalty: 65, charisma: 78, leadership: 65, ambition: 72, integrity: 85, resilience: 75, intrigue: 30, discretion: 89 },
     },
   },
 
@@ -1598,9 +1673,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 78,
     qualifiedFor: ["atta-igala"],
+    traditionalTitle: "Atta Igala",
     competencies: {
-      professional: { economics: 35, diplomacy: 65, security: 25, media: 45, legal: 58, administration: 68, technology: 15 },
-      personal: { loyalty: 75, charisma: 68, leadership: 75, ambition: 42, integrity: 80, resilience: 72, intrigue: 35 },
+      professional: { economics: 35, diplomacy: 65, security: 25, communications: 45, legal: 58, administration: 68, technology: 15, management: 80, politics: 75 },
+      personal: { loyalty: 75, charisma: 68, leadership: 75, ambition: 42, integrity: 80, resilience: 72, intrigue: 35, discretion: 84 },
     },
   },
   {
@@ -1618,9 +1694,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["atta-igala"],
+    traditionalTitle: "Atta Igala",
     competencies: {
-      professional: { economics: 78, diplomacy: 55, security: 18, media: 48, legal: 42, administration: 65, technology: 35 },
-      personal: { loyalty: 58, charisma: 68, leadership: 68, ambition: 75, integrity: 58, resilience: 62, intrigue: 55 },
+      professional: { economics: 78, diplomacy: 55, security: 18, communications: 48, legal: 42, administration: 65, technology: 35, management: 64, politics: 57 },
+      personal: { loyalty: 58, charisma: 68, leadership: 68, ambition: 75, integrity: 58, resilience: 62, intrigue: 55, discretion: 57 },
     },
   },
   {
@@ -1638,9 +1715,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 68,
     qualifiedFor: ["atta-igala"],
+    traditionalTitle: "Atta Igala",
     competencies: {
-      professional: { economics: 40, diplomacy: 72, security: 15, media: 65, legal: 50, administration: 52, technology: 30 },
-      personal: { loyalty: 65, charisma: 62, leadership: 65, ambition: 50, integrity: 85, resilience: 55, intrigue: 22 },
+      professional: { economics: 40, diplomacy: 72, security: 15, communications: 65, legal: 50, administration: 52, technology: 30, management: 66, politics: 69 },
+      personal: { loyalty: 65, charisma: 62, leadership: 65, ambition: 50, integrity: 85, resilience: 55, intrigue: 22, discretion: 77 },
     },
   },
   {
@@ -1658,9 +1736,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["atta-igala"],
+    traditionalTitle: "Atta Igala",
     competencies: {
-      professional: { economics: 28, diplomacy: 50, security: 20, media: 32, legal: 55, administration: 58, technology: 10 },
-      personal: { loyalty: 72, charisma: 55, leadership: 65, ambition: 32, integrity: 82, resilience: 75, intrigue: 25 },
+      professional: { economics: 28, diplomacy: 50, security: 20, communications: 32, legal: 55, administration: 58, technology: 10, management: 58, politics: 50 },
+      personal: { loyalty: 72, charisma: 55, leadership: 65, ambition: 32, integrity: 82, resilience: 75, intrigue: 25, discretion: 75 },
     },
   },
   {
@@ -1678,9 +1757,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["atta-igala"],
+    traditionalTitle: "Atta Igala",
     competencies: {
-      professional: { economics: 42, diplomacy: 58, security: 18, media: 55, legal: 78, administration: 55, technology: 32 },
-      personal: { loyalty: 68, charisma: 72, leadership: 62, ambition: 65, integrity: 85, resilience: 70, intrigue: 25 },
+      professional: { economics: 42, diplomacy: 58, security: 18, communications: 55, legal: 78, administration: 55, technology: 32, management: 57, politics: 55 },
+      personal: { loyalty: 68, charisma: 72, leadership: 62, ambition: 65, integrity: 85, resilience: 70, intrigue: 25, discretion: 76 },
     },
   },
 
@@ -1703,9 +1783,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["och-idoma"],
+    traditionalTitle: "Och'Idoma",
     competencies: {
-      professional: { economics: 38, diplomacy: 65, security: 25, media: 40, legal: 55, administration: 70, technology: 15 },
-      personal: { loyalty: 75, charisma: 65, leadership: 72, ambition: 40, integrity: 78, resilience: 72, intrigue: 30 },
+      professional: { economics: 38, diplomacy: 65, security: 25, communications: 40, legal: 55, administration: 70, technology: 15, management: 78, politics: 75 },
+      personal: { loyalty: 75, charisma: 65, leadership: 72, ambition: 40, integrity: 78, resilience: 72, intrigue: 30, discretion: 82 },
     },
   },
   {
@@ -1723,9 +1804,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 70,
     qualifiedFor: ["och-idoma"],
+    traditionalTitle: "Och'Idoma",
     competencies: {
-      professional: { economics: 72, diplomacy: 58, security: 20, media: 50, legal: 42, administration: 65, technology: 25 },
-      personal: { loyalty: 55, charisma: 68, leadership: 68, ambition: 72, integrity: 55, resilience: 62, intrigue: 58 },
+      professional: { economics: 72, diplomacy: 58, security: 20, communications: 50, legal: 42, administration: 65, technology: 25, management: 63, politics: 58 },
+      personal: { loyalty: 55, charisma: 68, leadership: 68, ambition: 72, integrity: 55, resilience: 62, intrigue: 58, discretion: 55 },
     },
   },
   {
@@ -1743,9 +1825,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 62,
     qualifiedFor: ["och-idoma"],
+    traditionalTitle: "Och'Idoma",
     competencies: {
-      professional: { economics: 45, diplomacy: 62, security: 15, media: 65, legal: 48, administration: 58, technology: 35 },
-      personal: { loyalty: 68, charisma: 70, leadership: 62, ambition: 60, integrity: 82, resilience: 65, intrigue: 22 },
+      professional: { economics: 45, diplomacy: 62, security: 15, communications: 65, legal: 48, administration: 58, technology: 35, management: 65, politics: 65 },
+      personal: { loyalty: 68, charisma: 70, leadership: 62, ambition: 60, integrity: 82, resilience: 65, intrigue: 22, discretion: 79 },
     },
   },
   {
@@ -1763,9 +1846,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 68,
     qualifiedFor: ["och-idoma"],
+    traditionalTitle: "Och'Idoma",
     competencies: {
-      professional: { economics: 32, diplomacy: 42, security: 55, media: 38, legal: 45, administration: 55, technology: 10 },
-      personal: { loyalty: 72, charisma: 60, leadership: 68, ambition: 45, integrity: 70, resilience: 82, intrigue: 48 },
+      professional: { economics: 32, diplomacy: 42, security: 55, communications: 38, legal: 45, administration: 55, technology: 10, management: 59, politics: 46 },
+      personal: { loyalty: 72, charisma: 60, leadership: 68, ambition: 45, integrity: 70, resilience: 82, intrigue: 48, discretion: 73 },
     },
   },
   {
@@ -1783,9 +1867,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 60,
     qualifiedFor: ["och-idoma"],
+    traditionalTitle: "Och'Idoma",
     competencies: {
-      professional: { economics: 65, diplomacy: 52, security: 15, media: 62, legal: 35, administration: 55, technology: 85 },
-      personal: { loyalty: 60, charisma: 72, leadership: 60, ambition: 75, integrity: 70, resilience: 55, intrigue: 35 },
+      professional: { economics: 65, diplomacy: 52, security: 15, communications: 62, legal: 35, administration: 55, technology: 85, management: 68, politics: 64 },
+      personal: { loyalty: 60, charisma: 72, leadership: 60, ambition: 75, integrity: 70, resilience: 55, intrigue: 35, discretion: 73 },
     },
   },
 
@@ -1808,9 +1893,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["gbong-gwom-jos"],
+    traditionalTitle: "Gbong Gwom Jos",
     competencies: {
-      professional: { economics: 42, diplomacy: 78, security: 35, media: 52, legal: 82, administration: 65, technology: 20 },
-      personal: { loyalty: 70, charisma: 72, leadership: 78, ambition: 48, integrity: 85, resilience: 75, intrigue: 30 },
+      professional: { economics: 42, diplomacy: 78, security: 35, communications: 52, legal: 82, administration: 65, technology: 20, management: 72, politics: 72 },
+      personal: { loyalty: 70, charisma: 72, leadership: 78, ambition: 48, integrity: 85, resilience: 75, intrigue: 30, discretion: 80 },
     },
   },
   {
@@ -1828,9 +1914,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 72,
     qualifiedFor: ["gbong-gwom-jos"],
+    traditionalTitle: "Gbong Gwom Jos",
     competencies: {
-      professional: { economics: 35, diplomacy: 48, security: 40, media: 38, legal: 60, administration: 58, technology: 12 },
-      personal: { loyalty: 78, charisma: 58, leadership: 72, ambition: 42, integrity: 80, resilience: 82, intrigue: 38 },
+      professional: { economics: 35, diplomacy: 48, security: 40, communications: 38, legal: 60, administration: 58, technology: 12, management: 73, politics: 61 },
+      personal: { loyalty: 78, charisma: 58, leadership: 72, ambition: 42, integrity: 80, resilience: 82, intrigue: 38, discretion: 89 },
     },
   },
   {
@@ -1848,9 +1935,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 68,
     qualifiedFor: ["gbong-gwom-jos"],
+    traditionalTitle: "Gbong Gwom Jos",
     competencies: {
-      professional: { economics: 45, diplomacy: 82, security: 32, media: 65, legal: 50, administration: 52, technology: 38 },
-      personal: { loyalty: 62, charisma: 70, leadership: 65, ambition: 55, integrity: 82, resilience: 62, intrigue: 22 },
+      professional: { economics: 45, diplomacy: 82, security: 32, communications: 65, legal: 50, administration: 52, technology: 38, management: 55, politics: 63 },
+      personal: { loyalty: 62, charisma: 70, leadership: 65, ambition: 55, integrity: 82, resilience: 62, intrigue: 22, discretion: 68 },
     },
   },
   {
@@ -1868,9 +1956,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["gbong-gwom-jos"],
+    traditionalTitle: "Gbong Gwom Jos",
     competencies: {
-      professional: { economics: 35, diplomacy: 52, security: 80, media: 40, legal: 55, administration: 68, technology: 18 },
-      personal: { loyalty: 72, charisma: 58, leadership: 78, ambition: 50, integrity: 75, resilience: 85, intrigue: 42 },
+      professional: { economics: 35, diplomacy: 52, security: 80, communications: 40, legal: 55, administration: 68, technology: 18, management: 72, politics: 59 },
+      personal: { loyalty: 72, charisma: 58, leadership: 78, ambition: 50, integrity: 75, resilience: 85, intrigue: 42, discretion: 79 },
     },
   },
   {
@@ -1888,9 +1977,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["gbong-gwom-jos"],
+    traditionalTitle: "Gbong Gwom Jos",
     competencies: {
-      professional: { economics: 50, diplomacy: 68, security: 22, media: 62, legal: 42, administration: 55, technology: 38 },
-      personal: { loyalty: 70, charisma: 78, leadership: 62, ambition: 65, integrity: 82, resilience: 72, intrigue: 22 },
+      professional: { economics: 50, diplomacy: 68, security: 22, communications: 62, legal: 42, administration: 55, technology: 38, management: 53, politics: 56 },
+      personal: { loyalty: 70, charisma: 78, leadership: 62, ambition: 65, integrity: 82, resilience: 72, intrigue: 22, discretion: 71 },
     },
   },
 
@@ -1913,9 +2003,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 85,
     qualifiedFor: ["alaafin-oyo"],
+    traditionalTitle: "Alaafin of Oyo",
     competencies: {
-      professional: { economics: 30, diplomacy: 62, security: 28, media: 45, legal: 55, administration: 65, technology: 12 },
-      personal: { loyalty: 75, charisma: 78, leadership: 80, ambition: 45, integrity: 82, resilience: 75, intrigue: 35 },
+      professional: { economics: 30, diplomacy: 62, security: 28, communications: 45, legal: 55, administration: 65, technology: 12, management: 73, politics: 64 },
+      personal: { loyalty: 75, charisma: 78, leadership: 80, ambition: 45, integrity: 82, resilience: 75, intrigue: 35, discretion: 79 },
     },
   },
   {
@@ -1933,9 +2024,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 80,
     qualifiedFor: ["alaafin-oyo"],
+    traditionalTitle: "Alaafin of Oyo",
     competencies: {
-      professional: { economics: 85, diplomacy: 58, security: 18, media: 62, legal: 42, administration: 65, technology: 45 },
-      personal: { loyalty: 55, charisma: 75, leadership: 70, ambition: 82, integrity: 55, resilience: 62, intrigue: 62 },
+      professional: { economics: 85, diplomacy: 58, security: 18, communications: 62, legal: 42, administration: 65, technology: 45, management: 69, politics: 63 },
+      personal: { loyalty: 55, charisma: 75, leadership: 70, ambition: 82, integrity: 55, resilience: 62, intrigue: 62, discretion: 60 },
     },
   },
   {
@@ -1953,9 +2045,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 75,
     qualifiedFor: ["alaafin-oyo"],
+    traditionalTitle: "Alaafin of Oyo",
     competencies: {
-      professional: { economics: 45, diplomacy: 72, security: 12, media: 78, legal: 52, administration: 48, technology: 30 },
-      personal: { loyalty: 60, charisma: 72, leadership: 62, ambition: 50, integrity: 88, resilience: 55, intrigue: 20 },
+      professional: { economics: 45, diplomacy: 72, security: 12, communications: 78, legal: 52, administration: 48, technology: 30, management: 53, politics: 58 },
+      personal: { loyalty: 60, charisma: 72, leadership: 62, ambition: 50, integrity: 88, resilience: 55, intrigue: 20, discretion: 70 },
     },
   },
   {
@@ -1973,9 +2066,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 75,
     qualifiedFor: ["alaafin-oyo"],
+    traditionalTitle: "Alaafin of Oyo",
     competencies: {
-      professional: { economics: 48, diplomacy: 72, security: 20, media: 42, legal: 55, administration: 78, technology: 18 },
-      personal: { loyalty: 72, charisma: 62, leadership: 72, ambition: 42, integrity: 78, resilience: 68, intrigue: 35 },
+      professional: { economics: 48, diplomacy: 72, security: 20, communications: 42, legal: 55, administration: 78, technology: 18, management: 75, politics: 75 },
+      personal: { loyalty: 72, charisma: 62, leadership: 72, ambition: 42, integrity: 78, resilience: 68, intrigue: 35, discretion: 73 },
     },
   },
   {
@@ -1993,9 +2087,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 68,
     qualifiedFor: ["alaafin-oyo"],
+    traditionalTitle: "Alaafin of Oyo",
     competencies: {
-      professional: { economics: 42, diplomacy: 60, security: 15, media: 65, legal: 85, administration: 52, technology: 30 },
-      personal: { loyalty: 65, charisma: 78, leadership: 65, ambition: 72, integrity: 82, resilience: 70, intrigue: 28 },
+      professional: { economics: 42, diplomacy: 60, security: 15, communications: 65, legal: 85, administration: 52, technology: 30, management: 53, politics: 50 },
+      personal: { loyalty: 65, charisma: 78, leadership: 65, ambition: 72, integrity: 82, resilience: 70, intrigue: 28, discretion: 70 },
     },
   },
 
@@ -2018,9 +2113,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["awujale-ijebu"],
+    traditionalTitle: "Awujale of Ijebuland",
     competencies: {
-      professional: { economics: 78, diplomacy: 58, security: 18, media: 55, legal: 42, administration: 68, technology: 38 },
-      personal: { loyalty: 62, charisma: 72, leadership: 70, ambition: 72, integrity: 60, resilience: 62, intrigue: 50 },
+      professional: { economics: 78, diplomacy: 58, security: 18, communications: 55, legal: 42, administration: 68, technology: 38, management: 78, politics: 72 },
+      personal: { loyalty: 62, charisma: 72, leadership: 70, ambition: 72, integrity: 60, resilience: 62, intrigue: 50, discretion: 70 },
     },
   },
   {
@@ -2038,9 +2134,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["awujale-ijebu"],
+    traditionalTitle: "Awujale of Ijebuland",
     competencies: {
-      professional: { economics: 30, diplomacy: 55, security: 18, media: 38, legal: 55, administration: 60, technology: 12 },
-      personal: { loyalty: 78, charisma: 62, leadership: 70, ambition: 35, integrity: 82, resilience: 72, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 55, security: 18, communications: 38, legal: 55, administration: 60, technology: 12, management: 75, politics: 68 },
+      personal: { loyalty: 78, charisma: 62, leadership: 70, ambition: 35, integrity: 82, resilience: 72, intrigue: 30, discretion: 87 },
     },
   },
   {
@@ -2058,9 +2155,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 65,
     qualifiedFor: ["awujale-ijebu"],
+    traditionalTitle: "Awujale of Ijebuland",
     competencies: {
-      professional: { economics: 55, diplomacy: 55, security: 12, media: 58, legal: 40, administration: 62, technology: 48 },
-      personal: { loyalty: 60, charisma: 68, leadership: 62, ambition: 68, integrity: 78, resilience: 58, intrigue: 28 },
+      professional: { economics: 55, diplomacy: 55, security: 12, communications: 58, legal: 40, administration: 62, technology: 48, management: 61, politics: 58 },
+      personal: { loyalty: 60, charisma: 68, leadership: 62, ambition: 68, integrity: 78, resilience: 58, intrigue: 28, discretion: 67 },
     },
   },
   {
@@ -2078,9 +2176,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["awujale-ijebu"],
+    traditionalTitle: "Awujale of Ijebuland",
     competencies: {
-      professional: { economics: 38, diplomacy: 65, security: 18, media: 42, legal: 82, administration: 62, technology: 15 },
-      personal: { loyalty: 70, charisma: 60, leadership: 68, ambition: 48, integrity: 80, resilience: 68, intrigue: 40 },
+      professional: { economics: 38, diplomacy: 65, security: 18, communications: 42, legal: 82, administration: 62, technology: 15, management: 58, politics: 57 },
+      personal: { loyalty: 70, charisma: 60, leadership: 68, ambition: 48, integrity: 80, resilience: 68, intrigue: 40, discretion: 67 },
     },
   },
   {
@@ -2098,9 +2197,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["awujale-ijebu"],
+    traditionalTitle: "Awujale of Ijebuland",
     competencies: {
-      professional: { economics: 75, diplomacy: 52, security: 12, media: 55, legal: 35, administration: 62, technology: 28 },
-      personal: { loyalty: 65, charisma: 75, leadership: 65, ambition: 70, integrity: 72, resilience: 68, intrigue: 35 },
+      professional: { economics: 75, diplomacy: 52, security: 12, communications: 55, legal: 35, administration: 62, technology: 28, management: 63, politics: 56 },
+      personal: { loyalty: 65, charisma: 75, leadership: 65, ambition: 70, integrity: 72, resilience: 68, intrigue: 35, discretion: 69 },
     },
   },
 
@@ -2123,9 +2223,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["ewi-ado-ekiti"],
+    traditionalTitle: "Ewi of Ado-Ekiti",
     competencies: {
-      professional: { economics: 35, diplomacy: 62, security: 20, media: 42, legal: 55, administration: 65, technology: 15 },
-      personal: { loyalty: 75, charisma: 65, leadership: 72, ambition: 40, integrity: 78, resilience: 70, intrigue: 30 },
+      professional: { economics: 35, diplomacy: 62, security: 20, communications: 42, legal: 55, administration: 65, technology: 15, management: 60, politics: 55 },
+      personal: { loyalty: 75, charisma: 65, leadership: 72, ambition: 40, integrity: 78, resilience: 70, intrigue: 30, discretion: 65 },
     },
   },
   {
@@ -2143,9 +2244,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["ewi-ado-ekiti"],
+    traditionalTitle: "Ewi of Ado-Ekiti",
     competencies: {
-      professional: { economics: 50, diplomacy: 65, security: 15, media: 68, legal: 48, administration: 62, technology: 42 },
-      personal: { loyalty: 62, charisma: 68, leadership: 65, ambition: 62, integrity: 82, resilience: 58, intrigue: 25 },
+      professional: { economics: 50, diplomacy: 65, security: 15, communications: 68, legal: 48, administration: 62, technology: 42, management: 59, politics: 59 },
+      personal: { loyalty: 62, charisma: 68, leadership: 65, ambition: 62, integrity: 82, resilience: 58, intrigue: 25, discretion: 65 },
     },
   },
   {
@@ -2163,9 +2265,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["ewi-ado-ekiti"],
+    traditionalTitle: "Ewi of Ado-Ekiti",
     competencies: {
-      professional: { economics: 68, diplomacy: 58, security: 18, media: 55, legal: 65, administration: 62, technology: 25 },
-      personal: { loyalty: 55, charisma: 72, leadership: 68, ambition: 75, integrity: 52, resilience: 65, intrigue: 60 },
+      professional: { economics: 68, diplomacy: 58, security: 18, communications: 55, legal: 65, administration: 62, technology: 25, management: 67, politics: 62 },
+      personal: { loyalty: 55, charisma: 72, leadership: 68, ambition: 75, integrity: 52, resilience: 65, intrigue: 60, discretion: 61 },
     },
   },
   {
@@ -2183,9 +2286,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 62,
     qualifiedFor: ["ewi-ado-ekiti"],
+    traditionalTitle: "Ewi of Ado-Ekiti",
     competencies: {
-      professional: { economics: 42, diplomacy: 58, security: 12, media: 65, legal: 82, administration: 48, technology: 35 },
-      personal: { loyalty: 65, charisma: 78, leadership: 62, ambition: 68, integrity: 85, resilience: 70, intrigue: 22 },
+      professional: { economics: 42, diplomacy: 58, security: 12, communications: 65, legal: 82, administration: 48, technology: 35, management: 56, politics: 54 },
+      personal: { loyalty: 65, charisma: 78, leadership: 62, ambition: 68, integrity: 85, resilience: 70, intrigue: 22, discretion: 79 },
     },
   },
   {
@@ -2203,9 +2307,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["ewi-ado-ekiti"],
+    traditionalTitle: "Ewi of Ado-Ekiti",
     competencies: {
-      professional: { economics: 28, diplomacy: 50, security: 15, media: 32, legal: 48, administration: 55, technology: 8 },
-      personal: { loyalty: 78, charisma: 55, leadership: 65, ambition: 30, integrity: 85, resilience: 72, intrigue: 20 },
+      professional: { economics: 28, diplomacy: 50, security: 15, communications: 32, legal: 48, administration: 55, technology: 8, management: 65, politics: 58 },
+      personal: { loyalty: 78, charisma: 55, leadership: 65, ambition: 30, integrity: 85, resilience: 72, intrigue: 20, discretion: 84 },
     },
   },
 
@@ -2228,9 +2333,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["igwe-nnewi"],
+    traditionalTitle: "Igwe of Nnewi",
     competencies: {
-      professional: { economics: 85, diplomacy: 55, security: 18, media: 50, legal: 38, administration: 68, technology: 62 },
-      personal: { loyalty: 60, charisma: 72, leadership: 72, ambition: 75, integrity: 62, resilience: 68, intrigue: 45 },
+      professional: { economics: 85, diplomacy: 55, security: 18, communications: 50, legal: 38, administration: 68, technology: 62, management: 72, politics: 64 },
+      personal: { loyalty: 60, charisma: 72, leadership: 72, ambition: 75, integrity: 62, resilience: 68, intrigue: 45, discretion: 67 },
     },
   },
   {
@@ -2248,9 +2354,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["igwe-nnewi"],
+    traditionalTitle: "Igwe of Nnewi",
     competencies: {
-      professional: { economics: 70, diplomacy: 62, security: 15, media: 68, legal: 42, administration: 58, technology: 40 },
-      personal: { loyalty: 52, charisma: 75, leadership: 68, ambition: 82, integrity: 55, resilience: 60, intrigue: 60 },
+      professional: { economics: 70, diplomacy: 62, security: 15, communications: 68, legal: 42, administration: 58, technology: 40, management: 61, politics: 58 },
+      personal: { loyalty: 52, charisma: 75, leadership: 68, ambition: 82, integrity: 55, resilience: 60, intrigue: 60, discretion: 56 },
     },
   },
   {
@@ -2268,9 +2375,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 80,
     qualifiedFor: ["igwe-nnewi"],
+    traditionalTitle: "Igwe of Nnewi",
     competencies: {
-      professional: { economics: 88, diplomacy: 48, security: 15, media: 52, legal: 35, administration: 65, technology: 35 },
-      personal: { loyalty: 55, charisma: 70, leadership: 75, ambition: 80, integrity: 50, resilience: 78, intrigue: 55 },
+      professional: { economics: 88, diplomacy: 48, security: 15, communications: 52, legal: 35, administration: 65, technology: 35, management: 67, politics: 54 },
+      personal: { loyalty: 55, charisma: 70, leadership: 75, ambition: 80, integrity: 50, resilience: 78, intrigue: 55, discretion: 61 },
     },
   },
   {
@@ -2288,9 +2396,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 62,
     qualifiedFor: ["igwe-nnewi"],
+    traditionalTitle: "Igwe of Nnewi",
     competencies: {
-      professional: { economics: 38, diplomacy: 68, security: 10, media: 72, legal: 48, administration: 45, technology: 30 },
-      personal: { loyalty: 62, charisma: 65, leadership: 58, ambition: 48, integrity: 88, resilience: 52, intrigue: 18 },
+      professional: { economics: 38, diplomacy: 68, security: 10, communications: 72, legal: 48, administration: 45, technology: 30, management: 52, politics: 57 },
+      personal: { loyalty: 62, charisma: 65, leadership: 58, ambition: 48, integrity: 88, resilience: 52, intrigue: 18, discretion: 70 },
     },
   },
   {
@@ -2308,9 +2417,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["igwe-nnewi"],
+    traditionalTitle: "Igwe of Nnewi",
     competencies: {
-      professional: { economics: 78, diplomacy: 52, security: 10, media: 65, legal: 32, administration: 55, technology: 85 },
-      personal: { loyalty: 58, charisma: 78, leadership: 62, ambition: 78, integrity: 72, resilience: 65, intrigue: 30 },
+      professional: { economics: 78, diplomacy: 52, security: 10, communications: 65, legal: 32, administration: 55, technology: 85, management: 53, politics: 48 },
+      personal: { loyalty: 58, charisma: 78, leadership: 62, ambition: 78, integrity: 72, resilience: 65, intrigue: 30, discretion: 63 },
     },
   },
 
@@ -2333,9 +2443,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["eze-aro"],
+    traditionalTitle: "Eze Aro of Arochukwu",
     competencies: {
-      professional: { economics: 32, diplomacy: 60, security: 22, media: 42, legal: 55, administration: 62, technology: 12 },
-      personal: { loyalty: 78, charisma: 65, leadership: 72, ambition: 38, integrity: 82, resilience: 70, intrigue: 30 },
+      professional: { economics: 32, diplomacy: 60, security: 22, communications: 42, legal: 55, administration: 62, technology: 12, management: 59, politics: 53 },
+      personal: { loyalty: 78, charisma: 65, leadership: 72, ambition: 38, integrity: 82, resilience: 70, intrigue: 30, discretion: 68 },
     },
   },
   {
@@ -2353,9 +2464,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["eze-aro"],
+    traditionalTitle: "Eze Aro of Arochukwu",
     competencies: {
-      professional: { economics: 80, diplomacy: 52, security: 15, media: 48, legal: 35, administration: 58, technology: 42 },
-      personal: { loyalty: 52, charisma: 68, leadership: 65, ambition: 78, integrity: 52, resilience: 62, intrigue: 60 },
+      professional: { economics: 80, diplomacy: 52, security: 15, communications: 48, legal: 35, administration: 58, technology: 42, management: 72, politics: 65 },
+      personal: { loyalty: 52, charisma: 68, leadership: 65, ambition: 78, integrity: 52, resilience: 62, intrigue: 60, discretion: 67 },
     },
   },
   {
@@ -2373,9 +2485,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 60,
     qualifiedFor: ["eze-aro"],
+    traditionalTitle: "Eze Aro of Arochukwu",
     competencies: {
-      professional: { economics: 42, diplomacy: 68, security: 12, media: 72, legal: 45, administration: 48, technology: 32 },
-      personal: { loyalty: 65, charisma: 68, leadership: 58, ambition: 55, integrity: 85, resilience: 55, intrigue: 20 },
+      professional: { economics: 42, diplomacy: 68, security: 12, communications: 72, legal: 45, administration: 48, technology: 32, management: 44, politics: 49 },
+      personal: { loyalty: 65, charisma: 68, leadership: 58, ambition: 55, integrity: 85, resilience: 55, intrigue: 20, discretion: 61 },
     },
   },
   {
@@ -2393,9 +2506,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["eze-aro"],
+    traditionalTitle: "Eze Aro of Arochukwu",
     competencies: {
-      professional: { economics: 48, diplomacy: 72, security: 18, media: 45, legal: 50, administration: 72, technology: 20 },
-      personal: { loyalty: 70, charisma: 62, leadership: 68, ambition: 48, integrity: 75, resilience: 65, intrigue: 32 },
+      professional: { economics: 48, diplomacy: 72, security: 18, communications: 45, legal: 50, administration: 72, technology: 20, management: 76, politics: 78 },
+      personal: { loyalty: 70, charisma: 62, leadership: 68, ambition: 48, integrity: 75, resilience: 65, intrigue: 32, discretion: 76 },
     },
   },
   {
@@ -2413,9 +2527,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["eze-aro"],
+    traditionalTitle: "Eze Aro of Arochukwu",
     competencies: {
-      professional: { economics: 40, diplomacy: 42, security: 18, media: 25, legal: 50, administration: 55, technology: 8 },
-      personal: { loyalty: 72, charisma: 55, leadership: 68, ambition: 30, integrity: 78, resilience: 78, intrigue: 35 },
+      professional: { economics: 40, diplomacy: 42, security: 18, communications: 25, legal: 50, administration: 55, technology: 8, management: 66, politics: 53 },
+      personal: { loyalty: 72, charisma: 55, leadership: 68, ambition: 30, integrity: 78, resilience: 78, intrigue: 35, discretion: 82 },
     },
   },
 
@@ -2438,9 +2553,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["igwe-enugu"],
+    traditionalTitle: "Igwe of Enugu",
     competencies: {
-      professional: { economics: 42, diplomacy: 72, security: 22, media: 48, legal: 58, administration: 75, technology: 20 },
-      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 50, integrity: 75, resilience: 68, intrigue: 35 },
+      professional: { economics: 42, diplomacy: 72, security: 22, communications: 48, legal: 58, administration: 75, technology: 20, management: 84, politics: 84 },
+      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 50, integrity: 75, resilience: 68, intrigue: 35, discretion: 82 },
     },
   },
   {
@@ -2458,9 +2574,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 70,
     qualifiedFor: ["igwe-enugu"],
+    traditionalTitle: "Igwe of Enugu",
     competencies: {
-      professional: { economics: 78, diplomacy: 48, security: 15, media: 58, legal: 35, administration: 60, technology: 55 },
-      personal: { loyalty: 55, charisma: 72, leadership: 68, ambition: 80, integrity: 55, resilience: 62, intrigue: 55 },
+      professional: { economics: 78, diplomacy: 48, security: 15, communications: 58, legal: 35, administration: 60, technology: 55, management: 64, politics: 54 },
+      personal: { loyalty: 55, charisma: 72, leadership: 68, ambition: 80, integrity: 55, resilience: 62, intrigue: 55, discretion: 59 },
     },
   },
   {
@@ -2478,9 +2595,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 68,
     qualifiedFor: ["igwe-enugu"],
+    traditionalTitle: "Igwe of Enugu",
     competencies: {
-      professional: { economics: 38, diplomacy: 62, security: 12, media: 55, legal: 88, administration: 52, technology: 22 },
-      personal: { loyalty: 68, charisma: 60, leadership: 65, ambition: 42, integrity: 88, resilience: 58, intrigue: 22 },
+      professional: { economics: 38, diplomacy: 62, security: 12, communications: 55, legal: 88, administration: 52, technology: 22, management: 60, politics: 58 },
+      personal: { loyalty: 68, charisma: 60, leadership: 65, ambition: 42, integrity: 88, resilience: 58, intrigue: 22, discretion: 74 },
     },
   },
   {
@@ -2498,9 +2616,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["igwe-enugu"],
+    traditionalTitle: "Igwe of Enugu",
     competencies: {
-      professional: { economics: 62, diplomacy: 58, security: 12, media: 62, legal: 38, administration: 55, technology: 42 },
-      personal: { loyalty: 68, charisma: 75, leadership: 62, ambition: 68, integrity: 80, resilience: 68, intrigue: 22 },
+      professional: { economics: 62, diplomacy: 58, security: 12, communications: 62, legal: 38, administration: 55, technology: 42, management: 68, politics: 66 },
+      personal: { loyalty: 68, charisma: 75, leadership: 62, ambition: 68, integrity: 80, resilience: 68, intrigue: 22, discretion: 83 },
     },
   },
   {
@@ -2518,9 +2637,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 68,
     qualifiedFor: ["igwe-enugu"],
+    traditionalTitle: "Igwe of Enugu",
     competencies: {
-      professional: { economics: 30, diplomacy: 48, security: 82, media: 35, legal: 42, administration: 68, technology: 18 },
-      personal: { loyalty: 72, charisma: 55, leadership: 78, ambition: 52, integrity: 72, resilience: 85, intrigue: 42 },
+      professional: { economics: 30, diplomacy: 48, security: 82, communications: 35, legal: 42, administration: 68, technology: 18, management: 67, politics: 52 },
+      personal: { loyalty: 72, charisma: 55, leadership: 78, ambition: 52, integrity: 72, resilience: 85, intrigue: 42, discretion: 73 },
     },
   },
 
@@ -2543,9 +2663,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 78,
     qualifiedFor: ["pere-gbaramatu"],
+    traditionalTitle: "Pere of Gbaramatu",
     competencies: {
-      professional: { economics: 65, diplomacy: 58, security: 48, media: 45, legal: 42, administration: 62, technology: 22 },
-      personal: { loyalty: 60, charisma: 68, leadership: 72, ambition: 68, integrity: 55, resilience: 78, intrigue: 62 },
+      professional: { economics: 65, diplomacy: 58, security: 48, communications: 45, legal: 42, administration: 62, technology: 22, management: 71, politics: 64 },
+      personal: { loyalty: 60, charisma: 68, leadership: 72, ambition: 68, integrity: 55, resilience: 78, intrigue: 62, discretion: 71 },
     },
   },
   {
@@ -2563,9 +2684,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 82,
     qualifiedFor: ["pere-gbaramatu"],
+    traditionalTitle: "Pere of Gbaramatu",
     competencies: {
-      professional: { economics: 55, diplomacy: 40, security: 85, media: 50, legal: 30, administration: 55, technology: 18 },
-      personal: { loyalty: 65, charisma: 72, leadership: 78, ambition: 72, integrity: 45, resilience: 90, intrigue: 70 },
+      professional: { economics: 55, diplomacy: 40, security: 85, communications: 50, legal: 30, administration: 55, technology: 18, management: 57, politics: 38 },
+      personal: { loyalty: 65, charisma: 72, leadership: 78, ambition: 72, integrity: 45, resilience: 90, intrigue: 70, discretion: 58 },
     },
   },
   {
@@ -2583,9 +2705,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["pere-gbaramatu"],
+    traditionalTitle: "Pere of Gbaramatu",
     competencies: {
-      professional: { economics: 75, diplomacy: 55, security: 25, media: 58, legal: 35, administration: 58, technology: 40 },
-      personal: { loyalty: 58, charisma: 75, leadership: 65, ambition: 75, integrity: 62, resilience: 65, intrigue: 45 },
+      professional: { economics: 75, diplomacy: 55, security: 25, communications: 58, legal: 35, administration: 58, technology: 40, management: 61, politics: 56 },
+      personal: { loyalty: 58, charisma: 75, leadership: 65, ambition: 75, integrity: 62, resilience: 65, intrigue: 45, discretion: 63 },
     },
   },
   {
@@ -2603,9 +2726,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["pere-gbaramatu"],
+    traditionalTitle: "Pere of Gbaramatu",
     competencies: {
-      professional: { economics: 42, diplomacy: 68, security: 55, media: 42, legal: 48, administration: 62, technology: 22 },
-      personal: { loyalty: 70, charisma: 65, leadership: 72, ambition: 48, integrity: 72, resilience: 75, intrigue: 35 },
+      professional: { economics: 42, diplomacy: 68, security: 55, communications: 42, legal: 48, administration: 62, technology: 22, management: 63, politics: 61 },
+      personal: { loyalty: 70, charisma: 65, leadership: 72, ambition: 48, integrity: 72, resilience: 75, intrigue: 35, discretion: 70 },
     },
   },
   {
@@ -2623,9 +2747,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 62,
     qualifiedFor: ["pere-gbaramatu"],
+    traditionalTitle: "Pere of Gbaramatu",
     competencies: {
-      professional: { economics: 52, diplomacy: 55, security: 22, media: 68, legal: 48, administration: 48, technology: 72 },
-      personal: { loyalty: 65, charisma: 70, leadership: 58, ambition: 65, integrity: 82, resilience: 68, intrigue: 22 },
+      professional: { economics: 52, diplomacy: 55, security: 22, communications: 68, legal: 48, administration: 48, technology: 72, management: 61, politics: 60 },
+      personal: { loyalty: 65, charisma: 70, leadership: 58, ambition: 65, integrity: 82, resilience: 68, intrigue: 22, discretion: 83 },
     },
   },
 
@@ -2648,9 +2773,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 80,
     qualifiedFor: ["amanyanabo-bonny"],
+    traditionalTitle: "Amanyanabo of Bonny",
     competencies: {
-      professional: { economics: 78, diplomacy: 65, security: 22, media: 52, legal: 58, administration: 68, technology: 42 },
-      personal: { loyalty: 62, charisma: 70, leadership: 72, ambition: 65, integrity: 65, resilience: 65, intrigue: 45 },
+      professional: { economics: 78, diplomacy: 65, security: 22, communications: 52, legal: 58, administration: 68, technology: 42, management: 71, politics: 68 },
+      personal: { loyalty: 62, charisma: 70, leadership: 72, ambition: 65, integrity: 65, resilience: 65, intrigue: 45, discretion: 66 },
     },
   },
   {
@@ -2668,9 +2794,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["amanyanabo-bonny"],
+    traditionalTitle: "Amanyanabo of Bonny",
     competencies: {
-      professional: { economics: 35, diplomacy: 62, security: 18, media: 45, legal: 55, administration: 62, technology: 15 },
-      personal: { loyalty: 78, charisma: 65, leadership: 70, ambition: 38, integrity: 80, resilience: 72, intrigue: 28 },
+      professional: { economics: 35, diplomacy: 62, security: 18, communications: 45, legal: 55, administration: 62, technology: 15, management: 62, politics: 58 },
+      personal: { loyalty: 78, charisma: 65, leadership: 70, ambition: 38, integrity: 80, resilience: 72, intrigue: 28, discretion: 72 },
     },
   },
   {
@@ -2688,9 +2815,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["amanyanabo-bonny"],
+    traditionalTitle: "Amanyanabo of Bonny",
     competencies: {
-      professional: { economics: 68, diplomacy: 48, security: 15, media: 52, legal: 32, administration: 58, technology: 78 },
-      personal: { loyalty: 60, charisma: 68, leadership: 62, ambition: 72, integrity: 72, resilience: 58, intrigue: 30 },
+      professional: { economics: 68, diplomacy: 48, security: 15, communications: 52, legal: 32, administration: 58, technology: 78, management: 69, politics: 62 },
+      personal: { loyalty: 60, charisma: 68, leadership: 62, ambition: 72, integrity: 72, resilience: 58, intrigue: 30, discretion: 74 },
     },
   },
   {
@@ -2708,9 +2836,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 70,
     qualifiedFor: ["amanyanabo-bonny"],
+    traditionalTitle: "Amanyanabo of Bonny",
     competencies: {
-      professional: { economics: 55, diplomacy: 62, security: 25, media: 48, legal: 42, administration: 70, technology: 20 },
-      personal: { loyalty: 65, charisma: 65, leadership: 68, ambition: 62, integrity: 58, resilience: 68, intrigue: 52 },
+      professional: { economics: 55, diplomacy: 62, security: 25, communications: 48, legal: 42, administration: 70, technology: 20, management: 66, politics: 63 },
+      personal: { loyalty: 65, charisma: 65, leadership: 68, ambition: 62, integrity: 58, resilience: 68, intrigue: 52, discretion: 60 },
     },
   },
   {
@@ -2728,9 +2857,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 62,
     qualifiedFor: ["amanyanabo-bonny"],
+    traditionalTitle: "Amanyanabo of Bonny",
     competencies: {
-      professional: { economics: 48, diplomacy: 55, security: 12, media: 65, legal: 42, administration: 48, technology: 68 },
-      personal: { loyalty: 68, charisma: 72, leadership: 58, ambition: 62, integrity: 85, resilience: 65, intrigue: 20 },
+      professional: { economics: 48, diplomacy: 55, security: 12, communications: 65, legal: 42, administration: 48, technology: 68, management: 50, politics: 49 },
+      personal: { loyalty: 68, charisma: 72, leadership: 58, ambition: 62, integrity: 85, resilience: 65, intrigue: 20, discretion: 72 },
     },
   },
 
@@ -2753,9 +2883,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 75,
     qualifiedFor: ["amanyanabo-opobo"],
+    traditionalTitle: "Amanyanabo of Opobo",
     competencies: {
-      professional: { economics: 38, diplomacy: 68, security: 20, media: 55, legal: 52, administration: 62, technology: 15 },
-      personal: { loyalty: 75, charisma: 72, leadership: 72, ambition: 42, integrity: 80, resilience: 70, intrigue: 30 },
+      professional: { economics: 38, diplomacy: 68, security: 20, communications: 55, legal: 52, administration: 62, technology: 15, management: 59, politics: 57 },
+      personal: { loyalty: 75, charisma: 72, leadership: 72, ambition: 42, integrity: 80, resilience: 70, intrigue: 30, discretion: 67 },
     },
   },
   {
@@ -2773,9 +2904,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["amanyanabo-opobo"],
+    traditionalTitle: "Amanyanabo of Opobo",
     competencies: {
-      professional: { economics: 78, diplomacy: 52, security: 15, media: 48, legal: 35, administration: 62, technology: 45 },
-      personal: { loyalty: 58, charisma: 68, leadership: 65, ambition: 72, integrity: 62, resilience: 65, intrigue: 40 },
+      professional: { economics: 78, diplomacy: 52, security: 15, communications: 48, legal: 35, administration: 62, technology: 45, management: 69, politics: 62 },
+      personal: { loyalty: 58, charisma: 68, leadership: 65, ambition: 72, integrity: 62, resilience: 65, intrigue: 40, discretion: 69 },
     },
   },
   {
@@ -2793,9 +2925,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 65,
     qualifiedFor: ["amanyanabo-opobo"],
+    traditionalTitle: "Amanyanabo of Opobo",
     competencies: {
-      professional: { economics: 30, diplomacy: 52, security: 18, media: 35, legal: 62, administration: 55, technology: 10 },
-      personal: { loyalty: 75, charisma: 58, leadership: 68, ambition: 35, integrity: 82, resilience: 78, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 52, security: 18, communications: 35, legal: 62, administration: 55, technology: 10, management: 54, politics: 46 },
+      personal: { loyalty: 75, charisma: 58, leadership: 68, ambition: 35, integrity: 82, resilience: 78, intrigue: 30, discretion: 72 },
     },
   },
   {
@@ -2813,9 +2946,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["amanyanabo-opobo"],
+    traditionalTitle: "Amanyanabo of Opobo",
     competencies: {
-      professional: { economics: 48, diplomacy: 55, security: 12, media: 58, legal: 38, administration: 52, technology: 62 },
-      personal: { loyalty: 62, charisma: 72, leadership: 60, ambition: 68, integrity: 78, resilience: 62, intrigue: 22 },
+      professional: { economics: 48, diplomacy: 55, security: 12, communications: 58, legal: 38, administration: 52, technology: 62, management: 59, politics: 57 },
+      personal: { loyalty: 62, charisma: 72, leadership: 60, ambition: 68, integrity: 78, resilience: 62, intrigue: 22, discretion: 73 },
     },
   },
   {
@@ -2833,9 +2967,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["amanyanabo-opobo"],
+    traditionalTitle: "Amanyanabo of Opobo",
     competencies: {
-      professional: { economics: 72, diplomacy: 50, security: 10, media: 42, legal: 32, administration: 58, technology: 15 },
-      personal: { loyalty: 70, charisma: 72, leadership: 65, ambition: 62, integrity: 72, resilience: 75, intrigue: 35 },
+      professional: { economics: 72, diplomacy: 50, security: 10, communications: 42, legal: 32, administration: 58, technology: 15, management: 57, politics: 49 },
+      personal: { loyalty: 70, charisma: 72, leadership: 65, ambition: 62, integrity: 72, resilience: 75, intrigue: 35, discretion: 69 },
     },
   },
 
@@ -2858,9 +2993,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["dein-agbor"],
+    traditionalTitle: "Dein of Agbor",
     competencies: {
-      professional: { economics: 78, diplomacy: 62, security: 15, media: 65, legal: 42, administration: 60, technology: 52 },
-      personal: { loyalty: 60, charisma: 80, leadership: 68, ambition: 72, integrity: 68, resilience: 58, intrigue: 35 },
+      professional: { economics: 78, diplomacy: 62, security: 15, communications: 65, legal: 42, administration: 60, technology: 52, management: 69, politics: 66 },
+      personal: { loyalty: 60, charisma: 80, leadership: 68, ambition: 72, integrity: 68, resilience: 58, intrigue: 35, discretion: 68 },
     },
   },
   {
@@ -2878,9 +3014,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 65,
     qualifiedFor: ["dein-agbor"],
+    traditionalTitle: "Dein of Agbor",
     competencies: {
-      professional: { economics: 30, diplomacy: 60, security: 18, media: 38, legal: 55, administration: 62, technology: 12 },
-      personal: { loyalty: 78, charisma: 62, leadership: 70, ambition: 35, integrity: 82, resilience: 70, intrigue: 25 },
+      professional: { economics: 30, diplomacy: 60, security: 18, communications: 38, legal: 55, administration: 62, technology: 12, management: 59, politics: 54 },
+      personal: { loyalty: 78, charisma: 62, leadership: 70, ambition: 35, integrity: 82, resilience: 70, intrigue: 25, discretion: 69 },
     },
   },
   {
@@ -2898,9 +3035,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["dein-agbor"],
+    traditionalTitle: "Dein of Agbor",
     competencies: {
-      professional: { economics: 72, diplomacy: 52, security: 15, media: 48, legal: 38, administration: 65, technology: 28 },
-      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 75, integrity: 52, resilience: 62, intrigue: 55 },
+      professional: { economics: 72, diplomacy: 52, security: 15, communications: 48, legal: 38, administration: 65, technology: 28, management: 63, politics: 57 },
+      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 75, integrity: 52, resilience: 62, intrigue: 55, discretion: 55 },
     },
   },
   {
@@ -2918,9 +3056,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 55,
     qualifiedFor: ["dein-agbor"],
+    traditionalTitle: "Dein of Agbor",
     competencies: {
-      professional: { economics: 28, diplomacy: 45, security: 18, media: 25, legal: 48, administration: 52, technology: 5 },
-      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 80, resilience: 78, intrigue: 28 },
+      professional: { economics: 28, diplomacy: 45, security: 18, communications: 25, legal: 48, administration: 52, technology: 5, management: 63, politics: 55 },
+      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 80, resilience: 78, intrigue: 28, discretion: 85 },
     },
   },
   {
@@ -2938,9 +3077,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 50,
     qualifiedFor: ["dein-agbor"],
+    traditionalTitle: "Dein of Agbor",
     competencies: {
-      professional: { economics: 40, diplomacy: 55, security: 10, media: 58, legal: 78, administration: 50, technology: 30 },
-      personal: { loyalty: 65, charisma: 72, leadership: 58, ambition: 62, integrity: 82, resilience: 68, intrigue: 20 },
+      professional: { economics: 40, diplomacy: 55, security: 10, communications: 58, legal: 78, administration: 50, technology: 30, management: 59, politics: 58 },
+      personal: { loyalty: 65, charisma: 72, leadership: 58, ambition: 62, integrity: 82, resilience: 68, intrigue: 20, discretion: 80 },
     },
   },
 
@@ -2963,9 +3103,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 68,
     qualifiedFor: ["emir-gwandu"],
+    traditionalTitle: "Emir of Gwandu",
     competencies: {
-      professional: { economics: 30, diplomacy: 62, security: 22, media: 38, legal: 70, administration: 62, technology: 12 },
-      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 40, integrity: 80, resilience: 72, intrigue: 28 },
+      professional: { economics: 30, diplomacy: 62, security: 22, communications: 38, legal: 70, administration: 62, technology: 12, management: 64, politics: 60 },
+      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 40, integrity: 80, resilience: 72, intrigue: 28, discretion: 74 },
     },
   },
   {
@@ -2983,9 +3124,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 65,
     qualifiedFor: ["emir-gwandu"],
+    traditionalTitle: "Emir of Gwandu",
     competencies: {
-      professional: { economics: 78, diplomacy: 48, security: 15, media: 50, legal: 35, administration: 60, technology: 38 },
-      personal: { loyalty: 58, charisma: 68, leadership: 65, ambition: 72, integrity: 62, resilience: 62, intrigue: 42 },
+      professional: { economics: 78, diplomacy: 48, security: 15, communications: 50, legal: 35, administration: 60, technology: 38, management: 70, politics: 61 },
+      personal: { loyalty: 58, charisma: 68, leadership: 65, ambition: 72, integrity: 62, resilience: 62, intrigue: 42, discretion: 69 },
     },
   },
   {
@@ -3003,9 +3145,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 70,
     qualifiedFor: ["emir-gwandu"],
+    traditionalTitle: "Emir of Gwandu",
     competencies: {
-      professional: { economics: 50, diplomacy: 72, security: 18, media: 65, legal: 58, administration: 68, technology: 30 },
-      personal: { loyalty: 65, charisma: 68, leadership: 72, ambition: 45, integrity: 90, resilience: 62, intrigue: 20 },
+      professional: { economics: 50, diplomacy: 72, security: 18, communications: 65, legal: 58, administration: 68, technology: 30, management: 61, politics: 61 },
+      personal: { loyalty: 65, charisma: 68, leadership: 72, ambition: 45, integrity: 90, resilience: 62, intrigue: 20, discretion: 67 },
     },
   },
   {
@@ -3023,9 +3166,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 62,
     qualifiedFor: ["emir-gwandu"],
+    traditionalTitle: "Emir of Gwandu",
     competencies: {
-      professional: { economics: 22, diplomacy: 48, security: 15, media: 25, legal: 65, administration: 55, technology: 8 },
-      personal: { loyalty: 75, charisma: 58, leadership: 65, ambition: 28, integrity: 85, resilience: 78, intrigue: 22 },
+      professional: { economics: 22, diplomacy: 48, security: 15, communications: 25, legal: 65, administration: 55, technology: 8, management: 58, politics: 50 },
+      personal: { loyalty: 75, charisma: 58, leadership: 65, ambition: 28, integrity: 85, resilience: 78, intrigue: 22, discretion: 80 },
     },
   },
   {
@@ -3043,9 +3187,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 55,
     qualifiedFor: ["emir-gwandu"],
+    traditionalTitle: "Emir of Gwandu",
     competencies: {
-      professional: { economics: 65, diplomacy: 52, security: 10, media: 58, legal: 30, administration: 55, technology: 45 },
-      personal: { loyalty: 68, charisma: 72, leadership: 58, ambition: 65, integrity: 78, resilience: 68, intrigue: 22 },
+      professional: { economics: 65, diplomacy: 52, security: 10, communications: 58, legal: 30, administration: 55, technology: 45, management: 57, politics: 54 },
+      personal: { loyalty: 68, charisma: 72, leadership: 58, ambition: 65, integrity: 78, resilience: 68, intrigue: 22, discretion: 73 },
     },
   },
 
@@ -3068,9 +3213,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 60,
     qualifiedFor: ["emir-kazaure"],
+    traditionalTitle: "Emir of Kazaure",
     competencies: {
-      professional: { economics: 28, diplomacy: 58, security: 18, media: 35, legal: 62, administration: 58, technology: 10 },
-      personal: { loyalty: 75, charisma: 60, leadership: 65, ambition: 35, integrity: 82, resilience: 70, intrigue: 25 },
+      professional: { economics: 28, diplomacy: 58, security: 18, communications: 35, legal: 62, administration: 58, technology: 10, management: 61, politics: 57 },
+      personal: { loyalty: 75, charisma: 60, leadership: 65, ambition: 35, integrity: 82, resilience: 70, intrigue: 25, discretion: 75 },
     },
   },
   {
@@ -3088,9 +3234,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["emir-kazaure"],
+    traditionalTitle: "Emir of Kazaure",
     competencies: {
-      professional: { economics: 72, diplomacy: 45, security: 12, media: 62, legal: 32, administration: 55, technology: 52 },
-      personal: { loyalty: 55, charisma: 72, leadership: 60, ambition: 75, integrity: 62, resilience: 55, intrigue: 40 },
+      professional: { economics: 72, diplomacy: 45, security: 12, communications: 62, legal: 32, administration: 55, technology: 52, management: 56, politics: 48 },
+      personal: { loyalty: 55, charisma: 72, leadership: 60, ambition: 75, integrity: 62, resilience: 55, intrigue: 40, discretion: 57 },
     },
   },
   {
@@ -3108,9 +3255,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["emir-kazaure"],
+    traditionalTitle: "Emir of Kazaure",
     competencies: {
-      professional: { economics: 48, diplomacy: 58, security: 18, media: 42, legal: 40, administration: 68, technology: 18 },
-      personal: { loyalty: 55, charisma: 62, leadership: 65, ambition: 65, integrity: 52, resilience: 62, intrigue: 55 },
+      professional: { economics: 48, diplomacy: 58, security: 18, communications: 42, legal: 40, administration: 68, technology: 18, management: 62, politics: 58 },
+      personal: { loyalty: 55, charisma: 62, leadership: 65, ambition: 65, integrity: 52, resilience: 62, intrigue: 55, discretion: 52 },
     },
   },
   {
@@ -3128,9 +3276,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 55,
     qualifiedFor: ["emir-kazaure"],
+    traditionalTitle: "Emir of Kazaure",
     competencies: {
-      professional: { economics: 32, diplomacy: 42, security: 15, media: 22, legal: 52, administration: 55, technology: 5 },
-      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 80, resilience: 78, intrigue: 22 },
+      professional: { economics: 32, diplomacy: 42, security: 15, communications: 22, legal: 52, administration: 55, technology: 5, management: 68, politics: 58 },
+      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 80, resilience: 78, intrigue: 22, discretion: 88 },
     },
   },
   {
@@ -3148,9 +3297,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["emir-kazaure"],
+    traditionalTitle: "Emir of Kazaure",
     competencies: {
-      professional: { economics: 35, diplomacy: 62, security: 12, media: 55, legal: 58, administration: 50, technology: 22 },
-      personal: { loyalty: 68, charisma: 60, leadership: 58, ambition: 45, integrity: 82, resilience: 55, intrigue: 18 },
+      professional: { economics: 35, diplomacy: 62, security: 12, communications: 55, legal: 58, administration: 50, technology: 22, management: 60, politics: 62 },
+      personal: { loyalty: 68, charisma: 60, leadership: 58, ambition: 45, integrity: 82, resilience: 55, intrigue: 18, discretion: 75 },
     },
   },
 
@@ -3173,9 +3323,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 65,
     qualifiedFor: ["emir-zamfara"],
+    traditionalTitle: "Emir of Anka",
     competencies: {
-      professional: { economics: 32, diplomacy: 72, security: 48, media: 42, legal: 55, administration: 62, technology: 12 },
-      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 45, integrity: 75, resilience: 82, intrigue: 38 },
+      professional: { economics: 32, diplomacy: 72, security: 48, communications: 42, legal: 55, administration: 62, technology: 12, management: 64, politics: 64 },
+      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 45, integrity: 75, resilience: 82, intrigue: 38, discretion: 76 },
     },
   },
   {
@@ -3193,9 +3344,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 60,
     qualifiedFor: ["emir-zamfara"],
+    traditionalTitle: "Emir of Anka",
     competencies: {
-      professional: { economics: 42, diplomacy: 68, security: 42, media: 58, legal: 40, administration: 55, technology: 35 },
-      personal: { loyalty: 65, charisma: 72, leadership: 62, ambition: 58, integrity: 78, resilience: 70, intrigue: 25 },
+      professional: { economics: 42, diplomacy: 68, security: 42, communications: 58, legal: 40, administration: 55, technology: 35, management: 57, politics: 60 },
+      personal: { loyalty: 65, charisma: 72, leadership: 62, ambition: 58, integrity: 78, resilience: 70, intrigue: 25, discretion: 72 },
     },
   },
   {
@@ -3213,9 +3365,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 62,
     qualifiedFor: ["emir-zamfara"],
+    traditionalTitle: "Emir of Anka",
     competencies: {
-      professional: { economics: 35, diplomacy: 38, security: 65, media: 28, legal: 42, administration: 55, technology: 8 },
-      personal: { loyalty: 72, charisma: 58, leadership: 70, ambition: 42, integrity: 65, resilience: 85, intrigue: 48 },
+      professional: { economics: 35, diplomacy: 38, security: 65, communications: 28, legal: 42, administration: 55, technology: 8, management: 64, politics: 48 },
+      personal: { loyalty: 72, charisma: 58, leadership: 70, ambition: 42, integrity: 65, resilience: 85, intrigue: 48, discretion: 76 },
     },
   },
   {
@@ -3233,9 +3386,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["emir-zamfara"],
+    traditionalTitle: "Emir of Anka",
     competencies: {
-      professional: { economics: 68, diplomacy: 55, security: 28, media: 42, legal: 38, administration: 62, technology: 22 },
-      personal: { loyalty: 55, charisma: 62, leadership: 62, ambition: 68, integrity: 52, resilience: 65, intrigue: 55 },
+      professional: { economics: 68, diplomacy: 55, security: 28, communications: 42, legal: 38, administration: 62, technology: 22, management: 61, politics: 58 },
+      personal: { loyalty: 55, charisma: 62, leadership: 62, ambition: 68, integrity: 52, resilience: 65, intrigue: 55, discretion: 58 },
     },
   },
   {
@@ -3253,9 +3407,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["emir-zamfara"],
+    traditionalTitle: "Emir of Anka",
     competencies: {
-      professional: { economics: 25, diplomacy: 55, security: 15, media: 58, legal: 62, administration: 52, technology: 10 },
-      personal: { loyalty: 72, charisma: 68, leadership: 62, ambition: 35, integrity: 85, resilience: 68, intrigue: 20 },
+      professional: { economics: 25, diplomacy: 55, security: 15, communications: 58, legal: 62, administration: 52, technology: 10, management: 48, politics: 45 },
+      personal: { loyalty: 72, charisma: 68, leadership: 62, ambition: 35, integrity: 85, resilience: 68, intrigue: 20, discretion: 68 },
     },
   },
 
@@ -3278,9 +3433,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["emir-gombe"],
+    traditionalTitle: "Emir of Gombe",
     competencies: {
-      professional: { economics: 42, diplomacy: 72, security: 25, media: 42, legal: 52, administration: 72, technology: 18 },
-      personal: { loyalty: 70, charisma: 65, leadership: 72, ambition: 45, integrity: 75, resilience: 68, intrigue: 32 },
+      professional: { economics: 42, diplomacy: 72, security: 25, communications: 42, legal: 52, administration: 72, technology: 18, management: 77, politics: 77 },
+      personal: { loyalty: 70, charisma: 65, leadership: 72, ambition: 45, integrity: 75, resilience: 68, intrigue: 32, discretion: 77 },
     },
   },
   {
@@ -3298,9 +3454,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["emir-gombe"],
+    traditionalTitle: "Emir of Gombe",
     competencies: {
-      professional: { economics: 75, diplomacy: 48, security: 15, media: 58, legal: 32, administration: 55, technology: 68 },
-      personal: { loyalty: 55, charisma: 70, leadership: 62, ambition: 75, integrity: 60, resilience: 58, intrigue: 42 },
+      professional: { economics: 75, diplomacy: 48, security: 15, communications: 58, legal: 32, administration: 55, technology: 68, management: 63, politics: 56 },
+      personal: { loyalty: 55, charisma: 70, leadership: 62, ambition: 75, integrity: 60, resilience: 58, intrigue: 42, discretion: 63 },
     },
   },
   {
@@ -3318,9 +3475,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["emir-gombe"],
+    traditionalTitle: "Emir of Gombe",
     competencies: {
-      professional: { economics: 22, diplomacy: 52, security: 15, media: 30, legal: 62, administration: 55, technology: 8 },
-      personal: { loyalty: 75, charisma: 60, leadership: 65, ambition: 30, integrity: 85, resilience: 72, intrigue: 22 },
+      professional: { economics: 22, diplomacy: 52, security: 15, communications: 30, legal: 62, administration: 55, technology: 8, management: 62, politics: 56 },
+      personal: { loyalty: 75, charisma: 60, leadership: 65, ambition: 30, integrity: 85, resilience: 72, intrigue: 22, discretion: 81 },
     },
   },
   {
@@ -3338,9 +3496,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["emir-gombe"],
+    traditionalTitle: "Emir of Gombe",
     competencies: {
-      professional: { economics: 40, diplomacy: 55, security: 10, media: 58, legal: 32, administration: 50, technology: 42 },
-      personal: { loyalty: 70, charisma: 72, leadership: 58, ambition: 60, integrity: 82, resilience: 68, intrigue: 18 },
+      professional: { economics: 40, diplomacy: 55, security: 10, communications: 58, legal: 32, administration: 50, technology: 42, management: 64, politics: 63 },
+      personal: { loyalty: 70, charisma: 72, leadership: 58, ambition: 60, integrity: 82, resilience: 68, intrigue: 18, discretion: 85 },
     },
   },
   {
@@ -3358,9 +3517,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 65,
     qualifiedFor: ["emir-gombe"],
+    traditionalTitle: "Emir of Gombe",
     competencies: {
-      professional: { economics: 48, diplomacy: 65, security: 22, media: 48, legal: 45, administration: 68, technology: 18 },
-      personal: { loyalty: 50, charisma: 65, leadership: 68, ambition: 72, integrity: 50, resilience: 62, intrigue: 62 },
+      professional: { economics: 48, diplomacy: 65, security: 22, communications: 48, legal: 45, administration: 68, technology: 18, management: 63, politics: 62 },
+      personal: { loyalty: 50, charisma: 65, leadership: 68, ambition: 72, integrity: 50, resilience: 62, intrigue: 62, discretion: 51 },
     },
   },
 
@@ -3383,9 +3543,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 65,
     qualifiedFor: ["emir-muri"],
+    traditionalTitle: "Emir of Muri",
     competencies: {
-      professional: { economics: 35, diplomacy: 72, security: 32, media: 40, legal: 52, administration: 65, technology: 15 },
-      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 42, integrity: 78, resilience: 72, intrigue: 30 },
+      professional: { economics: 35, diplomacy: 72, security: 32, communications: 40, legal: 52, administration: 65, technology: 15, management: 59, politics: 60 },
+      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 42, integrity: 78, resilience: 72, intrigue: 30, discretion: 66 },
     },
   },
   {
@@ -3403,9 +3564,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 60,
     qualifiedFor: ["emir-muri"],
+    traditionalTitle: "Emir of Muri",
     competencies: {
-      professional: { economics: 70, diplomacy: 50, security: 22, media: 38, legal: 35, administration: 58, technology: 18 },
-      personal: { loyalty: 55, charisma: 62, leadership: 62, ambition: 70, integrity: 52, resilience: 65, intrigue: 55 },
+      professional: { economics: 70, diplomacy: 50, security: 22, communications: 38, legal: 35, administration: 58, technology: 18, management: 59, politics: 53 },
+      personal: { loyalty: 55, charisma: 62, leadership: 62, ambition: 70, integrity: 52, resilience: 65, intrigue: 55, discretion: 58 },
     },
   },
   {
@@ -3423,9 +3585,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 58,
     qualifiedFor: ["emir-muri"],
+    traditionalTitle: "Emir of Muri",
     competencies: {
-      professional: { economics: 25, diplomacy: 48, security: 22, media: 28, legal: 55, administration: 55, technology: 8 },
-      personal: { loyalty: 78, charisma: 55, leadership: 65, ambition: 30, integrity: 80, resilience: 78, intrigue: 28 },
+      professional: { economics: 25, diplomacy: 48, security: 22, communications: 28, legal: 55, administration: 55, technology: 8, management: 69, politics: 61 },
+      personal: { loyalty: 78, charisma: 55, leadership: 65, ambition: 30, integrity: 80, resilience: 78, intrigue: 28, discretion: 88 },
     },
   },
   {
@@ -3443,9 +3606,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 52,
     qualifiedFor: ["emir-muri"],
+    traditionalTitle: "Emir of Muri",
     competencies: {
-      professional: { economics: 38, diplomacy: 68, security: 18, media: 62, legal: 48, administration: 50, technology: 32 },
-      personal: { loyalty: 65, charisma: 65, leadership: 58, ambition: 52, integrity: 82, resilience: 55, intrigue: 18 },
+      professional: { economics: 38, diplomacy: 68, security: 18, communications: 62, legal: 48, administration: 50, technology: 32, management: 59, politics: 64 },
+      personal: { loyalty: 65, charisma: 65, leadership: 58, ambition: 52, integrity: 82, resilience: 55, intrigue: 18, discretion: 74 },
     },
   },
   {
@@ -3463,9 +3627,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 60,
     qualifiedFor: ["emir-muri"],
+    traditionalTitle: "Emir of Muri",
     competencies: {
-      professional: { economics: 28, diplomacy: 68, security: 18, media: 45, legal: 60, administration: 55, technology: 10 },
-      personal: { loyalty: 72, charisma: 68, leadership: 65, ambition: 38, integrity: 82, resilience: 68, intrigue: 22 },
+      professional: { economics: 28, diplomacy: 68, security: 18, communications: 45, legal: 60, administration: 55, technology: 10, management: 52, politics: 54 },
+      personal: { loyalty: 72, charisma: 68, leadership: 65, ambition: 38, integrity: 82, resilience: 68, intrigue: 22, discretion: 67 },
     },
   },
 
@@ -3488,9 +3653,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 60,
     qualifiedFor: ["mai-fika"],
+    traditionalTitle: "Mai of Fika",
     competencies: {
-      professional: { economics: 32, diplomacy: 58, security: 18, media: 52, legal: 55, administration: 60, technology: 15 },
-      personal: { loyalty: 72, charisma: 62, leadership: 65, ambition: 38, integrity: 82, resilience: 65, intrigue: 22 },
+      professional: { economics: 32, diplomacy: 58, security: 18, communications: 52, legal: 55, administration: 60, technology: 15, management: 62, politics: 58 },
+      personal: { loyalty: 72, charisma: 62, leadership: 65, ambition: 38, integrity: 82, resilience: 65, intrigue: 22, discretion: 73 },
     },
   },
   {
@@ -3508,9 +3674,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 55,
     qualifiedFor: ["mai-fika"],
+    traditionalTitle: "Mai of Fika",
     competencies: {
-      professional: { economics: 72, diplomacy: 45, security: 15, media: 38, legal: 30, administration: 55, technology: 22 },
-      personal: { loyalty: 60, charisma: 62, leadership: 58, ambition: 68, integrity: 62, resilience: 60, intrigue: 40 },
+      professional: { economics: 72, diplomacy: 45, security: 15, communications: 38, legal: 30, administration: 55, technology: 22, management: 66, politics: 59 },
+      personal: { loyalty: 60, charisma: 62, leadership: 58, ambition: 68, integrity: 62, resilience: 60, intrigue: 40, discretion: 70 },
     },
   },
   {
@@ -3528,9 +3695,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["mai-fika"],
+    traditionalTitle: "Mai of Fika",
     competencies: {
-      professional: { economics: 48, diplomacy: 60, security: 18, media: 42, legal: 40, administration: 68, technology: 15 },
-      personal: { loyalty: 52, charisma: 60, leadership: 62, ambition: 65, integrity: 52, resilience: 58, intrigue: 55 },
+      professional: { economics: 48, diplomacy: 60, security: 18, communications: 42, legal: 40, administration: 68, technology: 15, management: 64, politics: 63 },
+      personal: { loyalty: 52, charisma: 60, leadership: 62, ambition: 65, integrity: 52, resilience: 58, intrigue: 55, discretion: 54 },
     },
   },
   {
@@ -3548,9 +3716,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 52,
     qualifiedFor: ["mai-fika"],
+    traditionalTitle: "Mai of Fika",
     competencies: {
-      professional: { economics: 20, diplomacy: 48, security: 12, media: 28, legal: 58, administration: 50, technology: 5 },
-      personal: { loyalty: 78, charisma: 55, leadership: 60, ambition: 25, integrity: 85, resilience: 72, intrigue: 18 },
+      professional: { economics: 20, diplomacy: 48, security: 12, communications: 28, legal: 58, administration: 50, technology: 5, management: 50, politics: 44 },
+      personal: { loyalty: 78, charisma: 55, leadership: 60, ambition: 25, integrity: 85, resilience: 72, intrigue: 18, discretion: 74 },
     },
   },
   {
@@ -3568,9 +3737,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 48,
     qualifiedFor: ["mai-fika"],
+    traditionalTitle: "Mai of Fika",
     competencies: {
-      professional: { economics: 38, diplomacy: 55, security: 12, media: 60, legal: 75, administration: 48, technology: 32 },
-      personal: { loyalty: 65, charisma: 70, leadership: 55, ambition: 62, integrity: 85, resilience: 68, intrigue: 20 },
+      professional: { economics: 38, diplomacy: 55, security: 12, communications: 60, legal: 75, administration: 48, technology: 32, management: 49, politics: 49 },
+      personal: { loyalty: 65, charisma: 70, leadership: 55, ambition: 62, integrity: 85, resilience: 68, intrigue: 20, discretion: 74 },
     },
   },
 
@@ -3593,9 +3763,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["emir-potiskum"],
+    traditionalTitle: "Emir of Potiskum",
     competencies: {
-      professional: { economics: 75, diplomacy: 58, security: 18, media: 42, legal: 35, administration: 62, technology: 20 },
-      personal: { loyalty: 62, charisma: 65, leadership: 65, ambition: 62, integrity: 62, resilience: 65, intrigue: 42 },
+      professional: { economics: 75, diplomacy: 58, security: 18, communications: 42, legal: 35, administration: 62, technology: 20, management: 65, politics: 61 },
+      personal: { loyalty: 62, charisma: 65, leadership: 65, ambition: 62, integrity: 62, resilience: 65, intrigue: 42, discretion: 65 },
     },
   },
   {
@@ -3613,9 +3784,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["emir-potiskum"],
+    traditionalTitle: "Emir of Potiskum",
     competencies: {
-      professional: { economics: 25, diplomacy: 55, security: 15, media: 35, legal: 62, administration: 55, technology: 8 },
-      personal: { loyalty: 75, charisma: 62, leadership: 65, ambition: 32, integrity: 82, resilience: 70, intrigue: 22 },
+      professional: { economics: 25, diplomacy: 55, security: 15, communications: 35, legal: 62, administration: 55, technology: 8, management: 64, politics: 59 },
+      personal: { loyalty: 75, charisma: 62, leadership: 65, ambition: 32, integrity: 82, resilience: 70, intrigue: 22, discretion: 80 },
     },
   },
   {
@@ -3633,9 +3805,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 50,
     qualifiedFor: ["emir-potiskum"],
+    traditionalTitle: "Emir of Potiskum",
     competencies: {
-      professional: { economics: 55, diplomacy: 48, security: 10, media: 55, legal: 32, administration: 50, technology: 45 },
-      personal: { loyalty: 60, charisma: 68, leadership: 55, ambition: 65, integrity: 75, resilience: 58, intrigue: 22 },
+      professional: { economics: 55, diplomacy: 48, security: 10, communications: 55, legal: 32, administration: 50, technology: 45, management: 46, politics: 42 },
+      personal: { loyalty: 60, charisma: 68, leadership: 55, ambition: 65, integrity: 75, resilience: 58, intrigue: 22, discretion: 60 },
     },
   },
   {
@@ -3653,9 +3826,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["emir-potiskum"],
+    traditionalTitle: "Emir of Potiskum",
     competencies: {
-      professional: { economics: 38, diplomacy: 52, security: 22, media: 35, legal: 48, administration: 62, technology: 12 },
-      personal: { loyalty: 58, charisma: 55, leadership: 62, ambition: 58, integrity: 55, resilience: 68, intrigue: 52 },
+      professional: { economics: 38, diplomacy: 52, security: 22, communications: 35, legal: 48, administration: 62, technology: 12, management: 53, politics: 48 },
+      personal: { loyalty: 58, charisma: 55, leadership: 62, ambition: 58, integrity: 55, resilience: 68, intrigue: 52, discretion: 53 },
     },
   },
   {
@@ -3673,9 +3847,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 50,
     qualifiedFor: ["emir-potiskum"],
+    traditionalTitle: "Emir of Potiskum",
     competencies: {
-      professional: { economics: 52, diplomacy: 62, security: 35, media: 38, legal: 42, administration: 58, technology: 15 },
-      personal: { loyalty: 68, charisma: 58, leadership: 60, ambition: 42, integrity: 72, resilience: 65, intrigue: 35 },
+      professional: { economics: 52, diplomacy: 62, security: 35, communications: 38, legal: 42, administration: 58, technology: 15, management: 62, politics: 63 },
+      personal: { loyalty: 68, charisma: 58, leadership: 60, ambition: 42, integrity: 72, resilience: 65, intrigue: 35, discretion: 72 },
     },
   },
 
@@ -3698,9 +3873,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 65,
     qualifiedFor: ["ohinoyi-ebira"],
+    traditionalTitle: "Ohinoyi of Ebiraland",
     competencies: {
-      professional: { economics: 45, diplomacy: 72, security: 22, media: 42, legal: 52, administration: 72, technology: 18 },
-      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 48, integrity: 75, resilience: 68, intrigue: 32 },
+      professional: { economics: 45, diplomacy: 72, security: 22, communications: 42, legal: 52, administration: 72, technology: 18, management: 69, politics: 69 },
+      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 48, integrity: 75, resilience: 68, intrigue: 32, discretion: 69 },
     },
   },
   {
@@ -3718,9 +3894,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 62,
     qualifiedFor: ["ohinoyi-ebira"],
+    traditionalTitle: "Ohinoyi of Ebiraland",
     competencies: {
-      professional: { economics: 78, diplomacy: 50, security: 18, media: 52, legal: 35, administration: 60, technology: 32 },
-      personal: { loyalty: 52, charisma: 68, leadership: 65, ambition: 78, integrity: 48, resilience: 62, intrigue: 60 },
+      professional: { economics: 78, diplomacy: 50, security: 18, communications: 52, legal: 35, administration: 60, technology: 32, management: 71, politics: 63 },
+      personal: { loyalty: 52, charisma: 68, leadership: 65, ambition: 78, integrity: 48, resilience: 62, intrigue: 60, discretion: 63 },
     },
   },
   {
@@ -3738,9 +3915,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["ohinoyi-ebira"],
+    traditionalTitle: "Ohinoyi of Ebiraland",
     competencies: {
-      professional: { economics: 38, diplomacy: 65, security: 12, media: 62, legal: 48, administration: 52, technology: 28 },
-      personal: { loyalty: 65, charisma: 62, leadership: 60, ambition: 48, integrity: 82, resilience: 55, intrigue: 20 },
+      professional: { economics: 38, diplomacy: 65, security: 12, communications: 62, legal: 48, administration: 52, technology: 28, management: 64, politics: 67 },
+      personal: { loyalty: 65, charisma: 62, leadership: 60, ambition: 48, integrity: 82, resilience: 55, intrigue: 20, discretion: 77 },
     },
   },
   {
@@ -3758,9 +3936,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 58,
     qualifiedFor: ["ohinoyi-ebira"],
+    traditionalTitle: "Ohinoyi of Ebiraland",
     competencies: {
-      professional: { economics: 30, diplomacy: 45, security: 22, media: 28, legal: 52, administration: 55, technology: 8 },
-      personal: { loyalty: 75, charisma: 55, leadership: 65, ambition: 32, integrity: 78, resilience: 78, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 45, security: 22, communications: 28, legal: 52, administration: 55, technology: 8, management: 50, politics: 40 },
+      personal: { loyalty: 75, charisma: 55, leadership: 65, ambition: 32, integrity: 78, resilience: 78, intrigue: 30, discretion: 68 },
     },
   },
   {
@@ -3778,9 +3957,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 52,
     qualifiedFor: ["ohinoyi-ebira"],
+    traditionalTitle: "Ohinoyi of Ebiraland",
     competencies: {
-      professional: { economics: 38, diplomacy: 55, security: 12, media: 58, legal: 78, administration: 50, technology: 30 },
-      personal: { loyalty: 68, charisma: 72, leadership: 58, ambition: 62, integrity: 85, resilience: 68, intrigue: 20 },
+      professional: { economics: 38, diplomacy: 55, security: 12, communications: 58, legal: 78, administration: 50, technology: 30, management: 52, politics: 51 },
+      personal: { loyalty: 68, charisma: 72, leadership: 58, ambition: 62, integrity: 85, resilience: 68, intrigue: 20, discretion: 75 },
     },
   },
 
@@ -3803,9 +3983,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 62,
     qualifiedFor: ["emir-lafia"],
+    traditionalTitle: "Emir of Lafia",
     competencies: {
-      professional: { economics: 35, diplomacy: 68, security: 28, media: 38, legal: 52, administration: 65, technology: 12 },
-      personal: { loyalty: 72, charisma: 62, leadership: 68, ambition: 40, integrity: 75, resilience: 70, intrigue: 30 },
+      professional: { economics: 35, diplomacy: 68, security: 28, communications: 38, legal: 52, administration: 65, technology: 12, management: 67, politics: 67 },
+      personal: { loyalty: 72, charisma: 62, leadership: 68, ambition: 40, integrity: 75, resilience: 70, intrigue: 30, discretion: 73 },
     },
   },
   {
@@ -3823,9 +4004,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["emir-lafia"],
+    traditionalTitle: "Emir of Lafia",
     competencies: {
-      professional: { economics: 75, diplomacy: 48, security: 15, media: 55, legal: 32, administration: 58, technology: 42 },
-      personal: { loyalty: 55, charisma: 70, leadership: 62, ambition: 72, integrity: 58, resilience: 58, intrigue: 45 },
+      professional: { economics: 75, diplomacy: 48, security: 15, communications: 55, legal: 32, administration: 58, technology: 42, management: 63, politics: 56 },
+      personal: { loyalty: 55, charisma: 70, leadership: 62, ambition: 72, integrity: 58, resilience: 58, intrigue: 45, discretion: 61 },
     },
   },
   {
@@ -3843,9 +4025,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 55,
     qualifiedFor: ["emir-lafia"],
+    traditionalTitle: "Emir of Lafia",
     competencies: {
-      professional: { economics: 22, diplomacy: 52, security: 15, media: 38, legal: 62, administration: 52, technology: 8 },
-      personal: { loyalty: 75, charisma: 60, leadership: 62, ambition: 30, integrity: 85, resilience: 70, intrigue: 22 },
+      professional: { economics: 22, diplomacy: 52, security: 15, communications: 38, legal: 62, administration: 52, technology: 8, management: 55, politics: 50 },
+      personal: { loyalty: 75, charisma: 60, leadership: 62, ambition: 30, integrity: 85, resilience: 70, intrigue: 22, discretion: 76 },
     },
   },
   {
@@ -3863,9 +4046,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 55,
     qualifiedFor: ["emir-lafia"],
+    traditionalTitle: "Emir of Lafia",
     competencies: {
-      professional: { economics: 48, diplomacy: 65, security: 22, media: 52, legal: 42, administration: 62, technology: 22 },
-      personal: { loyalty: 60, charisma: 68, leadership: 62, ambition: 62, integrity: 68, resilience: 62, intrigue: 42 },
+      professional: { economics: 48, diplomacy: 65, security: 22, communications: 52, legal: 42, administration: 62, technology: 22, management: 58, politics: 60 },
+      personal: { loyalty: 60, charisma: 68, leadership: 62, ambition: 62, integrity: 68, resilience: 62, intrigue: 42, discretion: 61 },
     },
   },
   {
@@ -3883,9 +4067,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["emir-lafia"],
+    traditionalTitle: "Emir of Lafia",
     competencies: {
-      professional: { economics: 42, diplomacy: 58, security: 18, media: 35, legal: 65, administration: 68, technology: 15 },
-      personal: { loyalty: 68, charisma: 55, leadership: 62, ambition: 42, integrity: 72, resilience: 68, intrigue: 32 },
+      professional: { economics: 42, diplomacy: 58, security: 18, communications: 35, legal: 65, administration: 68, technology: 15, management: 72, politics: 70 },
+      personal: { loyalty: 68, charisma: 55, leadership: 62, ambition: 42, integrity: 72, resilience: 68, intrigue: 32, discretion: 77 },
     },
   },
 
@@ -3908,9 +4093,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["emir-ilorin"],
+    traditionalTitle: "Emir of Ilorin",
     competencies: {
-      professional: { economics: 42, diplomacy: 75, security: 20, media: 48, legal: 80, administration: 68, technology: 18 },
-      personal: { loyalty: 70, charisma: 72, leadership: 75, ambition: 48, integrity: 82, resilience: 70, intrigue: 32 },
+      professional: { economics: 42, diplomacy: 75, security: 20, communications: 48, legal: 80, administration: 68, technology: 18, management: 63, politics: 63 },
+      personal: { loyalty: 70, charisma: 72, leadership: 75, ambition: 48, integrity: 82, resilience: 70, intrigue: 32, discretion: 67 },
     },
   },
   {
@@ -3928,9 +4114,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 70,
     qualifiedFor: ["emir-ilorin"],
+    traditionalTitle: "Emir of Ilorin",
     competencies: {
-      professional: { economics: 80, diplomacy: 55, security: 15, media: 58, legal: 42, administration: 62, technology: 35 },
-      personal: { loyalty: 52, charisma: 72, leadership: 68, ambition: 78, integrity: 52, resilience: 62, intrigue: 62 },
+      professional: { economics: 80, diplomacy: 55, security: 15, communications: 58, legal: 42, administration: 62, technology: 35, management: 64, politics: 58 },
+      personal: { loyalty: 52, charisma: 72, leadership: 68, ambition: 78, integrity: 52, resilience: 62, intrigue: 62, discretion: 56 },
     },
   },
   {
@@ -3948,9 +4135,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 62,
     qualifiedFor: ["emir-ilorin"],
+    traditionalTitle: "Emir of Ilorin",
     competencies: {
-      professional: { economics: 35, diplomacy: 68, security: 12, media: 62, legal: 55, administration: 50, technology: 25 },
-      personal: { loyalty: 65, charisma: 62, leadership: 60, ambition: 45, integrity: 85, resilience: 55, intrigue: 18 },
+      professional: { economics: 35, diplomacy: 68, security: 12, communications: 62, legal: 55, administration: 50, technology: 25, management: 55, politics: 59 },
+      personal: { loyalty: 65, charisma: 62, leadership: 60, ambition: 45, integrity: 85, resilience: 55, intrigue: 18, discretion: 70 },
     },
   },
   {
@@ -3968,9 +4156,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["emir-ilorin"],
+    traditionalTitle: "Emir of Ilorin",
     competencies: {
-      professional: { economics: 20, diplomacy: 48, security: 12, media: 28, legal: 65, administration: 52, technology: 5 },
-      personal: { loyalty: 78, charisma: 58, leadership: 65, ambition: 28, integrity: 85, resilience: 72, intrigue: 22 },
+      professional: { economics: 20, diplomacy: 48, security: 12, communications: 28, legal: 65, administration: 52, technology: 5, management: 60, politics: 51 },
+      personal: { loyalty: 78, charisma: 58, leadership: 65, ambition: 28, integrity: 85, resilience: 72, intrigue: 22, discretion: 80 },
     },
   },
   {
@@ -3988,9 +4177,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 58,
     qualifiedFor: ["emir-ilorin"],
+    traditionalTitle: "Emir of Ilorin",
     competencies: {
-      professional: { economics: 72, diplomacy: 52, security: 10, media: 55, legal: 35, administration: 58, technology: 25 },
-      personal: { loyalty: 62, charisma: 75, leadership: 62, ambition: 68, integrity: 70, resilience: 72, intrigue: 35 },
+      professional: { economics: 72, diplomacy: 52, security: 10, communications: 55, legal: 35, administration: 58, technology: 25, management: 60, politics: 55 },
+      personal: { loyalty: 62, charisma: 75, leadership: 62, ambition: 68, integrity: 70, resilience: 72, intrigue: 35, discretion: 71 },
     },
   },
 
@@ -4013,9 +4203,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["agwam-angas"],
+    traditionalTitle: "Long Jan of Angas",
     competencies: {
-      professional: { economics: 32, diplomacy: 62, security: 25, media: 38, legal: 48, administration: 60, technology: 12 },
-      personal: { loyalty: 72, charisma: 62, leadership: 68, ambition: 38, integrity: 75, resilience: 70, intrigue: 28 },
+      professional: { economics: 32, diplomacy: 62, security: 25, communications: 38, legal: 48, administration: 60, technology: 12, management: 67, politics: 64 },
+      personal: { loyalty: 72, charisma: 62, leadership: 68, ambition: 38, integrity: 75, resilience: 70, intrigue: 28, discretion: 76 },
     },
   },
   {
@@ -4033,9 +4224,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 50,
     qualifiedFor: ["agwam-angas"],
+    traditionalTitle: "Long Jan of Angas",
     competencies: {
-      professional: { economics: 62, diplomacy: 50, security: 15, media: 52, legal: 32, administration: 55, technology: 48 },
-      personal: { loyalty: 60, charisma: 68, leadership: 60, ambition: 62, integrity: 75, resilience: 58, intrigue: 22 },
+      professional: { economics: 62, diplomacy: 50, security: 15, communications: 52, legal: 32, administration: 55, technology: 48, management: 60, politics: 55 },
+      personal: { loyalty: 60, charisma: 68, leadership: 60, ambition: 62, integrity: 75, resilience: 58, intrigue: 22, discretion: 69 },
     },
   },
   {
@@ -4053,9 +4245,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 52,
     qualifiedFor: ["agwam-angas"],
+    traditionalTitle: "Long Jan of Angas",
     competencies: {
-      professional: { economics: 28, diplomacy: 42, security: 72, media: 32, legal: 48, administration: 58, technology: 12 },
-      personal: { loyalty: 75, charisma: 55, leadership: 68, ambition: 40, integrity: 72, resilience: 80, intrigue: 38 },
+      professional: { economics: 28, diplomacy: 42, security: 72, communications: 32, legal: 48, administration: 58, technology: 12, management: 58, politics: 45 },
+      personal: { loyalty: 75, charisma: 55, leadership: 68, ambition: 40, integrity: 72, resilience: 80, intrigue: 38, discretion: 71 },
     },
   },
   {
@@ -4073,9 +4266,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 52,
     qualifiedFor: ["agwam-angas"],
+    traditionalTitle: "Long Jan of Angas",
     competencies: {
-      professional: { economics: 30, diplomacy: 72, security: 18, media: 58, legal: 42, administration: 52, technology: 15 },
-      personal: { loyalty: 72, charisma: 72, leadership: 65, ambition: 40, integrity: 85, resilience: 65, intrigue: 18 },
+      professional: { economics: 30, diplomacy: 72, security: 18, communications: 58, legal: 42, administration: 52, technology: 15, management: 64, politics: 67 },
+      personal: { loyalty: 72, charisma: 72, leadership: 65, ambition: 40, integrity: 85, resilience: 65, intrigue: 18, discretion: 80 },
     },
   },
   {
@@ -4093,9 +4287,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 45,
     qualifiedFor: ["agwam-angas"],
+    traditionalTitle: "Long Jan of Angas",
     competencies: {
-      professional: { economics: 48, diplomacy: 55, security: 12, media: 55, legal: 35, administration: 50, technology: 30 },
-      personal: { loyalty: 68, charisma: 72, leadership: 55, ambition: 58, integrity: 78, resilience: 65, intrigue: 18 },
+      professional: { economics: 48, diplomacy: 55, security: 12, communications: 55, legal: 35, administration: 50, technology: 30, management: 50, politics: 50 },
+      personal: { loyalty: 68, charisma: 72, leadership: 55, ambition: 58, integrity: 78, resilience: 65, intrigue: 18, discretion: 69 },
     },
   },
 
@@ -4118,9 +4313,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 62,
     qualifiedFor: ["oba-akure"],
+    traditionalTitle: "Deji of Akure",
     competencies: {
-      professional: { economics: 32, diplomacy: 60, security: 18, media: 42, legal: 52, administration: 65, technology: 12 },
-      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 38, integrity: 78, resilience: 68, intrigue: 28 },
+      professional: { economics: 32, diplomacy: 60, security: 18, communications: 42, legal: 52, administration: 65, technology: 12, management: 73, politics: 69 },
+      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 38, integrity: 78, resilience: 68, intrigue: 28, discretion: 79 },
     },
   },
   {
@@ -4138,9 +4334,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 60,
     qualifiedFor: ["oba-akure"],
+    traditionalTitle: "Deji of Akure",
     competencies: {
-      professional: { economics: 78, diplomacy: 48, security: 15, media: 55, legal: 38, administration: 60, technology: 38 },
-      personal: { loyalty: 52, charisma: 72, leadership: 65, ambition: 78, integrity: 52, resilience: 60, intrigue: 55 },
+      professional: { economics: 78, diplomacy: 48, security: 15, communications: 55, legal: 38, administration: 60, technology: 38, management: 54, politics: 45 },
+      personal: { loyalty: 52, charisma: 72, leadership: 65, ambition: 78, integrity: 52, resilience: 60, intrigue: 55, discretion: 47 },
     },
   },
   {
@@ -4158,9 +4355,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["oba-akure"],
+    traditionalTitle: "Deji of Akure",
     competencies: {
-      professional: { economics: 48, diplomacy: 62, security: 12, media: 60, legal: 45, administration: 65, technology: 68 },
-      personal: { loyalty: 62, charisma: 65, leadership: 62, ambition: 55, integrity: 80, resilience: 55, intrigue: 22 },
+      professional: { economics: 48, diplomacy: 62, security: 12, communications: 60, legal: 45, administration: 65, technology: 68, management: 55, politics: 55 },
+      personal: { loyalty: 62, charisma: 65, leadership: 62, ambition: 55, integrity: 80, resilience: 55, intrigue: 22, discretion: 59 },
     },
   },
   {
@@ -4178,9 +4376,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 52,
     qualifiedFor: ["oba-akure"],
+    traditionalTitle: "Deji of Akure",
     competencies: {
-      professional: { economics: 40, diplomacy: 55, security: 10, media: 60, legal: 80, administration: 50, technology: 28 },
-      personal: { loyalty: 65, charisma: 75, leadership: 58, ambition: 65, integrity: 82, resilience: 68, intrigue: 22 },
+      professional: { economics: 40, diplomacy: 55, security: 10, communications: 60, legal: 80, administration: 50, technology: 28, management: 53, politics: 52 },
+      personal: { loyalty: 65, charisma: 75, leadership: 58, ambition: 65, integrity: 82, resilience: 68, intrigue: 22, discretion: 74 },
     },
   },
   {
@@ -4198,9 +4397,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 55,
     qualifiedFor: ["oba-akure"],
+    traditionalTitle: "Deji of Akure",
     competencies: {
-      professional: { economics: 22, diplomacy: 50, security: 15, media: 32, legal: 48, administration: 52, technology: 8 },
-      personal: { loyalty: 78, charisma: 60, leadership: 62, ambition: 28, integrity: 82, resilience: 72, intrigue: 25 },
+      professional: { economics: 22, diplomacy: 50, security: 15, communications: 32, legal: 48, administration: 52, technology: 8, management: 67, politics: 61 },
+      personal: { loyalty: 78, charisma: 60, leadership: 62, ambition: 28, integrity: 82, resilience: 72, intrigue: 25, discretion: 87 },
     },
   },
 
@@ -4223,9 +4423,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 72,
     qualifiedFor: ["alake-abeokuta"],
+    traditionalTitle: "Alake of Egbaland",
     competencies: {
-      professional: { economics: 75, diplomacy: 68, security: 18, media: 52, legal: 45, administration: 70, technology: 32 },
-      personal: { loyalty: 62, charisma: 72, leadership: 75, ambition: 58, integrity: 68, resilience: 65, intrigue: 40 },
+      professional: { economics: 75, diplomacy: 68, security: 18, communications: 52, legal: 45, administration: 70, technology: 32, management: 65, politics: 61 },
+      personal: { loyalty: 62, charisma: 72, leadership: 75, ambition: 58, integrity: 68, resilience: 65, intrigue: 40, discretion: 59 },
     },
   },
   {
@@ -4243,9 +4444,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["alake-abeokuta"],
+    traditionalTitle: "Alake of Egbaland",
     competencies: {
-      professional: { economics: 62, diplomacy: 55, security: 12, media: 85, legal: 38, administration: 58, technology: 52 },
-      personal: { loyalty: 52, charisma: 78, leadership: 65, ambition: 75, integrity: 55, resilience: 58, intrigue: 55 },
+      professional: { economics: 62, diplomacy: 55, security: 12, communications: 85, legal: 38, administration: 58, technology: 52, management: 69, politics: 64 },
+      personal: { loyalty: 52, charisma: 78, leadership: 65, ambition: 75, integrity: 55, resilience: 58, intrigue: 55, discretion: 64 },
     },
   },
   {
@@ -4263,9 +4465,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 62,
     qualifiedFor: ["alake-abeokuta"],
+    traditionalTitle: "Alake of Egbaland",
     competencies: {
-      professional: { economics: 35, diplomacy: 62, security: 15, media: 58, legal: 52, administration: 52, technology: 22 },
-      personal: { loyalty: 68, charisma: 60, leadership: 62, ambition: 42, integrity: 85, resilience: 58, intrigue: 20 },
+      professional: { economics: 35, diplomacy: 62, security: 15, communications: 58, legal: 52, administration: 52, technology: 22, management: 64, politics: 64 },
+      personal: { loyalty: 68, charisma: 60, leadership: 62, ambition: 42, integrity: 85, resilience: 58, intrigue: 20, discretion: 79 },
     },
   },
   {
@@ -4283,9 +4486,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["alake-abeokuta"],
+    traditionalTitle: "Alake of Egbaland",
     competencies: {
-      professional: { economics: 25, diplomacy: 48, security: 18, media: 28, legal: 55, administration: 55, technology: 8 },
-      personal: { loyalty: 78, charisma: 58, leadership: 65, ambition: 30, integrity: 78, resilience: 75, intrigue: 35 },
+      professional: { economics: 25, diplomacy: 48, security: 18, communications: 28, legal: 55, administration: 55, technology: 8, management: 66, politics: 58 },
+      personal: { loyalty: 78, charisma: 58, leadership: 65, ambition: 30, integrity: 78, resilience: 75, intrigue: 35, discretion: 83 },
     },
   },
   {
@@ -4303,9 +4507,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["alake-abeokuta"],
+    traditionalTitle: "Alake of Egbaland",
     competencies: {
-      professional: { economics: 72, diplomacy: 52, security: 10, media: 58, legal: 35, administration: 55, technology: 42 },
-      personal: { loyalty: 62, charisma: 75, leadership: 62, ambition: 68, integrity: 72, resilience: 65, intrigue: 28 },
+      professional: { economics: 72, diplomacy: 52, security: 10, communications: 58, legal: 35, administration: 55, technology: 42, management: 69, politics: 64 },
+      personal: { loyalty: 62, charisma: 75, leadership: 62, ambition: 68, integrity: 72, resilience: 65, intrigue: 28, discretion: 79 },
     },
   },
 
@@ -4328,9 +4533,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 72,
     qualifiedFor: ["olubadan-ibadan"],
+    traditionalTitle: "Olubadan of Ibadan",
     competencies: {
-      professional: { economics: 75, diplomacy: 62, security: 20, media: 55, legal: 48, administration: 70, technology: 18 },
-      personal: { loyalty: 55, charisma: 68, leadership: 72, ambition: 62, integrity: 55, resilience: 70, intrigue: 58 },
+      professional: { economics: 75, diplomacy: 62, security: 20, communications: 55, legal: 48, administration: 70, technology: 18, management: 68, politics: 63 },
+      personal: { loyalty: 55, charisma: 68, leadership: 72, ambition: 62, integrity: 55, resilience: 70, intrigue: 58, discretion: 60 },
     },
   },
   {
@@ -4348,9 +4554,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["olubadan-ibadan"],
+    traditionalTitle: "Olubadan of Ibadan",
     competencies: {
-      professional: { economics: 40, diplomacy: 68, security: 15, media: 45, legal: 82, administration: 65, technology: 15 },
-      personal: { loyalty: 72, charisma: 62, leadership: 70, ambition: 42, integrity: 80, resilience: 65, intrigue: 30 },
+      professional: { economics: 40, diplomacy: 68, security: 15, communications: 45, legal: 82, administration: 65, technology: 15, management: 68, politics: 67 },
+      personal: { loyalty: 72, charisma: 62, leadership: 70, ambition: 42, integrity: 80, resilience: 65, intrigue: 30, discretion: 73 },
     },
   },
   {
@@ -4368,9 +4575,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 70,
     qualifiedFor: ["olubadan-ibadan"],
+    traditionalTitle: "Olubadan of Ibadan",
     competencies: {
-      professional: { economics: 85, diplomacy: 52, security: 12, media: 58, legal: 35, administration: 62, technology: 40 },
-      personal: { loyalty: 50, charisma: 75, leadership: 68, ambition: 80, integrity: 52, resilience: 62, intrigue: 55 },
+      professional: { economics: 85, diplomacy: 52, security: 12, communications: 58, legal: 35, administration: 62, technology: 40, management: 67, politics: 59 },
+      personal: { loyalty: 50, charisma: 75, leadership: 68, ambition: 80, integrity: 52, resilience: 62, intrigue: 55, discretion: 59 },
     },
   },
   {
@@ -4388,9 +4596,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 62,
     qualifiedFor: ["olubadan-ibadan"],
+    traditionalTitle: "Olubadan of Ibadan",
     competencies: {
-      professional: { economics: 38, diplomacy: 58, security: 12, media: 52, legal: 78, administration: 55, technology: 18 },
-      personal: { loyalty: 68, charisma: 72, leadership: 65, ambition: 58, integrity: 82, resilience: 68, intrigue: 25 },
+      professional: { economics: 38, diplomacy: 58, security: 12, communications: 52, legal: 78, administration: 55, technology: 18, management: 53, politics: 50 },
+      personal: { loyalty: 68, charisma: 72, leadership: 65, ambition: 58, integrity: 82, resilience: 68, intrigue: 25, discretion: 68 },
     },
   },
   {
@@ -4408,9 +4617,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 65,
     qualifiedFor: ["olubadan-ibadan"],
+    traditionalTitle: "Olubadan of Ibadan",
     competencies: {
-      professional: { economics: 42, diplomacy: 52, security: 28, media: 35, legal: 50, administration: 62, technology: 10 },
-      personal: { loyalty: 75, charisma: 58, leadership: 70, ambition: 38, integrity: 75, resilience: 72, intrigue: 32 },
+      professional: { economics: 42, diplomacy: 52, security: 28, communications: 35, legal: 50, administration: 62, technology: 10, management: 64, politics: 55 },
+      personal: { loyalty: 75, charisma: 58, leadership: 70, ambition: 38, integrity: 75, resilience: 72, intrigue: 32, discretion: 72 },
     },
   },
 
@@ -4433,9 +4643,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["orangun-ila"],
+    traditionalTitle: "Orangun of Ila",
     competencies: {
-      professional: { economics: 30, diplomacy: 58, security: 15, media: 40, legal: 50, administration: 60, technology: 12 },
-      personal: { loyalty: 75, charisma: 62, leadership: 65, ambition: 38, integrity: 78, resilience: 68, intrigue: 25 },
+      professional: { economics: 30, diplomacy: 58, security: 15, communications: 40, legal: 50, administration: 60, technology: 12, management: 73, politics: 69 },
+      personal: { loyalty: 75, charisma: 62, leadership: 65, ambition: 38, integrity: 78, resilience: 68, intrigue: 25, discretion: 83 },
     },
   },
   {
@@ -4453,9 +4664,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 52,
     qualifiedFor: ["orangun-ila"],
+    traditionalTitle: "Orangun of Ila",
     competencies: {
-      professional: { economics: 72, diplomacy: 45, security: 12, media: 50, legal: 32, administration: 55, technology: 35 },
-      personal: { loyalty: 52, charisma: 68, leadership: 60, ambition: 72, integrity: 55, resilience: 58, intrigue: 50 },
+      professional: { economics: 72, diplomacy: 45, security: 12, communications: 50, legal: 32, administration: 55, technology: 35, management: 53, politics: 45 },
+      personal: { loyalty: 52, charisma: 68, leadership: 60, ambition: 72, integrity: 55, resilience: 58, intrigue: 50, discretion: 52 },
     },
   },
   {
@@ -4473,9 +4685,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 52,
     qualifiedFor: ["orangun-ila"],
+    traditionalTitle: "Orangun of Ila",
     competencies: {
-      professional: { economics: 35, diplomacy: 65, security: 28, media: 60, legal: 45, administration: 50, technology: 25 },
-      personal: { loyalty: 62, charisma: 60, leadership: 58, ambition: 45, integrity: 82, resilience: 55, intrigue: 18 },
+      professional: { economics: 35, diplomacy: 65, security: 28, communications: 60, legal: 45, administration: 50, technology: 25, management: 63, politics: 67 },
+      personal: { loyalty: 62, charisma: 60, leadership: 58, ambition: 45, integrity: 82, resilience: 55, intrigue: 18, discretion: 78 },
     },
   },
   {
@@ -4493,9 +4706,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 48,
     qualifiedFor: ["orangun-ila"],
+    traditionalTitle: "Orangun of Ila",
     competencies: {
-      professional: { economics: 55, diplomacy: 48, security: 8, media: 58, legal: 30, administration: 48, technology: 72 },
-      personal: { loyalty: 62, charisma: 72, leadership: 55, ambition: 65, integrity: 75, resilience: 60, intrigue: 20 },
+      professional: { economics: 55, diplomacy: 48, security: 8, communications: 58, legal: 30, administration: 48, technology: 72, management: 49, politics: 45 },
+      personal: { loyalty: 62, charisma: 72, leadership: 55, ambition: 65, integrity: 75, resilience: 60, intrigue: 20, discretion: 65 },
     },
   },
   {
@@ -4513,9 +4727,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 50,
     qualifiedFor: ["orangun-ila"],
+    traditionalTitle: "Orangun of Ila",
     competencies: {
-      professional: { economics: 18, diplomacy: 45, security: 12, media: 25, legal: 48, administration: 50, technology: 5 },
-      personal: { loyalty: 78, charisma: 55, leadership: 60, ambition: 25, integrity: 82, resilience: 72, intrigue: 22 },
+      professional: { economics: 18, diplomacy: 45, security: 12, communications: 25, legal: 48, administration: 50, technology: 5, management: 61, politics: 54 },
+      personal: { loyalty: 78, charisma: 55, leadership: 60, ambition: 25, integrity: 82, resilience: 72, intrigue: 22, discretion: 83 },
     },
   },
 
@@ -4538,9 +4753,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 60,
     qualifiedFor: ["igwe-orlu"],
+    traditionalTitle: "Igwe of Orlu",
     competencies: {
-      professional: { economics: 42, diplomacy: 68, security: 18, media: 42, legal: 52, administration: 72, technology: 18 },
-      personal: { loyalty: 70, charisma: 65, leadership: 68, ambition: 45, integrity: 75, resilience: 65, intrigue: 30 },
+      professional: { economics: 42, diplomacy: 68, security: 18, communications: 42, legal: 52, administration: 72, technology: 18, management: 72, politics: 72 },
+      personal: { loyalty: 70, charisma: 65, leadership: 68, ambition: 45, integrity: 75, resilience: 65, intrigue: 30, discretion: 72 },
     },
   },
   {
@@ -4558,9 +4774,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["igwe-orlu"],
+    traditionalTitle: "Igwe of Orlu",
     competencies: {
-      professional: { economics: 78, diplomacy: 45, security: 12, media: 52, legal: 32, administration: 58, technology: 38 },
-      personal: { loyalty: 52, charisma: 70, leadership: 62, ambition: 78, integrity: 52, resilience: 60, intrigue: 52 },
+      professional: { economics: 78, diplomacy: 45, security: 12, communications: 52, legal: 32, administration: 58, technology: 38, management: 67, politics: 59 },
+      personal: { loyalty: 52, charisma: 70, leadership: 62, ambition: 78, integrity: 52, resilience: 60, intrigue: 52, discretion: 63 },
     },
   },
   {
@@ -4578,9 +4795,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["igwe-orlu"],
+    traditionalTitle: "Igwe of Orlu",
     competencies: {
-      professional: { economics: 30, diplomacy: 60, security: 10, media: 58, legal: 52, administration: 50, technology: 20 },
-      personal: { loyalty: 68, charisma: 58, leadership: 60, ambition: 40, integrity: 82, resilience: 55, intrigue: 18 },
+      professional: { economics: 30, diplomacy: 60, security: 10, communications: 58, legal: 52, administration: 50, technology: 20, management: 56, politics: 56 },
+      personal: { loyalty: 68, charisma: 58, leadership: 60, ambition: 40, integrity: 82, resilience: 55, intrigue: 18, discretion: 70 },
     },
   },
   {
@@ -4598,9 +4816,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 50,
     qualifiedFor: ["igwe-orlu"],
+    traditionalTitle: "Igwe of Orlu",
     competencies: {
-      professional: { economics: 45, diplomacy: 55, security: 10, media: 62, legal: 35, administration: 52, technology: 55 },
-      personal: { loyalty: 65, charisma: 72, leadership: 55, ambition: 62, integrity: 78, resilience: 62, intrigue: 18 },
+      professional: { economics: 45, diplomacy: 55, security: 10, communications: 62, legal: 35, administration: 52, technology: 55, management: 46, politics: 46 },
+      personal: { loyalty: 65, charisma: 72, leadership: 55, ambition: 62, integrity: 78, resilience: 62, intrigue: 18, discretion: 62 },
     },
   },
   {
@@ -4618,9 +4837,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 55,
     qualifiedFor: ["igwe-orlu"],
+    traditionalTitle: "Igwe of Orlu",
     competencies: {
-      professional: { economics: 35, diplomacy: 42, security: 18, media: 25, legal: 48, administration: 55, technology: 8 },
-      personal: { loyalty: 75, charisma: 52, leadership: 65, ambition: 30, integrity: 75, resilience: 78, intrigue: 32 },
+      professional: { economics: 35, diplomacy: 42, security: 18, communications: 25, legal: 48, administration: 55, technology: 8, management: 66, politics: 55 },
+      personal: { loyalty: 75, charisma: 52, leadership: 65, ambition: 30, integrity: 75, resilience: 78, intrigue: 32, discretion: 83 },
     },
   },
 
@@ -4643,9 +4863,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["eze-afikpo"],
+    traditionalTitle: "Eze of Afikpo",
     competencies: {
-      professional: { economics: 28, diplomacy: 62, security: 15, media: 45, legal: 50, administration: 60, technology: 12 },
-      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 35, integrity: 80, resilience: 68, intrigue: 25 },
+      professional: { economics: 28, diplomacy: 62, security: 15, communications: 45, legal: 50, administration: 60, technology: 12, management: 61, politics: 58 },
+      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 35, integrity: 80, resilience: 68, intrigue: 25, discretion: 71 },
     },
   },
   {
@@ -4663,9 +4884,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 52,
     qualifiedFor: ["eze-afikpo"],
+    traditionalTitle: "Eze of Afikpo",
     competencies: {
-      professional: { economics: 72, diplomacy: 48, security: 12, media: 42, legal: 32, administration: 55, technology: 28 },
-      personal: { loyalty: 55, charisma: 65, leadership: 60, ambition: 72, integrity: 52, resilience: 62, intrigue: 50 },
+      professional: { economics: 72, diplomacy: 48, security: 12, communications: 42, legal: 32, administration: 55, technology: 28, management: 60, politics: 54 },
+      personal: { loyalty: 55, charisma: 65, leadership: 60, ambition: 72, integrity: 52, resilience: 62, intrigue: 50, discretion: 59 },
     },
   },
   {
@@ -4683,9 +4905,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 48,
     qualifiedFor: ["eze-afikpo"],
+    traditionalTitle: "Eze of Afikpo",
     competencies: {
-      professional: { economics: 35, diplomacy: 65, security: 8, media: 68, legal: 42, administration: 45, technology: 30 },
-      personal: { loyalty: 62, charisma: 62, leadership: 55, ambition: 50, integrity: 85, resilience: 52, intrigue: 15 },
+      professional: { economics: 35, diplomacy: 65, security: 8, communications: 68, legal: 42, administration: 45, technology: 30, management: 43, politics: 48 },
+      personal: { loyalty: 62, charisma: 62, leadership: 55, ambition: 50, integrity: 85, resilience: 52, intrigue: 15, discretion: 62 },
     },
   },
   {
@@ -4703,9 +4926,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 50,
     qualifiedFor: ["eze-afikpo"],
+    traditionalTitle: "Eze of Afikpo",
     competencies: {
-      professional: { economics: 28, diplomacy: 42, security: 15, media: 22, legal: 45, administration: 52, technology: 5 },
-      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 80, resilience: 78, intrigue: 25 },
+      professional: { economics: 28, diplomacy: 42, security: 15, communications: 22, legal: 45, administration: 52, technology: 5, management: 57, politics: 47 },
+      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 80, resilience: 78, intrigue: 25, discretion: 79 },
     },
   },
   {
@@ -4723,9 +4947,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 45,
     qualifiedFor: ["eze-afikpo"],
+    traditionalTitle: "Eze of Afikpo",
     competencies: {
-      professional: { economics: 40, diplomacy: 52, security: 8, media: 55, legal: 30, administration: 48, technology: 35 },
-      personal: { loyalty: 68, charisma: 70, leadership: 55, ambition: 58, integrity: 80, resilience: 65, intrigue: 15 },
+      professional: { economics: 40, diplomacy: 52, security: 8, communications: 55, legal: 30, administration: 48, technology: 35, management: 49, politics: 47 },
+      personal: { loyalty: 68, charisma: 70, leadership: 55, ambition: 58, integrity: 80, resilience: 65, intrigue: 15, discretion: 70 },
     },
   },
 
@@ -4748,9 +4973,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 55,
     qualifiedFor: ["igwe-ogidi"],
+    traditionalTitle: "Igwe of Ogidi",
     competencies: {
-      professional: { economics: 35, diplomacy: 62, security: 12, media: 68, legal: 48, administration: 62, technology: 22 },
-      personal: { loyalty: 68, charisma: 62, leadership: 62, ambition: 42, integrity: 80, resilience: 58, intrigue: 22 },
+      professional: { economics: 35, diplomacy: 62, security: 12, communications: 68, legal: 48, administration: 62, technology: 22, management: 61, politics: 61 },
+      personal: { loyalty: 68, charisma: 62, leadership: 62, ambition: 42, integrity: 80, resilience: 58, intrigue: 22, discretion: 68 },
     },
   },
   {
@@ -4768,9 +4994,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 52,
     qualifiedFor: ["igwe-ogidi"],
+    traditionalTitle: "Igwe of Ogidi",
     competencies: {
-      professional: { economics: 62, diplomacy: 48, security: 10, media: 62, legal: 30, administration: 52, technology: 78 },
-      personal: { loyalty: 58, charisma: 72, leadership: 58, ambition: 70, integrity: 68, resilience: 55, intrigue: 30 },
+      professional: { economics: 62, diplomacy: 48, security: 10, communications: 62, legal: 30, administration: 52, technology: 78, management: 54, politics: 49 },
+      personal: { loyalty: 58, charisma: 72, leadership: 58, ambition: 70, integrity: 68, resilience: 55, intrigue: 30, discretion: 61 },
     },
   },
   {
@@ -4788,9 +5015,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["igwe-ogidi"],
+    traditionalTitle: "Igwe of Ogidi",
     competencies: {
-      professional: { economics: 75, diplomacy: 52, security: 15, media: 42, legal: 35, administration: 62, technology: 18 },
-      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 72, integrity: 55, resilience: 68, intrigue: 48 },
+      professional: { economics: 75, diplomacy: 52, security: 15, communications: 42, legal: 35, administration: 62, technology: 18, management: 74, politics: 67 },
+      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 72, integrity: 55, resilience: 68, intrigue: 48, discretion: 72 },
     },
   },
   {
@@ -4808,9 +5036,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 48,
     qualifiedFor: ["igwe-ogidi"],
+    traditionalTitle: "Igwe of Ogidi",
     competencies: {
-      professional: { economics: 32, diplomacy: 58, security: 8, media: 72, legal: 42, administration: 45, technology: 32 },
-      personal: { loyalty: 65, charisma: 70, leadership: 55, ambition: 58, integrity: 82, resilience: 58, intrigue: 15 },
+      professional: { economics: 32, diplomacy: 58, security: 8, communications: 72, legal: 42, administration: 45, technology: 32, management: 47, politics: 49 },
+      personal: { loyalty: 65, charisma: 70, leadership: 55, ambition: 58, integrity: 82, resilience: 58, intrigue: 15, discretion: 67 },
     },
   },
   {
@@ -4828,9 +5057,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 50,
     qualifiedFor: ["igwe-ogidi"],
+    traditionalTitle: "Igwe of Ogidi",
     competencies: {
-      professional: { economics: 22, diplomacy: 48, security: 10, media: 35, legal: 45, administration: 55, technology: 8 },
-      personal: { loyalty: 78, charisma: 52, leadership: 60, ambition: 25, integrity: 82, resilience: 70, intrigue: 20 },
+      professional: { economics: 22, diplomacy: 48, security: 10, communications: 35, legal: 45, administration: 55, technology: 8, management: 60, politics: 54 },
+      personal: { loyalty: 78, charisma: 52, leadership: 60, ambition: 25, integrity: 82, resilience: 70, intrigue: 20, discretion: 78 },
     },
   },
 
@@ -4853,9 +5083,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 68,
     qualifiedFor: ["olu-warri"],
+    traditionalTitle: "Olu of Warri",
     competencies: {
-      professional: { economics: 75, diplomacy: 68, security: 18, media: 55, legal: 62, administration: 62, technology: 42 },
-      personal: { loyalty: 58, charisma: 75, leadership: 70, ambition: 72, integrity: 62, resilience: 62, intrigue: 45 },
+      professional: { economics: 75, diplomacy: 68, security: 18, communications: 55, legal: 62, administration: 62, technology: 42, management: 61, politics: 60 },
+      personal: { loyalty: 58, charisma: 75, leadership: 70, ambition: 72, integrity: 62, resilience: 62, intrigue: 45, discretion: 57 },
     },
   },
   {
@@ -4873,9 +5104,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 65,
     qualifiedFor: ["olu-warri"],
+    traditionalTitle: "Olu of Warri",
     competencies: {
-      professional: { economics: 68, diplomacy: 52, security: 28, media: 45, legal: 38, administration: 60, technology: 20 },
-      personal: { loyalty: 55, charisma: 68, leadership: 68, ambition: 72, integrity: 48, resilience: 72, intrigue: 62 },
+      professional: { economics: 68, diplomacy: 52, security: 28, communications: 45, legal: 38, administration: 60, technology: 20, management: 66, politics: 58 },
+      personal: { loyalty: 55, charisma: 68, leadership: 68, ambition: 72, integrity: 48, resilience: 72, intrigue: 62, discretion: 62 },
     },
   },
   {
@@ -4893,9 +5125,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["olu-warri"],
+    traditionalTitle: "Olu of Warri",
     competencies: {
-      professional: { economics: 38, diplomacy: 65, security: 12, media: 62, legal: 48, administration: 48, technology: 25 },
-      personal: { loyalty: 65, charisma: 60, leadership: 58, ambition: 45, integrity: 82, resilience: 55, intrigue: 18 },
+      professional: { economics: 38, diplomacy: 65, security: 12, communications: 62, legal: 48, administration: 48, technology: 25, management: 53, politics: 57 },
+      personal: { loyalty: 65, charisma: 60, leadership: 58, ambition: 45, integrity: 82, resilience: 55, intrigue: 18, discretion: 69 },
     },
   },
   {
@@ -4913,9 +5146,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 60,
     qualifiedFor: ["olu-warri"],
+    traditionalTitle: "Olu of Warri",
     competencies: {
-      professional: { economics: 25, diplomacy: 50, security: 15, media: 30, legal: 52, administration: 55, technology: 8 },
-      personal: { loyalty: 78, charisma: 58, leadership: 65, ambition: 30, integrity: 80, resilience: 72, intrigue: 28 },
+      professional: { economics: 25, diplomacy: 50, security: 15, communications: 30, legal: 52, administration: 55, technology: 8, management: 61, politics: 54 },
+      personal: { loyalty: 78, charisma: 58, leadership: 65, ambition: 30, integrity: 80, resilience: 72, intrigue: 28, discretion: 77 },
     },
   },
   {
@@ -4933,9 +5167,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 52,
     qualifiedFor: ["olu-warri"],
+    traditionalTitle: "Olu of Warri",
     competencies: {
-      professional: { economics: 72, diplomacy: 52, security: 10, media: 55, legal: 32, administration: 58, technology: 42 },
-      personal: { loyalty: 60, charisma: 72, leadership: 58, ambition: 68, integrity: 72, resilience: 65, intrigue: 28 },
+      professional: { economics: 72, diplomacy: 52, security: 10, communications: 55, legal: 32, administration: 58, technology: 42, management: 66, politics: 63 },
+      personal: { loyalty: 60, charisma: 72, leadership: 58, ambition: 68, integrity: 72, resilience: 65, intrigue: 28, discretion: 77 },
     },
   },
 
@@ -4958,9 +5193,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["amanyanabo-nembe"],
+    traditionalTitle: "Amanyanabo of Nembe",
     competencies: {
-      professional: { economics: 32, diplomacy: 62, security: 18, media: 42, legal: 48, administration: 58, technology: 12 },
-      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 38, integrity: 78, resilience: 68, intrigue: 25 },
+      professional: { economics: 32, diplomacy: 62, security: 18, communications: 42, legal: 48, administration: 58, technology: 12, management: 68, politics: 65 },
+      personal: { loyalty: 75, charisma: 62, leadership: 68, ambition: 38, integrity: 78, resilience: 68, intrigue: 25, discretion: 78 },
     },
   },
   {
@@ -4978,9 +5214,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["amanyanabo-nembe"],
+    traditionalTitle: "Amanyanabo of Nembe",
     competencies: {
-      professional: { economics: 75, diplomacy: 48, security: 18, media: 50, legal: 32, administration: 55, technology: 28 },
-      personal: { loyalty: 52, charisma: 68, leadership: 62, ambition: 75, integrity: 48, resilience: 62, intrigue: 58 },
+      professional: { economics: 75, diplomacy: 48, security: 18, communications: 50, legal: 32, administration: 55, technology: 28, management: 60, politics: 53 },
+      personal: { loyalty: 52, charisma: 68, leadership: 62, ambition: 75, integrity: 48, resilience: 62, intrigue: 58, discretion: 56 },
     },
   },
   {
@@ -4998,9 +5235,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 52,
     qualifiedFor: ["amanyanabo-nembe"],
+    traditionalTitle: "Amanyanabo of Nembe",
     competencies: {
-      professional: { economics: 30, diplomacy: 42, security: 22, media: 38, legal: 42, administration: 50, technology: 5 },
-      personal: { loyalty: 78, charisma: 55, leadership: 62, ambition: 30, integrity: 80, resilience: 82, intrigue: 28 },
+      professional: { economics: 30, diplomacy: 42, security: 22, communications: 38, legal: 42, administration: 50, technology: 5, management: 55, politics: 45 },
+      personal: { loyalty: 78, charisma: 55, leadership: 62, ambition: 30, integrity: 80, resilience: 82, intrigue: 28, discretion: 80 },
     },
   },
   {
@@ -5018,9 +5256,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 48,
     qualifiedFor: ["amanyanabo-nembe"],
+    traditionalTitle: "Amanyanabo of Nembe",
     competencies: {
-      professional: { economics: 42, diplomacy: 58, security: 12, media: 62, legal: 38, administration: 45, technology: 62 },
-      personal: { loyalty: 62, charisma: 65, leadership: 55, ambition: 55, integrity: 82, resilience: 58, intrigue: 15 },
+      professional: { economics: 42, diplomacy: 58, security: 12, communications: 62, legal: 38, administration: 45, technology: 62, management: 56, politics: 58 },
+      personal: { loyalty: 62, charisma: 65, leadership: 55, ambition: 55, integrity: 82, resilience: 58, intrigue: 15, discretion: 76 },
     },
   },
   {
@@ -5038,9 +5277,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 48,
     qualifiedFor: ["amanyanabo-nembe"],
+    traditionalTitle: "Amanyanabo of Nembe",
     competencies: {
-      professional: { economics: 68, diplomacy: 48, security: 8, media: 48, legal: 28, administration: 52, technology: 32 },
-      personal: { loyalty: 68, charisma: 70, leadership: 55, ambition: 60, integrity: 75, resilience: 68, intrigue: 20 },
+      professional: { economics: 68, diplomacy: 48, security: 8, communications: 48, legal: 28, administration: 52, technology: 32, management: 48, politics: 44 },
+      personal: { loyalty: 68, charisma: 70, leadership: 55, ambition: 60, integrity: 75, resilience: 68, intrigue: 20, discretion: 66 },
     },
   },
 
@@ -5063,9 +5303,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 60,
     qualifiedFor: ["obong-uyo"],
+    traditionalTitle: "Clan Head of Uyo",
     competencies: {
-      professional: { economics: 35, diplomacy: 65, security: 20, media: 42, legal: 52, administration: 65, technology: 15 },
-      personal: { loyalty: 72, charisma: 65, leadership: 68, ambition: 40, integrity: 78, resilience: 68, intrigue: 28 },
+      professional: { economics: 35, diplomacy: 65, security: 20, communications: 42, legal: 52, administration: 65, technology: 15, management: 75, politics: 73 },
+      personal: { loyalty: 72, charisma: 65, leadership: 68, ambition: 40, integrity: 78, resilience: 68, intrigue: 28, discretion: 81 },
     },
   },
   {
@@ -5083,9 +5324,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 58,
     qualifiedFor: ["obong-uyo"],
+    traditionalTitle: "Clan Head of Uyo",
     competencies: {
-      professional: { economics: 78, diplomacy: 48, security: 12, media: 52, legal: 32, administration: 58, technology: 38 },
-      personal: { loyalty: 52, charisma: 70, leadership: 62, ambition: 78, integrity: 52, resilience: 58, intrigue: 52 },
+      professional: { economics: 78, diplomacy: 48, security: 12, communications: 52, legal: 32, administration: 58, technology: 38, management: 50, politics: 43 },
+      personal: { loyalty: 52, charisma: 70, leadership: 62, ambition: 78, integrity: 52, resilience: 58, intrigue: 52, discretion: 45 },
     },
   },
   {
@@ -5103,9 +5345,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 52,
     qualifiedFor: ["obong-uyo"],
+    traditionalTitle: "Clan Head of Uyo",
     competencies: {
-      professional: { economics: 32, diplomacy: 62, security: 8, media: 65, legal: 45, administration: 48, technology: 28 },
-      personal: { loyalty: 65, charisma: 60, leadership: 55, ambition: 42, integrity: 85, resilience: 52, intrigue: 15 },
+      professional: { economics: 32, diplomacy: 62, security: 8, communications: 65, legal: 45, administration: 48, technology: 28, management: 62, politics: 65 },
+      personal: { loyalty: 65, charisma: 60, leadership: 55, ambition: 42, integrity: 85, resilience: 52, intrigue: 15, discretion: 79 },
     },
   },
   {
@@ -5123,9 +5366,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 52,
     qualifiedFor: ["obong-uyo"],
+    traditionalTitle: "Clan Head of Uyo",
     competencies: {
-      professional: { economics: 28, diplomacy: 45, security: 15, media: 25, legal: 48, administration: 52, technology: 5 },
-      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 78, resilience: 78, intrigue: 25 },
+      professional: { economics: 28, diplomacy: 45, security: 15, communications: 25, legal: 48, administration: 52, technology: 5, management: 48, politics: 40 },
+      personal: { loyalty: 78, charisma: 52, leadership: 62, ambition: 28, integrity: 78, resilience: 78, intrigue: 25, discretion: 69 },
     },
   },
   {
@@ -5143,9 +5387,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 48,
     qualifiedFor: ["obong-uyo"],
+    traditionalTitle: "Clan Head of Uyo",
     competencies: {
-      professional: { economics: 42, diplomacy: 55, security: 8, media: 55, legal: 30, administration: 50, technology: 32 },
-      personal: { loyalty: 70, charisma: 72, leadership: 55, ambition: 58, integrity: 80, resilience: 68, intrigue: 15 },
+      professional: { economics: 42, diplomacy: 55, security: 8, communications: 55, legal: 30, administration: 50, technology: 32, management: 43, politics: 43 },
+      personal: { loyalty: 70, charisma: 72, leadership: 55, ambition: 58, integrity: 80, resilience: 68, intrigue: 15, discretion: 64 },
     },
   },
 
@@ -5168,9 +5413,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 62,
     qualifiedFor: ["amanyanabo-kalabari"],
+    traditionalTitle: "Amanyanabo of Kalabari",
     competencies: {
-      professional: { economics: 68, diplomacy: 62, security: 18, media: 55, legal: 42, administration: 62, technology: 28 },
-      personal: { loyalty: 55, charisma: 72, leadership: 68, ambition: 72, integrity: 55, resilience: 62, intrigue: 52 },
+      professional: { economics: 68, diplomacy: 62, security: 18, communications: 55, legal: 42, administration: 62, technology: 28, management: 62, politics: 59 },
+      personal: { loyalty: 55, charisma: 72, leadership: 68, ambition: 72, integrity: 55, resilience: 62, intrigue: 52, discretion: 56 },
     },
   },
   {
@@ -5188,9 +5434,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 58,
     qualifiedFor: ["amanyanabo-kalabari"],
+    traditionalTitle: "Amanyanabo of Kalabari",
     competencies: {
-      professional: { economics: 30, diplomacy: 60, security: 15, media: 48, legal: 50, administration: 58, technology: 12 },
-      personal: { loyalty: 75, charisma: 65, leadership: 68, ambition: 38, integrity: 78, resilience: 68, intrigue: 25 },
+      professional: { economics: 30, diplomacy: 60, security: 15, communications: 48, legal: 50, administration: 58, technology: 12, management: 66, politics: 62 },
+      personal: { loyalty: 75, charisma: 65, leadership: 68, ambition: 38, integrity: 78, resilience: 68, intrigue: 25, discretion: 76 },
     },
   },
   {
@@ -5208,9 +5455,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "supportive",
     influence: 52,
     qualifiedFor: ["amanyanabo-kalabari"],
+    traditionalTitle: "Amanyanabo of Kalabari",
     competencies: {
-      professional: { economics: 52, diplomacy: 48, security: 12, media: 55, legal: 30, administration: 55, technology: 68 },
-      personal: { loyalty: 62, charisma: 68, leadership: 58, ambition: 62, integrity: 78, resilience: 60, intrigue: 20 },
+      professional: { economics: 52, diplomacy: 48, security: 12, communications: 55, legal: 30, administration: 55, technology: 68, management: 55, politics: 50 },
+      personal: { loyalty: 62, charisma: 68, leadership: 58, ambition: 62, integrity: 78, resilience: 60, intrigue: 20, discretion: 67 },
     },
   },
   {
@@ -5228,9 +5476,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "critical",
     influence: 55,
     qualifiedFor: ["amanyanabo-kalabari"],
+    traditionalTitle: "Amanyanabo of Kalabari",
     competencies: {
-      professional: { economics: 25, diplomacy: 48, security: 18, media: 30, legal: 52, administration: 55, technology: 8 },
-      personal: { loyalty: 78, charisma: 52, leadership: 65, ambition: 28, integrity: 80, resilience: 78, intrigue: 28 },
+      professional: { economics: 25, diplomacy: 48, security: 18, communications: 30, legal: 52, administration: 55, technology: 8, management: 57, politics: 49 },
+      personal: { loyalty: 78, charisma: 52, leadership: 65, ambition: 28, integrity: 80, resilience: 78, intrigue: 28, discretion: 76 },
     },
   },
   {
@@ -5248,9 +5497,10 @@ export const TRADITIONAL_RULER_CANDIDATES: TraditionalRulerCandidate[] = [
     disposition: "neutral",
     influence: 48,
     qualifiedFor: ["amanyanabo-kalabari"],
+    traditionalTitle: "Amanyanabo of Kalabari",
     competencies: {
-      professional: { economics: 72, diplomacy: 48, security: 8, media: 52, legal: 28, administration: 50, technology: 45 },
-      personal: { loyalty: 62, charisma: 72, leadership: 55, ambition: 65, integrity: 72, resilience: 62, intrigue: 22 },
+      professional: { economics: 72, diplomacy: 48, security: 8, communications: 52, legal: 28, administration: 50, technology: 45, management: 57, politics: 53 },
+      personal: { loyalty: 62, charisma: 72, leadership: 55, ambition: 65, integrity: 72, resilience: 62, intrigue: 22, discretion: 71 },
     },
   },
 ];

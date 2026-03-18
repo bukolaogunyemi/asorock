@@ -22,9 +22,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 88,
     loyalty: 85,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 65, security: 90, media: 40, legal: 45, administration: 80, technology: 50 },
-      personal: { loyalty: 85, charisma: 70, leadership: 90, ambition: 55, integrity: 80, resilience: 85, intrigue: 30 },
+      professional: { economics: 35, diplomacy: 65, security: 90, communications: 40, legal: 45, administration: 80, technology: 50, management: 92, politics: 80 },
+      personal: { loyalty: 85, charisma: 70, leadership: 90, ambition: 55, integrity: 80, resilience: 85, intrigue: 30, discretion: 90 },
     },
   },
   {
@@ -43,9 +44,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 85,
     loyalty: 78,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 70, security: 85, media: 45, legal: 40, administration: 75, technology: 55 },
-      personal: { loyalty: 78, charisma: 65, leadership: 85, ambition: 60, integrity: 75, resilience: 80, intrigue: 35 },
+      professional: { economics: 40, diplomacy: 70, security: 85, communications: 45, legal: 40, administration: 75, technology: 55, management: 86, politics: 79 },
+      personal: { loyalty: 78, charisma: 65, leadership: 85, ambition: 60, integrity: 75, resilience: 80, intrigue: 35, discretion: 84 },
     },
   },
   {
@@ -64,9 +66,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 90,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Vice Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 75, security: 80, media: 35, legal: 50, administration: 78, technology: 45 },
-      personal: { loyalty: 90, charisma: 60, leadership: 80, ambition: 40, integrity: 85, resilience: 75, intrigue: 25 },
+      professional: { economics: 30, diplomacy: 75, security: 80, communications: 35, legal: 50, administration: 78, technology: 45, management: 79, politics: 77 },
+      personal: { loyalty: 90, charisma: 60, leadership: 80, ambition: 40, integrity: 85, resilience: 75, intrigue: 25, discretion: 80 },
     },
   },
   {
@@ -85,9 +88,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 55,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Air Mshl. (Rtd.)",
     competencies: {
-      professional: { economics: 45, diplomacy: 60, security: 78, media: 75, legal: 35, administration: 70, technology: 60 },
-      personal: { loyalty: 55, charisma: 85, leadership: 78, ambition: 85, integrity: 50, resilience: 70, intrigue: 65 },
+      professional: { economics: 45, diplomacy: 60, security: 78, communications: 75, legal: 35, administration: 70, technology: 60, management: 79, politics: 70 },
+      personal: { loyalty: 55, charisma: 85, leadership: 78, ambition: 85, integrity: 50, resilience: 70, intrigue: 65, discretion: 65 },
     },
   },
   {
@@ -106,9 +110,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 86,
     loyalty: 45,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 35, security: 92, media: 30, legal: 30, administration: 65, technology: 40 },
-      personal: { loyalty: 45, charisma: 60, leadership: 85, ambition: 80, integrity: 40, resilience: 95, intrigue: 70 },
+      professional: { economics: 25, diplomacy: 35, security: 92, communications: 30, legal: 30, administration: 65, technology: 40, management: 68, politics: 43 },
+      personal: { loyalty: 45, charisma: 60, leadership: 85, ambition: 80, integrity: 40, resilience: 95, intrigue: 70, discretion: 61 },
     },
   },
   {
@@ -127,9 +132,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 84,
     loyalty: 72,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 50, security: 88, media: 25, legal: 45, administration: 72, technology: 70 },
-      personal: { loyalty: 72, charisma: 40, leadership: 75, ambition: 50, integrity: 78, resilience: 80, intrigue: 85 },
+      professional: { economics: 30, diplomacy: 50, security: 88, communications: 25, legal: 45, administration: 72, technology: 70, management: 70, politics: 57 },
+      personal: { loyalty: 72, charisma: 40, leadership: 75, ambition: 50, integrity: 78, resilience: 80, intrigue: 85, discretion: 75 },
     },
   },
   {
@@ -148,9 +154,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 80,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 55, diplomacy: 60, security: 75, media: 35, legal: 40, administration: 85, technology: 65 },
-      personal: { loyalty: 80, charisma: 55, leadership: 72, ambition: 50, integrity: 70, resilience: 70, intrigue: 45 },
+      professional: { economics: 55, diplomacy: 60, security: 75, communications: 35, legal: 40, administration: 85, technology: 65, management: 82, politics: 76 },
+      personal: { loyalty: 80, charisma: 55, leadership: 72, ambition: 50, integrity: 70, resilience: 70, intrigue: 45, discretion: 73 },
     },
   },
   {
@@ -169,9 +176,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 75,
     loyalty: 88,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 50, security: 78, media: 25, legal: 40, administration: 75, technology: 30 },
-      personal: { loyalty: 88, charisma: 55, leadership: 75, ambition: 35, integrity: 80, resilience: 75, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 50, security: 78, communications: 25, legal: 40, administration: 75, technology: 30, management: 81, politics: 69 },
+      personal: { loyalty: 88, charisma: 55, leadership: 75, ambition: 35, integrity: 80, resilience: 75, intrigue: 30, discretion: 84 },
     },
   },
   {
@@ -190,9 +198,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 82,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 55, security: 82, media: 50, legal: 45, administration: 70, technology: 85 },
-      personal: { loyalty: 82, charisma: 65, leadership: 80, ambition: 70, integrity: 90, resilience: 85, intrigue: 30 },
+      professional: { economics: 40, diplomacy: 55, security: 82, communications: 50, legal: 45, administration: 70, technology: 85, management: 72, politics: 60 },
+      personal: { loyalty: 82, charisma: 65, leadership: 80, ambition: 70, integrity: 90, resilience: 85, intrigue: 30, discretion: 85 },
     },
   },
   {
@@ -211,9 +220,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 87,
     loyalty: 50,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 45, security: 90, media: 40, legal: 30, administration: 68, technology: 45 },
-      personal: { loyalty: 50, charisma: 70, leadership: 88, ambition: 85, integrity: 55, resilience: 90, intrigue: 60 },
+      professional: { economics: 25, diplomacy: 45, security: 90, communications: 40, legal: 30, administration: 68, technology: 45, management: 81, politics: 60 },
+      personal: { loyalty: 50, charisma: 70, leadership: 88, ambition: 85, integrity: 55, resilience: 90, intrigue: 60, discretion: 76 },
     },
   },
   {
@@ -232,9 +242,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 92,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Vice Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 80, security: 78, media: 40, legal: 50, administration: 72, technology: 55 },
-      personal: { loyalty: 92, charisma: 60, leadership: 78, ambition: 35, integrity: 88, resilience: 75, intrigue: 20 },
+      professional: { economics: 35, diplomacy: 80, security: 78, communications: 40, legal: 50, administration: 72, technology: 55, management: 80, politics: 81 },
+      personal: { loyalty: 92, charisma: 60, leadership: 78, ambition: 35, integrity: 88, resilience: 75, intrigue: 20, discretion: 87 },
     },
   },
   {
@@ -253,9 +264,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 85,
     loyalty: 38,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 20, diplomacy: 30, security: 92, media: 20, legal: 35, administration: 60, technology: 55 },
-      personal: { loyalty: 38, charisma: 50, leadership: 82, ambition: 90, integrity: 35, resilience: 90, intrigue: 85 },
+      professional: { economics: 20, diplomacy: 30, security: 92, communications: 20, legal: 35, administration: 60, technology: 55, management: 69, politics: 43 },
+      personal: { loyalty: 38, charisma: 50, leadership: 82, ambition: 90, integrity: 35, resilience: 90, intrigue: 85, discretion: 61 },
     },
   },
   {
@@ -274,9 +286,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 65,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Air Mshl. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 50, security: 80, media: 60, legal: 30, administration: 65, technology: 82 },
-      personal: { loyalty: 65, charisma: 85, leadership: 80, ambition: 70, integrity: 65, resilience: 75, intrigue: 40 },
+      professional: { economics: 35, diplomacy: 50, security: 80, communications: 60, legal: 30, administration: 65, technology: 82, management: 75, politics: 60 },
+      personal: { loyalty: 65, charisma: 85, leadership: 80, ambition: 70, integrity: 65, resilience: 75, intrigue: 40, discretion: 72 },
     },
   },
   {
@@ -295,9 +308,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 85,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 70, security: 82, media: 30, legal: 40, administration: 72, technology: 35 },
-      personal: { loyalty: 85, charisma: 50, leadership: 80, ambition: 35, integrity: 92, resilience: 88, intrigue: 20 },
+      professional: { economics: 25, diplomacy: 70, security: 82, communications: 30, legal: 40, administration: 72, technology: 35, management: 76, politics: 71 },
+      personal: { loyalty: 85, charisma: 50, leadership: 80, ambition: 35, integrity: 92, resilience: 88, intrigue: 20, discretion: 90 },
     },
   },
   {
@@ -316,9 +330,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 48,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 45, diplomacy: 55, security: 75, media: 55, legal: 40, administration: 72, technology: 60 },
-      personal: { loyalty: 48, charisma: 72, leadership: 74, ambition: 88, integrity: 45, resilience: 65, intrigue: 75 },
+      professional: { economics: 45, diplomacy: 55, security: 75, communications: 55, legal: 40, administration: 72, technology: 60, management: 83, politics: 74 },
+      personal: { loyalty: 48, charisma: 72, leadership: 74, ambition: 88, integrity: 45, resilience: 65, intrigue: 75, discretion: 65 },
     },
   },
   {
@@ -337,9 +352,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 75,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 60, diplomacy: 45, security: 75, media: 35, legal: 55, administration: 88, technology: 50 },
-      personal: { loyalty: 75, charisma: 50, leadership: 78, ambition: 55, integrity: 90, resilience: 78, intrigue: 35 },
+      professional: { economics: 60, diplomacy: 45, security: 75, communications: 35, legal: 55, administration: 88, technology: 50, management: 73, politics: 57 },
+      personal: { loyalty: 75, charisma: 50, leadership: 78, ambition: 55, integrity: 90, resilience: 78, intrigue: 35, discretion: 74 },
     },
   },
   {
@@ -358,9 +374,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 77,
     loyalty: 88,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 60, security: 72, media: 70, legal: 45, administration: 75, technology: 65 },
-      personal: { loyalty: 88, charisma: 62, leadership: 72, ambition: 55, integrity: 85, resilience: 78, intrigue: 30 },
+      professional: { economics: 35, diplomacy: 60, security: 72, communications: 70, legal: 45, administration: 75, technology: 65, management: 84, politics: 78 },
+      personal: { loyalty: 88, charisma: 62, leadership: 72, ambition: 55, integrity: 85, resilience: 78, intrigue: 30, discretion: 92 },
     },
   },
   {
@@ -379,9 +396,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 72,
     loyalty: 92,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Lt. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 45, security: 75, media: 25, legal: 35, administration: 70, technology: 28 },
-      personal: { loyalty: 92, charisma: 50, leadership: 72, ambition: 30, integrity: 82, resilience: 78, intrigue: 20 },
+      professional: { economics: 25, diplomacy: 45, security: 75, communications: 25, legal: 35, administration: 70, technology: 28, management: 74, politics: 61 },
+      personal: { loyalty: 92, charisma: 50, leadership: 72, ambition: 30, integrity: 82, resilience: 78, intrigue: 20, discretion: 83 },
     },
   },
   {
@@ -400,9 +418,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 42,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 35, security: 88, media: 30, legal: 30, administration: 60, technology: 55 },
-      personal: { loyalty: 42, charisma: 65, leadership: 80, ambition: 78, integrity: 45, resilience: 88, intrigue: 60 },
+      professional: { economics: 30, diplomacy: 35, security: 88, communications: 30, legal: 30, administration: 60, technology: 55, management: 79, politics: 57 },
+      personal: { loyalty: 42, charisma: 65, leadership: 80, ambition: 78, integrity: 45, resilience: 88, intrigue: 60, discretion: 76 },
     },
   },
   {
@@ -421,9 +440,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 86,
     qualifiedFor: ["chief-defence-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 60, security: 78, media: 45, legal: 40, administration: 75, technology: 60 },
-      personal: { loyalty: 86, charisma: 58, leadership: 78, ambition: 45, integrity: 80, resilience: 72, intrigue: 25 },
+      professional: { economics: 35, diplomacy: 60, security: 78, communications: 45, legal: 40, administration: 75, technology: 60, management: 70, politics: 61 },
+      personal: { loyalty: 86, charisma: 58, leadership: 78, ambition: 45, integrity: 80, resilience: 72, intrigue: 25, discretion: 69 },
     },
   },
 
@@ -446,9 +466,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 90,
     loyalty: 70,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 35, security: 92, media: 30, legal: 30, administration: 70, technology: 40 },
-      personal: { loyalty: 70, charisma: 68, leadership: 92, ambition: 65, integrity: 72, resilience: 95, intrigue: 30 },
+      professional: { economics: 25, diplomacy: 35, security: 92, communications: 30, legal: 30, administration: 70, technology: 40, management: 73, politics: 45 },
+      personal: { loyalty: 70, charisma: 68, leadership: 92, ambition: 65, integrity: 72, resilience: 95, intrigue: 30, discretion: 76 },
     },
   },
   {
@@ -467,9 +488,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 85,
     loyalty: 75,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 45, security: 85, media: 50, legal: 35, administration: 72, technology: 55 },
-      personal: { loyalty: 75, charisma: 80, leadership: 85, ambition: 70, integrity: 70, resilience: 80, intrigue: 35 },
+      professional: { economics: 35, diplomacy: 45, security: 85, communications: 50, legal: 35, administration: 72, technology: 55, management: 74, politics: 54 },
+      personal: { loyalty: 75, charisma: 80, leadership: 85, ambition: 70, integrity: 70, resilience: 80, intrigue: 35, discretion: 70 },
     },
   },
   {
@@ -488,9 +510,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 60,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 20, diplomacy: 25, security: 90, media: 25, legal: 25, administration: 60, technology: 35 },
-      personal: { loyalty: 60, charisma: 55, leadership: 80, ambition: 75, integrity: 45, resilience: 90, intrigue: 50 },
+      professional: { economics: 20, diplomacy: 25, security: 90, communications: 25, legal: 25, administration: 60, technology: 35, management: 72, politics: 45 },
+      personal: { loyalty: 60, charisma: 55, leadership: 80, ambition: 75, integrity: 45, resilience: 90, intrigue: 50, discretion: 70 },
     },
   },
   {
@@ -509,9 +532,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 82,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 50, security: 82, media: 35, legal: 45, administration: 70, technology: 65 },
-      personal: { loyalty: 82, charisma: 45, leadership: 72, ambition: 50, integrity: 78, resilience: 75, intrigue: 70 },
+      professional: { economics: 30, diplomacy: 50, security: 82, communications: 35, legal: 45, administration: 70, technology: 65, management: 76, politics: 65 },
+      personal: { loyalty: 82, charisma: 45, leadership: 72, ambition: 50, integrity: 78, resilience: 75, intrigue: 70, discretion: 82 },
     },
   },
   {
@@ -530,9 +554,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 76,
     loyalty: 90,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 50, security: 78, media: 30, legal: 40, administration: 72, technology: 30 },
-      personal: { loyalty: 90, charisma: 55, leadership: 75, ambition: 35, integrity: 85, resilience: 80, intrigue: 22 },
+      professional: { economics: 25, diplomacy: 50, security: 78, communications: 30, legal: 40, administration: 72, technology: 30, management: 70, politics: 57 },
+      personal: { loyalty: 90, charisma: 55, leadership: 75, ambition: 35, integrity: 85, resilience: 80, intrigue: 22, discretion: 79 },
     },
   },
   {
@@ -551,9 +576,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 85,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Brig. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 55, diplomacy: 40, security: 70, media: 45, legal: 50, administration: 85, technology: 60 },
-      personal: { loyalty: 85, charisma: 60, leadership: 72, ambition: 65, integrity: 92, resilience: 80, intrigue: 25 },
+      professional: { economics: 55, diplomacy: 40, security: 70, communications: 45, legal: 50, administration: 85, technology: 60, management: 69, politics: 53 },
+      personal: { loyalty: 85, charisma: 60, leadership: 72, ambition: 65, integrity: 92, resilience: 80, intrigue: 25, discretion: 76 },
     },
   },
   {
@@ -572,9 +598,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 78,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 60, security: 82, media: 35, legal: 35, administration: 70, technology: 40 },
-      personal: { loyalty: 78, charisma: 60, leadership: 82, ambition: 45, integrity: 75, resilience: 85, intrigue: 28 },
+      professional: { economics: 30, diplomacy: 60, security: 82, communications: 35, legal: 35, administration: 70, technology: 40, management: 74, politics: 63 },
+      personal: { loyalty: 78, charisma: 60, leadership: 82, ambition: 45, integrity: 75, resilience: 85, intrigue: 28, discretion: 78 },
     },
   },
   {
@@ -593,9 +620,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 74,
     loyalty: 40,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 55, security: 65, media: 65, legal: 45, administration: 75, technology: 35 },
-      personal: { loyalty: 40, charisma: 72, leadership: 65, ambition: 90, integrity: 35, resilience: 60, intrigue: 85 },
+      professional: { economics: 40, diplomacy: 55, security: 65, communications: 65, legal: 45, administration: 75, technology: 35, management: 67, politics: 62 },
+      personal: { loyalty: 40, charisma: 72, leadership: 65, ambition: 90, integrity: 35, resilience: 60, intrigue: 85, discretion: 45 },
     },
   },
   {
@@ -614,9 +642,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 84,
     loyalty: 55,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 20, diplomacy: 30, security: 90, media: 25, legal: 25, administration: 55, technology: 50 },
-      personal: { loyalty: 55, charisma: 65, leadership: 82, ambition: 70, integrity: 55, resilience: 92, intrigue: 45 },
+      professional: { economics: 20, diplomacy: 30, security: 90, communications: 25, legal: 25, administration: 55, technology: 50, management: 61, politics: 35 },
+      personal: { loyalty: 55, charisma: 65, leadership: 82, ambition: 70, integrity: 55, resilience: 92, intrigue: 45, discretion: 66 },
     },
   },
   {
@@ -635,9 +664,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 52,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 50, security: 82, media: 55, legal: 35, administration: 68, technology: 50 },
-      personal: { loyalty: 52, charisma: 85, leadership: 85, ambition: 88, integrity: 55, resilience: 75, intrigue: 55 },
+      professional: { economics: 35, diplomacy: 50, security: 82, communications: 55, legal: 35, administration: 68, technology: 50, management: 70, politics: 52 },
+      personal: { loyalty: 52, charisma: 85, leadership: 85, ambition: 88, integrity: 55, resilience: 75, intrigue: 55, discretion: 58 },
     },
   },
   {
@@ -656,9 +686,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 72,
     loyalty: 93,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 40, security: 72, media: 20, legal: 35, administration: 68, technology: 25 },
-      personal: { loyalty: 93, charisma: 45, leadership: 70, ambition: 30, integrity: 85, resilience: 72, intrigue: 20 },
+      professional: { economics: 25, diplomacy: 40, security: 72, communications: 20, legal: 35, administration: 68, technology: 25, management: 74, politics: 59 },
+      personal: { loyalty: 93, charisma: 45, leadership: 70, ambition: 30, integrity: 85, resilience: 72, intrigue: 20, discretion: 84 },
     },
   },
   {
@@ -677,9 +708,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 80,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 65, security: 78, media: 40, legal: 40, administration: 75, technology: 45 },
-      personal: { loyalty: 80, charisma: 55, leadership: 75, ambition: 45, integrity: 78, resilience: 72, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 65, security: 78, communications: 40, legal: 40, administration: 75, technology: 45, management: 85, politics: 80 },
+      personal: { loyalty: 80, charisma: 55, leadership: 75, ambition: 45, integrity: 78, resilience: 72, intrigue: 30, discretion: 85 },
     },
   },
   {
@@ -698,9 +730,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 35,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 30, security: 88, media: 20, legal: 40, administration: 62, technology: 55 },
-      personal: { loyalty: 35, charisma: 40, leadership: 75, ambition: 82, integrity: 40, resilience: 85, intrigue: 90 },
+      professional: { economics: 25, diplomacy: 30, security: 88, communications: 20, legal: 40, administration: 62, technology: 55, management: 77, politics: 54 },
+      personal: { loyalty: 35, charisma: 40, leadership: 75, ambition: 82, integrity: 40, resilience: 85, intrigue: 90, discretion: 71 },
     },
   },
   {
@@ -719,9 +752,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 82,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 45, security: 80, media: 30, legal: 45, administration: 78, technology: 40 },
-      personal: { loyalty: 82, charisma: 45, leadership: 80, ambition: 40, integrity: 90, resilience: 80, intrigue: 22 },
+      professional: { economics: 30, diplomacy: 45, security: 80, communications: 30, legal: 45, administration: 78, technology: 40, management: 71, politics: 54 },
+      personal: { loyalty: 82, charisma: 45, leadership: 80, ambition: 40, integrity: 90, resilience: 80, intrigue: 22, discretion: 77 },
     },
   },
   {
@@ -740,9 +774,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 75,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 70, security: 80, media: 40, legal: 42, administration: 68, technology: 45 },
-      personal: { loyalty: 75, charisma: 60, leadership: 78, ambition: 55, integrity: 75, resilience: 78, intrigue: 32 },
+      professional: { economics: 30, diplomacy: 70, security: 80, communications: 40, legal: 42, administration: 68, technology: 45, management: 64, politics: 60 },
+      personal: { loyalty: 75, charisma: 60, leadership: 78, ambition: 55, integrity: 75, resilience: 78, intrigue: 32, discretion: 68 },
     },
   },
   {
@@ -761,9 +796,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 45,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 30, security: 82, media: 35, legal: 30, administration: 65, technology: 40 },
-      personal: { loyalty: 45, charisma: 65, leadership: 78, ambition: 82, integrity: 45, resilience: 85, intrigue: 55 },
+      professional: { economics: 35, diplomacy: 30, security: 82, communications: 35, legal: 30, administration: 65, technology: 40, management: 79, politics: 55 },
+      personal: { loyalty: 45, charisma: 65, leadership: 78, ambition: 82, integrity: 45, resilience: 85, intrigue: 55, discretion: 72 },
     },
   },
   {
@@ -782,9 +818,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 77,
     loyalty: 88,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 68, security: 75, media: 35, legal: 40, administration: 70, technology: 30 },
-      personal: { loyalty: 88, charisma: 58, leadership: 75, ambition: 35, integrity: 82, resilience: 78, intrigue: 22 },
+      professional: { economics: 25, diplomacy: 68, security: 75, communications: 35, legal: 40, administration: 70, technology: 30, management: 83, politics: 79 },
+      personal: { loyalty: 88, charisma: 58, leadership: 75, ambition: 35, integrity: 82, resilience: 78, intrigue: 22, discretion: 90 },
     },
   },
   {
@@ -803,9 +840,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 73,
     loyalty: 58,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 50, security: 68, media: 80, legal: 35, administration: 72, technology: 45 },
-      personal: { loyalty: 58, charisma: 70, leadership: 65, ambition: 72, integrity: 50, resilience: 62, intrigue: 65 },
+      professional: { economics: 40, diplomacy: 50, security: 68, communications: 80, legal: 35, administration: 72, technology: 45, management: 69, politics: 61 },
+      personal: { loyalty: 58, charisma: 70, leadership: 65, ambition: 72, integrity: 50, resilience: 62, intrigue: 65, discretion: 56 },
     },
   },
   {
@@ -824,9 +862,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 80,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Brig. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 40, security: 78, media: 40, legal: 42, administration: 65, technology: 88 },
-      personal: { loyalty: 80, charisma: 55, leadership: 70, ambition: 62, integrity: 88, resilience: 75, intrigue: 35 },
+      professional: { economics: 30, diplomacy: 40, security: 78, communications: 40, legal: 42, administration: 65, technology: 88, management: 63, politics: 48 },
+      personal: { loyalty: 80, charisma: 55, leadership: 70, ambition: 62, integrity: 88, resilience: 75, intrigue: 35, discretion: 77 },
     },
   },
   {
@@ -845,9 +884,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 76,
     loyalty: 72,
     qualifiedFor: ["chief-army-force"],
+    honorific: "Maj. Gen. (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 35, security: 80, media: 22, legal: 35, administration: 72, technology: 35 },
-      personal: { loyalty: 72, charisma: 48, leadership: 78, ambition: 42, integrity: 72, resilience: 82, intrigue: 28 },
+      professional: { economics: 22, diplomacy: 35, security: 80, communications: 22, legal: 35, administration: 72, technology: 35, management: 72, politics: 51 },
+      personal: { loyalty: 72, charisma: 48, leadership: 78, ambition: 42, integrity: 72, resilience: 82, intrigue: 28, discretion: 74 },
     },
   },
 
@@ -870,9 +910,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 84,
     loyalty: 88,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 55, security: 82, media: 40, legal: 65, administration: 80, technology: 55 },
-      personal: { loyalty: 88, charisma: 55, leadership: 78, ambition: 45, integrity: 82, resilience: 75, intrigue: 28 },
+      professional: { economics: 35, diplomacy: 55, security: 82, communications: 40, legal: 65, administration: 80, technology: 55, management: 69, politics: 58 },
+      personal: { loyalty: 88, charisma: 55, leadership: 78, ambition: 45, integrity: 82, resilience: 75, intrigue: 28, discretion: 69 },
     },
   },
   {
@@ -891,9 +932,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 52,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 50, security: 85, media: 60, legal: 55, administration: 70, technology: 62 },
-      personal: { loyalty: 52, charisma: 68, leadership: 75, ambition: 80, integrity: 50, resilience: 70, intrigue: 78 },
+      professional: { economics: 40, diplomacy: 50, security: 85, communications: 60, legal: 55, administration: 70, technology: 62, management: 83, politics: 70 },
+      personal: { loyalty: 52, charisma: 68, leadership: 75, ambition: 80, integrity: 50, resilience: 70, intrigue: 78, discretion: 70 },
     },
   },
   {
@@ -912,9 +954,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 85,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 60, security: 75, media: 55, legal: 60, administration: 78, technology: 50 },
-      personal: { loyalty: 85, charisma: 65, leadership: 75, ambition: 60, integrity: 90, resilience: 80, intrigue: 25 },
+      professional: { economics: 40, diplomacy: 60, security: 75, communications: 55, legal: 60, administration: 78, technology: 50, management: 78, politics: 70 },
+      personal: { loyalty: 85, charisma: 65, leadership: 75, ambition: 60, integrity: 90, resilience: 80, intrigue: 25, discretion: 86 },
     },
   },
   {
@@ -933,9 +976,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 45,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 30, security: 88, media: 30, legal: 40, administration: 65, technology: 45 },
-      personal: { loyalty: 45, charisma: 60, leadership: 80, ambition: 78, integrity: 42, resilience: 88, intrigue: 60 },
+      professional: { economics: 25, diplomacy: 30, security: 88, communications: 30, legal: 40, administration: 65, technology: 45, management: 78, politics: 53 },
+      personal: { loyalty: 45, charisma: 60, leadership: 80, ambition: 78, integrity: 42, resilience: 88, intrigue: 60, discretion: 70 },
     },
   },
   {
@@ -954,9 +998,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 62,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 45, diplomacy: 55, security: 72, media: 78, legal: 40, administration: 70, technology: 55 },
-      personal: { loyalty: 62, charisma: 85, leadership: 78, ambition: 75, integrity: 55, resilience: 68, intrigue: 50 },
+      professional: { economics: 45, diplomacy: 55, security: 72, communications: 78, legal: 40, administration: 70, technology: 55, management: 78, politics: 67 },
+      personal: { loyalty: 62, charisma: 85, leadership: 78, ambition: 75, integrity: 55, resilience: 68, intrigue: 50, discretion: 66 },
     },
   },
   {
@@ -975,9 +1020,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 72,
     loyalty: 92,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 45, security: 75, media: 25, legal: 50, administration: 72, technology: 28 },
-      personal: { loyalty: 92, charisma: 50, leadership: 72, ambition: 32, integrity: 78, resilience: 75, intrigue: 22 },
+      professional: { economics: 25, diplomacy: 45, security: 75, communications: 25, legal: 50, administration: 72, technology: 28, management: 71, politics: 58 },
+      personal: { loyalty: 92, charisma: 50, leadership: 72, ambition: 32, integrity: 78, resilience: 75, intrigue: 22, discretion: 76 },
     },
   },
   {
@@ -996,9 +1042,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 80,
     qualifiedFor: ["chief-police-force"],
+    honorific: "CP (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 45, security: 78, media: 35, legal: 70, administration: 72, technology: 80 },
-      personal: { loyalty: 80, charisma: 50, leadership: 70, ambition: 55, integrity: 82, resilience: 75, intrigue: 38 },
+      professional: { economics: 30, diplomacy: 45, security: 78, communications: 35, legal: 70, administration: 72, technology: 80, management: 65, politics: 53 },
+      personal: { loyalty: 80, charisma: 50, leadership: 70, ambition: 55, integrity: 82, resilience: 75, intrigue: 38, discretion: 73 },
     },
   },
   {
@@ -1017,9 +1064,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 86,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 62, security: 76, media: 40, legal: 55, administration: 80, technology: 42 },
-      personal: { loyalty: 86, charisma: 52, leadership: 78, ambition: 40, integrity: 80, resilience: 72, intrigue: 25 },
+      professional: { economics: 30, diplomacy: 62, security: 76, communications: 40, legal: 55, administration: 80, technology: 42, management: 77, politics: 69 },
+      personal: { loyalty: 86, charisma: 52, leadership: 78, ambition: 40, integrity: 80, resilience: 72, intrigue: 25, discretion: 74 },
     },
   },
   {
@@ -1038,9 +1086,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 75,
     loyalty: 40,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 70, diplomacy: 50, security: 65, media: 45, legal: 45, administration: 82, technology: 40 },
-      personal: { loyalty: 40, charisma: 68, leadership: 68, ambition: 88, integrity: 38, resilience: 62, intrigue: 80 },
+      professional: { economics: 70, diplomacy: 50, security: 65, communications: 45, legal: 45, administration: 82, technology: 40, management: 69, politics: 60 },
+      personal: { loyalty: 40, charisma: 68, leadership: 68, ambition: 88, integrity: 38, resilience: 62, intrigue: 80, discretion: 44 },
     },
   },
   {
@@ -1059,9 +1108,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 86,
     loyalty: 48,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 20, diplomacy: 30, security: 90, media: 28, legal: 35, administration: 60, technology: 48 },
-      personal: { loyalty: 48, charisma: 58, leadership: 82, ambition: 75, integrity: 45, resilience: 90, intrigue: 62 },
+      professional: { economics: 20, diplomacy: 30, security: 90, communications: 28, legal: 35, administration: 60, technology: 48, management: 62, politics: 36 },
+      personal: { loyalty: 48, charisma: 58, leadership: 82, ambition: 75, integrity: 45, resilience: 90, intrigue: 62, discretion: 59 },
     },
   },
   {
@@ -1080,9 +1130,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 78,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 45, diplomacy: 58, security: 70, media: 65, legal: 62, administration: 78, technology: 50 },
-      personal: { loyalty: 78, charisma: 80, leadership: 78, ambition: 65, integrity: 92, resilience: 82, intrigue: 22 },
+      professional: { economics: 45, diplomacy: 58, security: 70, communications: 65, legal: 62, administration: 78, technology: 50, management: 76, politics: 66 },
+      personal: { loyalty: 78, charisma: 80, leadership: 78, ambition: 65, integrity: 92, resilience: 82, intrigue: 22, discretion: 85 },
     },
   },
   {
@@ -1101,9 +1152,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 77,
     loyalty: 70,
     qualifiedFor: ["chief-police-force"],
+    honorific: "CP (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 35, security: 82, media: 25, legal: 42, administration: 68, technology: 35 },
-      personal: { loyalty: 70, charisma: 52, leadership: 78, ambition: 55, integrity: 68, resilience: 88, intrigue: 35 },
+      professional: { economics: 22, diplomacy: 35, security: 82, communications: 25, legal: 42, administration: 68, technology: 35, management: 80, politics: 59 },
+      personal: { loyalty: 70, charisma: 52, leadership: 78, ambition: 55, integrity: 68, resilience: 88, intrigue: 35, discretion: 85 },
     },
   },
   {
@@ -1122,9 +1174,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 85,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 72, security: 74, media: 42, legal: 48, administration: 72, technology: 38 },
-      personal: { loyalty: 85, charisma: 62, leadership: 75, ambition: 38, integrity: 80, resilience: 72, intrigue: 22 },
+      professional: { economics: 30, diplomacy: 72, security: 74, communications: 42, legal: 48, administration: 72, technology: 38, management: 71, politics: 69 },
+      personal: { loyalty: 85, charisma: 62, leadership: 75, ambition: 38, integrity: 80, resilience: 72, intrigue: 22, discretion: 73 },
     },
   },
   {
@@ -1143,9 +1196,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 65,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 48, security: 85, media: 22, legal: 50, administration: 68, technology: 52 },
-      personal: { loyalty: 65, charisma: 42, leadership: 70, ambition: 55, integrity: 62, resilience: 75, intrigue: 85 },
+      professional: { economics: 28, diplomacy: 48, security: 85, communications: 22, legal: 50, administration: 68, technology: 52, management: 73, politics: 62 },
+      personal: { loyalty: 65, charisma: 42, leadership: 70, ambition: 55, integrity: 62, resilience: 75, intrigue: 85, discretion: 73 },
     },
   },
   {
@@ -1164,9 +1218,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 85,
     loyalty: 55,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 32, security: 88, media: 30, legal: 38, administration: 58, technology: 50 },
-      personal: { loyalty: 55, charisma: 62, leadership: 82, ambition: 72, integrity: 55, resilience: 90, intrigue: 48 },
+      professional: { economics: 22, diplomacy: 32, security: 88, communications: 30, legal: 38, administration: 58, technology: 50, management: 80, politics: 55 },
+      personal: { loyalty: 55, charisma: 62, leadership: 82, ambition: 72, integrity: 55, resilience: 90, intrigue: 48, discretion: 83 },
     },
   },
   {
@@ -1185,9 +1240,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 74,
     loyalty: 90,
     qualifiedFor: ["chief-police-force"],
+    honorific: "CP (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 58, security: 72, media: 32, legal: 48, administration: 70, technology: 30 },
-      personal: { loyalty: 90, charisma: 55, leadership: 72, ambition: 35, integrity: 82, resilience: 70, intrigue: 20 },
+      professional: { economics: 28, diplomacy: 58, security: 72, communications: 32, legal: 48, administration: 70, technology: 30, management: 77, politics: 70 },
+      personal: { loyalty: 90, charisma: 55, leadership: 72, ambition: 35, integrity: 82, resilience: 70, intrigue: 20, discretion: 82 },
     },
   },
   {
@@ -1206,9 +1262,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 82,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 32, diplomacy: 62, security: 70, media: 55, legal: 72, administration: 75, technology: 48 },
-      personal: { loyalty: 82, charisma: 72, leadership: 75, ambition: 58, integrity: 85, resilience: 78, intrigue: 28 },
+      professional: { economics: 32, diplomacy: 62, security: 70, communications: 55, legal: 72, administration: 75, technology: 48, management: 80, politics: 74 },
+      personal: { loyalty: 82, charisma: 72, leadership: 75, ambition: 58, integrity: 85, resilience: 78, intrigue: 28, discretion: 87 },
     },
   },
   {
@@ -1227,9 +1284,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 76,
     loyalty: 68,
     qualifiedFor: ["chief-police-force"],
+    honorific: "DIG (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 38, security: 80, media: 35, legal: 42, administration: 68, technology: 32 },
-      personal: { loyalty: 68, charisma: 58, leadership: 80, ambition: 60, integrity: 65, resilience: 85, intrigue: 42 },
+      professional: { economics: 25, diplomacy: 38, security: 80, communications: 35, legal: 42, administration: 68, technology: 32, management: 77, politics: 56 },
+      personal: { loyalty: 68, charisma: 58, leadership: 80, ambition: 60, integrity: 65, resilience: 85, intrigue: 42, discretion: 78 },
     },
   },
   {
@@ -1248,9 +1306,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 73,
     loyalty: 38,
     qualifiedFor: ["chief-police-force"],
+    honorific: "CP (Rtd.)",
     competencies: {
-      professional: { economics: 48, diplomacy: 55, security: 68, media: 70, legal: 40, administration: 72, technology: 42 },
-      personal: { loyalty: 38, charisma: 72, leadership: 65, ambition: 85, integrity: 40, resilience: 60, intrigue: 78 },
+      professional: { economics: 48, diplomacy: 55, security: 68, communications: 70, legal: 40, administration: 72, technology: 42, management: 66, politics: 61 },
+      personal: { loyalty: 38, charisma: 72, leadership: 65, ambition: 85, integrity: 40, resilience: 60, intrigue: 78, discretion: 47 },
     },
   },
   {
@@ -1269,9 +1328,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 78,
     qualifiedFor: ["chief-police-force"],
+    honorific: "AIG (Rtd.)",
     competencies: {
-      professional: { economics: 42, diplomacy: 48, security: 75, media: 32, legal: 55, administration: 82, technology: 58 },
-      personal: { loyalty: 78, charisma: 45, leadership: 72, ambition: 48, integrity: 88, resilience: 72, intrigue: 30 },
+      professional: { economics: 42, diplomacy: 48, security: 75, communications: 32, legal: 55, administration: 82, technology: 58, management: 67, politics: 55 },
+      personal: { loyalty: 78, charisma: 45, leadership: 72, ambition: 48, integrity: 88, resilience: 72, intrigue: 30, discretion: 70 },
     },
   },
 
@@ -1294,9 +1354,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 85,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 65, security: 72, media: 50, legal: 55, administration: 78, technology: 48 },
-      personal: { loyalty: 85, charisma: 68, leadership: 78, ambition: 45, integrity: 82, resilience: 75, intrigue: 22 },
+      professional: { economics: 35, diplomacy: 65, security: 72, communications: 50, legal: 55, administration: 78, technology: 48, management: 70, politics: 64 },
+      personal: { loyalty: 85, charisma: 68, leadership: 78, ambition: 45, integrity: 82, resilience: 75, intrigue: 22, discretion: 71 },
     },
   },
   {
@@ -1315,9 +1376,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 78,
     qualifiedFor: ["chief-community-police"],
+    honorific: "ACC (Rtd.)",
     competencies: {
-      professional: { economics: 38, diplomacy: 72, security: 68, media: 62, legal: 48, administration: 72, technology: 45 },
-      personal: { loyalty: 78, charisma: 82, leadership: 78, ambition: 55, integrity: 78, resilience: 72, intrigue: 28 },
+      professional: { economics: 38, diplomacy: 72, security: 68, communications: 62, legal: 48, administration: 72, technology: 45, management: 69, politics: 66 },
+      personal: { loyalty: 78, charisma: 82, leadership: 78, ambition: 55, integrity: 78, resilience: 72, intrigue: 28, discretion: 69 },
     },
   },
   {
@@ -1336,9 +1398,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 75,
     loyalty: 90,
     qualifiedFor: ["chief-community-police"],
+    honorific: "CSP (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 62, security: 68, media: 35, legal: 58, administration: 65, technology: 28 },
-      personal: { loyalty: 90, charisma: 58, leadership: 70, ambition: 32, integrity: 85, resilience: 72, intrigue: 20 },
+      professional: { economics: 25, diplomacy: 62, security: 68, communications: 35, legal: 58, administration: 65, technology: 28, management: 68, politics: 64 },
+      personal: { loyalty: 90, charisma: 58, leadership: 70, ambition: 32, integrity: 85, resilience: 72, intrigue: 20, discretion: 79 },
     },
   },
   {
@@ -1357,9 +1420,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 72,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 55, security: 78, media: 40, legal: 45, administration: 70, technology: 55 },
-      personal: { loyalty: 72, charisma: 60, leadership: 72, ambition: 58, integrity: 68, resilience: 75, intrigue: 65 },
+      professional: { economics: 30, diplomacy: 55, security: 78, communications: 40, legal: 45, administration: 70, technology: 55, management: 80, politics: 72 },
+      personal: { loyalty: 72, charisma: 60, leadership: 72, ambition: 58, integrity: 68, resilience: 75, intrigue: 65, discretion: 81 },
     },
   },
   {
@@ -1378,9 +1442,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 88,
     qualifiedFor: ["chief-community-police"],
+    honorific: "ACC (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 78, security: 65, media: 52, legal: 45, administration: 68, technology: 38 },
-      personal: { loyalty: 88, charisma: 78, leadership: 75, ambition: 42, integrity: 90, resilience: 82, intrigue: 18 },
+      professional: { economics: 28, diplomacy: 78, security: 65, communications: 52, legal: 45, administration: 68, technology: 38, management: 79, politics: 80 },
+      personal: { loyalty: 88, charisma: 78, leadership: 75, ambition: 42, integrity: 90, resilience: 82, intrigue: 18, discretion: 93 },
     },
   },
   {
@@ -1399,9 +1464,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 74,
     loyalty: 82,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 50, security: 75, media: 28, legal: 40, administration: 72, technology: 25 },
-      personal: { loyalty: 82, charisma: 52, leadership: 75, ambition: 38, integrity: 72, resilience: 80, intrigue: 28 },
+      professional: { economics: 22, diplomacy: 50, security: 75, communications: 28, legal: 40, administration: 72, technology: 25, management: 69, politics: 56 },
+      personal: { loyalty: 82, charisma: 52, leadership: 75, ambition: 38, integrity: 72, resilience: 80, intrigue: 28, discretion: 71 },
     },
   },
   {
@@ -1420,9 +1486,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 55,
     qualifiedFor: ["chief-community-police"],
+    honorific: "CSP (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 52, security: 65, media: 68, legal: 38, administration: 70, technology: 82 },
-      personal: { loyalty: 55, charisma: 72, leadership: 70, ambition: 78, integrity: 55, resilience: 62, intrigue: 58 },
+      professional: { economics: 40, diplomacy: 52, security: 65, communications: 68, legal: 38, administration: 70, technology: 82, management: 63, politics: 54 },
+      personal: { loyalty: 55, charisma: 72, leadership: 70, ambition: 78, integrity: 55, resilience: 62, intrigue: 58, discretion: 52 },
     },
   },
   {
@@ -1441,9 +1508,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 80,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 48, security: 85, media: 30, legal: 38, administration: 65, technology: 35 },
-      personal: { loyalty: 80, charisma: 55, leadership: 80, ambition: 45, integrity: 72, resilience: 90, intrigue: 35 },
+      professional: { economics: 22, diplomacy: 48, security: 85, communications: 30, legal: 38, administration: 65, technology: 35, management: 66, politics: 50 },
+      personal: { loyalty: 80, charisma: 55, leadership: 80, ambition: 45, integrity: 72, resilience: 90, intrigue: 35, discretion: 74 },
     },
   },
   {
@@ -1462,9 +1530,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 77,
     loyalty: 85,
     qualifiedFor: ["chief-community-police"],
+    honorific: "ACC (Rtd.)",
     competencies: {
-      professional: { economics: 45, diplomacy: 58, security: 62, media: 48, legal: 55, administration: 78, technology: 50 },
-      personal: { loyalty: 85, charisma: 62, leadership: 72, ambition: 52, integrity: 92, resilience: 75, intrigue: 18 },
+      professional: { economics: 45, diplomacy: 58, security: 62, communications: 48, legal: 55, administration: 78, technology: 50, management: 76, politics: 69 },
+      personal: { loyalty: 85, charisma: 62, leadership: 72, ambition: 52, integrity: 92, resilience: 75, intrigue: 18, discretion: 85 },
     },
   },
   {
@@ -1483,9 +1552,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 76,
     loyalty: 42,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 20, diplomacy: 32, security: 82, media: 25, legal: 30, administration: 58, technology: 35 },
-      personal: { loyalty: 42, charisma: 58, leadership: 75, ambition: 72, integrity: 40, resilience: 88, intrigue: 55 },
+      professional: { economics: 20, diplomacy: 32, security: 82, communications: 25, legal: 30, administration: 58, technology: 35, management: 71, politics: 49 },
+      personal: { loyalty: 42, charisma: 58, leadership: 75, ambition: 72, integrity: 40, resilience: 88, intrigue: 55, discretion: 68 },
     },
   },
   {
@@ -1504,9 +1574,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 82,
     qualifiedFor: ["chief-community-police"],
+    honorific: "CSP (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 75, security: 65, media: 45, legal: 50, administration: 72, technology: 38 },
-      personal: { loyalty: 82, charisma: 65, leadership: 72, ambition: 40, integrity: 78, resilience: 70, intrigue: 25 },
+      professional: { economics: 30, diplomacy: 75, security: 65, communications: 45, legal: 50, administration: 72, technology: 38, management: 70, politics: 72 },
+      personal: { loyalty: 82, charisma: 65, leadership: 72, ambition: 40, integrity: 78, resilience: 70, intrigue: 25, discretion: 72 },
     },
   },
   {
@@ -1525,9 +1596,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 75,
     loyalty: 88,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 62, security: 70, media: 32, legal: 42, administration: 70, technology: 30 },
-      personal: { loyalty: 88, charisma: 48, leadership: 72, ambition: 30, integrity: 80, resilience: 78, intrigue: 20 },
+      professional: { economics: 28, diplomacy: 62, security: 70, communications: 32, legal: 42, administration: 70, technology: 30, management: 73, politics: 68 },
+      personal: { loyalty: 88, charisma: 48, leadership: 72, ambition: 30, integrity: 80, resilience: 78, intrigue: 20, discretion: 81 },
     },
   },
   {
@@ -1546,9 +1618,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 77,
     loyalty: 50,
     qualifiedFor: ["chief-community-police"],
+    honorific: "ACC (Rtd.)",
     competencies: {
-      professional: { economics: 48, diplomacy: 60, security: 65, media: 65, legal: 42, administration: 68, technology: 48 },
-      personal: { loyalty: 50, charisma: 78, leadership: 72, ambition: 80, integrity: 52, resilience: 65, intrigue: 62 },
+      professional: { economics: 48, diplomacy: 60, security: 65, communications: 65, legal: 42, administration: 68, technology: 48, management: 77, politics: 71 },
+      personal: { loyalty: 50, charisma: 78, leadership: 72, ambition: 80, integrity: 52, resilience: 65, intrigue: 62, discretion: 66 },
     },
   },
   {
@@ -1567,9 +1640,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 84,
     loyalty: 75,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 32, diplomacy: 70, security: 78, media: 42, legal: 48, administration: 80, technology: 42 },
-      personal: { loyalty: 75, charisma: 62, leadership: 80, ambition: 52, integrity: 78, resilience: 78, intrigue: 30 },
+      professional: { economics: 32, diplomacy: 70, security: 78, communications: 42, legal: 48, administration: 80, technology: 42, management: 74, politics: 69 },
+      personal: { loyalty: 75, charisma: 62, leadership: 80, ambition: 52, integrity: 78, resilience: 78, intrigue: 30, discretion: 72 },
     },
   },
   {
@@ -1588,9 +1662,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 76,
     loyalty: 82,
     qualifiedFor: ["chief-community-police"],
+    honorific: "CSP (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 68, security: 60, media: 58, legal: 45, administration: 70, technology: 42 },
-      personal: { loyalty: 82, charisma: 75, leadership: 72, ambition: 48, integrity: 88, resilience: 72, intrigue: 22 },
+      professional: { economics: 35, diplomacy: 68, security: 60, communications: 58, legal: 45, administration: 70, technology: 42, management: 62, politics: 60 },
+      personal: { loyalty: 82, charisma: 75, leadership: 72, ambition: 48, integrity: 88, resilience: 72, intrigue: 22, discretion: 71 },
     },
   },
   {
@@ -1609,9 +1684,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 58,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 40, security: 85, media: 25, legal: 35, administration: 62, technology: 45 },
-      personal: { loyalty: 58, charisma: 48, leadership: 75, ambition: 62, integrity: 60, resilience: 85, intrigue: 75 },
+      professional: { economics: 22, diplomacy: 40, security: 85, communications: 25, legal: 35, administration: 62, technology: 45, management: 78, politics: 60 },
+      personal: { loyalty: 58, charisma: 48, leadership: 75, ambition: 62, integrity: 60, resilience: 85, intrigue: 75, discretion: 82 },
     },
   },
   {
@@ -1630,9 +1706,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 48,
     qualifiedFor: ["chief-community-police"],
+    honorific: "ACC (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 35, security: 80, media: 35, legal: 38, administration: 62, technology: 45 },
-      personal: { loyalty: 48, charisma: 60, leadership: 75, ambition: 78, integrity: 50, resilience: 82, intrigue: 52 },
+      professional: { economics: 25, diplomacy: 35, security: 80, communications: 35, legal: 38, administration: 62, technology: 45, management: 62, politics: 42 },
+      personal: { loyalty: 48, charisma: 60, leadership: 75, ambition: 78, integrity: 50, resilience: 82, intrigue: 52, discretion: 59 },
     },
   },
   {
@@ -1651,9 +1728,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 77,
     loyalty: 85,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 32, diplomacy: 72, security: 62, media: 55, legal: 48, administration: 72, technology: 40 },
-      personal: { loyalty: 85, charisma: 70, leadership: 74, ambition: 45, integrity: 85, resilience: 75, intrigue: 20 },
+      professional: { economics: 32, diplomacy: 72, security: 62, communications: 55, legal: 48, administration: 72, technology: 40, management: 69, politics: 68 },
+      personal: { loyalty: 85, charisma: 70, leadership: 74, ambition: 45, integrity: 85, resilience: 75, intrigue: 20, discretion: 76 },
     },
   },
   {
@@ -1672,9 +1750,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 74,
     loyalty: 55,
     qualifiedFor: ["chief-community-police"],
+    honorific: "CSP (Rtd.)",
     competencies: {
-      professional: { economics: 42, diplomacy: 65, security: 60, media: 62, legal: 40, administration: 65, technology: 35 },
-      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 70, integrity: 50, resilience: 65, intrigue: 68 },
+      professional: { economics: 42, diplomacy: 65, security: 60, communications: 62, legal: 40, administration: 65, technology: 35, management: 58, politics: 58 },
+      personal: { loyalty: 55, charisma: 68, leadership: 65, ambition: 70, integrity: 50, resilience: 65, intrigue: 68, discretion: 51 },
     },
   },
   {
@@ -1693,9 +1772,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 76,
     loyalty: 90,
     qualifiedFor: ["chief-community-police"],
+    honorific: "DCC (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 72, security: 65, media: 30, legal: 48, administration: 68, technology: 28 },
-      personal: { loyalty: 90, charisma: 52, leadership: 72, ambition: 30, integrity: 88, resilience: 80, intrigue: 18 },
+      professional: { economics: 25, diplomacy: 72, security: 65, communications: 30, legal: 48, administration: 68, technology: 28, management: 60, politics: 60 },
+      personal: { loyalty: 90, charisma: 52, leadership: 72, ambition: 30, integrity: 88, resilience: 80, intrigue: 18, discretion: 74 },
     },
   },
 
@@ -1718,9 +1798,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 87,
     loyalty: 82,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 65, security: 85, media: 42, legal: 50, administration: 78, technology: 68 },
-      personal: { loyalty: 82, charisma: 62, leadership: 85, ambition: 55, integrity: 80, resilience: 78, intrigue: 28 },
+      professional: { economics: 40, diplomacy: 65, security: 85, communications: 42, legal: 50, administration: 78, technology: 68, management: 80, politics: 70 },
+      personal: { loyalty: 82, charisma: 62, leadership: 85, ambition: 55, integrity: 80, resilience: 78, intrigue: 28, discretion: 77 },
     },
   },
   {
@@ -1739,9 +1820,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 85,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 55, diplomacy: 55, security: 72, media: 28, legal: 42, administration: 82, technology: 48 },
-      personal: { loyalty: 85, charisma: 45, leadership: 72, ambition: 38, integrity: 78, resilience: 72, intrigue: 25 },
+      professional: { economics: 55, diplomacy: 55, security: 72, communications: 28, legal: 42, administration: 82, technology: 48, management: 69, politics: 61 },
+      personal: { loyalty: 85, charisma: 45, leadership: 72, ambition: 38, integrity: 78, resilience: 72, intrigue: 25, discretion: 67 },
     },
   },
   {
@@ -1760,9 +1842,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 75,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Vice Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 32, diplomacy: 68, security: 80, media: 38, legal: 42, administration: 75, technology: 55 },
-      personal: { loyalty: 75, charisma: 62, leadership: 82, ambition: 52, integrity: 72, resilience: 78, intrigue: 32 },
+      professional: { economics: 32, diplomacy: 68, security: 80, communications: 38, legal: 42, administration: 75, technology: 55, management: 75, politics: 68 },
+      personal: { loyalty: 75, charisma: 62, leadership: 82, ambition: 52, integrity: 72, resilience: 78, intrigue: 32, discretion: 71 },
     },
   },
   {
@@ -1781,9 +1864,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 84,
     loyalty: 55,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 35, security: 90, media: 30, legal: 28, administration: 58, technology: 52 },
-      personal: { loyalty: 55, charisma: 68, leadership: 82, ambition: 75, integrity: 55, resilience: 92, intrigue: 45 },
+      professional: { economics: 22, diplomacy: 35, security: 90, communications: 30, legal: 28, administration: 58, technology: 52, management: 78, politics: 55 },
+      personal: { loyalty: 55, charisma: 68, leadership: 82, ambition: 75, integrity: 55, resilience: 92, intrigue: 45, discretion: 82 },
     },
   },
   {
@@ -1802,9 +1886,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 70,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 40, security: 85, media: 28, legal: 38, administration: 68, technology: 50 },
-      personal: { loyalty: 70, charisma: 48, leadership: 78, ambition: 52, integrity: 72, resilience: 85, intrigue: 58 },
+      professional: { economics: 35, diplomacy: 40, security: 85, communications: 28, legal: 38, administration: 68, technology: 50, management: 77, politics: 58 },
+      personal: { loyalty: 70, charisma: 48, leadership: 78, ambition: 52, integrity: 72, resilience: 85, intrigue: 58, discretion: 83 },
     },
   },
   {
@@ -1823,9 +1908,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 74,
     loyalty: 92,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 48, security: 72, media: 22, legal: 42, administration: 75, technology: 30 },
-      personal: { loyalty: 92, charisma: 48, leadership: 72, ambition: 28, integrity: 85, resilience: 72, intrigue: 20 },
+      professional: { economics: 28, diplomacy: 48, security: 72, communications: 22, legal: 42, administration: 75, technology: 30, management: 79, politics: 67 },
+      personal: { loyalty: 92, charisma: 48, leadership: 72, ambition: 28, integrity: 85, resilience: 72, intrigue: 20, discretion: 84 },
     },
   },
   {
@@ -1844,9 +1930,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 85,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Cdre. (Rtd.)",
     competencies: {
-      professional: { economics: 38, diplomacy: 55, security: 72, media: 45, legal: 48, administration: 78, technology: 65 },
-      personal: { loyalty: 85, charisma: 58, leadership: 75, ambition: 62, integrity: 88, resilience: 78, intrigue: 25 },
+      professional: { economics: 38, diplomacy: 55, security: 72, communications: 45, legal: 48, administration: 78, technology: 65, management: 84, politics: 74 },
+      personal: { loyalty: 85, charisma: 58, leadership: 75, ambition: 62, integrity: 88, resilience: 78, intrigue: 25, discretion: 90 },
     },
   },
   {
@@ -1865,9 +1952,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 76,
     loyalty: 58,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 55, security: 70, media: 78, legal: 35, administration: 68, technology: 48 },
-      personal: { loyalty: 58, charisma: 82, leadership: 72, ambition: 80, integrity: 55, resilience: 65, intrigue: 55 },
+      professional: { economics: 35, diplomacy: 55, security: 70, communications: 78, legal: 35, administration: 68, technology: 48, management: 75, politics: 67 },
+      personal: { loyalty: 58, charisma: 82, leadership: 72, ambition: 80, integrity: 55, resilience: 65, intrigue: 55, discretion: 65 },
     },
   },
   {
@@ -1886,9 +1974,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 78,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 32, diplomacy: 78, security: 78, media: 40, legal: 42, administration: 70, technology: 52 },
-      personal: { loyalty: 78, charisma: 62, leadership: 78, ambition: 48, integrity: 75, resilience: 72, intrigue: 30 },
+      professional: { economics: 32, diplomacy: 78, security: 78, communications: 40, legal: 42, administration: 70, technology: 52, management: 83, politics: 83 },
+      personal: { loyalty: 78, charisma: 62, leadership: 78, ambition: 48, integrity: 75, resilience: 72, intrigue: 30, discretion: 83 },
     },
   },
   {
@@ -1907,9 +1996,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 40,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 25, security: 90, media: 22, legal: 28, administration: 55, technology: 52 },
-      personal: { loyalty: 40, charisma: 55, leadership: 78, ambition: 78, integrity: 38, resilience: 90, intrigue: 80 },
+      professional: { economics: 22, diplomacy: 25, security: 90, communications: 22, legal: 28, administration: 55, technology: 52, management: 72, politics: 45 },
+      personal: { loyalty: 40, charisma: 55, leadership: 78, ambition: 78, integrity: 38, resilience: 90, intrigue: 80, discretion: 69 },
     },
   },
   {
@@ -1928,9 +2018,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 80,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 48, diplomacy: 42, security: 72, media: 28, legal: 38, administration: 82, technology: 75 },
-      personal: { loyalty: 80, charisma: 48, leadership: 75, ambition: 48, integrity: 78, resilience: 75, intrigue: 25 },
+      professional: { economics: 48, diplomacy: 42, security: 72, communications: 28, legal: 38, administration: 82, technology: 75, management: 78, politics: 61 },
+      personal: { loyalty: 80, charisma: 48, leadership: 75, ambition: 48, integrity: 78, resilience: 75, intrigue: 25, discretion: 76 },
     },
   },
   {
@@ -1949,9 +2040,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 82,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Cdre. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 48, security: 80, media: 35, legal: 42, administration: 68, technology: 72 },
-      personal: { loyalty: 82, charisma: 50, leadership: 72, ambition: 58, integrity: 88, resilience: 75, intrigue: 45 },
+      professional: { economics: 30, diplomacy: 48, security: 80, communications: 35, legal: 42, administration: 68, technology: 72, management: 65, politics: 53 },
+      personal: { loyalty: 82, charisma: 50, leadership: 72, ambition: 58, integrity: 88, resilience: 75, intrigue: 45, discretion: 77 },
     },
   },
   {
@@ -1970,9 +2062,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 74,
     loyalty: 42,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 38, diplomacy: 58, security: 65, media: 72, legal: 40, administration: 72, technology: 42 },
-      personal: { loyalty: 42, charisma: 72, leadership: 65, ambition: 88, integrity: 40, resilience: 58, intrigue: 78 },
+      professional: { economics: 38, diplomacy: 58, security: 65, communications: 72, legal: 40, administration: 72, technology: 42, management: 76, politics: 72 },
+      personal: { loyalty: 42, charisma: 72, leadership: 65, ambition: 88, integrity: 40, resilience: 58, intrigue: 78, discretion: 56 },
     },
   },
   {
@@ -1991,9 +2084,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 72,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 38, diplomacy: 55, security: 82, media: 50, legal: 38, administration: 70, technology: 62 },
-      personal: { loyalty: 72, charisma: 75, leadership: 80, ambition: 65, integrity: 68, resilience: 75, intrigue: 35 },
+      professional: { economics: 38, diplomacy: 55, security: 82, communications: 50, legal: 38, administration: 70, technology: 62, management: 74, politics: 62 },
+      personal: { loyalty: 72, charisma: 75, leadership: 80, ambition: 65, integrity: 68, resilience: 75, intrigue: 35, discretion: 71 },
     },
   },
   {
@@ -2012,9 +2106,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 73,
     loyalty: 90,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 50, security: 70, media: 25, legal: 40, administration: 72, technology: 32 },
-      personal: { loyalty: 90, charisma: 48, leadership: 70, ambition: 30, integrity: 80, resilience: 72, intrigue: 22 },
+      professional: { economics: 28, diplomacy: 50, security: 70, communications: 25, legal: 40, administration: 72, technology: 32, management: 73, politics: 63 },
+      personal: { loyalty: 90, charisma: 48, leadership: 70, ambition: 30, integrity: 80, resilience: 72, intrigue: 22, discretion: 78 },
     },
   },
   {
@@ -2033,9 +2128,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 68,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 38, security: 82, media: 28, legal: 40, administration: 72, technology: 45 },
-      personal: { loyalty: 68, charisma: 52, leadership: 78, ambition: 55, integrity: 72, resilience: 82, intrigue: 38 },
+      professional: { economics: 25, diplomacy: 38, security: 82, communications: 28, legal: 40, administration: 72, technology: 45, management: 74, politics: 54 },
+      personal: { loyalty: 68, charisma: 52, leadership: 78, ambition: 55, integrity: 72, resilience: 82, intrigue: 38, discretion: 76 },
     },
   },
   {
@@ -2054,9 +2150,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 78,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Cdre. (Rtd.)",
     competencies: {
-      professional: { economics: 58, diplomacy: 45, security: 70, media: 35, legal: 55, administration: 80, technology: 50 },
-      personal: { loyalty: 78, charisma: 52, leadership: 72, ambition: 55, integrity: 90, resilience: 75, intrigue: 28 },
+      professional: { economics: 58, diplomacy: 45, security: 70, communications: 35, legal: 55, administration: 80, technology: 50, management: 68, politics: 55 },
+      personal: { loyalty: 78, charisma: 52, leadership: 72, ambition: 55, integrity: 90, resilience: 75, intrigue: 28, discretion: 75 },
     },
   },
   {
@@ -2075,9 +2172,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 80,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 75, security: 75, media: 35, legal: 38, administration: 68, technology: 45 },
-      personal: { loyalty: 80, charisma: 58, leadership: 75, ambition: 45, integrity: 75, resilience: 72, intrigue: 28 },
+      professional: { economics: 30, diplomacy: 75, security: 75, communications: 35, legal: 38, administration: 68, technology: 45, management: 69, politics: 69 },
+      personal: { loyalty: 80, charisma: 58, leadership: 75, ambition: 45, integrity: 75, resilience: 72, intrigue: 28, discretion: 71 },
     },
   },
   {
@@ -2096,9 +2194,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 50,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 35, security: 85, media: 32, legal: 32, administration: 62, technology: 48 },
-      personal: { loyalty: 50, charisma: 65, leadership: 80, ambition: 82, integrity: 52, resilience: 85, intrigue: 55 },
+      professional: { economics: 28, diplomacy: 35, security: 85, communications: 32, legal: 32, administration: 62, technology: 48, management: 74, politics: 52 },
+      personal: { loyalty: 50, charisma: 65, leadership: 80, ambition: 82, integrity: 52, resilience: 85, intrigue: 55, discretion: 72 },
     },
   },
   {
@@ -2117,9 +2216,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 75,
     qualifiedFor: ["chief-naval-force"],
+    honorific: "Rear Adm. (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 50, security: 75, media: 35, legal: 45, administration: 72, technology: 70 },
-      personal: { loyalty: 75, charisma: 55, leadership: 72, ambition: 50, integrity: 75, resilience: 72, intrigue: 28 },
+      professional: { economics: 35, diplomacy: 50, security: 75, communications: 35, legal: 45, administration: 72, technology: 70, management: 69, politics: 58 },
+      personal: { loyalty: 75, charisma: 55, leadership: 72, ambition: 50, integrity: 75, resilience: 72, intrigue: 28, discretion: 71 },
     },
   },
 
@@ -2142,9 +2242,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 88,
     loyalty: 72,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 45, security: 88, media: 38, legal: 35, administration: 72, technology: 65 },
-      personal: { loyalty: 72, charisma: 68, leadership: 88, ambition: 60, integrity: 72, resilience: 88, intrigue: 32 },
+      professional: { economics: 30, diplomacy: 45, security: 88, communications: 38, legal: 35, administration: 72, technology: 65, management: 71, politics: 50 },
+      personal: { loyalty: 72, charisma: 68, leadership: 88, ambition: 60, integrity: 72, resilience: 88, intrigue: 32, discretion: 71 },
     },
   },
   {
@@ -2163,9 +2264,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 82,
     loyalty: 78,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 40, diplomacy: 55, security: 78, media: 75, legal: 38, administration: 75, technology: 72 },
-      personal: { loyalty: 78, charisma: 80, leadership: 78, ambition: 65, integrity: 72, resilience: 70, intrigue: 35 },
+      professional: { economics: 40, diplomacy: 55, security: 78, communications: 75, legal: 38, administration: 75, technology: 72, management: 84, politics: 72 },
+      personal: { loyalty: 78, charisma: 80, leadership: 78, ambition: 65, integrity: 72, resilience: 70, intrigue: 35, discretion: 78 },
     },
   },
   {
@@ -2184,9 +2286,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 74,
     loyalty: 92,
     qualifiedFor: ["chief-air-force"],
+    honorific: "Air Mshl. (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 42, security: 72, media: 25, legal: 35, administration: 72, technology: 35 },
-      personal: { loyalty: 92, charisma: 50, leadership: 72, ambition: 30, integrity: 80, resilience: 72, intrigue: 20 },
+      professional: { economics: 25, diplomacy: 42, security: 72, communications: 25, legal: 35, administration: 72, technology: 35, management: 69, politics: 54 },
+      personal: { loyalty: 92, charisma: 50, leadership: 72, ambition: 30, integrity: 80, resilience: 72, intrigue: 20, discretion: 73 },
     },
   },
   {
@@ -2205,9 +2308,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 85,
     loyalty: 55,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 32, security: 88, media: 35, legal: 28, administration: 58, technology: 70 },
-      personal: { loyalty: 55, charisma: 75, leadership: 85, ambition: 82, integrity: 58, resilience: 90, intrigue: 42 },
+      professional: { economics: 22, diplomacy: 32, security: 88, communications: 35, legal: 28, administration: 58, technology: 70, management: 65, politics: 38 },
+      personal: { loyalty: 55, charisma: 75, leadership: 85, ambition: 82, integrity: 58, resilience: 90, intrigue: 42, discretion: 67 },
     },
   },
   {
@@ -2226,9 +2330,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 80,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 42, security: 82, media: 28, legal: 35, administration: 68, technology: 85 },
-      personal: { loyalty: 80, charisma: 42, leadership: 75, ambition: 48, integrity: 78, resilience: 78, intrigue: 55 },
+      professional: { economics: 30, diplomacy: 42, security: 82, communications: 28, legal: 35, administration: 68, technology: 85, management: 71, politics: 54 },
+      personal: { loyalty: 80, charisma: 42, leadership: 75, ambition: 48, integrity: 78, resilience: 78, intrigue: 55, discretion: 77 },
     },
   },
   {
@@ -2247,9 +2352,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 78,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 50, diplomacy: 40, security: 72, media: 28, legal: 38, administration: 82, technology: 75 },
-      personal: { loyalty: 78, charisma: 45, leadership: 72, ambition: 48, integrity: 75, resilience: 72, intrigue: 28 },
+      professional: { economics: 50, diplomacy: 40, security: 72, communications: 28, legal: 38, administration: 82, technology: 75, management: 70, politics: 54 },
+      personal: { loyalty: 78, charisma: 45, leadership: 72, ambition: 48, integrity: 75, resilience: 72, intrigue: 28, discretion: 67 },
     },
   },
   {
@@ -2268,9 +2374,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 65,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 48, security: 78, media: 62, legal: 32, administration: 65, technology: 55 },
-      personal: { loyalty: 65, charisma: 82, leadership: 78, ambition: 72, integrity: 65, resilience: 78, intrigue: 38 },
+      professional: { economics: 35, diplomacy: 48, security: 78, communications: 62, legal: 32, administration: 65, technology: 55, management: 63, politics: 48 },
+      personal: { loyalty: 65, charisma: 82, leadership: 78, ambition: 72, integrity: 65, resilience: 78, intrigue: 38, discretion: 63 },
     },
   },
   {
@@ -2289,9 +2396,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 78,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 65, security: 78, media: 38, legal: 38, administration: 72, technology: 52 },
-      personal: { loyalty: 78, charisma: 58, leadership: 78, ambition: 48, integrity: 72, resilience: 72, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 65, security: 78, communications: 38, legal: 38, administration: 72, technology: 52, management: 75, politics: 69 },
+      personal: { loyalty: 78, charisma: 58, leadership: 78, ambition: 48, integrity: 72, resilience: 72, intrigue: 30, discretion: 72 },
     },
   },
   {
@@ -2310,9 +2418,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 85,
     qualifiedFor: ["chief-air-force"],
+    honorific: "Air Cdre. (Rtd.)",
     competencies: {
-      professional: { economics: 32, diplomacy: 48, security: 72, media: 42, legal: 45, administration: 72, technology: 80 },
-      personal: { loyalty: 85, charisma: 55, leadership: 72, ambition: 58, integrity: 90, resilience: 78, intrigue: 25 },
+      professional: { economics: 32, diplomacy: 48, security: 72, communications: 42, legal: 45, administration: 72, technology: 80, management: 69, politics: 57 },
+      personal: { loyalty: 85, charisma: 55, leadership: 72, ambition: 58, integrity: 90, resilience: 78, intrigue: 25, discretion: 81 },
     },
   },
   {
@@ -2331,9 +2440,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 84,
     loyalty: 38,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 28, security: 90, media: 20, legal: 30, administration: 58, technology: 60 },
-      personal: { loyalty: 38, charisma: 48, leadership: 78, ambition: 82, integrity: 38, resilience: 88, intrigue: 85 },
+      professional: { economics: 22, diplomacy: 28, security: 90, communications: 20, legal: 30, administration: 58, technology: 60, management: 76, politics: 51 },
+      personal: { loyalty: 38, charisma: 48, leadership: 78, ambition: 82, integrity: 38, resilience: 88, intrigue: 85, discretion: 71 },
     },
   },
   {
@@ -2352,9 +2462,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 79,
     loyalty: 82,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 62, diplomacy: 42, security: 70, media: 32, legal: 52, administration: 80, technology: 48 },
-      personal: { loyalty: 82, charisma: 48, leadership: 72, ambition: 50, integrity: 92, resilience: 72, intrigue: 22 },
+      professional: { economics: 62, diplomacy: 42, security: 70, communications: 32, legal: 52, administration: 80, technology: 48, management: 67, politics: 52 },
+      personal: { loyalty: 82, charisma: 48, leadership: 72, ambition: 50, integrity: 92, resilience: 72, intrigue: 22, discretion: 73 },
     },
   },
   {
@@ -2373,9 +2484,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 77,
     loyalty: 45,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 35, diplomacy: 55, security: 78, media: 55, legal: 35, administration: 65, technology: 50 },
-      personal: { loyalty: 45, charisma: 70, leadership: 72, ambition: 85, integrity: 42, resilience: 68, intrigue: 72 },
+      professional: { economics: 35, diplomacy: 55, security: 78, communications: 55, legal: 35, administration: 65, technology: 50, management: 76, politics: 67 },
+      personal: { loyalty: 45, charisma: 70, leadership: 72, ambition: 85, integrity: 42, resilience: 68, intrigue: 72, discretion: 62 },
     },
   },
   {
@@ -2394,9 +2506,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 88,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 28, diplomacy: 72, security: 72, media: 38, legal: 40, administration: 68, technology: 48 },
-      personal: { loyalty: 88, charisma: 58, leadership: 75, ambition: 38, integrity: 82, resilience: 72, intrigue: 22 },
+      professional: { economics: 28, diplomacy: 72, security: 72, communications: 38, legal: 40, administration: 68, technology: 48, management: 64, politics: 62 },
+      personal: { loyalty: 88, charisma: 58, leadership: 75, ambition: 38, integrity: 82, resilience: 72, intrigue: 22, discretion: 69 },
     },
   },
   {
@@ -2415,9 +2528,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 84,
     loyalty: 60,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 22, diplomacy: 30, security: 88, media: 25, legal: 28, administration: 62, technology: 55 },
-      personal: { loyalty: 60, charisma: 55, leadership: 82, ambition: 70, integrity: 58, resilience: 90, intrigue: 40 },
+      professional: { economics: 22, diplomacy: 30, security: 88, communications: 25, legal: 28, administration: 62, technology: 55, management: 63, politics: 37 },
+      personal: { loyalty: 60, charisma: 55, leadership: 82, ambition: 70, integrity: 58, resilience: 90, intrigue: 40, discretion: 65 },
     },
   },
   {
@@ -2436,9 +2550,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 81,
     loyalty: 75,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 48, security: 80, media: 35, legal: 38, administration: 72, technology: 72 },
-      personal: { loyalty: 75, charisma: 52, leadership: 80, ambition: 55, integrity: 75, resilience: 75, intrigue: 30 },
+      professional: { economics: 30, diplomacy: 48, security: 80, communications: 35, legal: 38, administration: 72, technology: 72, management: 66, politics: 50 },
+      personal: { loyalty: 75, charisma: 52, leadership: 80, ambition: 55, integrity: 75, resilience: 75, intrigue: 30, discretion: 65 },
     },
   },
   {
@@ -2457,9 +2572,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 78,
     loyalty: 72,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 38, diplomacy: 32, security: 70, media: 22, legal: 32, administration: 78, technology: 82 },
-      personal: { loyalty: 72, charisma: 40, leadership: 70, ambition: 42, integrity: 75, resilience: 78, intrigue: 25 },
+      professional: { economics: 38, diplomacy: 32, security: 70, communications: 22, legal: 32, administration: 78, technology: 82, management: 81, politics: 62 },
+      personal: { loyalty: 72, charisma: 40, leadership: 70, ambition: 42, integrity: 75, resilience: 78, intrigue: 25, discretion: 84 },
     },
   },
   {
@@ -2478,9 +2594,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 73,
     loyalty: 90,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 25, diplomacy: 42, security: 70, media: 25, legal: 35, administration: 72, technology: 38 },
-      personal: { loyalty: 90, charisma: 52, leadership: 70, ambition: 30, integrity: 82, resilience: 70, intrigue: 20 },
+      professional: { economics: 25, diplomacy: 42, security: 70, communications: 25, legal: 35, administration: 72, technology: 38, management: 62, politics: 48 },
+      personal: { loyalty: 90, charisma: 52, leadership: 70, ambition: 30, integrity: 82, resilience: 70, intrigue: 20, discretion: 67 },
     },
   },
   {
@@ -2499,9 +2616,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 83,
     loyalty: 50,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 20, diplomacy: 28, security: 88, media: 30, legal: 25, administration: 55, technology: 62 },
-      personal: { loyalty: 50, charisma: 65, leadership: 80, ambition: 75, integrity: 52, resilience: 90, intrigue: 45 },
+      professional: { economics: 20, diplomacy: 28, security: 88, communications: 30, legal: 25, administration: 55, technology: 62, management: 65, politics: 39 },
+      personal: { loyalty: 50, charisma: 65, leadership: 80, ambition: 75, integrity: 52, resilience: 90, intrigue: 45, discretion: 68 },
     },
   },
   {
@@ -2520,9 +2638,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 80,
     loyalty: 82,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 30, diplomacy: 48, security: 75, media: 42, legal: 40, administration: 70, technology: 88 },
-      personal: { loyalty: 82, charisma: 55, leadership: 72, ambition: 60, integrity: 88, resilience: 75, intrigue: 28 },
+      professional: { economics: 30, diplomacy: 48, security: 75, communications: 42, legal: 40, administration: 70, technology: 88, management: 68, politics: 56 },
+      personal: { loyalty: 82, charisma: 55, leadership: 72, ambition: 60, integrity: 88, resilience: 75, intrigue: 28, discretion: 79 },
     },
   },
   {
@@ -2541,9 +2660,10 @@ export const MILITARY_CANDIDATES: MilitaryCandidate[] = [
     competence: 73,
     loyalty: 42,
     qualifiedFor: ["chief-air-force"],
+    honorific: "AVM (Rtd.)",
     competencies: {
-      professional: { economics: 38, diplomacy: 55, security: 65, media: 65, legal: 38, administration: 72, technology: 38 },
-      personal: { loyalty: 42, charisma: 68, leadership: 65, ambition: 88, integrity: 38, resilience: 58, intrigue: 80 },
+      professional: { economics: 38, diplomacy: 55, security: 65, communications: 65, legal: 38, administration: 72, technology: 38, management: 67, politics: 62 },
+      personal: { loyalty: 42, charisma: 68, leadership: 65, ambition: 88, integrity: 38, resilience: 58, intrigue: 80, discretion: 46 },
     },
   },
 ];

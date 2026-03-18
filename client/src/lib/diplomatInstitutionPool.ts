@@ -24,8 +24,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Arabic"],
     qualifiedFor: ["inst-un-ny", "inst-un-geneva", "inst-au", "inst-commonwealth"],
     competencies: {
-      professional: { economics: 62, diplomacy: 94, security: 55, media: 68, legal: 72, administration: 78, technology: 40 },
-      personal: { loyalty: 70, charisma: 82, leadership: 88, ambition: 75, integrity: 85, resilience: 90, intrigue: 60 },
+      professional: { economics: 62, diplomacy: 94, security: 55, communications: 68, legal: 72, administration: 78, technology: 40, management: 84, politics: 87 },
+      personal: { loyalty: 70, charisma: 82, leadership: 88, ambition: 75, integrity: 85, resilience: 90, intrigue: 60, discretion: 89 },
     },
   },
   {
@@ -44,8 +44,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-un-ny", "inst-icc", "inst-commonwealth", "inst-au"],
     competencies: {
-      professional: { economics: 55, diplomacy: 92, security: 68, media: 65, legal: 78, administration: 70, technology: 35 },
-      personal: { loyalty: 65, charisma: 78, leadership: 85, ambition: 80, integrity: 88, resilience: 82, intrigue: 55 },
+      professional: { economics: 55, diplomacy: 92, security: 68, communications: 65, legal: 78, administration: 70, technology: 35, management: 88, politics: 91 },
+      personal: { loyalty: 65, charisma: 78, leadership: 85, ambition: 80, integrity: 88, resilience: 82, intrigue: 55, discretion: 95 },
     },
   },
   {
@@ -64,8 +64,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Arabic"],
     qualifiedFor: ["inst-un-ny", "inst-un-geneva", "inst-afdb", "inst-ecowas"],
     competencies: {
-      professional: { economics: 70, diplomacy: 88, security: 42, media: 60, legal: 58, administration: 75, technology: 52 },
-      personal: { loyalty: 72, charisma: 75, leadership: 78, ambition: 68, integrity: 90, resilience: 76, intrigue: 40 },
+      professional: { economics: 70, diplomacy: 88, security: 42, communications: 60, legal: 58, administration: 75, technology: 52, management: 87, politics: 92 },
+      personal: { loyalty: 72, charisma: 75, leadership: 78, ambition: 68, integrity: 90, resilience: 76, intrigue: 40, discretion: 93 },
     },
   },
   {
@@ -84,8 +84,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Spanish"],
     qualifiedFor: ["inst-un-ny", "inst-commonwealth", "inst-ecowas"],
     competencies: {
-      professional: { economics: 50, diplomacy: 90, security: 45, media: 88, legal: 55, administration: 65, technology: 42 },
-      personal: { loyalty: 68, charisma: 90, leadership: 75, ambition: 82, integrity: 72, resilience: 70, intrigue: 65 },
+      professional: { economics: 50, diplomacy: 90, security: 45, communications: 88, legal: 55, administration: 65, technology: 42, management: 77, politics: 85 },
+      personal: { loyalty: 68, charisma: 90, leadership: 75, ambition: 82, integrity: 72, resilience: 70, intrigue: 65, discretion: 78 },
     },
   },
   {
@@ -104,8 +104,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-un-ny", "inst-au", "inst-ecowas", "inst-commonwealth"],
     competencies: {
-      professional: { economics: 45, diplomacy: 90, security: 85, media: 55, legal: 60, administration: 72, technology: 38 },
-      personal: { loyalty: 80, charisma: 70, leadership: 88, ambition: 65, integrity: 82, resilience: 92, intrigue: 58 },
+      professional: { economics: 45, diplomacy: 90, security: 85, communications: 55, legal: 60, administration: 72, technology: 38, management: 84, politics: 85 },
+      personal: { loyalty: 80, charisma: 70, leadership: 88, ambition: 65, integrity: 82, resilience: 92, intrigue: 58, discretion: 91 },
     },
   },
 
@@ -128,8 +128,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Arabic"],
     qualifiedFor: ["inst-un-geneva", "inst-un-ny", "inst-icc", "inst-au"],
     competencies: {
-      professional: { economics: 50, diplomacy: 92, security: 48, media: 62, legal: 82, administration: 68, technology: 38 },
-      personal: { loyalty: 72, charisma: 80, leadership: 82, ambition: 70, integrity: 92, resilience: 85, intrigue: 45 },
+      professional: { economics: 50, diplomacy: 92, security: 48, communications: 62, legal: 82, administration: 68, technology: 38, management: 69, politics: 74 },
+      personal: { loyalty: 72, charisma: 80, leadership: 82, ambition: 70, integrity: 92, resilience: 85, intrigue: 45, discretion: 83 },
     },
   },
   {
@@ -148,8 +148,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-un-geneva", "inst-un-ny", "inst-wto"],
     competencies: {
-      professional: { economics: 58, diplomacy: 85, security: 35, media: 55, legal: 60, administration: 72, technology: 65 },
-      personal: { loyalty: 75, charisma: 68, leadership: 72, ambition: 65, integrity: 88, resilience: 78, intrigue: 38 },
+      professional: { economics: 58, diplomacy: 85, security: 35, communications: 55, legal: 60, administration: 72, technology: 65, management: 79, politics: 86 },
+      personal: { loyalty: 75, charisma: 68, leadership: 72, ambition: 65, integrity: 88, resilience: 78, intrigue: 38, discretion: 90 },
     },
   },
   {
@@ -168,8 +168,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Spanish"],
     qualifiedFor: ["inst-un-geneva", "inst-wto", "inst-ecowas", "inst-afdb"],
     competencies: {
-      professional: { economics: 78, diplomacy: 84, security: 30, media: 50, legal: 70, administration: 62, technology: 48 },
-      personal: { loyalty: 68, charisma: 72, leadership: 70, ambition: 78, integrity: 80, resilience: 75, intrigue: 42 },
+      professional: { economics: 78, diplomacy: 84, security: 30, communications: 50, legal: 70, administration: 62, technology: 48, management: 64, politics: 71 },
+      personal: { loyalty: 68, charisma: 72, leadership: 70, ambition: 78, integrity: 80, resilience: 75, intrigue: 42, discretion: 76 },
     },
   },
   {
@@ -188,8 +188,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-un-geneva", "inst-un-ny", "inst-icc", "inst-wto"],
     competencies: {
-      professional: { economics: 48, diplomacy: 92, security: 65, media: 52, legal: 80, administration: 75, technology: 32 },
-      personal: { loyalty: 82, charisma: 65, leadership: 78, ambition: 58, integrity: 85, resilience: 88, intrigue: 52 },
+      professional: { economics: 48, diplomacy: 92, security: 65, communications: 52, legal: 80, administration: 75, technology: 32, management: 87, politics: 94 },
+      personal: { loyalty: 82, charisma: 65, leadership: 78, ambition: 58, integrity: 85, resilience: 88, intrigue: 52, discretion: 97 },
     },
   },
   {
@@ -208,8 +208,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Arabic"],
     qualifiedFor: ["inst-un-geneva", "inst-icc", "inst-au", "inst-commonwealth"],
     competencies: {
-      professional: { economics: 42, diplomacy: 88, security: 40, media: 65, legal: 90, administration: 58, technology: 35 },
-      personal: { loyalty: 70, charisma: 78, leadership: 75, ambition: 72, integrity: 95, resilience: 80, intrigue: 35 },
+      professional: { economics: 42, diplomacy: 88, security: 40, communications: 65, legal: 90, administration: 58, technology: 35, management: 74, politics: 80 },
+      personal: { loyalty: 70, charisma: 78, leadership: 75, ambition: 72, integrity: 95, resilience: 80, intrigue: 35, discretion: 95 },
     },
   },
 
@@ -232,8 +232,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Arabic"],
     qualifiedFor: ["inst-au", "inst-ecowas", "inst-un-ny", "inst-afdb"],
     competencies: {
-      professional: { economics: 52, diplomacy: 90, security: 88, media: 50, legal: 58, administration: 75, technology: 35 },
-      personal: { loyalty: 78, charisma: 72, leadership: 90, ambition: 70, integrity: 80, resilience: 92, intrigue: 65 },
+      professional: { economics: 52, diplomacy: 90, security: 88, communications: 50, legal: 58, administration: 75, technology: 35, management: 91, politics: 91 },
+      personal: { loyalty: 78, charisma: 72, leadership: 90, ambition: 70, integrity: 80, resilience: 92, intrigue: 65, discretion: 94 },
     },
   },
   {
@@ -252,8 +252,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Portuguese"],
     qualifiedFor: ["inst-au", "inst-ecowas", "inst-afdb", "inst-un-ny"],
     competencies: {
-      professional: { economics: 55, diplomacy: 86, security: 42, media: 70, legal: 52, administration: 78, technology: 48 },
-      personal: { loyalty: 65, charisma: 82, leadership: 78, ambition: 75, integrity: 78, resilience: 72, intrigue: 50 },
+      professional: { economics: 55, diplomacy: 86, security: 42, communications: 70, legal: 52, administration: 78, technology: 48, management: 74, politics: 78 },
+      personal: { loyalty: 65, charisma: 82, leadership: 78, ambition: 75, integrity: 78, resilience: 72, intrigue: 50, discretion: 71 },
     },
   },
   {
@@ -272,8 +272,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-au", "inst-ecowas", "inst-un-ny", "inst-afdb", "inst-commonwealth"],
     competencies: {
-      professional: { economics: 60, diplomacy: 92, security: 70, media: 55, legal: 50, administration: 82, technology: 30 },
-      personal: { loyalty: 85, charisma: 75, leadership: 88, ambition: 62, integrity: 78, resilience: 85, intrigue: 58 },
+      professional: { economics: 60, diplomacy: 92, security: 70, communications: 55, legal: 50, administration: 82, technology: 30, management: 85, politics: 87 },
+      personal: { loyalty: 85, charisma: 75, leadership: 88, ambition: 62, integrity: 78, resilience: 85, intrigue: 58, discretion: 82 },
     },
   },
   {
@@ -292,8 +292,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-au", "inst-ecowas", "inst-commonwealth"],
     competencies: {
-      professional: { economics: 45, diplomacy: 82, security: 30, media: 78, legal: 40, administration: 65, technology: 50 },
-      personal: { loyalty: 72, charisma: 85, leadership: 68, ambition: 60, integrity: 82, resilience: 70, intrigue: 35 },
+      professional: { economics: 45, diplomacy: 82, security: 30, communications: 78, legal: 40, administration: 65, technology: 50, management: 62, politics: 69 },
+      personal: { loyalty: 72, charisma: 85, leadership: 68, ambition: 60, integrity: 82, resilience: 70, intrigue: 35, discretion: 71 },
     },
   },
   {
@@ -312,8 +312,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Arabic"],
     qualifiedFor: ["inst-au", "inst-un-ny", "inst-ecowas"],
     competencies: {
-      professional: { economics: 38, diplomacy: 82, security: 92, media: 42, legal: 48, administration: 70, technology: 40 },
-      personal: { loyalty: 88, charisma: 62, leadership: 82, ambition: 68, integrity: 75, resilience: 90, intrigue: 70 },
+      professional: { economics: 38, diplomacy: 82, security: 92, communications: 42, legal: 48, administration: 70, technology: 40, management: 67, politics: 67 },
+      personal: { loyalty: 88, charisma: 62, leadership: 82, ambition: 68, integrity: 75, resilience: 90, intrigue: 70, discretion: 74 },
     },
   },
 
@@ -336,8 +336,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-ecowas", "inst-wto", "inst-au", "inst-afdb"],
     competencies: {
-      professional: { economics: 82, diplomacy: 88, security: 45, media: 48, legal: 62, administration: 75, technology: 42 },
-      personal: { loyalty: 72, charisma: 70, leadership: 78, ambition: 75, integrity: 80, resilience: 78, intrigue: 48 },
+      professional: { economics: 82, diplomacy: 88, security: 45, communications: 48, legal: 62, administration: 75, technology: 42, management: 80, politics: 85 },
+      personal: { loyalty: 72, charisma: 70, leadership: 78, ambition: 75, integrity: 80, resilience: 78, intrigue: 48, discretion: 82 },
     },
   },
   {
@@ -356,8 +356,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-ecowas", "inst-au", "inst-un-ny"],
     competencies: {
-      professional: { economics: 50, diplomacy: 86, security: 78, media: 58, legal: 52, administration: 72, technology: 55 },
-      personal: { loyalty: 75, charisma: 72, leadership: 80, ambition: 68, integrity: 85, resilience: 82, intrigue: 45 },
+      professional: { economics: 50, diplomacy: 86, security: 78, communications: 58, legal: 52, administration: 72, technology: 55, management: 83, politics: 86 },
+      personal: { loyalty: 75, charisma: 72, leadership: 80, ambition: 68, integrity: 85, resilience: 82, intrigue: 45, discretion: 91 },
     },
   },
   {
@@ -376,8 +376,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-ecowas", "inst-au", "inst-un-ny", "inst-afdb"],
     competencies: {
-      professional: { economics: 55, diplomacy: 85, security: 62, media: 72, legal: 75, administration: 68, technology: 28 },
-      personal: { loyalty: 60, charisma: 82, leadership: 85, ambition: 88, integrity: 65, resilience: 75, intrigue: 72 },
+      professional: { economics: 55, diplomacy: 85, security: 62, communications: 72, legal: 75, administration: 68, technology: 28, management: 83, politics: 83 },
+      personal: { loyalty: 60, charisma: 82, leadership: 85, ambition: 88, integrity: 65, resilience: 75, intrigue: 72, discretion: 76 },
     },
   },
   {
@@ -396,8 +396,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Spanish"],
     qualifiedFor: ["inst-ecowas", "inst-wto", "inst-afdb", "inst-au"],
     competencies: {
-      professional: { economics: 80, diplomacy: 82, security: 30, media: 55, legal: 78, administration: 65, technology: 45 },
-      personal: { loyalty: 68, charisma: 75, leadership: 72, ambition: 78, integrity: 82, resilience: 70, intrigue: 40 },
+      professional: { economics: 80, diplomacy: 82, security: 30, communications: 55, legal: 78, administration: 65, technology: 45, management: 62, politics: 67 },
+      personal: { loyalty: 68, charisma: 75, leadership: 72, ambition: 78, integrity: 82, resilience: 70, intrigue: 40, discretion: 69 },
     },
   },
   {
@@ -416,8 +416,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-ecowas", "inst-au", "inst-un-ny"],
     competencies: {
-      professional: { economics: 40, diplomacy: 82, security: 90, media: 42, legal: 48, administration: 72, technology: 35 },
-      personal: { loyalty: 85, charisma: 60, leadership: 82, ambition: 58, integrity: 78, resilience: 90, intrigue: 62 },
+      professional: { economics: 40, diplomacy: 82, security: 90, communications: 42, legal: 48, administration: 72, technology: 35, management: 84, politics: 84 },
+      personal: { loyalty: 85, charisma: 60, leadership: 82, ambition: 58, integrity: 78, resilience: 90, intrigue: 62, discretion: 91 },
     },
   },
 
@@ -440,8 +440,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-wto", "inst-un-geneva", "inst-ecowas", "inst-wb-imf"],
     competencies: {
-      professional: { economics: 92, diplomacy: 85, security: 28, media: 55, legal: 80, administration: 65, technology: 50 },
-      personal: { loyalty: 62, charisma: 75, leadership: 78, ambition: 82, integrity: 75, resilience: 80, intrigue: 55 },
+      professional: { economics: 92, diplomacy: 85, security: 28, communications: 55, legal: 80, administration: 65, technology: 50, management: 80, politics: 83 },
+      personal: { loyalty: 62, charisma: 75, leadership: 78, ambition: 82, integrity: 75, resilience: 80, intrigue: 55, discretion: 86 },
     },
   },
   {
@@ -460,8 +460,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-wto", "inst-un-geneva", "inst-afdb", "inst-ecowas"],
     competencies: {
-      professional: { economics: 78, diplomacy: 82, security: 25, media: 48, legal: 88, administration: 60, technology: 42 },
-      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 75, integrity: 85, resilience: 78, intrigue: 38 },
+      professional: { economics: 78, diplomacy: 82, security: 25, communications: 48, legal: 88, administration: 60, technology: 42, management: 62, politics: 67 },
+      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 75, integrity: 85, resilience: 78, intrigue: 38, discretion: 78 },
     },
   },
   {
@@ -480,8 +480,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-wto", "inst-afdb", "inst-ecowas", "inst-wb-imf"],
     competencies: {
-      professional: { economics: 90, diplomacy: 78, security: 22, media: 60, legal: 72, administration: 55, technology: 48 },
-      personal: { loyalty: 65, charisma: 72, leadership: 68, ambition: 70, integrity: 88, resilience: 72, intrigue: 32 },
+      professional: { economics: 90, diplomacy: 78, security: 22, communications: 60, legal: 72, administration: 55, technology: 48, management: 58, politics: 63 },
+      personal: { loyalty: 65, charisma: 72, leadership: 68, ambition: 70, integrity: 88, resilience: 72, intrigue: 32, discretion: 76 },
     },
   },
   {
@@ -500,8 +500,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-wto", "inst-ecowas", "inst-afdb"],
     competencies: {
-      professional: { economics: 85, diplomacy: 78, security: 20, media: 62, legal: 58, administration: 80, technology: 55 },
-      personal: { loyalty: 68, charisma: 78, leadership: 75, ambition: 80, integrity: 72, resilience: 68, intrigue: 42 },
+      professional: { economics: 85, diplomacy: 78, security: 20, communications: 62, legal: 58, administration: 80, technology: 55, management: 69, politics: 70 },
+      personal: { loyalty: 68, charisma: 78, leadership: 75, ambition: 80, integrity: 72, resilience: 68, intrigue: 42, discretion: 61 },
     },
   },
   {
@@ -520,8 +520,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-wto", "inst-ecowas", "inst-afdb", "inst-opec"],
     competencies: {
-      professional: { economics: 82, diplomacy: 80, security: 30, media: 65, legal: 55, administration: 72, technology: 35 },
-      personal: { loyalty: 58, charisma: 80, leadership: 78, ambition: 85, integrity: 62, resilience: 72, intrigue: 68 },
+      professional: { economics: 82, diplomacy: 80, security: 30, communications: 65, legal: 55, administration: 72, technology: 35, management: 72, politics: 73 },
+      personal: { loyalty: 58, charisma: 80, leadership: 78, ambition: 85, integrity: 62, resilience: 72, intrigue: 68, discretion: 64 },
     },
   },
 
@@ -544,8 +544,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-icc", "inst-un-ny", "inst-un-geneva", "inst-commonwealth"],
     competencies: {
-      professional: { economics: 35, diplomacy: 85, security: 55, media: 60, legal: 95, administration: 62, technology: 30 },
-      personal: { loyalty: 72, charisma: 70, leadership: 80, ambition: 68, integrity: 95, resilience: 85, intrigue: 40 },
+      professional: { economics: 35, diplomacy: 85, security: 55, communications: 60, legal: 95, administration: 62, technology: 30, management: 61, politics: 64 },
+      personal: { loyalty: 72, charisma: 70, leadership: 80, ambition: 68, integrity: 95, resilience: 85, intrigue: 40, discretion: 80 },
     },
   },
   {
@@ -564,8 +564,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French", "Arabic"],
     qualifiedFor: ["inst-icc", "inst-un-geneva", "inst-un-ny"],
     competencies: {
-      professional: { economics: 30, diplomacy: 82, security: 48, media: 58, legal: 92, administration: 55, technology: 32 },
-      personal: { loyalty: 75, charisma: 72, leadership: 75, ambition: 65, integrity: 92, resilience: 80, intrigue: 35 },
+      professional: { economics: 30, diplomacy: 82, security: 48, communications: 58, legal: 92, administration: 55, technology: 32, management: 60, politics: 64 },
+      personal: { loyalty: 75, charisma: 72, leadership: 75, ambition: 65, integrity: 92, resilience: 80, intrigue: 35, discretion: 81 },
     },
   },
   {
@@ -584,8 +584,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-icc", "inst-un-ny", "inst-commonwealth"],
     competencies: {
-      professional: { economics: 28, diplomacy: 80, security: 52, media: 72, legal: 90, administration: 50, technology: 38 },
-      personal: { loyalty: 68, charisma: 75, leadership: 72, ambition: 70, integrity: 90, resilience: 75, intrigue: 38 },
+      professional: { economics: 28, diplomacy: 80, security: 52, communications: 72, legal: 90, administration: 50, technology: 38, management: 64, politics: 68 },
+      personal: { loyalty: 68, charisma: 75, leadership: 72, ambition: 70, integrity: 90, resilience: 75, intrigue: 38, discretion: 86 },
     },
   },
   {
@@ -604,8 +604,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-icc", "inst-un-ny", "inst-commonwealth", "inst-wb-imf"],
     competencies: {
-      professional: { economics: 45, diplomacy: 78, security: 50, media: 68, legal: 88, administration: 55, technology: 80 },
-      personal: { loyalty: 70, charisma: 78, leadership: 70, ambition: 75, integrity: 85, resilience: 72, intrigue: 42 },
+      professional: { economics: 45, diplomacy: 78, security: 50, communications: 68, legal: 88, administration: 55, technology: 80, management: 67, politics: 71 },
+      personal: { loyalty: 70, charisma: 78, leadership: 70, ambition: 75, integrity: 85, resilience: 72, intrigue: 42, discretion: 83 },
     },
   },
   {
@@ -624,8 +624,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-icc", "inst-un-ny", "inst-un-geneva"],
     competencies: {
-      professional: { economics: 32, diplomacy: 78, security: 82, media: 40, legal: 85, administration: 68, technology: 45 },
-      personal: { loyalty: 90, charisma: 55, leadership: 72, ambition: 60, integrity: 70, resilience: 88, intrigue: 78 },
+      professional: { economics: 32, diplomacy: 78, security: 82, communications: 40, legal: 85, administration: 68, technology: 45, management: 73, politics: 76 },
+      personal: { loyalty: 90, charisma: 55, leadership: 72, ambition: 60, integrity: 70, resilience: 88, intrigue: 78, discretion: 82 },
     },
   },
 
@@ -648,8 +648,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-commonwealth", "inst-un-ny", "inst-icc", "inst-wb-imf"],
     competencies: {
-      professional: { economics: 55, diplomacy: 90, security: 40, media: 78, legal: 62, administration: 75, technology: 42 },
-      personal: { loyalty: 72, charisma: 88, leadership: 85, ambition: 72, integrity: 80, resilience: 78, intrigue: 48 },
+      professional: { economics: 55, diplomacy: 90, security: 40, communications: 78, legal: 62, administration: 75, technology: 42, management: 74, politics: 77 },
+      personal: { loyalty: 72, charisma: 88, leadership: 85, ambition: 72, integrity: 80, resilience: 78, intrigue: 48, discretion: 73 },
     },
   },
   {
@@ -668,8 +668,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-commonwealth", "inst-un-ny", "inst-wto", "inst-wb-imf"],
     competencies: {
-      professional: { economics: 72, diplomacy: 85, security: 35, media: 60, legal: 55, administration: 70, technology: 48 },
-      personal: { loyalty: 78, charisma: 72, leadership: 75, ambition: 70, integrity: 78, resilience: 72, intrigue: 42 },
+      professional: { economics: 72, diplomacy: 85, security: 35, communications: 60, legal: 55, administration: 70, technology: 48, management: 70, politics: 75 },
+      personal: { loyalty: 78, charisma: 72, leadership: 75, ambition: 70, integrity: 78, resilience: 72, intrigue: 42, discretion: 72 },
     },
   },
   {
@@ -688,8 +688,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-commonwealth", "inst-un-ny", "inst-au"],
     competencies: {
-      professional: { economics: 48, diplomacy: 80, security: 28, media: 75, legal: 45, administration: 68, technology: 55 },
-      personal: { loyalty: 75, charisma: 78, leadership: 70, ambition: 62, integrity: 82, resilience: 72, intrigue: 30 },
+      professional: { economics: 48, diplomacy: 80, security: 28, communications: 75, legal: 45, administration: 68, technology: 55, management: 68, politics: 73 },
+      personal: { loyalty: 75, charisma: 78, leadership: 70, ambition: 62, integrity: 82, resilience: 72, intrigue: 30, discretion: 76 },
     },
   },
   {
@@ -708,8 +708,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-commonwealth", "inst-un-ny"],
     competencies: {
-      professional: { economics: 50, diplomacy: 78, security: 30, media: 90, legal: 42, administration: 72, technology: 48 },
-      personal: { loyalty: 60, charisma: 88, leadership: 80, ambition: 85, integrity: 65, resilience: 70, intrigue: 65 },
+      professional: { economics: 50, diplomacy: 78, security: 30, communications: 90, legal: 42, administration: 72, technology: 48, management: 73, politics: 72 },
+      personal: { loyalty: 60, charisma: 88, leadership: 80, ambition: 85, integrity: 65, resilience: 70, intrigue: 65, discretion: 65 },
     },
   },
   {
@@ -728,8 +728,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-commonwealth", "inst-wto", "inst-wb-imf"],
     competencies: {
-      professional: { economics: 75, diplomacy: 82, security: 28, media: 52, legal: 60, administration: 65, technology: 42 },
-      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 72, integrity: 78, resilience: 75, intrigue: 45 },
+      professional: { economics: 75, diplomacy: 82, security: 28, communications: 52, legal: 60, administration: 65, technology: 42, management: 75, politics: 80 },
+      personal: { loyalty: 70, charisma: 68, leadership: 72, ambition: 72, integrity: 78, resilience: 75, intrigue: 45, discretion: 83 },
     },
   },
 
@@ -752,8 +752,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["Arabic"],
     qualifiedFor: ["inst-opec", "inst-wb-imf", "inst-wto", "inst-afdb"],
     competencies: {
-      professional: { economics: 92, diplomacy: 82, security: 35, media: 60, legal: 48, administration: 78, technology: 65 },
-      personal: { loyalty: 72, charisma: 75, leadership: 82, ambition: 78, integrity: 70, resilience: 80, intrigue: 62 },
+      professional: { economics: 92, diplomacy: 82, security: 35, communications: 60, legal: 48, administration: 78, technology: 65, management: 72, politics: 72 },
+      personal: { loyalty: 72, charisma: 75, leadership: 82, ambition: 78, integrity: 70, resilience: 80, intrigue: 62, discretion: 67 },
     },
   },
   {
@@ -772,8 +772,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-opec", "inst-wb-imf", "inst-wto"],
     competencies: {
-      professional: { economics: 88, diplomacy: 80, security: 30, media: 52, legal: 45, administration: 72, technology: 60 },
-      personal: { loyalty: 68, charisma: 70, leadership: 75, ambition: 80, integrity: 72, resilience: 78, intrigue: 55 },
+      professional: { economics: 88, diplomacy: 80, security: 30, communications: 52, legal: 45, administration: 72, technology: 60, management: 73, politics: 75 },
+      personal: { loyalty: 68, charisma: 70, leadership: 75, ambition: 80, integrity: 72, resilience: 78, intrigue: 55, discretion: 74 },
     },
   },
   {
@@ -792,8 +792,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["Arabic"],
     qualifiedFor: ["inst-opec", "inst-wb-imf", "inst-afdb"],
     competencies: {
-      professional: { economics: 88, diplomacy: 78, security: 25, media: 55, legal: 40, administration: 75, technology: 58 },
-      personal: { loyalty: 70, charisma: 72, leadership: 70, ambition: 82, integrity: 68, resilience: 75, intrigue: 50 },
+      professional: { economics: 88, diplomacy: 78, security: 25, communications: 55, legal: 40, administration: 75, technology: 58, management: 64, politics: 68 },
+      personal: { loyalty: 70, charisma: 72, leadership: 70, ambition: 82, integrity: 68, resilience: 75, intrigue: 50, discretion: 63 },
     },
   },
   {
@@ -812,8 +812,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-opec", "inst-wb-imf", "inst-wto"],
     competencies: {
-      professional: { economics: 92, diplomacy: 75, security: 22, media: 58, legal: 42, administration: 60, technology: 72 },
-      personal: { loyalty: 65, charisma: 65, leadership: 68, ambition: 72, integrity: 85, resilience: 70, intrigue: 35 },
+      professional: { economics: 92, diplomacy: 75, security: 22, communications: 58, legal: 42, administration: 60, technology: 72, management: 65, politics: 69 },
+      personal: { loyalty: 65, charisma: 65, leadership: 68, ambition: 72, integrity: 85, resilience: 70, intrigue: 35, discretion: 79 },
     },
   },
   {
@@ -832,8 +832,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-opec", "inst-wb-imf"],
     competencies: {
-      professional: { economics: 85, diplomacy: 72, security: 20, media: 78, legal: 55, administration: 70, technology: 62 },
-      personal: { loyalty: 62, charisma: 80, leadership: 72, ambition: 85, integrity: 68, resilience: 72, intrigue: 52 },
+      professional: { economics: 85, diplomacy: 72, security: 20, communications: 78, legal: 55, administration: 70, technology: 62, management: 79, politics: 79 },
+      personal: { loyalty: 62, charisma: 80, leadership: 72, ambition: 85, integrity: 68, resilience: 72, intrigue: 52, discretion: 78 },
     },
   },
 
@@ -856,8 +856,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-afdb", "inst-wb-imf", "inst-wto", "inst-au"],
     competencies: {
-      professional: { economics: 95, diplomacy: 82, security: 22, media: 62, legal: 50, administration: 85, technology: 55 },
-      personal: { loyalty: 68, charisma: 80, leadership: 88, ambition: 82, integrity: 78, resilience: 78, intrigue: 45 },
+      professional: { economics: 95, diplomacy: 82, security: 22, communications: 62, legal: 50, administration: 85, technology: 55, management: 90, politics: 87 },
+      personal: { loyalty: 68, charisma: 80, leadership: 88, ambition: 82, integrity: 78, resilience: 78, intrigue: 45, discretion: 81 },
     },
   },
   {
@@ -876,8 +876,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-afdb", "inst-wb-imf", "inst-au", "inst-ecowas"],
     competencies: {
-      professional: { economics: 90, diplomacy: 80, security: 20, media: 50, legal: 55, administration: 78, technology: 48 },
-      personal: { loyalty: 75, charisma: 70, leadership: 78, ambition: 72, integrity: 85, resilience: 75, intrigue: 35 },
+      professional: { economics: 90, diplomacy: 80, security: 20, communications: 50, legal: 55, administration: 78, technology: 48, management: 82, politics: 83 },
+      personal: { loyalty: 75, charisma: 70, leadership: 78, ambition: 72, integrity: 85, resilience: 75, intrigue: 35, discretion: 84 },
     },
   },
   {
@@ -896,8 +896,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-afdb", "inst-wb-imf", "inst-opec", "inst-wto"],
     competencies: {
-      professional: { economics: 82, diplomacy: 75, security: 18, media: 65, legal: 42, administration: 80, technology: 88 },
-      personal: { loyalty: 62, charisma: 78, leadership: 80, ambition: 85, integrity: 72, resilience: 70, intrigue: 48 },
+      professional: { economics: 82, diplomacy: 75, security: 18, communications: 65, legal: 42, administration: 80, technology: 88, management: 79, politics: 77 },
+      personal: { loyalty: 62, charisma: 78, leadership: 80, ambition: 85, integrity: 72, resilience: 70, intrigue: 48, discretion: 70 },
     },
   },
   {
@@ -916,8 +916,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-afdb", "inst-wb-imf", "inst-au"],
     competencies: {
-      professional: { economics: 88, diplomacy: 78, security: 18, media: 48, legal: 45, administration: 72, technology: 62 },
-      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 68, integrity: 85, resilience: 72, intrigue: 32 },
+      professional: { economics: 88, diplomacy: 78, security: 18, communications: 48, legal: 45, administration: 72, technology: 62, management: 62, politics: 66 },
+      personal: { loyalty: 72, charisma: 65, leadership: 70, ambition: 68, integrity: 85, resilience: 72, intrigue: 32, discretion: 70 },
     },
   },
   {
@@ -936,8 +936,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-afdb", "inst-ecowas", "inst-wto", "inst-opec"],
     competencies: {
-      professional: { economics: 85, diplomacy: 72, security: 15, media: 60, legal: 38, administration: 82, technology: 55 },
-      personal: { loyalty: 58, charisma: 75, leadership: 78, ambition: 88, integrity: 65, resilience: 72, intrigue: 58 },
+      professional: { economics: 85, diplomacy: 72, security: 15, communications: 60, legal: 38, administration: 82, technology: 55, management: 73, politics: 70 },
+      personal: { loyalty: 58, charisma: 75, leadership: 78, ambition: 88, integrity: 65, resilience: 72, intrigue: 58, discretion: 62 },
     },
   },
 
@@ -960,8 +960,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-wb-imf", "inst-afdb", "inst-opec", "inst-un-ny"],
     competencies: {
-      professional: { economics: 95, diplomacy: 85, security: 20, media: 58, legal: 52, administration: 80, technology: 50 },
-      personal: { loyalty: 70, charisma: 78, leadership: 85, ambition: 80, integrity: 82, resilience: 82, intrigue: 42 },
+      professional: { economics: 95, diplomacy: 85, security: 20, communications: 58, legal: 52, administration: 80, technology: 50, management: 89, politics: 89 },
+      personal: { loyalty: 70, charisma: 78, leadership: 85, ambition: 80, integrity: 82, resilience: 82, intrigue: 42, discretion: 88 },
     },
   },
   {
@@ -980,8 +980,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-wb-imf", "inst-afdb", "inst-opec", "inst-wto"],
     competencies: {
-      professional: { economics: 92, diplomacy: 82, security: 18, media: 55, legal: 48, administration: 85, technology: 45 },
-      personal: { loyalty: 72, charisma: 72, leadership: 82, ambition: 75, integrity: 78, resilience: 80, intrigue: 48 },
+      professional: { economics: 92, diplomacy: 82, security: 18, communications: 55, legal: 48, administration: 85, technology: 45, management: 84, politics: 84 },
+      personal: { loyalty: 72, charisma: 72, leadership: 82, ambition: 75, integrity: 78, resilience: 80, intrigue: 48, discretion: 79 },
     },
   },
   {
@@ -1000,8 +1000,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["French"],
     qualifiedFor: ["inst-wb-imf", "inst-afdb", "inst-un-ny", "inst-un-geneva"],
     competencies: {
-      professional: { economics: 95, diplomacy: 80, security: 15, media: 52, legal: 45, administration: 72, technology: 55 },
-      personal: { loyalty: 68, charisma: 70, leadership: 78, ambition: 72, integrity: 88, resilience: 78, intrigue: 35 },
+      professional: { economics: 95, diplomacy: 80, security: 15, communications: 52, legal: 45, administration: 72, technology: 55, management: 74, politics: 75 },
+      personal: { loyalty: 68, charisma: 70, leadership: 78, ambition: 72, integrity: 88, resilience: 78, intrigue: 35, discretion: 82 },
     },
   },
   {
@@ -1020,8 +1020,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["None"],
     qualifiedFor: ["inst-wb-imf", "inst-opec", "inst-commonwealth", "inst-afdb"],
     competencies: {
-      professional: { economics: 85, diplomacy: 78, security: 25, media: 65, legal: 55, administration: 78, technology: 38 },
-      personal: { loyalty: 60, charisma: 78, leadership: 80, ambition: 85, integrity: 65, resilience: 75, intrigue: 68 },
+      professional: { economics: 85, diplomacy: 78, security: 25, communications: 65, legal: 55, administration: 78, technology: 38, management: 81, politics: 80 },
+      personal: { loyalty: 60, charisma: 78, leadership: 80, ambition: 85, integrity: 65, resilience: 75, intrigue: 68, discretion: 72 },
     },
   },
   {
@@ -1040,8 +1040,8 @@ export const DIPLOMAT_INSTITUTION_CANDIDATES: DiplomatCandidate[] = [
     languageSkills: ["Arabic"],
     qualifiedFor: ["inst-wb-imf", "inst-afdb", "inst-opec"],
     competencies: {
-      professional: { economics: 90, diplomacy: 78, security: 18, media: 50, legal: 52, administration: 82, technology: 55 },
-      personal: { loyalty: 65, charisma: 68, leadership: 78, ambition: 80, integrity: 75, resilience: 80, intrigue: 52 },
+      professional: { economics: 90, diplomacy: 78, security: 18, communications: 50, legal: 52, administration: 82, technology: 55, management: 80, politics: 80 },
+      personal: { loyalty: 65, charisma: 68, leadership: 78, ambition: 80, integrity: 75, resilience: 80, intrigue: 52, discretion: 78 },
     },
   },
 ];

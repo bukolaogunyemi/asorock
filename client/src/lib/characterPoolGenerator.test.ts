@@ -185,3 +185,16 @@ describe("generateCharacterPool — default pool", () => {
     }).not.toThrow();
   });
 });
+
+// ────────────────────────────────────────────────────────────
+// 8. Bio enforcement — 100-word minimum
+// ────────────────────────────────────────────────────────────
+describe("generateCharacterPool — bio enforcement", () => {
+  it("generateBiography produces at least 100 words for 20 varied characters", () => {
+    const pool = generateCharacterPool({ count: 20, seed: 8888 });
+    for (const char of pool) {
+      const wordCount = char.biography.split(/\s+/).filter(w => w.length > 0).length;
+      expect(wordCount, `bio for ${char.name} has ${wordCount} words`).toBeGreaterThanOrEqual(100);
+    }
+  });
+});
